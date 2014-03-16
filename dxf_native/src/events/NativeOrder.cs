@@ -1,7 +1,7 @@
 ﻿using com.dxfeed.api;
 using com.dxfeed.native.api;
 
-namespace com.dxfeed.native.data {
+namespace com.dxfeed.native.events {
 	public struct NativeOrder : IDxOrder {
 		private readonly DxOrder order;
 		private readonly DxString marketMaker;

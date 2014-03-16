@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 using com.dxfeed.api;
 using com.dxfeed.native.api;
 
-namespace com.dxfeed.native.data {
+namespace com.dxfeed.native.events {
 	public unsafe class DxMarshal {
 		private static readonly int QUOTE_SIZE;
 		private static readonly int ORDER_SIZE;

@@ -1,7 +1,7 @@
 ﻿using com.dxfeed.api;
 using com.dxfeed.native.api;
 
-namespace com.dxfeed.native.data {
+namespace com.dxfeed.native.events {
 	public struct NativeTimeAndSale : IDxTimeAndSale {
 		private readonly DxTimeAndSale ts;
 		private readonly DxString saleCond;

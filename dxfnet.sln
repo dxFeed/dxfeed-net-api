@@ -5,6 +5,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dxf_native", "dxf_native\dx
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dxf_api", "dxf_api\dxf_api.csproj", "{F0E087DF-6C09-42FF-90FF-A470B3391F76}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dxf_tests", "dxf_tests\dxf_tests.csproj", "{4CEB9C5E-9D03-4383-BD96-5FD085AF3263}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{A9A4BCC7-EA34-4302-B8E3-993E26F746C9}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\packages.config = .nuget\packages.config
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,6 +26,10 @@ Global
 		{F0E087DF-6C09-42FF-90FF-A470B3391F76}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F0E087DF-6C09-42FF-90FF-A470B3391F76}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F0E087DF-6C09-42FF-90FF-A470B3391F76}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4CEB9C5E-9D03-4383-BD96-5FD085AF3263}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4CEB9C5E-9D03-4383-BD96-5FD085AF3263}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4CEB9C5E-9D03-4383-BD96-5FD085AF3263}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4CEB9C5E-9D03-4383-BD96-5FD085AF3263}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

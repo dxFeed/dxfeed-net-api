@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{D56EED21-EE2C-441C-B0D5-E85F10436CEA}</ProjectGuid>
+    <ProjectGuid>{4CEB9C5E-9D03-4383-BD96-5FD085AF3263}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>com.dxfeed.native</RootNamespace>
-    <AssemblyName>dxf_native</AssemblyName>
+    <RootNamespace>com.dxfeed</RootNamespace>
+    <AssemblyName>dxf_tests</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -32,6 +32,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="nunit.framework">
+      <HintPath>..\packages\NUnit.2.6.3\lib\nunit.framework.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -42,29 +45,20 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="src\api\C.cs" />
-    <Compile Include="src\api\CDataTypes.cs" />
-    <Compile Include="src\data\DxMarshal.cs" />
-    <Compile Include="src\data\NativeFundamental.cs" />
-    <Compile Include="src\data\NativeOrder.cs" />
-    <Compile Include="src\data\NativeQuote.cs" />
-    <Compile Include="src\data\NativeTrade.cs" />
-    <Compile Include="src\data\StringCache.cs" />
-    <Compile Include="src\EventBuf.cs" />
-    <Compile Include="src\NativeDxException.cs" />
+    <Compile Include="src\api\DxStringTest.cs" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\dxf_api\dxf_api.csproj">
       <Project>{F0E087DF-6C09-42FF-90FF-A470B3391F76}</Project>
       <Name>dxf_api</Name>
     </ProjectReference>
+    <ProjectReference Include="..\dxf_native\dxf_native.csproj">
+      <Project>{D56EED21-EE2C-441C-B0D5-E85F10436CEA}</Project>
+      <Name>dxf_native</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\lib\DXFeedd.dll">
-      <Link>DXFeedd.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

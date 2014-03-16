@@ -13,4 +13,5 @@ re:_ReSharper\..*$
 re:/bin/
 re:/obj/
 
-
+# ignore nuget repository
+packages/**

@@ -1,7 +1,57 @@
 <Configuration>
   <RecentFiles>
-    <RecentFiles />
-    <RecentEdits />
+    <RecentFiles>
+      <File id="F0E087DF-6C09-42FF-90FF-A470B3391F76/d:src/f:DxException.cs" caret="144" fromTop="5" />
+      <File id="F0E087DF-6C09-42FF-90FF-A470B3391F76/d:src/f:Events.cs" caret="672" fromTop="21" />
+      <File id="D56EED21-EE2C-441C-B0D5-E85F10436CEA/d:src/d:api/f:CDataTypes.cs" caret="1749" fromTop="19" />
+      <File id="D56EED21-EE2C-441C-B0D5-E85F10436CEA/d:src/d:data/f:StringCache.cs" caret="13" fromTop="0" />
+      <File id="D56EED21-EE2C-441C-B0D5-E85F10436CEA/d:src/d:data/f:NativeTrade.cs" caret="167" fromTop="0" />
+      <File id="D56EED21-EE2C-441C-B0D5-E85F10436CEA/d:src/d:data/f:NativeQuote.cs" caret="270" fromTop="12" />
+      <File id="D56EED21-EE2C-441C-B0D5-E85F10436CEA/d:src/d:data/f:DxString.cs" caret="118" fromTop="5" />
+      <File id="D56EED21-EE2C-441C-B0D5-E85F10436CEA/d:src/d:data/f:NativeOrder.cs" caret="235" fromTop="0" />
+      <File id="F0E087DF-6C09-42FF-90FF-A470B3391F76/d:src/f:DataTypes.cs" caret="0" fromTop="0" />
+      <File id="D56EED21-EE2C-441C-B0D5-E85F10436CEA/d:src/d:api/f:C.cs" caret="695" fromTop="19" />
+      <File id="7D4A3D4E-8F14-427D-8A98-29F8BCF10090/f:Convert.cs" caret="0" fromTop="0" />
+      <File id="A9A4BCC7-EA34-4302-B8E3-993E26F746C9/f:packages.config/s:..?.nuget?packages.config" caret="0" fromTop="0" />
+      <File id="D56EED21-EE2C-441C-B0D5-E85F10436CEA/d:src/d:data/f:DxMarshal.cs" caret="1069" fromTop="12" />
+      <File id="D56EED21-EE2C-441C-B0D5-E85F10436CEA/d:src/f:EventBuf.cs" caret="56" fromTop="3" />
+      <File id="D56EED21-EE2C-441C-B0D5-E85F10436CEA/d:src/d:data/f:NativeFundamental.cs" caret="61" fromTop="3" />
+      <File id="D56EED21-EE2C-441C-B0D5-E85F10436CEA/d:src/f:NativeDxException.cs" caret="187" fromTop="6" />
+      <File id="4CEB9C5E-9D03-4383-BD96-5FD085AF3263/d:src/d:api/f:DxStringTest.cs" caret="242" fromTop="10" />
+      <File id="F0E087DF-6C09-42FF-90FF-A470B3391F76/d:src/f:DxString.cs" caret="1450" fromTop="10" />
+    </RecentFiles>
+    <RecentEdits>
+      <File id="D56EED21-EE2C-441C-B0D5-E85F10436CEA/d:src/d:data/f:DxMarshal.cs" caret="711" fromTop="14" />
+      <File id="D56EED21-EE2C-441C-B0D5-E85F10436CEA/d:src/d:data/f:DxMarshal.cs" caret="907" fromTop="17" />
+      <File id="D56EED21-EE2C-441C-B0D5-E85F10436CEA/d:src/d:data/f:DxString.cs" caret="162" fromTop="7" />
+      <File id="D56EED21-EE2C-441C-B0D5-E85F10436CEA/d:src/d:data/f:DxString.cs" caret="118" fromTop="5" />
+      <File id="D56EED21-EE2C-441C-B0D5-E85F10436CEA/d:src/d:api/f:C.cs" caret="471" fromTop="6" />
+      <File id="F0E087DF-6C09-42FF-90FF-A470B3391F76/d:src/f:DataTypes.cs" caret="0" fromTop="0" />
+      <File id="F0E087DF-6C09-42FF-90FF-A470B3391F76/d:src/f:DxString.cs" caret="689" fromTop="4" />
+      <File id="F0E087DF-6C09-42FF-90FF-A470B3391F76/d:src/f:DxString.cs" caret="2517" fromTop="35" />
+      <File id="F0E087DF-6C09-42FF-90FF-A470B3391F76/d:src/f:DxString.cs" caret="662" fromTop="15" />
+      <File id="F0E087DF-6C09-42FF-90FF-A470B3391F76/d:src/f:DxString.cs" caret="431" fromTop="10" />
+      <File id="F0E087DF-6C09-42FF-90FF-A470B3391F76/d:src/f:DxString.cs" caret="513" fromTop="12" />
+      <File id="F0E087DF-6C09-42FF-90FF-A470B3391F76/d:src/f:DxString.cs" caret="581" fromTop="17" />
+      <File id="F0E087DF-6C09-42FF-90FF-A470B3391F76/d:src/f:DxString.cs" caret="763" fromTop="9" />
+      <File id="F0E087DF-6C09-42FF-90FF-A470B3391F76/d:src/f:DxString.cs" caret="961" fromTop="18" />
+      <File id="F0E087DF-6C09-42FF-90FF-A470B3391F76/d:src/f:DxString.cs" caret="1056" fromTop="16" />
+      <File id="F0E087DF-6C09-42FF-90FF-A470B3391F76/d:src/f:DxString.cs" caret="1457" fromTop="19" />
+      <File id="F0E087DF-6C09-42FF-90FF-A470B3391F76/d:src/f:DxString.cs" caret="240" fromTop="5" />
+      <File id="F0E087DF-6C09-42FF-90FF-A470B3391F76/d:src/f:DxString.cs" caret="1811" fromTop="12" />
+      <File id="F0E087DF-6C09-42FF-90FF-A470B3391F76/d:src/f:DxString.cs" caret="2033" fromTop="7" />
+      <File id="F0E087DF-6C09-42FF-90FF-A470B3391F76/d:src/f:DxString.cs" caret="2150" fromTop="15" />
+      <File id="F0E087DF-6C09-42FF-90FF-A470B3391F76/d:src/f:DxString.cs" caret="2181" fromTop="13" />
+      <File id="F0E087DF-6C09-42FF-90FF-A470B3391F76/d:src/f:DxString.cs" caret="2286" fromTop="17" />
+      <File id="F0E087DF-6C09-42FF-90FF-A470B3391F76/d:src/f:DxString.cs" caret="45" fromTop="3" />
+      <File id="7D4A3D4E-8F14-427D-8A98-29F8BCF10090/f:Convert.cs" caret="0" fromTop="0" />
+      <File id="4CEB9C5E-9D03-4383-BD96-5FD085AF3263/d:src/d:api/f:DxStringTest.cs" caret="250" fromTop="11" />
+      <File id="D56EED21-EE2C-441C-B0D5-E85F10436CEA/d:src/d:data/f:DxMarshal.cs" caret="1069" fromTop="12" />
+      <File id="D56EED21-EE2C-441C-B0D5-E85F10436CEA/d:src/f:EventBuf.cs" caret="56" fromTop="3" />
+      <File id="D56EED21-EE2C-441C-B0D5-E85F10436CEA/d:src/f:NativeDxException.cs" caret="320" fromTop="11" />
+      <File id="D56EED21-EE2C-441C-B0D5-E85F10436CEA/d:src/d:data/f:NativeFundamental.cs" caret="61" fromTop="3" />
+      <File id="F0E087DF-6C09-42FF-90FF-A470B3391F76/d:src/f:DxString.cs" caret="1152" fromTop="2" />
+    </RecentEdits>
   </RecentFiles>
   <NAntValidationSettings>
     <NAntPath value="" />
@@ -21,4 +71,199 @@
       <setting name="SolutionAnalysisEnabled">False</setting>
     </boolean>
   </SettingsComponent>
+  <CompletionStatisticsManager>
+    <ItemStatistics item="CSharpCodeCompletionContext">
+      <Item value="public" priority="728" />
+      <Item value="interface" priority="61" />
+      <Item value="T`0" priority="61" />
+      <Item value="EventType`0" priority="31" />
+      <Item value="EventType" priority="32" />
+      <Item value="Action" priority="31" />
+      <Item value="IDxEventBuf" priority="62" />
+      <Item value="delegate" priority="61" />
+      <Item value="S`0" priority="30" />
+      <Item value="where" priority="30" />
+      <Item value="static" priority="350" />
+      <Item value="int" priority="575" />
+      <Item value="sealed" priority="31" />
+      <Item value="internal" priority="222" />
+      <Item value="C`0" priority="31" />
+      <Item value="out" priority="63" />
+      <Item value="error" priority="95" />
+      <Item value="IntPtr`0" priority="383" />
+      <Item value="desc" priority="31" />
+      <Item value="Message" priority="31" />
+      <Item value="MarshalByRefObject`0" priority="95" />
+      <Item value="this" priority="127" />
+      <Item value="NativeDxException`0" priority="95" />
+      <Item value="var" priority="255" />
+      <Item value="return" priority="1311" />
+      <Item value="new" priority="287" />
+      <Item value="NativeDxException" priority="28" />
+      <Item value="message" priority="63" />
+      <Item value="string" priority="377" />
+      <Item value="base" priority="63" />
+      <Item value="ErrorCode" priority="31" />
+      <Item value="void" priority="95" />
+      <Item value="if" priority="639" />
+      <Item value="return_code" priority="31" />
+      <Item value="DX_OK" priority="31" />
+      <Item value="throw" priority="31" />
+      <Item value="&lt;exception cref=&quot;&quot;&gt;&lt;/exception&gt;" priority="25" />
+      <Item value="private" priority="607" />
+      <Item value="struct" priority="31" />
+      <Item value="IDxQuote`0" priority="31" />
+      <Item value="quote" priority="255" />
+      <Item value="NativeQuote`0" priority="31" />
+      <Item value="offset" priority="159" />
+      <Item value="sizeof" priority="127" />
+      <Item value="readonly" priority="223" />
+      <Item value="unsafe" priority="191" />
+      <Item value="quoteSize" priority="63" />
+      <Item value="DxQuote`0" priority="96" />
+      <Item value="NativeQuote" priority="28" />
+      <Item value="dx_quote" priority="31" />
+      <Item value="String`0" priority="31" />
+      <Item value="bool" priority="95" />
+      <Item value="TryGetValue`0" priority="31" />
+      <Item value="result" priority="63" />
+      <Item value="true" priority="95" />
+      <Item value="str" priority="95" />
+      <Item value="AddOrUpdate`0" priority="31" />
+      <Item value="ptr" priority="63" />
+      <Item value="DxMarshal`0" priority="95" />
+      <Item value="ConcurrentDictionary" priority="63" />
+      <Item value="cache" priority="255" />
+      <Item value="ConcurrentDictionary&lt;IntPtr,string&gt;" priority="28" />
+      <Item value="order" priority="287" />
+      <Item value="StringCache`0" priority="223" />
+      <Item value="marketMaker" priority="127" />
+      <Item value="null" priority="95" />
+      <Item value="NativeOrder`0" priority="31" />
+      <Item value="orderSize" priority="63" />
+      <Item value="DxOrder`0" priority="64" />
+      <Item value="head" priority="63" />
+      <Item value="StringCache" priority="28" />
+      <Item value="NativeOrder" priority="28" />
+      <Item value="dxOrder" priority="31" />
+      <Item value="IDxTrade`0" priority="31" />
+      <Item value="trade" priority="159" />
+      <Item value="NativeTrade`0" priority="31" />
+      <Item value="TRADE_SIZE" priority="63" />
+      <Item value="DxTrade`0" priority="64" />
+      <Item value="NativeTrade" priority="28" />
+      <Item value="dxTrade" priority="31" />
+      <Item value="char" priority="514" />
+      <Item value="DxString`0" priority="95" />
+      <Item value="byte" priority="31" />
+      <Item value="length" priority="31" />
+      <Item value="resolved" priority="383" />
+      <Item value="chars" priority="447" />
+      <Item value="for" priority="127" />
+      <Item value="const" priority="63" />
+      <Item value="SIZE_LIMIT" priority="31" />
+      <Item value="fixed" priority="63" />
+      <Item value="src" priority="63" />
+      <Item value="while" priority="31" />
+      <Item value="len" priority="63" />
+      <Item value="SizeLimit" priority="126" />
+      <Item value="dst_ptr" priority="63" />
+      <Item value="src_ptr" priority="159" />
+      <Item value="default" priority="31" />
+      <Item value="break" priority="63" />
+      <Item value="other" priority="255" />
+      <Item value="Char`0" priority="31" />
+      <Item value="Array`0" priority="63" />
+      <Item value="Comparison" priority="31" />
+      <Item value="i" priority="255" />
+      <Item value="false" priority="191" />
+      <Item value="c" priority="95" />
+      <Item value="hc" priority="63" />
+      <Item value="left" priority="31" />
+      <Item value="right" priority="95" />
+      <Item value="DxStringTest" priority="28" />
+      <Item value="haba" priority="31" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@com.dxfeed.native.C">
+      <Item value="dxf_get_last_error`0" priority="26" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@System.IntPtr">
+      <Item value="Zero" priority="26" />
+      <Item value="Add`0" priority="80" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@System.Runtime.InteropServices.Marshal">
+      <Item value="PtrToStringUni`0" priority="81" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@com.dxfeed.native.NativeDxException">
+      <Item value="Create`0" priority="26" />
+    </ItemStatistics>
+    <ItemStatistics item="Doc Comment tags">
+      <Item value="&lt;exception cref=&quot;&quot;&gt;&lt;/exception&gt;" priority="4" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:com.dxfeed.native.api.DxQuote">
+      <Item value="bid_time" priority="26" />
+      <Item value="bid_exchange_code" priority="26" />
+      <Item value="bid_price" priority="26" />
+      <Item value="bid_size" priority="26" />
+      <Item value="ask_time" priority="26" />
+      <Item value="ask_exchange_code" priority="26" />
+      <Item value="ask_price" priority="26" />
+      <Item value="ask_size" priority="26" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@com.dxfeed.native.data.DxMarshal">
+      <Item value="ReadString`0" priority="53" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:System.Collections.Concurrent.ConcurrentDictionary`2">
+      <Item value="Clear`0" priority="26" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:com.dxfeed.native.api.DxOrder">
+      <Item value="index" priority="26" />
+      <Item value="side" priority="26" />
+      <Item value="level" priority="26" />
+      <Item value="time" priority="26" />
+      <Item value="exchange_code" priority="26" />
+      <Item value="market_maker" priority="26" />
+      <Item value="price" priority="26" />
+      <Item value="size" priority="26" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:com.dxfeed.native.data.NativeOrder">
+      <Item value="cache" priority="26" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:com.dxfeed.native.data.StringCache">
+      <Item value="cache" priority="26" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:com.dxfeed.native.api.DxTrade">
+      <Item value="time" priority="26" />
+      <Item value="exchange_code" priority="26" />
+      <Item value="price" priority="26" />
+      <Item value="size" priority="26" />
+      <Item value="day_volume" priority="26" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:System.ValueType">
+      <Item value="ToString`0" priority="26" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:System.IntPtr">
+      <Item value="ToPointer`0" priority="26" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:com.dxfeed.api.DxString">
+      <Item value="resolved" priority="53" />
+      <Item value="chars" priority="26" />
+      <Item value="Equals`0" priority="26" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:System.String">
+      <Item value="Length" priority="26" />
+      <Item value="ToCharArray`0" priority="81" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@System.Convert">
+      <Item value="ToInt32`0" priority="26" />
+    </ItemStatistics>
+  </CompletionStatisticsManager>
+  <UnitTestSessions>
+    <Session>
+      <Name>Session #1</Name>
+      <Elements>
+        <UnitTestElement Provider="nUnit" Id="com.dxfeed.api.DxStringTest" type="NUnitTestFixtureElement" Project="4CEB9C5E-9D03-4383-BD96-5FD085AF3263" />
+      </Elements>
+    </Session>
+  </UnitTestSessions>
 </Configuration>

@@ -46,10 +46,12 @@
     <Compile Include="src\api\CDataTypes.cs" />
     <Compile Include="src\data\DxMarshal.cs" />
     <Compile Include="src\data\NativeFundamental.cs" />
+    <Compile Include="src\data\NativeMarketMaker.cs" />
     <Compile Include="src\data\NativeOrder.cs" />
+    <Compile Include="src\data\NativeProfile.cs" />
     <Compile Include="src\data\NativeQuote.cs" />
+    <Compile Include="src\data\NativeTimeAndSale.cs" />
     <Compile Include="src\data\NativeTrade.cs" />
-    <Compile Include="src\data\StringCache.cs" />
     <Compile Include="src\EventBuf.cs" />
     <Compile Include="src\NativeDxException.cs" />
   </ItemGroup>

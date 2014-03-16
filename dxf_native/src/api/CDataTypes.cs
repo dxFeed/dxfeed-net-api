@@ -51,29 +51,31 @@ namespace com.dxfeed.native.api {
 	}
 
 	[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-	internal class DxProfile {
-		internal string description;
+	internal struct DxProfile {
+		internal IntPtr description;
 	}
 
-	internal class DxMarketMaker {
-		char mm_exchange;
-		int mm_id;
-		double mmbid_price;
-		int mmbid_size;
-		double mmask_price;
-		int mmask_size;
+	[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+	internal struct DxMarketMaker {
+		internal char mm_exchange;
+		internal int mm_id;
+		internal double mmbid_price;
+		internal int mmbid_size;
+		internal double mmask_price;
+		internal int mmask_size;
 	}
 
-	internal class DxTimeAndSale {
-		long event_id;
-		long time;
-		char exchange_code;
-		double price;
-		long size;
-		double bid_price;
-		double ask_price;
-		string exchange_sale_conditions;
-		bool is_trade;
-		int type;
+	[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+	internal struct DxTimeAndSale {
+		internal long event_id;
+		internal long time;
+		internal char exchange_code;
+		internal double price;
+		internal long size;
+		internal double bid_price;
+		internal double ask_price;
+		internal IntPtr exchange_sale_conditions;
+		internal bool is_trade;
+		internal int type;
 	}
 }

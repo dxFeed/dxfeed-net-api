@@ -3,9 +3,9 @@
 namespace com.dxfeed.api {
 
 	[TestFixture]
-	public unsafe class DxStringTest {
+	public class DxStringTest {
 
-		private static DxString Create(char[] chars) {
+		private unsafe static DxString Create(char[] chars) {
 			fixed (char* ptr = chars) {
 				return new DxString(ptr);
 			}

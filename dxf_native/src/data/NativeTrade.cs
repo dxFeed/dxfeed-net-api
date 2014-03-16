@@ -5,8 +5,8 @@ namespace com.dxfeed.native.data {
 	public struct NativeTrade : IDxTrade {
 		private readonly DxTrade trade;
 
-		internal NativeTrade(DxTrade trade) {
-			this.trade = trade;
+		internal unsafe NativeTrade(DxTrade* trade) {
+			this.trade = *trade;
 		}
 
 		#region Implementation of IDxTrade

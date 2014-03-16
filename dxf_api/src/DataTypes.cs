@@ -6,7 +6,7 @@
 		int Level { get; }
 		long Time { get; }
 		char ExchangeCode { get; }
-		string MarketMaker { get; }
+		DxString MarketMaker { get; }
 		double Price { get; }
 		long Size { get; }
 	}
@@ -59,7 +59,7 @@
 		long Size { get; }
 		double BidPrice { get; }
 		double AskPrice { get; }
-		string ExchangeSaleConditions { get; }
+		DxString ExchangeSaleConditions { get; }
 		bool IsTrade { get; }
 		int Type { get; }
 	}

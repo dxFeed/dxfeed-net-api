@@ -4,12 +4,11 @@ using com.dxfeed.native.api;
 namespace com.dxfeed.native.data {
 	public struct NativeOrder : IDxOrder {
 		private readonly DxOrder order;
-		private unsafe fixed char mmBuf[8];
-		private string marketMaker;
+		private readonly DxString marketMaker;
 
-		internal NativeOrder(DxOrder order) {
-			this.order = order;
-			marketMaker = null;
+		internal unsafe NativeOrder(DxOrder* order) {
+			this.order = *order;
+			marketMaker = DxMarshal.ReadDxString(this.order.market_maker);
 		}
 
 		#region Implementation of IDxOrder
@@ -34,7 +33,7 @@ namespace com.dxfeed.native.data {
 			get { return order.exchange_code; }
 		}
 
-		public string MarketMaker {
+		public DxString MarketMaker {
 			get { return marketMaker; }
 		}
 

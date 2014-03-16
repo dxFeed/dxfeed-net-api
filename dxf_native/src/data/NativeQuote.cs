@@ -5,8 +5,8 @@ namespace com.dxfeed.native.data {
 	public struct NativeQuote : IDxQuote {
 		private DxQuote quote;
 
-		internal NativeQuote(DxQuote quote) {
-			this.quote = quote;
+		internal unsafe NativeQuote(DxQuote* quote) {
+			this.quote = *quote;
 		}
 
 		#region Implementation of IDxQuote

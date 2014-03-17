@@ -9,6 +9,10 @@ namespace com.dxfeed.native.events {
 			this.quote = *quote;
 		}
 
+		public override string ToString() {
+			return quote.ToString();
+		}
+
 		#region Implementation of IDxQuote
 
 		public long BidTime {

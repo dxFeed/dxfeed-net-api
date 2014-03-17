@@ -4,8 +4,8 @@ using com.dxfeed.api;
 
 namespace com.dxfeed.native.api {
 	internal class C {
-		internal const int DX_OK = 0;
-		internal const int DX_ERR = 1;
+		internal const int DX_OK = 1;
+		internal const int DX_ERR = 0;
 
 		
 		/// <summary>
@@ -14,7 +14,7 @@ namespace com.dxfeed.native.api {
 		/// </summary>
 		/// <param name="returnCode"></param>
 		/// <exception cref="NativeDxException"></exception>
-		internal void CheckOk(int returnCode) {
+		internal static void CheckOk(int returnCode) {
 			if (returnCode != DX_OK)
 				throw NativeDxException.Create();
 		}

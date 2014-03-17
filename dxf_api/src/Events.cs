@@ -14,17 +14,35 @@ namespace com.dxfeed.api {
 		TimeAndSale = 32
 	}
 
-	public interface IDxEventBuf<out T> : IEnumerable<T>, IDisposable {
+	public interface IDxEventBuf<out T> : IEnumerable<T> {
 		EventType EventType { get; }
+		DxString Symbol { get; }
+		int Size { get; }
 	}
 
-	/// <summary>
-	/// 
-	/// </summary>
-	/// <typeparam name="TS"></typeparam>
-	/// <typeparam name="T"> declared as generic to prevent boxing</typeparam>
-	/// <typeparam name="TE"></typeparam>
-	/// <param name="src"></param>
-	/// <param name="buf"></param>
-	public delegate void DxEventListener<in TS, in T, TE>(TS src, T buf) where T : IDxEventBuf<TE>;
+	
+	public interface IDxFeedListener {
+		
+		void OnQuote<TB, TE>(TB buf)
+			where TB : IDxEventBuf<TE>
+			where TE : IDxQuote;
+
+		void OnTrade<TB, TE>(TB buf)
+			where TB : IDxEventBuf<TE>
+			where TE : IDxTrade;
+
+		void OnOrder<TB, TE>(TB buf)
+			where TB : IDxEventBuf<TE>
+			where TE : IDxOrder;
+
+		void OnProfile<TB, TE>(TB buf)
+			where TB : IDxEventBuf<TE>
+			where TE : IDxProfile;
+
+		void OnTimeAndSale<TB, TE>(TB buf)
+			where TB : IDxEventBuf<TE>
+			where TE : IDxTimeAndSale;
+
+	}
+
 }

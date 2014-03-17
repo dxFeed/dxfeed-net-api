@@ -18,5 +18,7 @@ namespace com.dxfeed.native {
 		public NativeDxException(int error, string message) : base(message) {
 			ErrorCode = error;
 		}
+
+		public NativeDxException(string message) : base(message) {}
 	}
 }

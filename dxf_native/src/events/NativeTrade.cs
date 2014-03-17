@@ -9,6 +9,11 @@ namespace com.dxfeed.native.events {
 			this.trade = *trade;
 		}
 
+		public override string ToString() {
+			return string.Format("Time: {0}, ExchangeCode: {1}, Price: {2}, Size: {3}, DayVolume: {4}",
+				Time, ExchangeCode, Price, Size, DayVolume);
+		}
+
 		#region Implementation of IDxTrade
 
 		public long Time {

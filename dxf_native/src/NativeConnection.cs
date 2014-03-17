@@ -27,7 +27,7 @@ namespace com.dxfeed.native {
 			handler = IntPtr.Zero;
 		}
 
-		public IDxSubscription CreateSubscribtion(EventType type, IDxFeedListener listener) {
+		public IDxSubscription CreateSubscription(EventType type, IDxFeedListener listener) {
 			if (handler == IntPtr.Zero)
 				throw new NativeDxException("not connected");
 

@@ -11,7 +11,7 @@ namespace dxf_client {
 			var listener = new EventPrinter();
 			using(var con = new NativeConnection()) {
 				con.Connect("demo.dxfeed.com:7300");
-				var s = (NativeSubscription) con.CreateSubscribtion(
+				var s = (NativeSubscription) con.CreateSubscription(
 					EventType.Quote|EventType.Profile|EventType.Trade,
 					listener);
 				Console.WriteLine("Press enter to stop");

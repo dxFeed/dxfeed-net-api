@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using com.dxfeed.api;
 using com.dxfeed.native.api;
 using com.dxfeed.native.events;
@@ -59,6 +61,32 @@ namespace com.dxfeed.native {
 			
 			C.CheckOk(C.dxf_close_subscription(subscriptionPtr));
 			subscriptionPtr = IntPtr.Zero;
+		}
+
+		#endregion
+
+		#region Implementation of IDxSubscription
+
+		public void AddSymbols(params string[] symbols) {
+			C.CheckOk(C.dxf_add_symbols(subscriptionPtr, symbols, symbols.Length));
+		}
+
+		public void RemoveSymbols(params string[] symbols) {
+			C.CheckOk(C.dxf_remove_symbols(subscriptionPtr, symbols, symbols.Length));
+		}
+
+		public unsafe IList<string> GetSymbols() {
+			IntPtr head;
+			int len;
+			C.CheckOk(C.dxf_get_symbols(subscriptionPtr, out head, out len));
+			
+			var result = new string[len];
+			for(var i = 0; i < len; i++) {
+				var ptr = *(IntPtr*)IntPtr.Add(head, IntPtr.Size*i);
+				result[i] = Marshal.PtrToStringUni(ptr);
+			}
+
+			return result;
 		}
 
 		#endregion

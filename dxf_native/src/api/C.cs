@@ -152,7 +152,7 @@ namespace com.dxfeed.native.api {
 		/*
 				DXFEED_API ERRORCODE dxf_add_symbols (dxf_subscription_t subscription, dxf_const_string_t* symbols, int symbol_count);
 		*/
-		[DllImport(DXFEED_DLL)]
+		[DllImport(DXFEED_DLL, CharSet = CharSet.Unicode)]
 		internal static extern int dxf_add_symbols(IntPtr subscription, string[] symbols, int count);
 
 		/*
@@ -164,7 +164,7 @@ namespace com.dxfeed.native.api {
 		/*
 				DXFEED_API ERRORCODE dxf_remove_symbol (dxf_subscription_t subscription, dxf_const_string_t symbol);
 		*/
-		[DllImport(DXFEED_DLL)]
+		[DllImport(DXFEED_DLL, CharSet = CharSet.Unicode)]
 		internal static extern int dxf_remove_symbol(IntPtr subcription, string symbol);
 
 		/*
@@ -178,7 +178,7 @@ namespace com.dxfeed.native.api {
 		/*
 				DXFEED_API ERRORCODE dxf_remove_symbols (dxf_subscription_t subscription, dxf_const_string_t* symbols, int symbol_count);
 		*/
-		[DllImport(DXFEED_DLL)]
+		[DllImport(DXFEED_DLL, CharSet = CharSet.Unicode)]
 		internal static extern int dxf_remove_symbols(IntPtr subscription, string[] symbols, int count);
 
 		/*
@@ -194,8 +194,8 @@ namespace com.dxfeed.native.api {
 		/*
 				DXFEED_API ERRORCODE dxf_get_symbols (dxf_subscription_t subscription, OUT dxf_const_string_t** symbols, OUT int* symbol_count);
 		*/
-		[DllImport(DXFEED_DLL)]
-		internal static extern int dxf_get_symbols(IntPtr subscription, IntPtr symbols, out int count);
+		[DllImport(DXFEED_DLL, CharSet = CharSet.Unicode)]
+		internal static extern int dxf_get_symbols(IntPtr subscription, out IntPtr symbols, out int count);
 
 		/*
 		 *	Sets the symbols for the subscription.
@@ -210,8 +210,8 @@ namespace com.dxfeed.native.api {
 				DXFEED_API ERRORCODE dxf_set_symbols (dxf_subscription_t subscription, dxf_const_string_t* symbols, int symbol_count);
 		*/
 
-		[DllImport(DXFEED_DLL)]
-		internal static extern int dxf_set_symbols(IntPtr subscription, IntPtr symbols, int count);
+		[DllImport(DXFEED_DLL, CharSet = CharSet.Unicode)]
+		internal static extern int dxf_set_symbols(IntPtr subscription, string[] symbols, int count);
 
 		/*
 		 *	Removes all the symbols from the subscription.

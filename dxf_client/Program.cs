@@ -11,11 +11,12 @@ namespace dxf_client {
 			var listener = new EventPrinter();
 			using(var con = new NativeConnection()) {
 				con.Connect("demo.dxfeed.com:7300");
-				var s = (NativeSubscription) con.CreateSubscription(
+				var s = con.CreateSubscription(
 					EventType.Fundamental|EventType.Profile|EventType.Order|EventType.Quote|EventType.TimeAndSale|EventType.Trade,
+					//EventType.Profile,
 					listener);
 				Console.WriteLine("Press enter to stop");
-				s.AddSymbol("IBM.TEST");
+				s.AddSymbols("IBM.TEST", "MSFT.TEST");
 				Console.ReadLine();
 			}
 		}

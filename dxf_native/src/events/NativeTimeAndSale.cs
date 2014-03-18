@@ -11,6 +11,11 @@ namespace com.dxfeed.native.events {
 			saleCond = DxMarshal.ReadDxString(this.ts.exchange_sale_conditions);
 		}
 
+		public override string ToString() {
+			return string.Format("TimeAndSale: {{EventId: {0}, Time: {1}, ExchangeCode: {2}, AskPrice: {3}, BidPrice: {4}, ExchangeSaleConditions: {5}, IsTrade: {6}, Price: {7}, Size: {8}, Type: {9}}}",
+				EventId, Time, ExchangeCode, AskPrice, BidPrice, ExchangeSaleConditions, IsTrade, Price, Size, Type);
+		}
+
 		#region Implementation of IDxTimeAndSale
 
 		public long EventId {

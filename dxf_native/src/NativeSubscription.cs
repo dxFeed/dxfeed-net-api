@@ -8,6 +8,8 @@ namespace com.dxfeed.native {
 		private readonly IntPtr connectionPtr;
 		private IntPtr subscriptionPtr;
 		private readonly IDxFeedListener listener;
+		//to prevent callback from being garbage collected
+		private readonly C.dxf_event_listener_t callback;
 
 		public NativeSubscription(NativeConnection connection, EventType eventType, IDxFeedListener listener) {
 			if (listener == null)
@@ -18,7 +20,7 @@ namespace com.dxfeed.native {
 
 			C.CheckOk(C.dxf_create_subscription(connectionPtr, eventType, out subscriptionPtr));
 			try {
-				C.CheckOk(C.dxf_attach_event_listener(subscriptionPtr, OnEvent, IntPtr.Zero));
+				C.CheckOk(C.dxf_attach_event_listener(subscriptionPtr, callback = OnEvent, IntPtr.Zero));
 			} catch (DxException) {
 				C.dxf_close_subscription(subscriptionPtr);
 				throw;

@@ -13,6 +13,10 @@ namespace com.dxfeed.api {
 		public DxString(char* src) {
 			var src_ptr = src;
 			fixed (char* dptr = chars) {
+				if (src == null) {
+					resolved = null;
+					return;
+				}
 				var dst_ptr = dptr;
 				var len = 0;
 				while (len < SizeLimit - 1 && *src_ptr != 0) {

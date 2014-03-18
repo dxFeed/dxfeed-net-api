@@ -11,6 +11,11 @@ namespace com.dxfeed.native.events {
 			marketMaker = DxMarshal.ReadDxString(this.order.market_maker);
 		}
 
+		public override string ToString() {
+			return string.Format("Order: {{Index: {0}, Side: {1}, Level: {2}, Time: {3}, ExchangeCode: {4}, MarketMaker: {5}, Price: {6}, Size: {7}}}",
+				Index, Side, Level, Time, ExchangeCode, MarketMaker, Price, Size);
+		}
+
 		#region Implementation of IDxOrder
 
 		public long Index {

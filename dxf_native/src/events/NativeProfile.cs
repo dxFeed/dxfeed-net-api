@@ -11,6 +11,10 @@ namespace com.dxfeed.native.events {
 			desc = new string((char*)this.profile.description.ToPointer());
 		}
 
+		public override string ToString() {
+			return string.Format("Profile: {{Description: {0}}}", Description);
+		}
+
 		#region Implementation of IDxProfile
 
 		public string Description {

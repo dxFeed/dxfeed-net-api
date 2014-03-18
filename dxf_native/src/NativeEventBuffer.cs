@@ -113,6 +113,7 @@ namespace com.dxfeed.native {
 		private static readonly Func<IntPtr, int, NativeOrder> ORDER_READER = DxMarshal.ReadOrder;
 		private static readonly Func<IntPtr, int, NativeProfile> PROFILE_READER = DxMarshal.ReadProfile;
 		private static readonly Func<IntPtr, int, NativeTimeAndSale> TS_READER = DxMarshal.ReadTimeAndSale;
+		private static readonly Func<IntPtr, int, NativeFundamental> FUNDAMENTAL_READER = DxMarshal.ReadFundamental;
 		
 		
 		public static NativeEventBuffer<NativeQuote> CreateQuoteBuf(IntPtr symbol, IntPtr head, int size) {
@@ -133,6 +134,10 @@ namespace com.dxfeed.native {
 
 		public static NativeEventBuffer<NativeTimeAndSale> CreateTimeAndSaleBuf(IntPtr symbol, IntPtr head, int size) {
 			return new NativeEventBuffer<NativeTimeAndSale>(EventType.TimeAndSale, symbol, head, size, TS_READER);
+		}
+
+		public static NativeEventBuffer<NativeFundamental> CreateFundamentalBuf(IntPtr symbol, IntPtr head, int size) {
+			return new NativeEventBuffer<NativeFundamental>(EventType.Fundamental, symbol, head, size, FUNDAMENTAL_READER);
 		}
 	}
 }

@@ -10,7 +10,8 @@ namespace com.dxfeed.native.events {
 		}
 
 		public override string ToString() {
-			return quote.ToString();
+			return string.Format("Quote: {{AskExchangeCode: {0}, AskPrice: {1}, AskSize: {2}, AskTime: {3}, BidExchangeCode: {4}, BidPrice: {5}, BidSize: {6}, BidTime: {7}",
+				AskExchangeCode, AskPrice, AskSize, AskTime, BidExchangeCode, BidPrice, BidSize, BidTime);
 		}
 
 		#region Implementation of IDxQuote

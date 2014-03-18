@@ -8,7 +8,7 @@ namespace com.dxfeed.api {
 		None = 0,
 		Trade = 1,
 		Quote = 2,
-		Summary = 4,
+		Fundamental = 4,
 		Profile = 8,
 		Order = 16,
 		TimeAndSale = 32
@@ -38,6 +38,10 @@ namespace com.dxfeed.api {
 		void OnProfile<TB, TE>(TB buf)
 			where TB : IDxEventBuf<TE>
 			where TE : IDxProfile;
+
+		void OnFundamental<TB, TE>(TB buf)
+			where TB : IDxEventBuf<TE>
+			where TE : IDxFundamental;
 
 		void OnTimeAndSale<TB, TE>(TB buf)
 			where TB : IDxEventBuf<TE>

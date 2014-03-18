@@ -9,6 +9,11 @@ namespace com.dxfeed.native.events {
 			this.fundamental = *fundamental;
 		}
 
+		public override string ToString() {
+			return string.Format("Fundamental: {{DayHighPrice: {0}, DayLowPrice: {1}, DayOpenPrice: {2}, PrevDayClosePrice: {3}, OpenInterest: {4} }}",
+				DayHighPrice, DayLowPrice, DayOpenPrice, PrevDayClosePrice, OpenInterest);
+		}
+
 		#region Implementation of IDxFundamental
 
 		public double DayHighPrice {

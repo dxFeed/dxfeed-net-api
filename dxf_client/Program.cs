@@ -12,7 +12,7 @@ namespace dxf_client {
 			using(var con = new NativeConnection()) {
 				con.Connect("demo.dxfeed.com:7300");
 				var s = (NativeSubscription) con.CreateSubscription(
-					EventType.Quote|EventType.Profile|EventType.Trade,
+					EventType.Fundamental|EventType.Profile|EventType.Order|EventType.Quote|EventType.TimeAndSale|EventType.Trade,
 					listener);
 				Console.WriteLine("Press enter to stop");
 				s.AddSymbol("IBM.TEST");
@@ -39,18 +39,31 @@ namespace dxf_client {
 		}
 
 		public void OnOrder<TB, TE>(TB buf) where TB : IDxEventBuf<TE> where TE : IDxOrder {
-			
+			Console.WriteLine("Got orders for " + buf.Symbol);
+			foreach (var o in buf) {
+				Console.WriteLine(o);
+			}
 		}
 
 		public void OnProfile<TB, TE>(TB buf) where TB : IDxEventBuf<TE> where TE : IDxProfile {
 			Console.WriteLine("Got profile for " + buf.Symbol);
 			foreach (var p in buf) {
-				Console.WriteLine(p.Description);
+				Console.WriteLine(p);
+			}
+		}
+
+		public void OnFundamental<TB, TE>(TB buf) where TB : IDxEventBuf<TE> where TE : IDxFundamental {
+			Console.WriteLine("Got Fundamental for " + buf.Symbol);
+			foreach (var f in buf) {
+				Console.WriteLine(f);
 			}
 		}
 
 		public void OnTimeAndSale<TB, TE>(TB buf) where TB : IDxEventBuf<TE> where TE : IDxTimeAndSale {
-			
+			Console.WriteLine("Got T&S for " + buf.Symbol);
+			foreach (var ts in buf) {
+				Console.WriteLine(ts);
+			}
 		}
 
 		#endregion

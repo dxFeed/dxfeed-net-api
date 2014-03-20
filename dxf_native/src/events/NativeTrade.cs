@@ -1,4 +1,5 @@
-﻿using com.dxfeed.api;
+﻿using System.Globalization;
+using com.dxfeed.api;
 using com.dxfeed.native.api;
 
 namespace com.dxfeed.native.events {
@@ -10,7 +11,7 @@ namespace com.dxfeed.native.events {
 		}
 
 		public override string ToString() {
-			return string.Format("Time: {0}, ExchangeCode: {1}, Price: {2}, Size: {3}, DayVolume: {4}",
+			return string.Format(CultureInfo.InvariantCulture, "Trade {{Time: {0}, ExchangeCode: '{1}', Price: {2}, Size: {3}, DayVolume: {4}}}",
 				Time, ExchangeCode, Price, Size, DayVolume);
 		}
 

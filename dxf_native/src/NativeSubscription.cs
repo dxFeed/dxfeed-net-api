@@ -75,6 +75,14 @@ namespace com.dxfeed.native {
 			C.CheckOk(C.dxf_remove_symbols(subscriptionPtr, symbols, symbols.Length));
 		}
 
+		public void SetSymbols(params string[] symbols) {
+			C.CheckOk(C.dxf_set_symbols(subscriptionPtr, symbols, symbols.Length));
+		}
+
+		public void Clear() {
+			C.CheckOk(C.dxf_clear_symbols(subscriptionPtr));
+		}
+
 		public unsafe IList<string> GetSymbols() {
 			IntPtr head;
 			int len;

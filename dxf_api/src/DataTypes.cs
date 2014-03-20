@@ -1,8 +1,13 @@
 ﻿namespace com.dxfeed.api {
 
+	public enum Side : int {
+		Sell = 0,
+		Buy = 1
+	}
+
 	public interface IDxOrder {
 		long Index { get; }
-		int Side { get; }
+		Side Side { get; }
 		int Level { get; }
 		long Time { get; }
 		char ExchangeCode { get; }

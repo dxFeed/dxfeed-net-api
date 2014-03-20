@@ -1,4 +1,6 @@
-﻿using com.dxfeed.api;
+﻿using System;
+using System.Globalization;
+using com.dxfeed.api;
 using com.dxfeed.native.api;
 
 namespace com.dxfeed.native.events {
@@ -12,7 +14,7 @@ namespace com.dxfeed.native.events {
 		}
 
 		public override string ToString() {
-			return string.Format("Order: {{Index: {0}, Side: {1}, Level: {2}, Time: {3}, ExchangeCode: {4}, MarketMaker: {5}, Price: {6}, Size: {7}}}",
+			return string.Format(CultureInfo.InvariantCulture, "Order: {{{1} {7}@{6}, Index: {0:x4}, Level: {2}, Time: {3}, ExchangeCode: '{4}', MarketMaker: '{5}'}}",
 				Index, Side, Level, Time, ExchangeCode, MarketMaker, Price, Size);
 		}
 
@@ -22,7 +24,7 @@ namespace com.dxfeed.native.events {
 			get { return order.index; }
 		}
 
-		public int Side {
+		public Side Side {
 			get { return order.side; }
 		}
 

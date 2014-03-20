@@ -1,4 +1,5 @@
-﻿using com.dxfeed.api;
+﻿using System.Globalization;
+using com.dxfeed.api;
 using com.dxfeed.native.api;
 
 namespace com.dxfeed.native.events {
@@ -12,7 +13,7 @@ namespace com.dxfeed.native.events {
 		}
 
 		public override string ToString() {
-			return string.Format("Profile: {{Description: {0}}}", Description);
+			return string.Format(CultureInfo.InvariantCulture, "Profile: {{Description: '{0}'}}", Description);
 		}
 
 		#region Implementation of IDxProfile

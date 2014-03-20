@@ -13,7 +13,7 @@ namespace dxf_client {
 				con.Connect("demo.dxfeed.com:7300");
 				var s = con.CreateSubscription(
 					EventType.Fundamental|EventType.Profile|EventType.Order|EventType.Quote|EventType.TimeAndSale|EventType.Trade,
-					//EventType.Profile,
+					//EventType.Order,
 					listener);
 				Console.WriteLine("Press enter to stop");
 				s.AddSymbols("IBM.TEST", "MSFT.TEST");

@@ -1,4 +1,5 @@
-﻿using com.dxfeed.api;
+﻿using System.Globalization;
+using com.dxfeed.api;
 using com.dxfeed.native.api;
 
 namespace com.dxfeed.native.events {
@@ -10,7 +11,7 @@ namespace com.dxfeed.native.events {
 		}
 
 		public override string ToString() {
-			return string.Format("Fundamental: {{DayHighPrice: {0}, DayLowPrice: {1}, DayOpenPrice: {2}, PrevDayClosePrice: {3}, OpenInterest: {4} }}",
+			return string.Format(CultureInfo.InvariantCulture, "Fundamental: {{DayHighPrice: {0}, DayLowPrice: {1}, DayOpenPrice: {2}, PrevDayClosePrice: {3}, OpenInterest: {4} }}",
 				DayHighPrice, DayLowPrice, DayOpenPrice, PrevDayClosePrice, OpenInterest);
 		}
 

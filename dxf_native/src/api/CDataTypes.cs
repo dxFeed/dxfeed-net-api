@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using com.dxfeed.api;
 
 namespace com.dxfeed.native.api {
 
 	[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
 	internal struct DxOrder {
 		internal long index;
-		internal int side;
+		internal Side side;
 		internal int level;
 		internal long time;
 		internal char exchange_code;

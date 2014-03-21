@@ -1,22 +1,37 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using com.dxfeed.api;
 using com.dxfeed.native;
 
 namespace dxf_client {
 	class Program {
 		static void Main(string[] args) {
+			if (args.Length != 3) {
+				Console.WriteLine("Usage: dxf_client <host:port> <event> <symbol>\n" +
+				                  "where\n" +
+				                  "    host:port - address of dxfeed server (demo.dxfeed.com:7300)\n" +
+				                  "    event     - any of the {Profile,Order,Quote,Trade,TimeAndSale,Fundamental}\n" +
+				                  "    symbol    - IBM, MSFT, ...\n\n" +
+				                  "example: dxf_client demo.dxfeed.com:7300 quote,trade MSFT.TEST,IBM.TEST");
+				return;
+			}
+			
+			var address = args[0];
+			var symbols = args[2].Split(',');
+			EventType events;
+			if (!Enum.TryParse(args[1], true, out events)) {
+				Console.WriteLine("Unsupported event type: " + args[1]);
+				return;
+			}
+
+			Console.WriteLine(string.Format("Connecting to {0} for {1} on {2} ...", address, events, symbols));
+
+
 			var listener = new EventPrinter();
 			using(var con = new NativeConnection()) {
-				con.Connect("demo.dxfeed.com:7300");
-				var s = con.CreateSubscription(
-					EventType.Fundamental|EventType.Profile|EventType.Order|EventType.Quote|EventType.TimeAndSale|EventType.Trade,
-					//EventType.Order,
-					listener);
+				con.Connect(address);
+				var s = con.CreateSubscription(events, listener);
 				Console.WriteLine("Press enter to stop");
-				s.AddSymbols("IBM.TEST", "MSFT.TEST");
+				s.AddSymbols(symbols);
 				Console.ReadLine();
 			}
 		}
@@ -26,45 +41,33 @@ namespace dxf_client {
 		#region Implementation of IDxFeedListener
 
 		public void OnQuote<TB, TE>(TB buf) where TB : IDxEventBuf<TE> where TE : IDxQuote {
-			Console.WriteLine("Got quote buffer on " + buf.Symbol + " of size " + buf.Size);
-			foreach (var q in buf) {
-				Console.WriteLine(q);
-			}
+			foreach (var q in buf) 
+				Console.WriteLine(string.Format("{0} {1}", buf.Symbol, q));
 		}
 
 		public void OnTrade<TB, TE>(TB buf) where TB : IDxEventBuf<TE> where TE : IDxTrade {
-			Console.WriteLine("Got " + buf.Size + "trades for " + buf.Symbol);
-			foreach (var t in buf) {
-				Console.WriteLine(t);
-			}
+			foreach (var t in buf)
+				Console.WriteLine(string.Format("{0} {1}", buf.Symbol, t));
 		}
 
 		public void OnOrder<TB, TE>(TB buf) where TB : IDxEventBuf<TE> where TE : IDxOrder {
-			Console.WriteLine("Got orders for " + buf.Symbol);
-			foreach (var o in buf) {
-				Console.WriteLine(o);
-			}
+			foreach (var o in buf)
+				Console.WriteLine(string.Format("{0} {1}", buf.Symbol, o));
 		}
 
 		public void OnProfile<TB, TE>(TB buf) where TB : IDxEventBuf<TE> where TE : IDxProfile {
-			Console.WriteLine("Got profile for " + buf.Symbol);
-			foreach (var p in buf) {
-				Console.WriteLine(p);
-			}
+			foreach (var p in buf)
+				Console.WriteLine(string.Format("{0} {1}", buf.Symbol, p));
 		}
 
 		public void OnFundamental<TB, TE>(TB buf) where TB : IDxEventBuf<TE> where TE : IDxFundamental {
-			Console.WriteLine("Got Fundamental for " + buf.Symbol);
-			foreach (var f in buf) {
-				Console.WriteLine(f);
-			}
+			foreach (var f in buf)
+				Console.WriteLine(string.Format("{0} {1}", buf.Symbol, f));
 		}
 
 		public void OnTimeAndSale<TB, TE>(TB buf) where TB : IDxEventBuf<TE> where TE : IDxTimeAndSale {
-			Console.WriteLine("Got T&S for " + buf.Symbol);
-			foreach (var ts in buf) {
-				Console.WriteLine(ts);
-			}
+			foreach (var ts in buf)
+				Console.WriteLine(string.Format("{0} {1}", buf.Symbol, ts));
 		}
 
 		#endregion

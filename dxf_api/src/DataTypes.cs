@@ -1,4 +1,6 @@
-﻿namespace com.dxfeed.api {
+﻿using System;
+
+namespace com.dxfeed.api {
 
 	public enum Side : int {
 		Sell = 0,
@@ -9,7 +11,7 @@
 		long Index { get; }
 		Side Side { get; }
 		int Level { get; }
-		long Time { get; }
+		DateTime Time { get; }
 		char ExchangeCode { get; }
 		DxString MarketMaker { get; }
 		double Price { get; }
@@ -17,7 +19,7 @@
 	}
 
 	public interface IDxTrade {
-		long Time { get; }
+		DateTime Time { get; }
 		char ExchangeCode { get; }
 		double Price { get; }
 		long Size { get; }
@@ -25,11 +27,11 @@
 	}
 
 	public interface IDxQuote {
-		long BidTime { get; }
+		DateTime BidTime { get; }
 		char BidExchangeCode { get; }
 		double BidPrice { get; }
 		long BidSize { get; }
-		long AskTime { get; }
+		DateTime AskTime { get; }
 		char AskExchangeCode { get; }
 		double AskPrice { get; }
 		long AskSize { get; }
@@ -58,7 +60,7 @@
 
 	public interface IDxTimeAndSale {
 		long EventId { get; }
-		long Time { get; }
+		DateTime Time { get; }
 		char ExchangeCode { get; }
 		double Price { get; }
 		long Size { get; }

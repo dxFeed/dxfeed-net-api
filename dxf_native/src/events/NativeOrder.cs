@@ -14,7 +14,7 @@ namespace com.dxfeed.native.events {
 		}
 
 		public override string ToString() {
-			return string.Format(CultureInfo.InvariantCulture, "Order: {{{1} {7}@{6}, Index: {0:x4}, Level: {2}, Time: {3}, ExchangeCode: '{4}', MarketMaker: '{5}'}}",
+			return string.Format(CultureInfo.InvariantCulture, "Order: {{{1} {7}@{6}, Index: {0:x4}, Level: {2}, Time: {3:o}, ExchangeCode: '{4}', MarketMaker: '{5}'}}",
 				Index, Side, Level, Time, ExchangeCode, MarketMaker, Price, Size);
 		}
 
@@ -32,8 +32,8 @@ namespace com.dxfeed.native.events {
 			get { return order.level; }
 		}
 
-		public long Time {
-			get { return order.time; }
+		public DateTime Time {
+			get { return TimeConverter.ToDateTime(order.time); }
 		}
 
 		public char ExchangeCode {

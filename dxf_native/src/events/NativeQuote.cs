@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
 using com.dxfeed.api;
 using com.dxfeed.native.api;
 
@@ -11,14 +12,14 @@ namespace com.dxfeed.native.events {
 		}
 
 		public override string ToString() {
-			return string.Format(CultureInfo.InvariantCulture, "Quote: {{AskExchangeCode: '{0}', Ask: {2}@{1}, AskTime: {3}, BidExchangeCode: '{4}', Bid: {6}@{5}, BidTime: {7}",
+			return string.Format(CultureInfo.InvariantCulture, "Quote: {{AskExchangeCode: '{0}', Ask: {2}@{1}, AskTime: {3:o}, BidExchangeCode: '{4}', Bid: {6}@{5}, BidTime: {7:o} }}",
 				AskExchangeCode, AskPrice, AskSize, AskTime, BidExchangeCode, BidPrice, BidSize, BidTime);
 		}
 
 		#region Implementation of IDxQuote
 
-		public long BidTime {
-			get { return quote.bid_time; }
+		public DateTime BidTime {
+			get { return TimeConverter.ToDateTime(quote.bid_time); }
 		}
 
 		public char BidExchangeCode {
@@ -33,8 +34,8 @@ namespace com.dxfeed.native.events {
 			get { return quote.bid_size; }
 		}
 
-		public long AskTime {
-			get { return quote.ask_time; }
+		public DateTime AskTime {
+			get { return TimeConverter.ToDateTime(quote.ask_time); }
 		}
 
 		public char AskExchangeCode {

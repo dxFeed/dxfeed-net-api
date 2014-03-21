@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
 using com.dxfeed.api;
 using com.dxfeed.native.api;
 
@@ -13,7 +14,7 @@ namespace com.dxfeed.native.events {
 		}
 
 		public override string ToString() {
-			return string.Format(CultureInfo.InvariantCulture, "TimeAndSale: {{EventId: {0:x4}, Time: {1}, ExchangeCode: '{2}', Ask: {3}, Bid: {4}, ExchangeSaleConditions: '{5}', IsTrade: {6}, Price: {7}, Size: {8}, Type: {9}}}",
+			return string.Format(CultureInfo.InvariantCulture, "TimeAndSale: {{EventId: {0:x4}, Time: {1:o}, ExchangeCode: '{2}', Ask: {3}, Bid: {4}, ExchangeSaleConditions: '{5}', IsTrade: {6}, Price: {7}, Size: {8}, Type: {9}}}",
 				EventId, Time, ExchangeCode, AskPrice, BidPrice, ExchangeSaleConditions, IsTrade, Price, Size, Type);
 		}
 
@@ -23,8 +24,8 @@ namespace com.dxfeed.native.events {
 			get { return ts.event_id; }
 		}
 
-		public long Time {
-			get { return ts.time; }
+		public DateTime Time {
+			get { return TimeConverter.ToDateTime(ts.time); }
 		}
 
 		public char ExchangeCode {

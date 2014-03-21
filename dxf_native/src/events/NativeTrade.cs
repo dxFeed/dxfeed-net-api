@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
 using com.dxfeed.api;
 using com.dxfeed.native.api;
 
@@ -11,14 +12,14 @@ namespace com.dxfeed.native.events {
 		}
 
 		public override string ToString() {
-			return string.Format(CultureInfo.InvariantCulture, "Trade {{Time: {0}, ExchangeCode: '{1}', Price: {2}, Size: {3}, DayVolume: {4}}}",
+			return string.Format(CultureInfo.InvariantCulture, "Trade {{Time: {0:o}, ExchangeCode: '{1}', Price: {2}, Size: {3}, DayVolume: {4}}}",
 				Time, ExchangeCode, Price, Size, DayVolume);
 		}
 
 		#region Implementation of IDxTrade
 
-		public long Time {
-			get { return trade.time; }
+		public DateTime Time {
+			get { return TimeConverter.ToDateTime(trade.time); }
 		}
 
 		public char ExchangeCode {

@@ -45,6 +45,7 @@
     <Compile Include="src\api\C.cs" />
     <Compile Include="src\api\CDataTypes.cs" />
     <Compile Include="src\events\DxMarshal.cs" />
+    <Compile Include="src\events\NativeEventBuffer.cs" />
     <Compile Include="src\events\NativeFundamental.cs" />
     <Compile Include="src\events\NativeMarketMaker.cs" />
     <Compile Include="src\events\NativeOrder.cs" />
@@ -54,7 +55,6 @@
     <Compile Include="src\events\NativeTrade.cs" />
     <Compile Include="src\NativeConnection.cs" />
     <Compile Include="src\NativeDxException.cs" />
-    <Compile Include="src\NativeEventBuffer.cs" />
     <Compile Include="src\NativeSubscription.cs" />
   </ItemGroup>
   <ItemGroup />

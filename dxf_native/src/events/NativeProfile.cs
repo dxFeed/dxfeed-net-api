@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using com.dxfeed.api;
+using com.dxfeed.api.events;
 using com.dxfeed.native.api;
 
 namespace com.dxfeed.native.events {

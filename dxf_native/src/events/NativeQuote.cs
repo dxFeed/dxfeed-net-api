@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Globalization;
 using com.dxfeed.api;
+using com.dxfeed.api.events;
+using com.dxfeed.api.extras;
 using com.dxfeed.native.api;
 
 namespace com.dxfeed.native.events {
@@ -19,7 +21,7 @@ namespace com.dxfeed.native.events {
 		#region Implementation of IDxQuote
 
 		public DateTime BidTime {
-			get { return TimeConverter.ToDateTime(quote.bid_time); }
+			get { return TimeConverter.ToUtcDateTime(quote.bid_time); }
 		}
 
 		public char BidExchangeCode {
@@ -35,7 +37,7 @@ namespace com.dxfeed.native.events {
 		}
 
 		public DateTime AskTime {
-			get { return TimeConverter.ToDateTime(quote.ask_time); }
+			get { return TimeConverter.ToUtcDateTime(quote.ask_time); }
 		}
 
 		public char AskExchangeCode {

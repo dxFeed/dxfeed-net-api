@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Globalization;
 using com.dxfeed.api;
+using com.dxfeed.api.data;
+using com.dxfeed.api.events;
+using com.dxfeed.api.extras;
 using com.dxfeed.native.api;
 
 namespace com.dxfeed.native.events {
@@ -33,7 +36,7 @@ namespace com.dxfeed.native.events {
 		}
 
 		public DateTime Time {
-			get { return TimeConverter.ToDateTime(order.time); }
+			get { return TimeConverter.ToUtcDateTime(order.time); }
 		}
 
 		public char ExchangeCode {

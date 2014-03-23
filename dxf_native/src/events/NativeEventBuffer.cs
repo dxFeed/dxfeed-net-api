@@ -1,10 +1,10 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using com.dxfeed.api;
-using com.dxfeed.native.events;
+using com.dxfeed.api.data;
+using com.dxfeed.api.events;
 
-namespace com.dxfeed.native {
+namespace com.dxfeed.native.events {
 	public struct NativeEventBuffer<T> : IDxEventBuf<T> {
 		private readonly EventType type;
 		private readonly IntPtr head;

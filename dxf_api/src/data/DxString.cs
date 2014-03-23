@@ -1,12 +1,12 @@
-﻿using System;
+using System;
 
-namespace com.dxfeed.api {
+namespace com.dxfeed.api.data {
 
 	/// <summary>
 	/// Stack allocated string representation 
 	/// </summary>
 	public unsafe struct DxString : IEquatable<DxString> {
-		private const int SizeLimit = 10;
+		private const int SizeLimit = 15;
 		private fixed char chars[SizeLimit];
 		private string resolved;
 

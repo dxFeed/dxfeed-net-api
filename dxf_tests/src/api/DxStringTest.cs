@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using com.dxfeed.api.data;
 
 namespace com.dxfeed.api {
 

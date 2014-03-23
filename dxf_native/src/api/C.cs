@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using com.dxfeed.api;
+using com.dxfeed.api.events;
 
 namespace com.dxfeed.native.api {
 	internal class C {

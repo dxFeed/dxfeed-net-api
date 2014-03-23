@@ -52,7 +52,6 @@
     <Compile Include="src\events\NativeQuote.cs" />
     <Compile Include="src\events\NativeTimeAndSale.cs" />
     <Compile Include="src\events\NativeTrade.cs" />
-    <Compile Include="src\events\TimeConverter.cs" />
     <Compile Include="src\NativeConnection.cs" />
     <Compile Include="src\NativeDxException.cs" />
     <Compile Include="src\NativeEventBuffer.cs" />

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using com.dxfeed.api;
+using com.dxfeed.api.events;
 using com.dxfeed.native.api;
 using com.dxfeed.native.events;
 

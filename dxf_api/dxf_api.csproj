@@ -42,10 +42,21 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="src\DataTypes.cs" />
+    <Compile Include="src\data\DxString.cs" />
+    <Compile Include="src\data\Side.cs" />
     <Compile Include="src\DxException.cs" />
-    <Compile Include="src\DxString.cs" />
-    <Compile Include="src\Events.cs" />
+    <Compile Include="src\extras\EventPrinter.cs" />
+    <Compile Include="src\extras\TimeConverter.cs" />
+    <Compile Include="src\IDxFeedListener.cs" />
+    <Compile Include="src\events\EventType.cs" />
+    <Compile Include="src\events\IDxEventBuf.cs" />
+    <Compile Include="src\events\IDxFundamental.cs" />
+    <Compile Include="src\events\IDxMarketMaker.cs" />
+    <Compile Include="src\events\IDxOrder.cs" />
+    <Compile Include="src\events\IDxProfile.cs" />
+    <Compile Include="src\events\IDxQuote.cs" />
+    <Compile Include="src\events\IDxTimeAndSale.cs" />
+    <Compile Include="src\events\IDxTrade.cs" />
     <Compile Include="src\IDxConnection.cs" />
     <Compile Include="src\IDxSubscription.cs" />
   </ItemGroup>

@@ -6,7 +6,7 @@ namespace com.dxfeed.api.events {
 		None = 0,
 		Trade = 1,
 		Quote = 2,
-		Fundamental = 4,
+		Summary = 4,
 		Profile = 8,
 		Order = 16,
 		TimeAndSale = 32

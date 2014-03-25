@@ -9,7 +9,7 @@ namespace com.dxfeed.native.events {
 		private static readonly int QUOTE_SIZE;
 		private static readonly int ORDER_SIZE;
 		private static readonly int TRADE_SIZE;
-		private static readonly int FUNDAMENTAL_SIZE;
+		private static readonly int SUMMARY_SIZE;
 		private static readonly int PROFILE_SIZE;
 		private static readonly int MM_SIZE;
 		private static readonly int TS_SIZE;
@@ -18,7 +18,7 @@ namespace com.dxfeed.native.events {
 			QUOTE_SIZE = sizeof (DxQuote);
 			ORDER_SIZE = sizeof (DxOrder);
 			TRADE_SIZE = sizeof (DxTrade);
-			FUNDAMENTAL_SIZE = sizeof (DxFundamental);
+			SUMMARY_SIZE = sizeof (DxSummary);
 			PROFILE_SIZE = sizeof (DxProfile);
 			MM_SIZE = sizeof (DxMarketMaker);
 			TS_SIZE = sizeof (DxTimeAndSale);
@@ -40,8 +40,8 @@ namespace com.dxfeed.native.events {
 			return new NativeTrade((DxTrade*) IntPtr.Add(head, offset*TRADE_SIZE));
 		}
 
-		public static NativeFundamental ReadFundamental(IntPtr head, int offset) {
-			return new NativeFundamental((DxFundamental*)IntPtr.Add(head, offset * FUNDAMENTAL_SIZE));
+		public static NativeSummary ReadSummary(IntPtr head, int offset) {
+			return new NativeSummary((DxSummary*)IntPtr.Add(head, offset * SUMMARY_SIZE));
 		}
 
 		public static NativeProfile ReadProfile(IntPtr head, int offset) {

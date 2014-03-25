@@ -35,7 +35,7 @@ namespace com.dxfeed.api.extras {
 
 		public void OnFundamental<TB, TE>(TB buf)
 			where TB : IDxEventBuf<TE>
-			where TE : IDxFundamental {
+			where TE : IDxSummary {
 			foreach (var f in buf)
 				Console.WriteLine(string.Format("{0} {1}", buf.Symbol, f));
 		}

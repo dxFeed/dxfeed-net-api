@@ -21,7 +21,7 @@ namespace com.dxfeed.api {
 
 		void OnFundamental<TB, TE>(TB buf)
 			where TB : IDxEventBuf<TE>
-			where TE : IDxFundamental;
+			where TE : IDxSummary;
 
 		void OnTimeAndSale<TB, TE>(TB buf)
 			where TB : IDxEventBuf<TE>

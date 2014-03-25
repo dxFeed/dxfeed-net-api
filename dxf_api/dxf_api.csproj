@@ -50,7 +50,7 @@
     <Compile Include="src\IDxFeedListener.cs" />
     <Compile Include="src\events\EventType.cs" />
     <Compile Include="src\events\IDxEventBuf.cs" />
-    <Compile Include="src\events\IDxFundamental.cs" />
+    <Compile Include="src\events\IDxSummary.cs" />
     <Compile Include="src\events\IDxMarketMaker.cs" />
     <Compile Include="src\events\IDxOrder.cs" />
     <Compile Include="src\events\IDxProfile.cs" />

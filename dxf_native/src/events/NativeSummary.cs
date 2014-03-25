@@ -4,11 +4,11 @@ using com.dxfeed.api.events;
 using com.dxfeed.native.api;
 
 namespace com.dxfeed.native.events {
-	public struct NativeFundamental : IDxFundamental {
-		private readonly DxFundamental fundamental;
+	public struct NativeSummary : IDxSummary {
+		private readonly DxSummary summary;
 
-		internal unsafe NativeFundamental(DxFundamental* fundamental) {
-			this.fundamental = *fundamental;
+		internal unsafe NativeSummary(DxSummary* summary) {
+			this.summary = *summary;
 		}
 
 		public override string ToString() {
@@ -19,23 +19,23 @@ namespace com.dxfeed.native.events {
 		#region Implementation of IDxFundamental
 
 		public double DayHighPrice {
-			get { return fundamental.day_high_price; }
+			get { return summary.day_high_price; }
 		}
 
 		public double DayLowPrice {
-			get { return fundamental.day_low_price; }
+			get { return summary.day_low_price; }
 		}
 
 		public double DayOpenPrice {
-			get { return fundamental.day_open_price; }
+			get { return summary.day_open_price; }
 		}
 
 		public double PrevDayClosePrice {
-			get { return fundamental.prev_day_close_price; }
+			get { return summary.prev_day_close_price; }
 		}
 
 		public long OpenInterest {
-			get { return fundamental.open_interest; }
+			get { return summary.open_interest; }
 		}
 
 		#endregion

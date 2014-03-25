@@ -44,7 +44,7 @@ namespace com.dxfeed.native.api {
 	}
 
 	[StructLayout(LayoutKind.Sequential)]
-	internal struct DxFundamental {
+	internal struct DxSummary {
 		internal double day_high_price;
 		internal double day_low_price;
 		internal double day_open_price;

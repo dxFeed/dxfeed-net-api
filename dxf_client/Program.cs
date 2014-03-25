@@ -12,7 +12,7 @@ namespace dxf_client {
 					"Usage: dxf_client <host:port> <event> <symbol>\n" +
 					"where\n" +
 					"    host:port - address of dxfeed server (demo.dxfeed.com:7300)\n" +
-					"    event     - any of the {Profile,Order,Quote,Trade,TimeAndSale,Fundamental}\n" +
+					"    event     - any of the {Profile,Order,Quote,Trade,TimeAndSale,Summary}\n" +
 					"    symbol    - IBM, MSFT, ...\n\n" +
 					"example: dxf_client demo.dxfeed.com:7300 quote,trade MSFT.TEST,IBM.TEST"
 				);

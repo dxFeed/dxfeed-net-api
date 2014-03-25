@@ -59,7 +59,7 @@ namespace com.dxfeed.native.events {
 			get { return ts.is_trade; }
 		}
 
-		public int Type {
+		public TimeAndSaleType Type {
 			get { return ts.type; }
 		}
 

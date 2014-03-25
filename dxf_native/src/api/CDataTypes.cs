@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using com.dxfeed.api.data;
+using com.dxfeed.api.events;
 
 namespace com.dxfeed.native.api {
 
@@ -77,6 +78,6 @@ namespace com.dxfeed.native.api {
 		internal double ask_price;
 		internal IntPtr exchange_sale_conditions;
 		internal bool is_trade;
-		internal int type;
+		internal TimeAndSaleType type;
 	}
 }

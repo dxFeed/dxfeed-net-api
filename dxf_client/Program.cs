@@ -29,7 +29,7 @@ namespace dxf_client {
 
 			Console.WriteLine(string.Format("Connecting to {0} for [{1}] on [{2}] ...", address, events, string.Join(", ", symbols)));
 
-
+            // NativeTools.InitializeLogging("dxf_client.log", true, true);
 			var listener = new EventPrinter();
 			using (var con = new NativeConnection(address, OnDisconnect)) {
 				var s = con.CreateSubscription(events, listener);

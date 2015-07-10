@@ -48,6 +48,10 @@ namespace com.dxfeed.native {
 					var tsBuf = NativeBufferFactory.CreateTimeAndSaleBuf(symbol, data, dataCount);
 					listener.OnTimeAndSale<NativeEventBuffer<NativeTimeAndSale>, NativeTimeAndSale>(tsBuf);
 					break;
+                case EventType.Trade:
+                    var tBuf = NativeBufferFactory.CreateTradeBuf(symbol, data, dataCount);
+                    listener.OnTrade<NativeEventBuffer<NativeTrade>, NativeTrade>(tBuf);
+                    break;
 			}
 		}
 

@@ -21,11 +21,11 @@ namespace com.dxfeed.native {
 			connectionPtr = connection.Handler;
 			this.listener = listener;
 
-			C.CheckOk(C.dxf_create_subscription(connectionPtr, eventType, out subscriptionPtr));
+			C.CheckOk(C.Instance.dxf_create_subscription(connectionPtr, eventType, out subscriptionPtr));
 			try {
-				C.CheckOk(C.dxf_attach_event_listener(subscriptionPtr, callback = OnEvent, IntPtr.Zero));
+				C.CheckOk(C.Instance.dxf_attach_event_listener(subscriptionPtr, callback = OnEvent, IntPtr.Zero));
 			} catch (DxException) {
-				C.dxf_close_subscription(subscriptionPtr);
+				C.Instance.dxf_close_subscription(subscriptionPtr);
 				throw;
 			}
 		}
@@ -52,11 +52,15 @@ namespace com.dxfeed.native {
                     var tBuf = NativeBufferFactory.CreateTradeBuf(symbol, data, dataCount);
                     listener.OnTrade<NativeEventBuffer<NativeTrade>, NativeTrade>(tBuf);
                     break;
+                case EventType.Summary:
+                    var sBuf = NativeBufferFactory.CreateSummaryBuf(symbol, data, dataCount);
+                    listener.OnFundamental<NativeEventBuffer<NativeSummary>, NativeSummary>(sBuf);
+                    break;
 			}
 		}
 
 		public void AddSymbol(string symbol) {
-			C.CheckOk(C.dxf_add_symbol(subscriptionPtr, symbol));
+			C.CheckOk(C.Instance.dxf_add_symbol(subscriptionPtr, symbol));
 		}
 
 		#region Implementation of IDisposable
@@ -64,7 +68,7 @@ namespace com.dxfeed.native {
 		public void Dispose() {
 			if (subscriptionPtr == IntPtr.Zero) return;
 			
-			C.CheckOk(C.dxf_close_subscription(subscriptionPtr));
+			C.CheckOk(C.Instance.dxf_close_subscription(subscriptionPtr));
 			subscriptionPtr = IntPtr.Zero;
 		}
 
@@ -73,25 +77,25 @@ namespace com.dxfeed.native {
 		#region Implementation of IDxSubscription
 
 		public void AddSymbols(params string[] symbols) {
-			C.CheckOk(C.dxf_add_symbols(subscriptionPtr, symbols, symbols.Length));
+			C.CheckOk(C.Instance.dxf_add_symbols(subscriptionPtr, symbols, symbols.Length));
 		}
 
 		public void RemoveSymbols(params string[] symbols) {
-			C.CheckOk(C.dxf_remove_symbols(subscriptionPtr, symbols, symbols.Length));
+			C.CheckOk(C.Instance.dxf_remove_symbols(subscriptionPtr, symbols, symbols.Length));
 		}
 
 		public void SetSymbols(params string[] symbols) {
-			C.CheckOk(C.dxf_set_symbols(subscriptionPtr, symbols, symbols.Length));
+			C.CheckOk(C.Instance.dxf_set_symbols(subscriptionPtr, symbols, symbols.Length));
 		}
 
 		public void Clear() {
-			C.CheckOk(C.dxf_clear_symbols(subscriptionPtr));
+			C.CheckOk(C.Instance.dxf_clear_symbols(subscriptionPtr));
 		}
 
 		public unsafe IList<string> GetSymbols() {
 			IntPtr head;
 			int len;
-			C.CheckOk(C.dxf_get_symbols(subscriptionPtr, out head, out len));
+			C.CheckOk(C.Instance.dxf_get_symbols(subscriptionPtr, out head, out len));
 			
 			var result = new string[len];
 			for(var i = 0; i < len; i++) {

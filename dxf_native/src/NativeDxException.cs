@@ -10,7 +10,7 @@ namespace com.dxfeed.native {
 		public static NativeDxException Create() {
 			int error;
 			IntPtr desc;
-			C.dxf_get_last_error(out error, out desc);
+			C.Instance.dxf_get_last_error(out error, out desc);
 			var message = Marshal.PtrToStringUni(desc);
 			return new NativeDxException(error, message);
 		}

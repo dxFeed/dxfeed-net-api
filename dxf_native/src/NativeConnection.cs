@@ -16,7 +16,7 @@ namespace com.dxfeed.native {
 		public NativeConnection(String address, Action<IDxConnection> disconnectListener) {
 			callback = OnDisconnect;
 			this.disconnectListener = disconnectListener;
-			C.CheckOk(C.dxf_create_connection(address, callback, null, null, IntPtr.Zero, out handler));
+			C.CheckOk(C.Instance.dxf_create_connection(address, callback, null, null, IntPtr.Zero, out handler));
 		}
 
 		private void OnDisconnect(IntPtr connection, IntPtr userData) {
@@ -30,7 +30,7 @@ namespace com.dxfeed.native {
 			if (handler == IntPtr.Zero)
 				return;
 
-			C.CheckOk(C.dxf_close_connection(handler));
+			C.CheckOk(C.Instance.dxf_close_connection(handler));
 			handler = IntPtr.Zero;
 		}
 

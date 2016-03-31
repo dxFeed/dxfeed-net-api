@@ -1,17 +1,15 @@
-syntax: glob
-
 # ignore user settings
-**.user
+**/*.user
 
 # ignore binary solution file
-**.suo
+**/*.suo
 
 # ignore resharper folders
-re:_ReSharper\..*$
+_ReSharper.*
 
 # ignore bin & obj folders
-re:/bin/
-re:/obj/
+**/bin/**
+**/obj/**
 
 # ignore nuget repository
 packages/**

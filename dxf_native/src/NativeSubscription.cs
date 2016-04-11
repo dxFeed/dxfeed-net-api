@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System.Text;
 using com.dxfeed.api;
 using com.dxfeed.api.events;
 using com.dxfeed.native.api;
@@ -104,6 +105,26 @@ namespace com.dxfeed.native {
 			}
 
 			return result;
+		}
+
+		public void AddSource(params string[] sources) {
+			Encoding ascii = Encoding.ASCII;
+			for (int i = 0; i < sources.Length; i++) {
+				byte[] source = ascii.GetBytes(sources[i]);
+				C.CheckOk(C.Instance.dxf_add_order_source(subscriptionPtr, source));
+			}
+		}
+
+		public void SetSource(params string[] sources) {
+			if (sources.Length == 0)
+				return;
+			Encoding ascii = Encoding.ASCII;
+			byte[] source = ascii.GetBytes(sources[0]);
+			C.CheckOk(C.Instance.dxf_set_order_source(subscriptionPtr, source));
+			for (int i = 1; i < sources.Length; i++) {
+				source = ascii.GetBytes(sources[i]);
+				C.CheckOk(C.Instance.dxf_add_order_source(subscriptionPtr, source));
+			}
 		}
 
 		#endregion

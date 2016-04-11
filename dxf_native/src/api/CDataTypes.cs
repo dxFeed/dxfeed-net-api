@@ -6,7 +6,7 @@ using com.dxfeed.api.events;
 namespace com.dxfeed.native.api {
 
 	[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-	internal struct DxOrder {
+	internal unsafe struct DxOrder {
 		internal long index;
 		internal Side side;
 		internal int level;
@@ -15,6 +15,7 @@ namespace com.dxfeed.native.api {
 		internal IntPtr market_maker; //string
 		internal double price;
 		internal long size;
+		internal fixed char source[5]; //string
 	}
 
 	[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]

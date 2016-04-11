@@ -11,5 +11,6 @@ namespace com.dxfeed.api.events {
 		DxString MarketMaker { get; }
 		double Price { get; }
 		long Size { get; }
+		string Source { get; }
 	}
 }

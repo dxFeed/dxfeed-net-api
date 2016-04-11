@@ -7,7 +7,7 @@ using com.dxfeed.native;
 namespace dxf_client {
 	class Program {
 		static void Main(string[] args) {
-			if (args.Length < 3 && args.Length > 4) {
+			if (args.Length < 3 || args.Length > 4) {
 				Console.WriteLine(
 					"Usage: dxf_client <host:port> <event> <symbol> <source>\n" +
 					"where\n" +

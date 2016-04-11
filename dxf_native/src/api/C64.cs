@@ -159,18 +159,18 @@ namespace com.dxfeed.native.api {
             return __dxf_get_last_error(out error_code, out error_descr);
         }
 
-		[DllImport(DXFEED_DLL, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl, EntryPoint = "dxf_set_order_source")]
-		private static extern int __dxf_set_order_source(IntPtr subscription, byte[] source);
-		internal override int dxf_set_order_source(IntPtr subscription, byte[] source)
-		{
-			return __dxf_set_order_source(subscription, source);
-		}
+        [DllImport(DXFEED_DLL, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl, EntryPoint = "dxf_set_order_source")]
+        private static extern int __dxf_set_order_source(IntPtr subscription, byte[] source);
+        internal override int dxf_set_order_source(IntPtr subscription, byte[] source)
+        {
+            return __dxf_set_order_source(subscription, source);
+        }
 
-		[DllImport(DXFEED_DLL, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl, EntryPoint = "dxf_add_order_source")]
-		private static extern int __dxf_add_order_source(IntPtr subscription, byte[] source);
-		internal override int dxf_add_order_source(IntPtr subscription, byte[] source)
-		{
-			return __dxf_add_order_source(subscription, source);
-		}
+        [DllImport(DXFEED_DLL, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl, EntryPoint = "dxf_add_order_source")]
+        private static extern int __dxf_add_order_source(IntPtr subscription, byte[] source);
+        internal override int dxf_add_order_source(IntPtr subscription, byte[] source)
+        {
+            return __dxf_add_order_source(subscription, source);
+        }
     }
 }

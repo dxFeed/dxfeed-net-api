@@ -16,6 +16,7 @@ namespace com.dxfeed.native.api {
 		internal double price;
 		internal long size;
 		internal fixed char source[5]; //string
+		internal int count;
 	}
 
 	[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]

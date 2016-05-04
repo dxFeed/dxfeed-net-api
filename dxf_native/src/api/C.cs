@@ -48,7 +48,7 @@ namespace com.dxfeed.native.api
             if (returnCode != DX_OK)
                 throw NativeDxException.Create();
         }
-        
+
         /*
          *	Event listener prototype
          *
@@ -58,11 +58,11 @@ namespace com.dxfeed.native.api
         /* -------------------------------------------------------------------------- */
         /*
         typedef void (*dxf_event_listener_t) (int event_type, dxf_const_string_t symbol_name,
-                                                const dxf_event_data_t* data, int data_count,
-                                                void* user_data);
+                                                const dxf_event_data_t* data, dxf_event_flags_t flags,
+                                                int data_count, void* user_data);
         */
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        internal delegate void dxf_event_listener_t(EventType event_type, IntPtr symbol, IntPtr data, int data_count, IntPtr user_data);
+        internal delegate void dxf_event_listener_t(EventType event_type, IntPtr symbol, IntPtr data, EventFlag flags, int data_count, IntPtr user_data);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate void dxf_conn_termination_notifier_t(IntPtr connection, IntPtr user_data);

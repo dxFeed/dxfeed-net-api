@@ -65,6 +65,11 @@ namespace com.dxfeed.native.events {
 			get { return source; }
 		}
 
+		public int Count
+		{
+			get { return order.count; }
+		}
+
 		#endregion
 	}
 }

@@ -1,8 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
-MinimumVisualStudioVersion = 10.0.40219.1
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dxf_native", "dxf_native\dxf_native.csproj", "{D56EED21-EE2C-441C-B0D5-E85F10436CEA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dxf_api", "dxf_api\dxf_api.csproj", "{F0E087DF-6C09-42FF-90FF-A470B3391F76}"
@@ -19,42 +17,24 @@ EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
-		Debug|x86 = Debug|x86
 		Release|Any CPU = Release|Any CPU
-		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{D56EED21-EE2C-441C-B0D5-E85F10436CEA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D56EED21-EE2C-441C-B0D5-E85F10436CEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D56EED21-EE2C-441C-B0D5-E85F10436CEA}.Debug|x86.ActiveCfg = Debug|x86
-		{D56EED21-EE2C-441C-B0D5-E85F10436CEA}.Debug|x86.Build.0 = Debug|x86
 		{D56EED21-EE2C-441C-B0D5-E85F10436CEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D56EED21-EE2C-441C-B0D5-E85F10436CEA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D56EED21-EE2C-441C-B0D5-E85F10436CEA}.Release|x86.ActiveCfg = Release|x86
-		{D56EED21-EE2C-441C-B0D5-E85F10436CEA}.Release|x86.Build.0 = Release|x86
 		{F0E087DF-6C09-42FF-90FF-A470B3391F76}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F0E087DF-6C09-42FF-90FF-A470B3391F76}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F0E087DF-6C09-42FF-90FF-A470B3391F76}.Debug|x86.ActiveCfg = Debug|x86
-		{F0E087DF-6C09-42FF-90FF-A470B3391F76}.Debug|x86.Build.0 = Debug|x86
 		{F0E087DF-6C09-42FF-90FF-A470B3391F76}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F0E087DF-6C09-42FF-90FF-A470B3391F76}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F0E087DF-6C09-42FF-90FF-A470B3391F76}.Release|x86.ActiveCfg = Release|x86
-		{F0E087DF-6C09-42FF-90FF-A470B3391F76}.Release|x86.Build.0 = Release|x86
 		{4CEB9C5E-9D03-4383-BD96-5FD085AF3263}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4CEB9C5E-9D03-4383-BD96-5FD085AF3263}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4CEB9C5E-9D03-4383-BD96-5FD085AF3263}.Debug|x86.ActiveCfg = Debug|x86
-		{4CEB9C5E-9D03-4383-BD96-5FD085AF3263}.Debug|x86.Build.0 = Debug|x86
 		{4CEB9C5E-9D03-4383-BD96-5FD085AF3263}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4CEB9C5E-9D03-4383-BD96-5FD085AF3263}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4CEB9C5E-9D03-4383-BD96-5FD085AF3263}.Release|x86.ActiveCfg = Release|x86
-		{4CEB9C5E-9D03-4383-BD96-5FD085AF3263}.Release|x86.Build.0 = Release|x86
 		{45D91ED6-CB30-41F0-832C-04AFBCED76F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{45D91ED6-CB30-41F0-832C-04AFBCED76F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{45D91ED6-CB30-41F0-832C-04AFBCED76F1}.Debug|x86.ActiveCfg = Debug|x86
-		{45D91ED6-CB30-41F0-832C-04AFBCED76F1}.Debug|x86.Build.0 = Debug|x86
 		{45D91ED6-CB30-41F0-832C-04AFBCED76F1}.Release|Any CPU.ActiveCfg = Release|x86
-		{45D91ED6-CB30-41F0-832C-04AFBCED76F1}.Release|x86.ActiveCfg = Release|x86
-		{45D91ED6-CB30-41F0-832C-04AFBCED76F1}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

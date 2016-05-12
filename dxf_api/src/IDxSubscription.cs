@@ -8,5 +8,7 @@ namespace com.dxfeed.api {
 		void SetSymbols(params string[] symbols);
 		void Clear();
 		IList<string> GetSymbols();
+		void AddSource(params string[] sources);
+		void SetSource(params string[] sources);
 	}
 }

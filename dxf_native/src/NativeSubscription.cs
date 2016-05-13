@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System.Text;
 using com.dxfeed.api;
 using com.dxfeed.api.events;
 using com.dxfeed.native.api;
@@ -30,30 +31,32 @@ namespace com.dxfeed.native {
 			}
 		}
 
-		private void OnEvent(EventType eventType, IntPtr symbol, IntPtr data, int dataCount, IntPtr userData) {
+		private void OnEvent(EventType eventType, IntPtr symbol, IntPtr data, EventFlag flags, int dataCount, IntPtr userData) {
+			Console.WriteLine("Flags: {0}", flags);
+			//Console.Write("Flags:");
 			switch (eventType) {
 				case EventType.Order:
-					var orderBuf = NativeBufferFactory.CreateOrderBuf(symbol, data, dataCount);
+					var orderBuf = NativeBufferFactory.CreateOrderBuf(symbol, data, flags, dataCount);
 					listener.OnOrder<NativeEventBuffer<NativeOrder>, NativeOrder>(orderBuf);
 					break;
 				case EventType.Profile:
-					var profileBuf = NativeBufferFactory.CreateProfileBuf(symbol, data, dataCount);
+					var profileBuf = NativeBufferFactory.CreateProfileBuf(symbol, data, flags, dataCount);
 					listener.OnProfile<NativeEventBuffer<NativeProfile>, NativeProfile>(profileBuf);
 					break;
 				case EventType.Quote:
-					var quoteBuf = NativeBufferFactory.CreateQuoteBuf(symbol, data, dataCount);
+					var quoteBuf = NativeBufferFactory.CreateQuoteBuf(symbol, data, flags, dataCount);
 					listener.OnQuote<NativeEventBuffer<NativeQuote>, NativeQuote>(quoteBuf);
 					break;
 				case EventType.TimeAndSale:
-					var tsBuf = NativeBufferFactory.CreateTimeAndSaleBuf(symbol, data, dataCount);
+					var tsBuf = NativeBufferFactory.CreateTimeAndSaleBuf(symbol, data, flags, dataCount);
 					listener.OnTimeAndSale<NativeEventBuffer<NativeTimeAndSale>, NativeTimeAndSale>(tsBuf);
 					break;
                 case EventType.Trade:
-                    var tBuf = NativeBufferFactory.CreateTradeBuf(symbol, data, dataCount);
+                    var tBuf = NativeBufferFactory.CreateTradeBuf(symbol, data, flags, dataCount);
                     listener.OnTrade<NativeEventBuffer<NativeTrade>, NativeTrade>(tBuf);
                     break;
                 case EventType.Summary:
-                    var sBuf = NativeBufferFactory.CreateSummaryBuf(symbol, data, dataCount);
+                    var sBuf = NativeBufferFactory.CreateSummaryBuf(symbol, data, flags, dataCount);
                     listener.OnFundamental<NativeEventBuffer<NativeSummary>, NativeSummary>(sBuf);
                     break;
 			}
@@ -104,6 +107,26 @@ namespace com.dxfeed.native {
 			}
 
 			return result;
+		}
+
+		public void AddSource(params string[] sources) {
+			Encoding ascii = Encoding.ASCII;
+			for (int i = 0; i < sources.Length; i++) {
+				byte[] source = ascii.GetBytes(sources[i]);
+				C.CheckOk(C.Instance.dxf_add_order_source(subscriptionPtr, source));
+			}
+		}
+
+		public void SetSource(params string[] sources) {
+			if (sources.Length == 0)
+				return;
+			Encoding ascii = Encoding.ASCII;
+			byte[] source = ascii.GetBytes(sources[0]);
+			C.CheckOk(C.Instance.dxf_set_order_source(subscriptionPtr, source));
+			for (int i = 1; i < sources.Length; i++) {
+				source = ascii.GetBytes(sources[i]);
+				C.CheckOk(C.Instance.dxf_add_order_source(subscriptionPtr, source));
+			}
 		}
 
 		#endregion

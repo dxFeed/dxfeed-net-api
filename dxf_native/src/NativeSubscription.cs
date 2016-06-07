@@ -32,7 +32,7 @@ namespace com.dxfeed.native {
 		}
 
 		private void OnEvent(EventType eventType, IntPtr symbol, IntPtr data, EventFlag flags, int dataCount, IntPtr userData) {
-			Console.WriteLine("Flags: {0}", flags);
+			//Console.WriteLine("Flags: {0}", flags);
 			//Console.Write("Flags:");
 			switch (eventType) {
 				case EventType.Order:

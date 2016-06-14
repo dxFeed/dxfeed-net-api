@@ -41,6 +41,16 @@ namespace com.dxfeed.native {
 			return new NativeSubscription(this, type, listener);
 		}
 
+		public IDxSubscription CreateSnapshot(EventType type, int time, IDxFeedListener listener)
+		{
+			if (handler == IntPtr.Zero)
+				throw new NativeDxException("not connected");
+			if (type == EventType.None)
+				throw new ArgumentException("Invalid event type!");
+
+			return new NativeSnapshotSubscription(this, type, time, listener);
+		}
+
 		#endregion
 
 		#region Implementation of IDisposable

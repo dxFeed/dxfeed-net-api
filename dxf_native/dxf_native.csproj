@@ -82,6 +82,7 @@
     <Compile Include="src\events\NativeTrade.cs" />
     <Compile Include="src\NativeConnection.cs" />
     <Compile Include="src\NativeDxException.cs" />
+    <Compile Include="src\NativeSnapshotSubscription.cs" />
     <Compile Include="src\NativeSubscription.cs" />
     <Compile Include="src\NativeTools.cs" />
   </ItemGroup>

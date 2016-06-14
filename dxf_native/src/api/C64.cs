@@ -172,5 +172,37 @@ namespace com.dxfeed.native.api {
         {
             return __dxf_add_order_source(subscription, source);
         }
+
+        [DllImport(DXFEED_DLL, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl, EntryPoint = "dxf_create_snapshot")]
+        private static extern int __dxf_create_snapshot(IntPtr connection, int eventId, string symbol,
+                                                byte[] source, int time, out IntPtr snapshot);
+        internal override int dxf_create_snapshot(IntPtr connection, int eventId, string symbol,
+                                                byte[] source, int time, out IntPtr snapshot)
+        {
+            return __dxf_create_snapshot(connection, eventId, symbol, source, time, out snapshot);
+        }
+
+        [DllImport(DXFEED_DLL, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl, EntryPoint = "dxf_close_snapshot")]
+        private static extern int __dxf_close_snapshot(IntPtr snapshot);
+        internal override int dxf_close_snapshot(IntPtr snapshot)
+        {
+            return __dxf_close_snapshot(snapshot);
+        }
+
+        [DllImport(DXFEED_DLL, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl, EntryPoint = "dxf_attach_snapshot_listener")]
+        private static extern int __dxf_attach_snapshot_listener(IntPtr snapshot, dxf_snapshot_listener_t snapshotListener,
+                                                           IntPtr userData);
+        internal override int dxf_attach_snapshot_listener(IntPtr snapshot, dxf_snapshot_listener_t snapshotListener,
+                                                           IntPtr userData)
+        {
+            return __dxf_attach_snapshot_listener(snapshot, snapshotListener, userData);
+        }
+
+        [DllImport(DXFEED_DLL, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl, EntryPoint = "dxf_detach_snapshot_listener")]
+        private static extern int __dxf_detach_snapshot_listener(IntPtr snapshot, dxf_snapshot_listener_t snapshotListener);
+        internal override int dxf_detach_snapshot_listener(IntPtr snapshot, dxf_snapshot_listener_t snapshotListener)
+        {
+            return __dxf_detach_snapshot_listener(snapshot, snapshotListener);
+        }
     }
 }

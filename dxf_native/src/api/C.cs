@@ -77,6 +77,13 @@ namespace com.dxfeed.native.api
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate void dxf_socket_thread_destruction_notifier_t(IntPtr connection, IntPtr user_data);
 
+        /// <summary>
+        /// Snapshot listener prototype
+        /// </summary>
+        /// <param name="snapshotData">pointer to the received snapshot data</param>
+        /// <param name="userData">pointer to user struct, use NULL by default</param>
+        internal delegate void dxf_snapshot_listener_t(DxSnapshot snapshotData, IntPtr userData);
+
         /*
          *	Initializes the internal logger.
          *  Various actions and events, including the errors, are being logged throughout the library. They may be stored
@@ -304,5 +311,51 @@ namespace com.dxfeed.native.api
          *  source - source of order event to add, 4 symbols maximum length
          */
         internal abstract int dxf_add_order_source(IntPtr subscription, byte[] source);
+
+        /*
+         *  Creates Order or Candle snapshot with the specified parameters.
+         *
+         *  For Order events.
+         *  If source is NULL string subscription on Order event will be performed. You can specify order 
+         *  source for Order event by passing suffix: "BYX", "BZX", "DEA", "DEX", "ISE", "IST", "NTV".
+         *  If source is equal to "COMPOSITE_BID" or "COMPOSITE_ASK" subscription on MarketMaker event will 
+         *  be performed.
+         *
+         *  connection - a handle of a previously created connection which the subscription will be using
+         *  event_id - identifier of event (dx_eid_order or dx_eid_candle)
+         *  source - order source for Order event with 4 symbols maximum length OR keyword which can be 
+         *           one of COMPOSITE_BID or COMPOSITE_ASK
+         *  OUT snapshot - a handle of the created snapshot
+         */
+        internal abstract int dxf_create_snapshot(IntPtr connection, int eventId, string symbol,
+                                                byte[] source, int time, out IntPtr snapshot);
+        /*
+         *  Closes a snapshot.
+         *  All the data associated with it will be freed.
+         *
+         *  snapshot - a handle of the snapshot to close
+         */
+        internal abstract int dxf_close_snapshot(IntPtr snapshot);
+
+        /*
+         *  Attaches a listener callback to the snapshot.
+         *  This callback will be invoked when the new snapshot arrives or existing updates.
+         *  No error occurs if it's attempted to attach the same listener twice or more.
+         *
+         *  snapshot - a handle of the snapshot to which a listener is to be attached
+         *  snapshot_listener - a listener callback function pointer
+        */
+        internal abstract int dxf_attach_snapshot_listener(IntPtr snapshot, dxf_snapshot_listener_t snapshotListener,
+                                                           IntPtr userData);
+
+        /*
+         *  Detaches a listener from the snapshot.
+         *  No error occurs if it's attempted to detach a listener which wasn't previously attached.
+         *
+         *  snapshot - a handle of the snapshot to which a listener is to be detached
+         *  snapshot_listener - a listener callback function pointer
+         */
+        internal abstract int dxf_detach_snapshot_listener(IntPtr snapshot, dxf_snapshot_listener_t snapshotListener);
+
     }
 }

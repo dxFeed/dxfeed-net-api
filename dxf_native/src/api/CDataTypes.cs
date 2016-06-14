@@ -82,4 +82,16 @@ namespace com.dxfeed.native.api {
 		internal bool is_trade;
 		internal TimeAndSaleType type;
 	}
+
+	[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+	internal struct DxSnapshot
+	{
+		internal int recordInfoId;
+		internal int eventId;
+		internal int eventType;
+		internal IntPtr symbol;
+
+		internal int records_count;
+		internal IntPtr records;
+	}
 }

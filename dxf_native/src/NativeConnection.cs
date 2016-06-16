@@ -41,7 +41,7 @@ namespace com.dxfeed.native {
 			return new NativeSubscription(this, type, listener);
 		}
 
-		public IDxSubscription CreateSnapshot(EventType type, int time, IDxFeedListener listener)
+		public IDxSubscription CreateSnapshot(EventType type, int time, IDxSnapshotListener listener)
 		{
 			if (handler == IntPtr.Zero)
 				throw new NativeDxException("not connected");

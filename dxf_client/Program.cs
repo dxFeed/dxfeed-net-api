@@ -1,10 +1,42 @@
 ﻿using System;
+using System.Globalization;
 using com.dxfeed.api;
 using com.dxfeed.api.events;
 using com.dxfeed.api.extras;
 using com.dxfeed.native;
 
 namespace dxf_client {
+
+	public class SnapshotPrinter : IDxSnapshotListener {
+
+		private const int RECORDS_PRINT_LIMIT = 7;
+
+		#region Implementation of IDxSnapshotListener
+
+		public void OnOrderSnapshot<TB, TE>(TB buf)
+			where TB : IDxEventBuf<TE>
+			where TE : IDxOrder {
+			Console.WriteLine(string.Format(CultureInfo.InvariantCulture, "Snapshot {0} {{Symbol: '{1}', RecordsCount: {2}}}",
+				buf.EventType, buf.Symbol, buf.Size));
+			int count = 0;
+			foreach (var o in buf) {
+				Console.WriteLine(string.Format("   {{ {0} }}", o));
+				if (++count >= RECORDS_PRINT_LIMIT) {
+					Console.WriteLine(string.Format("   {{ ... {0} records left ...}}", buf.Size - count));
+					break;
+				}
+			}
+		}
+
+		public void OnCandleSnapshot<TB, TE>(TB buf)
+			where TB : IDxEventBuf<TE>
+			where TE : IDxOrder {
+
+		}
+
+		#endregion
+	}
+
 	class Program {
 
 		static bool TryParseSnapshotParam(string param, out bool isSnapshot) {
@@ -54,7 +86,7 @@ namespace dxf_client {
             // NativeTools.InitializeLogging("dxf_client.log", true, true);
 			var listener = new EventPrinter();
 			using (var con = new NativeConnection(address, OnDisconnect)) {
-				var s = isSnapshot ? con.CreateSnapshot(events, 0, listener) : con.CreateSubscription(events, listener);
+				var s = isSnapshot ? con.CreateSnapshot(events, 0, new SnapshotPrinter()) : con.CreateSubscription(events, listener);
 				if (sources.Length > 0) {
 					s.SetSource(sources);
 				}

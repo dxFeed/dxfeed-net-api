@@ -31,30 +31,30 @@ namespace com.dxfeed.native {
 			}
 		}
 
-		private void OnEvent(EventType eventType, IntPtr symbol, IntPtr data, EventFlag flags, int dataCount, IntPtr userData) {
+		private void OnEvent(EventType eventType, IntPtr symbol, IntPtr data, int dataCount, DxEventParams eventParams, IntPtr userData) {
 			switch (eventType) {
 				case EventType.Order:
-					var orderBuf = NativeBufferFactory.CreateOrderBuf(symbol, data, flags, dataCount);
+					var orderBuf = NativeBufferFactory.CreateOrderBuf(symbol, data, eventParams.flags, dataCount);
 					listener.OnOrder<NativeEventBuffer<NativeOrder>, NativeOrder>(orderBuf);
 					break;
 				case EventType.Profile:
-					var profileBuf = NativeBufferFactory.CreateProfileBuf(symbol, data, flags, dataCount);
+					var profileBuf = NativeBufferFactory.CreateProfileBuf(symbol, data, eventParams.flags, dataCount);
 					listener.OnProfile<NativeEventBuffer<NativeProfile>, NativeProfile>(profileBuf);
 					break;
 				case EventType.Quote:
-					var quoteBuf = NativeBufferFactory.CreateQuoteBuf(symbol, data, flags, dataCount);
+					var quoteBuf = NativeBufferFactory.CreateQuoteBuf(symbol, data, eventParams.flags, dataCount);
 					listener.OnQuote<NativeEventBuffer<NativeQuote>, NativeQuote>(quoteBuf);
 					break;
 				case EventType.TimeAndSale:
-					var tsBuf = NativeBufferFactory.CreateTimeAndSaleBuf(symbol, data, flags, dataCount);
+					var tsBuf = NativeBufferFactory.CreateTimeAndSaleBuf(symbol, data, eventParams.flags, dataCount);
 					listener.OnTimeAndSale<NativeEventBuffer<NativeTimeAndSale>, NativeTimeAndSale>(tsBuf);
 					break;
                 case EventType.Trade:
-                    var tBuf = NativeBufferFactory.CreateTradeBuf(symbol, data, flags, dataCount);
+					var tBuf = NativeBufferFactory.CreateTradeBuf(symbol, data, eventParams.flags, dataCount);
                     listener.OnTrade<NativeEventBuffer<NativeTrade>, NativeTrade>(tBuf);
                     break;
                 case EventType.Summary:
-                    var sBuf = NativeBufferFactory.CreateSummaryBuf(symbol, data, flags, dataCount);
+					var sBuf = NativeBufferFactory.CreateSummaryBuf(symbol, data, eventParams.flags, dataCount);
                     listener.OnFundamental<NativeEventBuffer<NativeSummary>, NativeSummary>(sBuf);
                     break;
 			}

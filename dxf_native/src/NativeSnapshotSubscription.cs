@@ -12,17 +12,18 @@ namespace com.dxfeed.native
 	{
 		private readonly IntPtr connectionPtr;
 		private IntPtr snapshotPtr = NativeSnapshotSubscription.InvalidSnapshot;
-		private readonly IDxFeedListener listener;
+		private readonly IDxSnapshotListener listener;
 		//to prevent callback from being garbage collected
 		private C.dxf_snapshot_listener_t callback;
 		private readonly int eventId;
 		private int time = 0;
 		private string symbol = string.Empty;
 		private string source = string.Empty;
+		private const EventFlag emptyFlags = 0;
 
 		public static IntPtr InvalidSnapshot = IntPtr.Zero;
 
-		public NativeSnapshotSubscription(NativeConnection connection, EventType eventType, int time, IDxFeedListener listener)
+		public NativeSnapshotSubscription(NativeConnection connection, EventType eventType, int time, IDxSnapshotListener listener)
 		{
 			//TODO: add candle
 			if (eventType != EventType.Order) {
@@ -42,35 +43,16 @@ namespace com.dxfeed.native
 			this.eventId = eventId;
 		}
 
-		private void OnEvent(DxSnapshot snapshotData, IntPtr userData)
+		private void OnEvent(DxSnapshotData snapshotData, IntPtr userData)
 		{
-			int a = snapshotData.eventType;
-			//switch (eventType) {
-			//	case EventType.Order:
-			//		var orderBuf = NativeBufferFactory.CreateOrderBuf(symbol, data, flags, dataCount);
-			//		listener.OnOrder<NativeEventBuffer<NativeOrder>, NativeOrder>(orderBuf);
-			//		break;
-			//	case EventType.Profile:
-			//		var profileBuf = NativeBufferFactory.CreateProfileBuf(symbol, data, flags, dataCount);
-			//		listener.OnProfile<NativeEventBuffer<NativeProfile>, NativeProfile>(profileBuf);
-			//		break;
-			//	case EventType.Quote:
-			//		var quoteBuf = NativeBufferFactory.CreateQuoteBuf(symbol, data, flags, dataCount);
-			//		listener.OnQuote<NativeEventBuffer<NativeQuote>, NativeQuote>(quoteBuf);
-			//		break;
-			//	case EventType.TimeAndSale:
-			//		var tsBuf = NativeBufferFactory.CreateTimeAndSaleBuf(symbol, data, flags, dataCount);
-			//		listener.OnTimeAndSale<NativeEventBuffer<NativeTimeAndSale>, NativeTimeAndSale>(tsBuf);
-			//		break;
-			//	case EventType.Trade:
-			//		var tBuf = NativeBufferFactory.CreateTradeBuf(symbol, data, flags, dataCount);
-			//		listener.OnTrade<NativeEventBuffer<NativeTrade>, NativeTrade>(tBuf);
-			//		break;
-			//	case EventType.Summary:
-			//		var sBuf = NativeBufferFactory.CreateSummaryBuf(symbol, data, flags, dataCount);
-			//		listener.OnFundamental<NativeEventBuffer<NativeSummary>, NativeSummary>(sBuf);
-			//		break;
-			//}
+			switch (snapshotData.event_type)
+			{
+					//TODO: add candle
+				case EventType.Order:
+					var orderBuf = NativeBufferFactory.CreateOrderBuf(snapshotData.symbol, snapshotData.records, emptyFlags, snapshotData.records_count);
+					listener.OnOrderSnapshot<NativeEventBuffer<NativeOrder>, NativeOrder>(orderBuf);
+					break;
+			}
 		}
 
 		private void CreateSnapshot()

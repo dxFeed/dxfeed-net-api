@@ -57,12 +57,12 @@ namespace com.dxfeed.native.api
          */
         /* -------------------------------------------------------------------------- */
         /*
-        typedef void (*dxf_event_listener_t) (int event_type, dxf_const_string_t symbol_name,
-                                                const dxf_event_data_t* data, dxf_event_flags_t flags,
-                                                int data_count, void* user_data);
+            typedef void (*dxf_event_listener_t) (int event_type, dxf_const_string_t symbol_name,
+                                                  const dxf_event_data_t* data, int data_count, 
+                                                  const dxf_event_params_t* event_params, void* user_data);
         */
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        internal delegate void dxf_event_listener_t(EventType event_type, IntPtr symbol, IntPtr data, EventFlag flags, int data_count, IntPtr user_data);
+        internal delegate void dxf_event_listener_t(EventType event_type, IntPtr symbol, IntPtr data, int data_count, DxEventParams event_params, IntPtr user_data);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate void dxf_conn_termination_notifier_t(IntPtr connection, IntPtr user_data);
@@ -82,7 +82,7 @@ namespace com.dxfeed.native.api
         /// </summary>
         /// <param name="snapshotData">pointer to the received snapshot data</param>
         /// <param name="userData">pointer to user struct, use NULL by default</param>
-        internal delegate void dxf_snapshot_listener_t(DxSnapshot snapshotData, IntPtr userData);
+        internal delegate void dxf_snapshot_listener_t(DxSnapshotData snapshotData, IntPtr userData);
 
         /*
          *	Initializes the internal logger.

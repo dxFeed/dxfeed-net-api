@@ -84,11 +84,19 @@ namespace com.dxfeed.native.api {
 	}
 
 	[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-	internal struct DxSnapshot
+	internal struct DxEventParams
 	{
-		internal int recordInfoId;
-		internal int eventId;
-		internal int eventType;
+		internal EventFlag flags;
+		internal UInt64 time_int_field;
+		internal UInt64 snapshot_key;
+	}
+
+	[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+	internal struct DxSnapshotData
+	{
+		internal int record_info_id;
+		internal int event_id;
+		internal EventType event_type;
 		internal IntPtr symbol;
 
 		internal int records_count;

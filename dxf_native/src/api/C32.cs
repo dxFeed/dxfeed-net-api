@@ -123,15 +123,32 @@ namespace com.dxfeed.native.api {
                                                              IntPtr user_data);
         internal override int dxf_attach_event_listener(IntPtr subscription, dxf_event_listener_t event_listener,
                                                              IntPtr user_data)
-	{
-		return __dxf_attach_event_listener(subscription, event_listener, user_data);
-	}
+        {
+            return __dxf_attach_event_listener(subscription, event_listener, user_data);
+        }
 
         [DllImport(DXFEED_DLL, CallingConvention = CallingConvention.Cdecl, EntryPoint="dxf_detach_event_listener")]
         private static extern int __dxf_detach_event_listener(IntPtr subscription, dxf_event_listener_t listener);
         internal override int dxf_detach_event_listener(IntPtr subscription, dxf_event_listener_t listener)
         {
         	return __dxf_detach_event_listener(subscription, listener);
+        }
+
+
+        [DllImport(DXFEED_DLL, CallingConvention = CallingConvention.Cdecl, EntryPoint = "dxf_attach_event_listener_v2")]
+        private static extern int __dxf_attach_event_listener_v2(IntPtr subscription, dxf_event_listener_v2_t event_listener,
+                                                             IntPtr user_data);
+        internal override int dxf_attach_event_listener_v2(IntPtr subscription, dxf_event_listener_v2_t event_listener,
+                                                             IntPtr user_data)
+        {
+            return __dxf_attach_event_listener_v2(subscription, event_listener, user_data);
+        }
+
+        [DllImport(DXFEED_DLL, CallingConvention = CallingConvention.Cdecl, EntryPoint = "dxf_detach_event_listener_v2")]
+        private static extern int __dxf_detach_event_listener_v2(IntPtr subscription, dxf_event_listener_v2_t listener);
+        internal override int dxf_detach_event_listener_v2(IntPtr subscription, dxf_event_listener_v2_t listener)
+        {
+            return __dxf_detach_event_listener_v2(subscription, listener);
         }
 
 

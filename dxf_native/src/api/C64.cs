@@ -136,6 +136,23 @@ namespace com.dxfeed.native.api {
         }
 
 
+        [DllImport(DXFEED_DLL, CallingConvention = CallingConvention.Cdecl, EntryPoint = "dxf_attach_event_listener_v2")]
+        private static extern int __dxf_attach_event_listener_v2(IntPtr subscription, dxf_event_listener_v2_t event_listener,
+                                                             IntPtr user_data);
+        internal override int dxf_attach_event_listener_v2(IntPtr subscription, dxf_event_listener_v2_t event_listener,
+                                                             IntPtr user_data)
+        {
+            return __dxf_attach_event_listener_v2(subscription, event_listener, user_data);
+        }
+
+        [DllImport(DXFEED_DLL, CallingConvention = CallingConvention.Cdecl, EntryPoint = "dxf_detach_event_listener_v2")]
+        private static extern int __dxf_detach_event_listener_v2(IntPtr subscription, dxf_event_listener_v2_t listener);
+        internal override int dxf_detach_event_listener_v2(IntPtr subscription, dxf_event_listener_v2_t listener)
+        {
+            return __dxf_detach_event_listener_v2(subscription, listener);
+        }
+
+
         [DllImport(DXFEED_DLL, CallingConvention = CallingConvention.Cdecl, EntryPoint = "dxf_get_subscription_event_types")]
         private static extern int __dxf_get_subscription_event_types(IntPtr subscription, out int event_types);
         internal override int dxf_get_subscription_event_types(IntPtr subscription, out int event_types)

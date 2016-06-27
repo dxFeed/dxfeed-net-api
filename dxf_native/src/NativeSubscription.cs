@@ -13,7 +13,7 @@ namespace com.dxfeed.native {
 		private IntPtr subscriptionPtr;
 		private readonly IDxFeedListener listener;
 		//to prevent callback from being garbage collected
-		private readonly C.dxf_event_listener_t callback;
+		private readonly C.dxf_event_listener_v2_t callback;
 
 		public NativeSubscription(NativeConnection connection, EventType eventType, IDxFeedListener listener) {
 			if (listener == null)
@@ -24,39 +24,41 @@ namespace com.dxfeed.native {
 
 			C.CheckOk(C.Instance.dxf_create_subscription(connectionPtr, eventType, out subscriptionPtr));
 			try {
-				C.CheckOk(C.Instance.dxf_attach_event_listener(subscriptionPtr, callback = OnEvent, IntPtr.Zero));
+				C.CheckOk(C.Instance.dxf_attach_event_listener_v2(subscriptionPtr, callback = OnEvent, IntPtr.Zero));
 			} catch (DxException) {
 				C.Instance.dxf_close_subscription(subscriptionPtr);
 				throw;
 			}
 		}
 
-		private void OnEvent(EventType eventType, IntPtr symbol, IntPtr data, int dataCount, DxEventParams eventParams, IntPtr userData) {
+		private void OnEvent(EventType eventType, IntPtr symbol, IntPtr data, int dataCount, DxEventParams event_params, IntPtr userData)
+		{
+			EventParams nativeEventParams = new EventParams(event_params.flags, event_params.time_int_field, event_params.snapshot_key);
 			switch (eventType) {
 				case EventType.Order:
-					var orderBuf = NativeBufferFactory.CreateOrderBuf(symbol, data, eventParams.flags, dataCount);
+					var orderBuf = NativeBufferFactory.CreateOrderBuf(symbol, data, dataCount, nativeEventParams);
 					listener.OnOrder<NativeEventBuffer<NativeOrder>, NativeOrder>(orderBuf);
 					break;
 				case EventType.Profile:
-					var profileBuf = NativeBufferFactory.CreateProfileBuf(symbol, data, eventParams.flags, dataCount);
+					var profileBuf = NativeBufferFactory.CreateProfileBuf(symbol, data, dataCount, nativeEventParams);
 					listener.OnProfile<NativeEventBuffer<NativeProfile>, NativeProfile>(profileBuf);
 					break;
 				case EventType.Quote:
-					var quoteBuf = NativeBufferFactory.CreateQuoteBuf(symbol, data, eventParams.flags, dataCount);
+					var quoteBuf = NativeBufferFactory.CreateQuoteBuf(symbol, data, dataCount, nativeEventParams);
 					listener.OnQuote<NativeEventBuffer<NativeQuote>, NativeQuote>(quoteBuf);
 					break;
 				case EventType.TimeAndSale:
-					var tsBuf = NativeBufferFactory.CreateTimeAndSaleBuf(symbol, data, eventParams.flags, dataCount);
+					var tsBuf = NativeBufferFactory.CreateTimeAndSaleBuf(symbol, data, dataCount, nativeEventParams);
 					listener.OnTimeAndSale<NativeEventBuffer<NativeTimeAndSale>, NativeTimeAndSale>(tsBuf);
 					break;
-                case EventType.Trade:
-					var tBuf = NativeBufferFactory.CreateTradeBuf(symbol, data, eventParams.flags, dataCount);
-                    listener.OnTrade<NativeEventBuffer<NativeTrade>, NativeTrade>(tBuf);
-                    break;
-                case EventType.Summary:
-					var sBuf = NativeBufferFactory.CreateSummaryBuf(symbol, data, eventParams.flags, dataCount);
-                    listener.OnFundamental<NativeEventBuffer<NativeSummary>, NativeSummary>(sBuf);
-                    break;
+				case EventType.Trade:
+					var tBuf = NativeBufferFactory.CreateTradeBuf(symbol, data, dataCount, nativeEventParams);
+					listener.OnTrade<NativeEventBuffer<NativeTrade>, NativeTrade>(tBuf);
+					break;
+				case EventType.Summary:
+					var sBuf = NativeBufferFactory.CreateSummaryBuf(symbol, data, dataCount, nativeEventParams);
+					listener.OnFundamental<NativeEventBuffer<NativeSummary>, NativeSummary>(sBuf);
+					break;
 			}
 		}
 

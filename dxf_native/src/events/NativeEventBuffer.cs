@@ -11,15 +11,15 @@ namespace com.dxfeed.native.events {
 		private readonly int size;
 		private readonly Func<IntPtr, int, T> readEvent;
 		private readonly DxString symbol;
-		private readonly EventFlag flags;
+		private readonly EventParams eventParams;
 
-		internal unsafe NativeEventBuffer(EventType type, IntPtr symbol, IntPtr head, EventFlag flags, int size, Func<IntPtr, int, T> readEvent) {
+		internal unsafe NativeEventBuffer(EventType type, IntPtr symbol, IntPtr head, int size, EventParams eventParams, Func<IntPtr, int, T> readEvent) {
 			this.type = type;
 			this.head = head;
-			this.flags = flags;
 			this.size = size;
 			this.readEvent = readEvent;
 			this.symbol = new DxString((char*)symbol.ToPointer());
+			this.eventParams = eventParams;
 		}
 
 		#region Implementation of IEnumerable
@@ -97,16 +97,16 @@ namespace com.dxfeed.native.events {
 			get { return type; }
 		}
 
-		public EventFlag EventFlags {
-			get { return flags; }
-		}
-
 		public DxString Symbol {
 			get { return symbol; }
 		}
 
 		public int Size {
 			get { return size; }
+		}
+
+		public EventParams EventParams {
+			get { return eventParams; }
 		}
 
 		#endregion
@@ -121,28 +121,28 @@ namespace com.dxfeed.native.events {
 		private static readonly Func<IntPtr, int, NativeSummary> SUMMARY_READER = DxMarshal.ReadSummary;
 		
 		
-		public static NativeEventBuffer<NativeQuote> CreateQuoteBuf(IntPtr symbol, IntPtr head, EventFlag flags, int size) {
-			return new NativeEventBuffer<NativeQuote>(EventType.Quote, symbol, head, flags, size, QUOTE_READER);
+		public static NativeEventBuffer<NativeQuote> CreateQuoteBuf(IntPtr symbol, IntPtr head, int size, EventParams eventParams) {
+			return new NativeEventBuffer<NativeQuote>(EventType.Quote, symbol, head, size, eventParams, QUOTE_READER);
 		}
 
-		public static NativeEventBuffer<NativeTrade> CreateTradeBuf(IntPtr symbol, IntPtr head, EventFlag flags, int size) {
-			return new NativeEventBuffer<NativeTrade>(EventType.Trade, symbol, head, flags, size, TRADE_READER);
+		public static NativeEventBuffer<NativeTrade> CreateTradeBuf(IntPtr symbol, IntPtr head, int size, EventParams eventParams) {
+			return new NativeEventBuffer<NativeTrade>(EventType.Trade, symbol, head, size, eventParams, TRADE_READER);
 		}
 
-		public static NativeEventBuffer<NativeOrder> CreateOrderBuf(IntPtr symbol, IntPtr head, EventFlag flags, int size) {
-			return new NativeEventBuffer<NativeOrder>(EventType.Order, symbol, head, flags, size, ORDER_READER);
+		public static NativeEventBuffer<NativeOrder> CreateOrderBuf(IntPtr symbol, IntPtr head, int size, EventParams eventParams) {
+			return new NativeEventBuffer<NativeOrder>(EventType.Order, symbol, head, size, eventParams, ORDER_READER);
 		}
 
-		public static NativeEventBuffer<NativeProfile> CreateProfileBuf(IntPtr symbol, IntPtr head, EventFlag flags, int size) {
-			return new NativeEventBuffer<NativeProfile>(EventType.Profile, symbol, head, flags, size, PROFILE_READER);
+		public static NativeEventBuffer<NativeProfile> CreateProfileBuf(IntPtr symbol, IntPtr head, int size, EventParams eventParams) {
+			return new NativeEventBuffer<NativeProfile>(EventType.Profile, symbol, head, size, eventParams, PROFILE_READER);
 		}
 
-		public static NativeEventBuffer<NativeTimeAndSale> CreateTimeAndSaleBuf(IntPtr symbol, IntPtr head, EventFlag flags, int size) {
-			return new NativeEventBuffer<NativeTimeAndSale>(EventType.TimeAndSale, symbol, head, flags, size, TS_READER);
+		public static NativeEventBuffer<NativeTimeAndSale> CreateTimeAndSaleBuf(IntPtr symbol, IntPtr head, int size, EventParams eventParams) {
+			return new NativeEventBuffer<NativeTimeAndSale>(EventType.TimeAndSale, symbol, head, size, eventParams, TS_READER);
 		}
 
-		public static NativeEventBuffer<NativeSummary> CreateSummaryBuf(IntPtr symbol, IntPtr head, EventFlag flags, int size) {
-			return new NativeEventBuffer<NativeSummary>(EventType.Summary, symbol, head, flags, size, SUMMARY_READER);
+		public static NativeEventBuffer<NativeSummary> CreateSummaryBuf(IntPtr symbol, IntPtr head, int size, EventParams eventParams) {
+			return new NativeEventBuffer<NativeSummary>(EventType.Summary, symbol, head, size, eventParams, SUMMARY_READER);
 		}
 	}
 }

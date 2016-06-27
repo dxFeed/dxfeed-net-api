@@ -57,12 +57,21 @@ namespace com.dxfeed.native.api
          */
         /* -------------------------------------------------------------------------- */
         /*
+         * typedef void (*dxf_event_listener_t) (int event_type, dxf_const_string_t symbol_name,
+                                                 const dxf_event_data_t* data, int data_count,
+                                                 void* user_data);
+         */
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        internal delegate void dxf_event_listener_t(EventType event_type, IntPtr symbol, IntPtr data, int data_count, IntPtr user_data);
+
+        /*
             typedef void (*dxf_event_listener_t) (int event_type, dxf_const_string_t symbol_name,
                                                   const dxf_event_data_t* data, int data_count, 
                                                   const dxf_event_params_t* event_params, void* user_data);
         */
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        internal delegate void dxf_event_listener_t(EventType event_type, IntPtr symbol, IntPtr data, int data_count, DxEventParams event_params, IntPtr user_data);
+        internal delegate void dxf_event_listener_v2_t(EventType event_type, IntPtr symbol, IntPtr data, int data_count, DxEventParams event_params, IntPtr user_data);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate void dxf_conn_termination_notifier_t(IntPtr connection, IntPtr user_data);
@@ -244,7 +253,7 @@ namespace com.dxfeed.native.api
         //DXFEED_API ERRORCODE dxf_attach_event_listener (dxf_subscription_t subscription, dxf_event_listener_t event_listener, void* user_data);
         //[DllImport(DXFEED_DLL, CallingConvention = CallingConvention.Cdecl)]
         internal abstract int dxf_attach_event_listener(IntPtr subscription, dxf_event_listener_t event_listener,
-                                                             IntPtr user_data);
+                                                        IntPtr user_data);
 
         /*
          *	Detaches a listener from the subscription.
@@ -256,6 +265,29 @@ namespace com.dxfeed.native.api
         //DXFEED_API ERRORCODE dxf_detach_event_listener (dxf_subscription_t subscription, dxf_event_listener_t event_listener);
         //[DllImport(DXFEED_DLL, CallingConvention = CallingConvention.Cdecl)]
         internal abstract int dxf_detach_event_listener(IntPtr subscription, dxf_event_listener_t listener);
+
+        /*
+         *	Attaches a extended listener callback to the subscription.
+         *  This callback will be invoked when the new event data for the subscription symbols arrives.
+         *  No error occurs if it's attempted to attach the same listener twice or more.
+         *  
+         *  This listener differs with extend number of callback parameters.
+         * 
+         *  subscription - a handle of the subscription to which a listener is to be attached
+         *  event_listener - a listener callback function pointer
+         *  user_data - if there isn't user data pass NULL
+         */
+        internal abstract int dxf_attach_event_listener_v2(IntPtr subscription, dxf_event_listener_v2_t event_listener,
+                                                           IntPtr user_data);
+
+        /*
+         *	Detaches a extended listener from the subscription.
+         *  No error occurs if it's attempted to detach a listener which wasn't previously attached.
+         *
+         *  subscription - a handle of the subscription from which a listener is to be detached
+         *  event_listener - a listener callback function pointer
+         */
+        internal abstract int dxf_detach_event_listener_v2(IntPtr subscription, dxf_event_listener_v2_t listener);
 
         /*
          *	Retrieves the subscription event types.

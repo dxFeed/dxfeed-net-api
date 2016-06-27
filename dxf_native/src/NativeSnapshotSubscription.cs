@@ -19,7 +19,6 @@ namespace com.dxfeed.native
 		private int time = 0;
 		private string symbol = string.Empty;
 		private string source = string.Empty;
-		private const EventFlag emptyFlags = 0;
 
 		public static IntPtr InvalidSnapshot = IntPtr.Zero;
 
@@ -49,7 +48,7 @@ namespace com.dxfeed.native
 			{
 					//TODO: add candle
 				case EventType.Order:
-					var orderBuf = NativeBufferFactory.CreateOrderBuf(snapshotData.symbol, snapshotData.records, emptyFlags, snapshotData.records_count);
+					var orderBuf = NativeBufferFactory.CreateOrderBuf(snapshotData.symbol, snapshotData.records, snapshotData.records_count, null);
 					listener.OnOrderSnapshot<NativeEventBuffer<NativeOrder>, NativeOrder>(orderBuf);
 					break;
 			}

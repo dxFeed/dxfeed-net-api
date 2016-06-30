@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
 using com.dxfeed.api;
+using com.dxfeed.api.candle;
 using com.dxfeed.api.events;
 using com.dxfeed.native.api;
 using com.dxfeed.native.events;
@@ -12,6 +13,7 @@ namespace com.dxfeed.native {
 		private readonly IntPtr connectionPtr;
 		private IntPtr subscriptionPtr;
 		private readonly IDxFeedListener listener;
+        private readonly IDxCandleListener candleListener;
 		//to prevent callback from being garbage collected
 		private readonly C.dxf_event_listener_t callback;
 
@@ -31,9 +33,34 @@ namespace com.dxfeed.native {
 			}
 		}
 
+        public NativeSubscription(NativeConnection connection, CandleSymbol symbol, DateTime? time, IDxCandleListener listener) {
+            if (listener == null)
+                throw new ArgumentNullException("listener");
+
+            connectionPtr = connection.Handler;
+            this.candleListener = listener;
+
+            IntPtr candleAttributesPtr = null;
+            C.CheckOk(C.Instance.dxf_create_candle_symbol_attributes(symbol.GetBaseSymbol()));
+
+            if (time == null) {
+                C.CheckOk(C.Instance.dxf_create_subscription(connectionPtr, EventType.Candle, out subscriptionPtr));
+            } else {
+                DateTime origin = new DateTime(1970, 1, 1, 0, 0, 0, 0);
+                TimeSpan diff = (DateTime)time - origin;
+                Int64 unix_timestamp = Convert.ToInt64(Math.Floor(diff.TotalMilliseconds));
+                C.CheckOk(C.Instance.dxf_create_subscription_timed(connectionPtr, EventType.Candle, unix_timestamp, out subscriptionPtr));
+            }
+
+            try {
+                C.CheckOk(C.Instance.dxf_attach_event_listener(subscriptionPtr, callback = OnEvent, IntPtr.Zero));
+            } catch (DxException) {
+                C.Instance.dxf_close_subscription(subscriptionPtr);
+                throw;
+            }
+        }
+
 		private void OnEvent(EventType eventType, IntPtr symbol, IntPtr data, EventFlag flags, int dataCount, IntPtr userData) {
-			//Console.WriteLine("Flags: {0}", flags);
-			//Console.Write("Flags:");
 			switch (eventType) {
 				case EventType.Order:
 					var orderBuf = NativeBufferFactory.CreateOrderBuf(symbol, data, flags, dataCount);
@@ -58,6 +85,10 @@ namespace com.dxfeed.native {
                 case EventType.Summary:
                     var sBuf = NativeBufferFactory.CreateSummaryBuf(symbol, data, flags, dataCount);
                     listener.OnFundamental<NativeEventBuffer<NativeSummary>, NativeSummary>(sBuf);
+                    break;
+                case EventType.Candle:
+                    var cBuf = NativeBufferFactory.CreateCandleBuf(symbol, data, flags, dataCount);
+                    candleListener.OnCandle<NativeEventBuffer<NativeCandle>, NativeCandle>(cBuf);
                     break;
 			}
 		}

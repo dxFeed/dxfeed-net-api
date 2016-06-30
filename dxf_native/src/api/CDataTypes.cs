@@ -82,4 +82,20 @@ namespace com.dxfeed.native.api {
 		internal bool is_trade;
 		internal TimeAndSaleType type;
 	}
+
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+    internal struct DxCandle
+    {
+        internal long time;
+        internal int sequence;
+        internal double count;
+        internal double open;
+        internal double high;
+        internal double low;
+        internal double close;
+        internal double volume;
+        internal double vwap;
+        internal double bid_volume;
+        internal double ask_volume;
+    }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using com.dxfeed.api;
+using com.dxfeed.api.candle;
 using com.dxfeed.api.events;
 using com.dxfeed.native.api;
 
@@ -40,6 +41,14 @@ namespace com.dxfeed.native {
 
 			return new NativeSubscription(this, type, listener);
 		}
+
+        public IDxSubscription CreateSubscription(CandleSymbol candleSymbol, IDxFeedListener listener)
+        {
+            if (handler == IntPtr.Zero)
+                throw new NativeDxException("not connected");
+
+            return new NativeSubscription(this, type, listener);
+        }
 
 		#endregion
 

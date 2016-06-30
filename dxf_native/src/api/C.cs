@@ -135,6 +135,17 @@ namespace com.dxfeed.native.api
         //[DllImport(DXFEED_DLL, CallingConvention = CallingConvention.Cdecl)]
         internal abstract int dxf_create_subscription(IntPtr connection, EventType event_types, out IntPtr subscription);
 
+        /*
+         *	Creates a subscription with the specified parameters.
+
+         *  connection - a handle of a previously created connection which the subscription will be using
+         *  event_types - a bitmask of the subscription event types. See 'dx_event_id_t' and 'DX_EVENT_BIT_MASK'
+         *                for information on how to create an event type bitmask
+         *  time - time in the past (unix time in milliseconds)
+         *  OUT subscription - a handle of the created subscription
+         */
+        internal abstract int dxf_create_subscription_timed(IntPtr connection, EventType event_types, 
+                                                            Int64 time, out IntPtr subscription);
 
         /*
          *	Closes a subscription.
@@ -167,6 +178,14 @@ namespace com.dxfeed.native.api
         //DXFEED_API ERRORCODE dxf_add_symbols (dxf_subscription_t subscription, dxf_const_string_t* symbols, int symbol_count);
         //[DllImport(DXFEED_DLL, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
         internal abstract int dxf_add_symbols(IntPtr subscription, string[] symbols, int count);
+
+        /*
+         *	Adds a candle symbol to the subscription.
+ 
+         *  subscription - a handle of the subscription to which a symbol is added
+         *  candle_attributes - pointer to the candle struct
+         */
+        internal abstract int dxf_add_candle_symbol(IntPtr subscription, IntPtr candle_attributes);
 
         /*
          *	Removes a single symbol from the subscription.
@@ -304,5 +323,33 @@ namespace com.dxfeed.native.api
          *  source - source of order event to add, 4 symbols maximum length
          */
         internal abstract int dxf_add_order_source(IntPtr subscription, byte[] source);
+
+        /*
+         *	API that allows user to create candle symbol attributes
+         *
+         *  base_symbol - the symbols to add
+         *  exchange_code - exchange attribute of this symbol
+         *  period_value -  aggregation period value of this symbol
+         *  period_type - aggregation period type of this symbol
+         *  price - price type attribute of this symbol
+         *  session - session attribute of this symbol
+         *  alignment - alignment attribute of this symbol
+         *  candle_attributes - pointer to the configured candle attributes struct
+         */
+        internal abstract int dxf_create_candle_symbol_attributes(string base_symbol,
+                                                                 char exchange_code,
+                                                                 double period_value,
+                                                                 int period_type,
+                                                                 int price,
+                                                                 int session,
+                                                                 int alignment,
+                                                                 out IntPtr candle_attributes);
+
+        /*
+         *	Free memory allocated by dxf_initialize_candle_symbol_attributes(...) function
+
+         *  candle_attributes - pointer to the candle attributes struct
+         */
+        internal abstract int dxf_delete_candle_symbol_attributes(IntPtr candle_attributes);
     }
 }

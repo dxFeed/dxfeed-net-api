@@ -16,7 +16,7 @@ namespace com.dxfeed.native.events {
 
         public override string ToString() {
             return string.Format(CultureInfo.InvariantCulture, "Candle: {{DateTime: {0:o}, " +
-            "Sequence: {1}, Count: {2:0000.00}, Open: {3:0.000000}, High: {4:0.000000}, " +
+            "Sequence: {1}, Count: {2:0.00}, Open: {3:0.000000}, High: {4:0.000000}, " +
             "Low: {5:0.000000}, Close: {6:0.000000}, Volume: {7:0.0}, VWAP: {8:0.0}, " +
             "BidVolume: {9:0.0}, AskVolume: {9:0.0} }}",
                 DateTime, Sequence, Count, Open, High, Low, Close, Volume, VWAP, BidVolume, AskVolume);

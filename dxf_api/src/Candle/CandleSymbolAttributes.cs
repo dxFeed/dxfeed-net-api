@@ -1,0 +1,130 @@
+﻿using System;
+
+namespace com.dxfeed.api.candle {
+
+    /// <summary>
+    /// Class stores all candle symbol attributes
+    /// </summary>
+    public static class CandleSymbolAttributes {
+
+        public static class Exchange {
+            /// <summary>
+            /// Composite exchange where data is taken from all exchanges.
+            /// </summary>
+            public static readonly ICandleSymbolAttribute COMPOSITE = CandleExchange.COMPOSITE;
+
+            /// <summary>
+            /// Default exchange is {@link #COMPOSITE}.
+            /// </summary>
+            public static readonly ICandleSymbolAttribute DEFAULT = CandleExchange.DEFAULT;
+
+            /// <summary>
+            /// Creates a new candle exchange object
+            /// </summary>
+            /// <param name="code">exchange code</param>
+            /// <returns>new candle exchange</returns>
+            public static ICandleSymbolAttribute NewExchange(char code) {
+                return new CandleExchange(code);
+            }
+        }
+
+        public static class Period {
+
+            /// <summary>
+            /// Tick aggregation where each candle represents an individual tick.
+            /// </summary>
+            public static readonly ICandleSymbolAttribute TICK = CandlePeriod.TICK;
+
+            /// <summary>
+            /// Day aggregation where each candle represents a day.
+            /// </summary>
+            public static readonly ICandleSymbolAttribute DAY = CandlePeriod.DAY;
+
+            /// <summary>
+            /// Default period is {@link #TICK}.
+            /// </summary>
+            public static readonly ICandleSymbolAttribute DEFAULT = CandlePeriod.DEFAULT;
+
+            /// <summary>
+            /// Creates a new candle period with certain value and type
+            /// </summary>
+            /// <param name="period">value of candle period</param>
+            /// <param name="type">type of candle period</param>
+            /// <returns>new candle period</returns>
+            public static ICandleSymbolAttribute NewPeriod(double period, CandleType type) {
+                return new CandlePeriod(period, type);
+            }
+        }
+
+        public static class Price {
+
+            /// <summary>
+            /// Last trading price.
+            /// </summary>
+            public static readonly ICandleSymbolAttribute LAST = CandlePrice.LAST;
+
+            /// <summary>
+            /// Quote bid price.
+            /// </summary>
+            public static readonly ICandleSymbolAttribute BID = CandlePrice.BID;
+
+            /// <summary>
+            /// Quote ask price.
+            /// </summary>
+            public static readonly ICandleSymbolAttribute ASK = CandlePrice.ASK;
+
+            /// <summary>
+            /// Market price defined as average between quote bid and ask prices.
+            /// </summary>
+            public static readonly ICandleSymbolAttribute MARK = CandlePrice.MARK;
+
+            /// <summary>
+            /// Official settlement price that is defined by exchange or last trading price otherwise.
+            /// It updates based on all {@link PriceType PriceType} values:
+            /// {@link PriceType#INDICATIVE}, {@link PriceType#PRELIMINARY}, and {@link PriceType#FINAL}.
+            /// </summary>
+            public static readonly ICandleSymbolAttribute SETTLEMENT = CandlePrice.SETTLEMENT;
+
+            /// <summary>
+            /// Default price type is {@link #LAST}.
+            /// </summary>
+            public static readonly ICandleSymbolAttribute DEFAULT = CandlePrice.DEFAULT;
+        }
+
+        public static class Session {
+
+            /// <summary>
+            /// All trading sessions are used to build candles.
+            /// </summary>
+            public static readonly ICandleSymbolAttribute ANY = CandleSession.ANY;
+
+            /// <summary>
+            /// Only regular trading session data is used to build candles.
+            /// </summary>
+            public static readonly ICandleSymbolAttribute REGULAR = CandleSession.REGULAR;
+
+            /// <summary>
+            /// Default trading session is {@link #ANY}.
+            /// </summary>
+            public static readonly ICandleSymbolAttribute DEFAULT = CandleSession.DEFAULT;
+        }
+
+        public static class Alignment {
+
+            /// <summary>
+            /// Align candles on midnight.
+            /// </summary>
+            public static readonly ICandleSymbolAttribute MIDNIGHT = CandleAlignment.MIDNIGHT;
+
+            /// <summary>
+            /// Align candles on trading sessions.
+            /// </summary>
+            public static readonly ICandleSymbolAttribute SESSION = CandleAlignment.SESSION;
+
+            /// <summary>
+            /// Default alignment is {@link #MIDNIGHT}.
+            /// </summary>
+            public static readonly ICandleSymbolAttribute DEFAULT = CandleAlignment.DEFAULT;
+        }
+    }
+}

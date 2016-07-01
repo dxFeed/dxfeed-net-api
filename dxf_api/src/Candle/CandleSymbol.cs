@@ -62,81 +62,96 @@ namespace com.dxfeed.api.candle {
         private string baseSymbol;
 
         [NonSerialized()]
-        private CandleExchange exchange;
+        internal CandleExchange exchange;
         [NonSerialized()]
-        private CandlePrice price;
+        internal CandlePrice price;
         [NonSerialized()]
-        private CandleSession session;
+        internal CandleSession session;
         [NonSerialized()]
-        private CandlePeriod period;
+        internal CandlePeriod period;
         [NonSerialized()]
-        private CandleAlignment alignment;
+        internal CandleAlignment alignment;
 
         private CandleSymbol(string symbol) {
-            this.symbol = symbol.Normalize();
-            initTransientFields();
+            this.symbol = Normalize(symbol);
+            InitTransientFields();
         }
 
-        private CandleSymbol(string symbol, CandleSymbolAttribute attribute) {
-            this.symbol = changeAttribute(symbol, attribute).Normalize();
-            attribute.checkInAttributeImpl(this);
-            initTransientFields();
+        private CandleSymbol(string symbol, ICandleSymbolAttribute attribute) {
+            this.symbol = Normalize(ChangeAttribute(symbol, attribute));
+            attribute.CheckInAttributeImpl(this);
+            InitTransientFields();
         }
 
-        private CandleSymbol(string symbol, CandleSymbolAttribute attribute, params CandleSymbolAttribute[] attributes) {
-            this.symbol = normalize(changeAttributes(symbol, attribute, attributes));
-            attribute.checkInAttributeImpl(this);
-            foreach (CandleSymbolAttribute a in attributes)
-                a.checkInAttributeImpl(this);
-            initTransientFields();
+        private CandleSymbol(string symbol, ICandleSymbolAttribute attribute, params ICandleSymbolAttribute[] attributes) {
+            this.symbol = Normalize(ChangeAttributes(symbol, attribute, attributes));
+            attribute.CheckInAttributeImpl(this);
+            foreach (ICandleSymbolAttribute a in attributes)
+                a.CheckInAttributeImpl(this);
+            InitTransientFields();
         }
 
         /// <summary>
         /// Returns base market symbol without attributes.
         /// </summary>
-        /// <returns>Returns base market symbol without attributes.</returns>
-        public string GetBaseSymbol() {
-            return baseSymbol;
+        public string BaseSymbol {
+            get {
+                return baseSymbol;
+            }
         }
 
         /// <summary>
         /// Returns exchange attribute of this symbol.
         /// </summary>
-        /// <returns>Returns exchange attribute of this symbol.</returns>
-        public CandleExchange GetExchange() {
-            return exchange;
+        public char ExchangeCode {
+            get {
+                return exchange.GetExchangeCode();
+            }
         }
 
         /// <summary>
         /// Returns price type attribute of this symbol.
         /// </summary>
-        /// <returns>Returns price type attribute of this symbol.</returns>
-        public CandlePrice GetPrice() {
-            return price;
+        public int PriceId {
+            get {
+                return price.GetId();
+            }
         }
 
         /// <summary>
         /// Returns session attribute of this symbol.
         /// </summary>
-        /// <returns>Returns session attribute of this symbol.</returns>
-        public CandleSession GetSession() {
-            return session;
+        public int SessionId {
+            get {
+                return session.GetId();
+            }
         }
 
         /// <summary>
         /// Returns aggregation period of this symbol.
         /// </summary>
-        /// <returns>Returns aggregation period of this symbol.</returns>
-        public CandlePeriod GetPeriod() {
-            return period;
+        public int PeriodId {
+            get {
+                return period.GetCandleType().Id;
+            }
+        }
+
+        /// <summary>
+        /// Returns aggregation period value of this symbol.
+        /// </summary>
+        public double PeriodValue {
+            get {
+                return period.GetValue();
+            }
         }
 
         /// <summary>
         /// Returns alignment attribute of this symbol.
         /// </summary>
-        /// <returns>Returns alignment attribute of this symbol.</returns>
-        public CandleAlignment GetAlignment() {
-            return alignment;
+        public int AlignmentId {
+            get {
+                return alignment.GetId();
+            }
         }
 
         /// <summary>
@@ -181,7 +196,7 @@ namespace com.dxfeed.api.candle {
         /// <param name="symbol">the string symbol.</param>
         /// <param name="attribute">the attribute to set.</param>
         /// <returns>the candle symbol object.</returns>
-        public static CandleSymbol ValueOf(string symbol, CandleSymbolAttribute attribute) {
+        public static CandleSymbol ValueOf(string symbol, ICandleSymbolAttribute attribute) {
             return new CandleSymbol(symbol, attribute);
         }
 
@@ -192,50 +207,50 @@ namespace com.dxfeed.api.candle {
         /// <param name="attribute">the attribute to set.</param>
         /// <param name="attributes">more attributes to set.</param>
         /// <returns>the candle symbol object.</returns>
-        public static CandleSymbol ValueOf(string symbol, CandleSymbolAttribute attribute, 
-                                           params CandleSymbolAttribute[] attributes) {
+        public static CandleSymbol ValueOf(string symbol, ICandleSymbolAttribute attribute, 
+                                           params ICandleSymbolAttribute[] attributes) {
             return new CandleSymbol(symbol, attribute, attributes);
         }
 
         //----------------------- private implementation details -----------------------
 
-        private static String changeAttributes(String symbol, CandleSymbolAttribute attribute, 
-                                               params CandleSymbolAttribute[] attributes) {
-            symbol = changeAttribute(symbol, attribute);
-            foreach (CandleSymbolAttribute a in attributes)
-                symbol = changeAttribute(symbol, a);
+        private static String ChangeAttributes(String symbol, ICandleSymbolAttribute attribute, 
+                                               params ICandleSymbolAttribute[] attributes) {
+            symbol = ChangeAttribute(symbol, attribute);
+            foreach (ICandleSymbolAttribute a in attributes)
+                symbol = ChangeAttribute(symbol, a);
             return symbol;
         }
 
-        private static string changeAttribute(string symbol, CandleSymbolAttribute attribute) {
-            return attribute.changeAttributeForSymbol(symbol);
+        private static string ChangeAttribute(string symbol, ICandleSymbolAttribute attribute) {
+            return attribute.ChangeAttributeForSymbol(symbol);
         }
 
-        private static string normalize(string symbol) {
-            symbol = CandlePrice.normalizeAttributeForSymbol(symbol);
-            symbol = CandleSession.normalizeAttributeForSymbol(symbol);
-            symbol = CandlePeriod.normalizeAttributeForSymbol(symbol);
+        private static string Normalize(string symbol) {
+            symbol = CandlePrice.NormalizeAttributeForSymbol(symbol);
+            symbol = CandleSession.NormalizeAttributeForSymbol(symbol);
+            symbol = CandlePeriod.NormalizeAttributeForSymbol(symbol);
             symbol = CandleAlignment.normalizeAttributeForSymbol(symbol);
             return symbol;
         }
 
-        private void initTransientFields() {
-            baseSymbol = MarketEventSymbols.getBaseSymbol(symbol);
+        private void InitTransientFields() {
+            baseSymbol = MarketEventSymbols.GetBaseSymbol(symbol);
             if (exchange == null)
-                exchange = CandleExchange.getAttributeForSymbol(symbol);
+                exchange = CandleExchange.GetAttributeForSymbol(symbol);
             if (price == null)
-                price = CandlePrice.getAttributeForSymbol(symbol);
+                price = CandlePrice.GetAttributeForSymbol(symbol);
             if (session == null)
-                session = CandleSession.getAttributeForSymbol(symbol);
+                session = CandleSession.GetAttributeForSymbol(symbol);
             if (period == null)
-                period = CandlePeriod.getAttributeForSymbol(symbol);
+                period = CandlePeriod.GetAttributeForSymbol(symbol);
             if (alignment == null)
                 alignment = CandleAlignment.getAttributeForSymbol(symbol);
         }
 
         [OnDeserialized()]
-        private void readObject(StreamingContext context) {
-            initTransientFields();
+        private void ReadObject(StreamingContext context) {
+            InitTransientFields();
         }
     }
 }

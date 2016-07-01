@@ -16,12 +16,20 @@ namespace com.dxfeed.native {
         private readonly IDxCandleListener candleListener;
 		//to prevent callback from being garbage collected
 		private readonly C.dxf_event_listener_t callback;
+        private readonly EventType eventType;
 
+        /// <summary>
+        /// Create event subscription
+        /// </summary>
+        /// <param name="connection">native connection pointer</param>
+        /// <param name="eventType">type of event to create</param>
+        /// <param name="listener">event listener</param>
 		public NativeSubscription(NativeConnection connection, EventType eventType, IDxFeedListener listener) {
 			if (listener == null)
 				throw new ArgumentNullException("listener");
 
 			connectionPtr = connection.Handler;
+            this.eventType = eventType;
 			this.listener = listener;
 
 			C.CheckOk(C.Instance.dxf_create_subscription(connectionPtr, eventType, out subscriptionPtr));
@@ -33,18 +41,22 @@ namespace com.dxfeed.native {
 			}
 		}
 
-        public NativeSubscription(NativeConnection connection, CandleSymbol symbol, DateTime? time, IDxCandleListener listener) {
+        /// <summary>
+        /// Create Candle event subscription
+        /// </summary>
+        /// <param name="connection">native connection pointer</param>
+        /// <param name="time">date time in the past</param>
+        /// <param name="listener">candle event listener</param>
+        public NativeSubscription(NativeConnection connection, DateTime? time, IDxCandleListener listener) {
             if (listener == null)
                 throw new ArgumentNullException("listener");
 
             connectionPtr = connection.Handler;
+            this.eventType = EventType.Candle;
             this.candleListener = listener;
 
-            IntPtr candleAttributesPtr = null;
-            C.CheckOk(C.Instance.dxf_create_candle_symbol_attributes(symbol.GetBaseSymbol()));
-
             if (time == null) {
-                C.CheckOk(C.Instance.dxf_create_subscription(connectionPtr, EventType.Candle, out subscriptionPtr));
+                C.CheckOk(C.Instance.dxf_create_subscription(connectionPtr, eventType, out subscriptionPtr));
             } else {
                 DateTime origin = new DateTime(1970, 1, 1, 0, 0, 0, 0);
                 TimeSpan diff = (DateTime)time - origin;
@@ -93,10 +105,6 @@ namespace com.dxfeed.native {
 			}
 		}
 
-		public void AddSymbol(string symbol) {
-			C.CheckOk(C.Instance.dxf_add_symbol(subscriptionPtr, symbol));
-		}
-
 		#region Implementation of IDisposable
 
 		public void Dispose() {
@@ -110,22 +118,76 @@ namespace com.dxfeed.native {
 
 		#region Implementation of IDxSubscription
 
+        /// <summary>
+        /// Add symbol to subscription
+        /// </summary>
+        /// <param name="symbol"></param>
+        public void AddSymbol(string symbol) {
+            if (eventType == EventType.Candle)
+                return;
+            C.CheckOk(C.Instance.dxf_add_symbol(subscriptionPtr, symbol));
+        }
+
+        /// <summary>
+        /// Add candle symbol to subscription
+        /// </summary>
+        /// <param name="symbol">candle symbol</param>
+        public void AddSymbol(CandleSymbol symbol) {
+            IntPtr candleAttributesPtr = IntPtr.Zero;
+            C.CheckOk(C.Instance.dxf_create_candle_symbol_attributes(symbol.BaseSymbol,
+                symbol.ExchangeCode, symbol.PeriodValue, symbol.PeriodId, symbol.PriceId,
+                symbol.SessionId, symbol.AlignmentId, out candleAttributesPtr));
+            C.CheckOk(C.Instance.dxf_add_candle_symbol(subscriptionPtr, candleAttributesPtr));
+        }
+
+        /// <summary>
+        /// Add multiply symbols to subscription.
+        /// It's not applicable to Candle symbols.
+        /// </summary>
+        /// <param name="symbols"></param>
 		public void AddSymbols(params string[] symbols) {
+            if (eventType == EventType.Candle)
+                return;
 			C.CheckOk(C.Instance.dxf_add_symbols(subscriptionPtr, symbols, symbols.Length));
 		}
 
+        /// <summary>
+        /// Remove multiply symbols from subscription.
+        /// It's not applicable to Candle symbols.
+        /// </summary>
+        /// <param name="symbols"></param>
 		public void RemoveSymbols(params string[] symbols) {
+            if (eventType == EventType.Candle)
+                return;
 			C.CheckOk(C.Instance.dxf_remove_symbols(subscriptionPtr, symbols, symbols.Length));
 		}
 
+        /// <summary>
+        /// Set multiply symbols to subscription.
+        /// It's not applicable to Candle symbols.
+        /// </summary>
+        /// <param name="symbols"></param>
 		public void SetSymbols(params string[] symbols) {
+            if (eventType == EventType.Candle)
+                return;
 			C.CheckOk(C.Instance.dxf_set_symbols(subscriptionPtr, symbols, symbols.Length));
 		}
 
+        /// <summary>
+        /// clear all symbols from subscription.
+        /// It's not applicable to Candle symbols.
+        /// </summary>
+        /// <param name="symbols"></param>
 		public void Clear() {
+            if (eventType == EventType.Candle)
+                return;
 			C.CheckOk(C.Instance.dxf_clear_symbols(subscriptionPtr));
 		}
 
+        /// <summary>
+        /// Get all symbols list from subscription.
+        /// </summary>
+        /// <returns></returns>
 		public unsafe IList<string> GetSymbols() {
 			IntPtr head;
 			int len;
@@ -140,6 +202,10 @@ namespace com.dxfeed.native {
 			return result;
 		}
 
+        /// <summary>
+        /// Add order source to subscription.
+        /// </summary>
+        /// <param name="sources"></param>
 		public void AddSource(params string[] sources) {
 			Encoding ascii = Encoding.ASCII;
 			for (int i = 0; i < sources.Length; i++) {
@@ -148,6 +214,10 @@ namespace com.dxfeed.native {
 			}
 		}
 
+        /// <summary>
+        /// Remove existing sources and set new
+        /// </summary>
+        /// <param name="sources"></param>
 		public void SetSource(params string[] sources) {
 			if (sources.Length == 0)
 				return;

@@ -72,6 +72,7 @@
     <Compile Include="src\api\CDataTypes.cs" />
     <Compile Include="src\api\C64.cs" />
     <Compile Include="src\events\DxMarshal.cs" />
+    <Compile Include="src\events\NativeCandle.cs" />
     <Compile Include="src\events\NativeEventBuffer.cs" />
     <Compile Include="src\events\NativeSummary.cs" />
     <Compile Include="src\events\NativeMarketMaker.cs" />

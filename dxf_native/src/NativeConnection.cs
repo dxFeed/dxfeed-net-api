@@ -42,12 +42,12 @@ namespace com.dxfeed.native {
 			return new NativeSubscription(this, type, listener);
 		}
 
-        public IDxSubscription CreateSubscription(CandleSymbol candleSymbol, IDxFeedListener listener)
+        public IDxSubscription CreateSubscription(DateTime? time, IDxCandleListener listener)
         {
             if (handler == IntPtr.Zero)
                 throw new NativeDxException("not connected");
 
-            return new NativeSubscription(this, type, listener);
+            return new NativeSubscription(this, time, listener);
         }
 
 		#endregion

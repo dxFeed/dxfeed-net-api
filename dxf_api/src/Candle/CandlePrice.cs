@@ -14,7 +14,7 @@ namespace com.dxfeed.api.candle {
     /// The key to use with these methods is available via
     /// {@link #ATTRIBUTE_KEY} constant.
     /// The value that this key shall be set to is equal to
-    /// the corresponding {@link #toString() CandlePrice.toString()}
+    /// the corresponding {@link #toString() CandlePrice.ToString()}
     /// </summary>
     class CandlePrice : ICandleSymbolAttribute {
 
@@ -23,7 +23,7 @@ namespace com.dxfeed.api.candle {
         /// a symbol string using methods of {@link MarketEventSymbols} class.
         /// The value of this constant is "price".
         /// The value that this key shall be set to is equal to
-        /// the corresponding {@link #toString() CandlePrice.toString()}
+        /// the corresponding {@link #toString() CandlePrice.ToString()}
         /// </summary>
         public static readonly string ATTRIBUTE_KEY = "price";
         public enum CandlePriceType { Last = 0, Bid = 1, Ask = 2, Mark = 3, Settlement = 4 };

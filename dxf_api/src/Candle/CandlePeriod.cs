@@ -14,7 +14,7 @@ namespace com.dxfeed.api.candle {
     /// The key to use with these methods is available via
     /// {@link #ATTRIBUTE_KEY} constant.
     /// The value that this key shall be set to is equal to
-    /// the corresponding {@link #toString() CandlePeriod.toString()}
+    /// the corresponding {@link #toString() CandlePeriod.ToString()}
     /// </summary>
     class CandlePeriod : ICandleSymbolAttribute {
 
@@ -39,7 +39,7 @@ namespace com.dxfeed.api.candle {
         /// The value of this constant is an empty string, because this is the
         /// main attribute that every {@link CandleSymbol} must have.
         /// The value that this key shall be set to is equal to
-        /// the corresponding {@link #toString() CandlePeriod.toString()}
+        /// the corresponding {@link #toString() CandlePeriod.ToString()}
         /// </summary>
         public static readonly string ATTRIBUTE_KEY = ""; // empty string as attribute key is allowed!
 
@@ -68,7 +68,7 @@ namespace com.dxfeed.api.candle {
         /// </summary>
         /// <returns>aggregation period in milliseconds.</returns>
         public long GetPeriodIntervalMillis() {
-            return (long)(type.getPeriodIntervalMillis() * value);
+            return (long)(type.GetPeriodIntervalMillis() * value);
         }
 
         /// <summary>
@@ -177,7 +177,7 @@ namespace com.dxfeed.api.candle {
             }
             string value = s.Substring(0, i);
             string type = s.Substring(i);
-            return ValueOf(value.Length == 0 ? 1 : Double.Parse(value), CandleType.parse(type));
+            return ValueOf(value.Length == 0 ? 1 : Double.Parse(value), CandleType.Parse(type));
         }
 
         /// <summary>

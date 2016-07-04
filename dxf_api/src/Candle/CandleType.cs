@@ -124,7 +124,7 @@ namespace com.dxfeed.api.candle {
         /// is not defined and this method returns {@code 0}.
         /// </summary>
         /// <returns>aggregation period in milliseconds.</returns>
-        public long getPeriodIntervalMillis() {
+        public long GetPeriodIntervalMillis() {
             return periodIntervalMillis;
         }
 
@@ -150,7 +150,7 @@ namespace com.dxfeed.api.candle {
         /// <param name="s">string representation of candle type.</param>
         /// <returns>candle type.</returns>
         /// <exception cref="ArgumentException">if the string representation is invalid.</exception>
-        public static CandleType parse(string s) {
+        public static CandleType Parse(string s) {
             int n = s.Length;
             if (n == 0)
                 throw new ArgumentException("Missing candle type");

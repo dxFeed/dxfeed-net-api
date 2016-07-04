@@ -86,12 +86,11 @@ namespace com.dxfeed.api.candle {
         /// Any string that was returned by {@link #toString()} can be parsed
         /// and case is ignored for parsing.
         /// 
-        /// Excepions:
-        ///    ArgumentNullException
         /// </summary>
         /// <param name="s">string representation of candle alignment.</param>
         /// <returns>candle alignment</returns>
-        public static CandleAlignment parse(string s) {
+        /// <exception cref="ArgumentNullException">Canlde alignment in string is unknown</exception>
+        public static CandleAlignment Parse(string s) {
             // fast path to reverse toString result
             if (objCash.ContainsKey(s))
                 return objCash[s];
@@ -109,9 +108,9 @@ namespace com.dxfeed.api.candle {
         /// </summary>
         /// <param name="symbol">candle symbol string</param>
         /// <returns>candle alignment of the given candle symbol string.</returns>
-        public static CandleAlignment getAttributeForSymbol(string symbol) {
+        public static CandleAlignment GetAttributeForSymbol(string symbol) {
             string s = MarketEventSymbols.GetAttributeStringByKey(symbol, ATTRIBUTE_KEY);
-            return s == null ? DEFAULT : parse(s);
+            return s == null ? DEFAULT : Parse(s);
         }
 
         /// <summary>
@@ -119,12 +118,12 @@ namespace com.dxfeed.api.candle {
         /// </summary>
         /// <param name="symbol">candle symbol string.</param>
         /// <returns>candle symbol string with the normalized representation of the the candle alignment attribute.</returns>
-        public static string normalizeAttributeForSymbol(string symbol) {
+        public static string NormalizeAttributeForSymbol(string symbol) {
             string a = MarketEventSymbols.GetAttributeStringByKey(symbol, ATTRIBUTE_KEY);
             if (a == null)
                 return symbol;
             try {
-                CandleAlignment other = parse(a);
+                CandleAlignment other = Parse(a);
                 if (other == DEFAULT)
                     MarketEventSymbols.RemoveAttributeStringByKey(symbol, ATTRIBUTE_KEY);
                 if (!a.Equals(other.ToString()))

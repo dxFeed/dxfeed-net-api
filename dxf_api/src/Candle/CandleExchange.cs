@@ -3,7 +3,7 @@
 namespace com.dxfeed.api.candle {
 
     /// <summary>
-    ///  * Exchange attribute of {@link CandleSymbol} defines exchange identifier where data is
+    /// Exchange attribute of {@link CandleSymbol} defines exchange identifier where data is
     /// taken from to build the candles.
     ///
     /// <h3>Implementation details</h3>
@@ -13,6 +13,7 @@ namespace com.dxfeed.api.candle {
     /// {@link MarketEventSymbols#changeExchangeCode(String, char) changeExchangeCode} methods.
     /// </summary>
     class CandleExchange : ICandleSymbolAttribute {
+        
         /// <summary>
         /// Composite exchange where data is taken from all exchanges.
         /// </summary>

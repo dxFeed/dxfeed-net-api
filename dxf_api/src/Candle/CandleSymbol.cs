@@ -230,7 +230,7 @@ namespace com.dxfeed.api.candle {
             symbol = CandlePrice.NormalizeAttributeForSymbol(symbol);
             symbol = CandleSession.NormalizeAttributeForSymbol(symbol);
             symbol = CandlePeriod.NormalizeAttributeForSymbol(symbol);
-            symbol = CandleAlignment.normalizeAttributeForSymbol(symbol);
+            symbol = CandleAlignment.NormalizeAttributeForSymbol(symbol);
             return symbol;
         }
 
@@ -245,7 +245,7 @@ namespace com.dxfeed.api.candle {
             if (period == null)
                 period = CandlePeriod.GetAttributeForSymbol(symbol);
             if (alignment == null)
-                alignment = CandleAlignment.getAttributeForSymbol(symbol);
+                alignment = CandleAlignment.GetAttributeForSymbol(symbol);
         }
 
         [OnDeserialized()]

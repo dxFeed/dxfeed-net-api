@@ -79,6 +79,30 @@ namespace com.dxfeed.api {
                 CandleSymbolAttributes.Price.MARK,
                 CandleSymbolAttributes.Session.REGULAR
             }, "AAPL&A{=2d,a=s,price=mark,tho=true}"),
+
+            new CandleSymbolTestCase("AAPL&A", new ICandleSymbolAttribute[] { 
+                CandleSymbolAttributes.Period.NewPeriod(userPeriodValue, CandleType.DAY), 
+                CandleSymbolAttributes.Alignment.SESSION,
+                CandleSymbolAttributes.Price.MARK,
+                CandleSymbolAttributes.Session.REGULAR
+            }, "AAPL&A{=2d,a=s,price=mark,tho=true}"),
+            new CandleSymbolTestCase("AAPL&A{=d}", new ICandleSymbolAttribute[] { 
+                CandleSymbolAttributes.Alignment.SESSION,
+                CandleSymbolAttributes.Price.MARK,
+                CandleSymbolAttributes.Session.REGULAR
+            }, "AAPL&A{=d,a=s,price=mark,tho=true}"),
+            new CandleSymbolTestCase("AAPL&A{=2d}", new ICandleSymbolAttribute[] { 
+                CandleSymbolAttributes.Alignment.SESSION,
+                CandleSymbolAttributes.Price.MARK,
+                CandleSymbolAttributes.Session.REGULAR
+            }, "AAPL&A{=2d,a=s,price=mark,tho=true}"),
+            new CandleSymbolTestCase("AAPL&A{=2d,a=s}", new ICandleSymbolAttribute[] { 
+                CandleSymbolAttributes.Price.MARK,
+                CandleSymbolAttributes.Session.REGULAR
+            }, "AAPL&A{=2d,a=s,price=mark,tho=true}"),
+            new CandleSymbolTestCase("AAPL&A{=2d,a=s,price=mark}", new ICandleSymbolAttribute[] { 
+                CandleSymbolAttributes.Session.REGULAR
+            }, "AAPL&A{=2d,a=s,price=mark,tho=true}")
         };
 
         [Test, TestCaseSource("candleSymbolParamsTestCases")]

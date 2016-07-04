@@ -9,8 +9,8 @@ namespace com.dxfeed.api.candle {
     /// <h3>Implementation details</h3>
     ///
     /// This attribute is encoded in a symbol string with
-    /// {@link MarketEventSymbols#getExchangeCode(String) MarketEventSymbols.getExchangeCode} and
-    /// {@link MarketEventSymbols#changeExchangeCode(String, char) changeExchangeCode} methods.
+    /// {@link MarketEventSymbols#getExchangeCode(string) MarketEventSymbols.getExchangeCode} and
+    /// {@link MarketEventSymbols#changeExchangeCode(string, char) changeExchangeCode} methods.
     /// </summary>
     class CandleExchange : ICandleSymbolAttribute {
         
@@ -70,7 +70,7 @@ namespace com.dxfeed.api.candle {
         /// </summary>
         /// <param name="symbol">original candle event symbol.</param>
         /// <returns>candle event symbol string with this exchange set.</returns>
-        public String ChangeAttributeForSymbol(string symbol) {
+        public string ChangeAttributeForSymbol(string symbol) {
             return MarketEventSymbols.ChangeExchangeCode(symbol, exchangeCode);
         }
 

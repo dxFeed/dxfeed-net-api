@@ -214,7 +214,7 @@ namespace com.dxfeed.api.candle {
 
         //----------------------- private implementation details -----------------------
 
-        private static String ChangeAttributes(String symbol, ICandleSymbolAttribute attribute, 
+        private static string ChangeAttributes(string symbol, ICandleSymbolAttribute attribute, 
                                                params ICandleSymbolAttribute[] attributes) {
             symbol = ChangeAttribute(symbol, attribute);
             foreach (ICandleSymbolAttribute a in attributes)

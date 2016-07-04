@@ -8,9 +8,9 @@ namespace com.dxfeed.api.candle {
     /// <h3>Implementation details</h3>
     ///
     /// This attribute is encoded in a symbol string with
-    /// {@link MarketEventSymbols#getAttributeStringByKey(String, String) MarketEventSymbols.getAttributeStringByKey},
-    /// {@link MarketEventSymbols#changeAttributeStringByKey(String, String, String) changeAttributeStringByKey}, and
-    /// {@link MarketEventSymbols#removeAttributeStringByKey(String, String) removeAttributeStringByKey} methods.
+    /// {@link MarketEventSymbols#getAttributeStringByKey(string, string) MarketEventSymbols.getAttributeStringByKey},
+    /// {@link MarketEventSymbols#changeAttributeStringByKey(string, string, string) changeAttributeStringByKey}, and
+    /// {@link MarketEventSymbols#removeAttributeStringByKey(string, string) removeAttributeStringByKey} methods.
     ///
     /// <p> {@link #ANY} session is a default.
     /// The key to use with these methods is available via
@@ -27,7 +27,7 @@ namespace com.dxfeed.api.candle {
         /// The value that this key shall be set to is equal to
         /// the corresponding {@link #toString() CandleSession.ToString()}
         /// </summary>
-        public static readonly String ATTRIBUTE_KEY = "tho";
+        public static readonly string ATTRIBUTE_KEY = "tho";
         private enum CandleSessionType { Any = 0, Regular = 1 };
         private static Dictionary<string, CandleSession> objCash = new Dictionary<string, CandleSession>();
 
@@ -68,7 +68,7 @@ namespace com.dxfeed.api.candle {
         /// </summary>
         /// <param name="symbol">original candle event symbol.</param>
         /// <returns>candle event symbol string with this session attribute set.</returns>
-        public String ChangeAttributeForSymbol(String symbol) {
+        public string ChangeAttributeForSymbol(string symbol) {
             return this == DEFAULT ?
                 MarketEventSymbols.RemoveAttributeStringByKey(symbol, ATTRIBUTE_KEY) :
                 MarketEventSymbols.ChangeAttributeStringByKey(symbol, ATTRIBUTE_KEY, ToString());
@@ -122,8 +122,8 @@ namespace com.dxfeed.api.candle {
         /// </summary>
         /// <param name="symbol">candle symbol string.</param>
         /// <returns>candle session attribute of the given candle symbol string.</returns>
-        public static CandleSession GetAttributeForSymbol(String symbol) {
-            String a = MarketEventSymbols.GetAttributeStringByKey(symbol, ATTRIBUTE_KEY);
+        public static CandleSession GetAttributeForSymbol(string symbol) {
+            string a = MarketEventSymbols.GetAttributeStringByKey(symbol, ATTRIBUTE_KEY);
             return a != null && Boolean.Parse(a) ? REGULAR : DEFAULT;
         }
 
@@ -132,8 +132,8 @@ namespace com.dxfeed.api.candle {
         /// </summary>
         /// <param name="symbol">candle symbol string.</param>
         /// <returns>candle symbol string with the normalized representation of the the candle session attribute.</returns>
-        public static String NormalizeAttributeForSymbol(string symbol) {
-            String a = MarketEventSymbols.GetAttributeStringByKey(symbol, ATTRIBUTE_KEY);
+        public static string NormalizeAttributeForSymbol(string symbol) {
+            string a = MarketEventSymbols.GetAttributeStringByKey(symbol, ATTRIBUTE_KEY);
             if (a == null)
                 return symbol;
             try {

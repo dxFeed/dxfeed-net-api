@@ -12,7 +12,7 @@ namespace com.dxfeed.native {
 	public class NativeSubscription : IDxSubscription {
 		private readonly IntPtr connectionPtr;
 		private IntPtr subscriptionPtr;
-		private readonly IDxFeedListener listener;
+		private readonly IDxFeedListener eventListener;
         private readonly IDxCandleListener candleListener;
 		//to prevent callback from being garbage collected
 		private readonly C.dxf_event_listener_t callback;
@@ -30,7 +30,7 @@ namespace com.dxfeed.native {
 
 			connectionPtr = connection.Handler;
             this.eventType = eventType;
-			this.listener = listener;
+			this.eventListener = listener;
 
 			C.CheckOk(C.Instance.dxf_create_subscription(connectionPtr, eventType, out subscriptionPtr));
 			try {
@@ -60,8 +60,8 @@ namespace com.dxfeed.native {
             } else {
                 DateTime origin = new DateTime(1970, 1, 1, 0, 0, 0, 0);
                 TimeSpan diff = (DateTime)time - origin;
-                Int64 unix_timestamp = Convert.ToInt64(Math.Floor(diff.TotalMilliseconds));
-                C.CheckOk(C.Instance.dxf_create_subscription_timed(connectionPtr, EventType.Candle, unix_timestamp, out subscriptionPtr));
+                Int64 unixTimestamp = Convert.ToInt64(Math.Floor(diff.TotalMilliseconds));
+                C.CheckOk(C.Instance.dxf_create_subscription_timed(connectionPtr, EventType.Candle, unixTimestamp, out subscriptionPtr));
             }
 
             try {
@@ -76,27 +76,27 @@ namespace com.dxfeed.native {
 			switch (eventType) {
 				case EventType.Order:
 					var orderBuf = NativeBufferFactory.CreateOrderBuf(symbol, data, flags, dataCount);
-					listener.OnOrder<NativeEventBuffer<NativeOrder>, NativeOrder>(orderBuf);
+					eventListener.OnOrder<NativeEventBuffer<NativeOrder>, NativeOrder>(orderBuf);
 					break;
 				case EventType.Profile:
 					var profileBuf = NativeBufferFactory.CreateProfileBuf(symbol, data, flags, dataCount);
-					listener.OnProfile<NativeEventBuffer<NativeProfile>, NativeProfile>(profileBuf);
+					eventListener.OnProfile<NativeEventBuffer<NativeProfile>, NativeProfile>(profileBuf);
 					break;
 				case EventType.Quote:
 					var quoteBuf = NativeBufferFactory.CreateQuoteBuf(symbol, data, flags, dataCount);
-					listener.OnQuote<NativeEventBuffer<NativeQuote>, NativeQuote>(quoteBuf);
+					eventListener.OnQuote<NativeEventBuffer<NativeQuote>, NativeQuote>(quoteBuf);
 					break;
 				case EventType.TimeAndSale:
 					var tsBuf = NativeBufferFactory.CreateTimeAndSaleBuf(symbol, data, flags, dataCount);
-					listener.OnTimeAndSale<NativeEventBuffer<NativeTimeAndSale>, NativeTimeAndSale>(tsBuf);
+					eventListener.OnTimeAndSale<NativeEventBuffer<NativeTimeAndSale>, NativeTimeAndSale>(tsBuf);
 					break;
                 case EventType.Trade:
                     var tBuf = NativeBufferFactory.CreateTradeBuf(symbol, data, flags, dataCount);
-                    listener.OnTrade<NativeEventBuffer<NativeTrade>, NativeTrade>(tBuf);
+                    eventListener.OnTrade<NativeEventBuffer<NativeTrade>, NativeTrade>(tBuf);
                     break;
                 case EventType.Summary:
                     var sBuf = NativeBufferFactory.CreateSummaryBuf(symbol, data, flags, dataCount);
-                    listener.OnFundamental<NativeEventBuffer<NativeSummary>, NativeSummary>(sBuf);
+                    eventListener.OnFundamental<NativeEventBuffer<NativeSummary>, NativeSummary>(sBuf);
                     break;
                 case EventType.Candle:
                     var cBuf = NativeBufferFactory.CreateCandleBuf(symbol, data, flags, dataCount);

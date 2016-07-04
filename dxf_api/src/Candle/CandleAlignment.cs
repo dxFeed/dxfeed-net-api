@@ -55,7 +55,7 @@ namespace com.dxfeed.api.candle {
         /// </summary>
         /// <param name="symbol">original candle event symbol</param>
         /// <returns>candle event symbol string with this candle alignment set.</returns>
-        public String ChangeAttributeForSymbol(string symbol) {
+        public string ChangeAttributeForSymbol(string symbol) {
             return this == DEFAULT ?
                 MarketEventSymbols.RemoveAttributeStringByKey(symbol, ATTRIBUTE_KEY) :
                 MarketEventSymbols.ChangeAttributeStringByKey(symbol, ATTRIBUTE_KEY, ToString());

@@ -8,9 +8,9 @@ namespace com.dxfeed.api.candle {
     /// <h3>Implementation details</h3>
     ///
     /// This attribute is encoded in a symbol string with
-    /// {@link MarketEventSymbols#getAttributeStringByKey(String, String) MarketEventSymbols.getAttributeStringByKey},
-    /// {@link MarketEventSymbols#changeAttributeStringByKey(String, String, String) changeAttributeStringByKey}, and
-    /// {@link MarketEventSymbols#removeAttributeStringByKey(String, String) removeAttributeStringByKey} methods.
+    /// {@link MarketEventSymbols#getAttributeStringByKey(string, string) MarketEventSymbols.getAttributeStringByKey},
+    /// {@link MarketEventSymbols#changeAttributeStringByKey(string, string, string) changeAttributeStringByKey}, and
+    /// {@link MarketEventSymbols#removeAttributeStringByKey(string, string) removeAttributeStringByKey} methods.
     /// The key to use with these methods is available via
     /// {@link #ATTRIBUTE_KEY} constant.
     /// The value that this key shall be set to is equal to
@@ -76,7 +76,7 @@ namespace com.dxfeed.api.candle {
         /// </summary>
         /// <param name="symbol">original candle event symbol.</param>
         /// <returns>candle event symbol string with this aggregation period set.</returns>
-        public String ChangeAttributeForSymbol(String symbol) {
+        public string ChangeAttributeForSymbol(string symbol) {
             return this == DEFAULT ?
                 MarketEventSymbols.RemoveAttributeStringByKey(symbol, ATTRIBUTE_KEY) :
                 MarketEventSymbols.ChangeAttributeStringByKey(symbol, ATTRIBUTE_KEY, ToString());
@@ -143,7 +143,7 @@ namespace com.dxfeed.api.candle {
         /// The value of {@code 1} is omitted in the string representation, so
         /// {@link #DAY} (one day) is represented as {@code "d"}.
         /// This string representation can be converted back into object
-        /// with {@link #parse(String)} method.
+        /// with {@link #parse(string)} method.
         /// </summary>
         /// <returns>string representation of this aggregation period.</returns>
         public override string ToString() {
@@ -156,7 +156,7 @@ namespace com.dxfeed.api.candle {
         /// Parses string representation of aggregation period into object.
         /// Any string that was returned by {@link #toString()} can be parsed.
         /// This method is flexible in the way candle types can be specified.
-        /// See {@link CandleType#parse(String)} for details.
+        /// See {@link CandleType#parse(string)} for details.
         /// </summary>
         /// <param name="s">string representation of aggregation period.</param>
         /// <returns>aggregation period object.</returns>
@@ -212,8 +212,8 @@ namespace com.dxfeed.api.candle {
         /// </summary>
         /// <param name="symbol">candle symbol string.</param>
         /// <returns>candle symbol string with the normalized representation of the the candle period attribute.</returns>
-        public static String NormalizeAttributeForSymbol(string symbol) {
-            String a = MarketEventSymbols.GetAttributeStringByKey(symbol, ATTRIBUTE_KEY);
+        public static string NormalizeAttributeForSymbol(string symbol) {
+            string a = MarketEventSymbols.GetAttributeStringByKey(symbol, ATTRIBUTE_KEY);
             if (a == null)
                 return symbol;
             try {

@@ -107,6 +107,9 @@ namespace com.dxfeed.api.candle {
             CandleType.objCash.Add(typeStr, this);
         }
 
+        /// <summary>
+        /// Get id of candle period type
+        /// </summary>
         public int Id {
             get {
                 return typeId;

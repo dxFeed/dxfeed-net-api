@@ -8,9 +8,9 @@ namespace com.dxfeed.api.candle {
     /// <h3>Implementation details</h3>
     ///
     /// This attribute is encoded in a symbol string with
-    /// {@link MarketEventSymbols#getAttributeStringByKey(String, String) MarketEventSymbols.getAttributeStringByKey},
-    /// {@link MarketEventSymbols#changeAttributeStringByKey(String, String, String) changeAttributeStringByKey}, and
-    /// {@link MarketEventSymbols#removeAttributeStringByKey(String, String) removeAttributeStringByKey} methods.
+    /// {@link MarketEventSymbols#getAttributeStringByKey(string, string) MarketEventSymbols.getAttributeStringByKey},
+    /// {@link MarketEventSymbols#changeAttributeStringByKey(string, string, string) changeAttributeStringByKey}, and
+    /// {@link MarketEventSymbols#removeAttributeStringByKey(string, string) removeAttributeStringByKey} methods.
     /// The key to use with these methods is available via
     /// {@link #ATTRIBUTE_KEY} constant.
     /// The value that this key shall be set to is equal to
@@ -64,12 +64,16 @@ namespace com.dxfeed.api.candle {
         private readonly string value;
         private readonly CandlePriceType priceType;
 
-        public CandlePrice(CandlePriceType priceType, string value) {
+        CandlePrice(CandlePriceType priceType, string value) {
             this.value = value;
             this.priceType = priceType;
             CandlePrice.objCash.Add(value, this);
         }
 
+        /// <summary>
+        /// Get id of price type attribute
+        /// </summary>
+        /// <returns>id of price type attribute</returns>
         public int GetId() {
             return (int)priceType;
         }
@@ -79,7 +83,7 @@ namespace com.dxfeed.api.candle {
         /// </summary>
         /// <param name="symbol">original candle event symbol.</param>
         /// <returns>candle event symbol string with this candle price type set.</returns>
-        public String ChangeAttributeForSymbol(string symbol) {
+        public string ChangeAttributeForSymbol(string symbol) {
             return this == DEFAULT ?
                 MarketEventSymbols.RemoveAttributeStringByKey(symbol, ATTRIBUTE_KEY) :
                 MarketEventSymbols.ChangeAttributeStringByKey(symbol, ATTRIBUTE_KEY, ToString());
@@ -124,7 +128,7 @@ namespace com.dxfeed.api.candle {
                 return CandlePrice.objCash[s];
             // slow path for everything else
             foreach (CandlePrice price in CandlePrice.objCash.Values) {
-                String ps = price.ToString();
+                string ps = price.ToString();
                 if (ps.Length >= n && ps.Substring(0, n).Equals(s, StringComparison.InvariantCultureIgnoreCase))
                     return price;
             }
@@ -137,7 +141,7 @@ namespace com.dxfeed.api.candle {
         /// </summary>
         /// <param name="symbol">candle symbol string.</param>
         /// <returns>candle price of the given candle symbol string.</returns>
-        public static CandlePrice GetAttributeForSymbol(String symbol) {
+        public static CandlePrice GetAttributeForSymbol(string symbol) {
             string s = MarketEventSymbols.GetAttributeStringByKey(symbol, ATTRIBUTE_KEY);
             return s == null ? DEFAULT : Parse(s);
         }
@@ -147,8 +151,8 @@ namespace com.dxfeed.api.candle {
         /// </summary>
         /// <param name="symbol">candle symbol string.</param>
         /// <returns>candle symbol string with the normalized representation of the the candle price type attribute.</returns>
-        public static String NormalizeAttributeForSymbol(String symbol) {
-            String a = MarketEventSymbols.GetAttributeStringByKey(symbol, ATTRIBUTE_KEY);
+        public static string NormalizeAttributeForSymbol(string symbol) {
+            string a = MarketEventSymbols.GetAttributeStringByKey(symbol, ATTRIBUTE_KEY);
             if (a == null)
                 return symbol;
             try {

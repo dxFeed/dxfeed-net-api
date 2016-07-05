@@ -121,7 +121,7 @@ namespace com.dxfeed.native {
         /// <summary>
         /// Add symbol to subscription
         /// </summary>
-        /// <param name="symbol"></param>
+        /// <param name="symbol">symbol</param>
         public void AddSymbol(string symbol) {
             if (eventType == EventType.Candle)
                 return;
@@ -144,7 +144,7 @@ namespace com.dxfeed.native {
         /// Add multiply symbols to subscription.
         /// It's not applicable to Candle symbols.
         /// </summary>
-        /// <param name="symbols"></param>
+        /// <param name="symbols">list of symbols</param>
 		public void AddSymbols(params string[] symbols) {
             if (eventType == EventType.Candle)
                 return;
@@ -155,7 +155,7 @@ namespace com.dxfeed.native {
         /// Remove multiply symbols from subscription.
         /// It's not applicable to Candle symbols.
         /// </summary>
-        /// <param name="symbols"></param>
+        /// <param name="symbols">list of symbols</param>
 		public void RemoveSymbols(params string[] symbols) {
             if (eventType == EventType.Candle)
                 return;
@@ -166,7 +166,7 @@ namespace com.dxfeed.native {
         /// Set multiply symbols to subscription.
         /// It's not applicable to Candle symbols.
         /// </summary>
-        /// <param name="symbols"></param>
+        /// <param name="symbols">list of symbols</param>
 		public void SetSymbols(params string[] symbols) {
             if (eventType == EventType.Candle)
                 return;
@@ -174,10 +174,9 @@ namespace com.dxfeed.native {
 		}
 
         /// <summary>
-        /// clear all symbols from subscription.
+        /// Clear all symbols from subscription.
         /// It's not applicable to Candle symbols.
         /// </summary>
-        /// <param name="symbols"></param>
 		public void Clear() {
             if (eventType == EventType.Candle)
                 return;
@@ -187,7 +186,7 @@ namespace com.dxfeed.native {
         /// <summary>
         /// Get all symbols list from subscription.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>listof subscribed symbols</returns>
 		public unsafe IList<string> GetSymbols() {
 			IntPtr head;
 			int len;
@@ -205,7 +204,7 @@ namespace com.dxfeed.native {
         /// <summary>
         /// Add order source to subscription.
         /// </summary>
-        /// <param name="sources"></param>
+        /// <param name="sources">list of souces</param>
 		public void AddSource(params string[] sources) {
 			Encoding ascii = Encoding.ASCII;
 			for (int i = 0; i < sources.Length; i++) {
@@ -217,7 +216,7 @@ namespace com.dxfeed.native {
         /// <summary>
         /// Remove existing sources and set new
         /// </summary>
-        /// <param name="sources"></param>
+        /// <param name="sources">list of sources</param>
 		public void SetSource(params string[] sources) {
 			if (sources.Length == 0)
 				return;

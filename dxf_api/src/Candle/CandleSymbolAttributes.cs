@@ -7,6 +7,10 @@ namespace com.dxfeed.api.candle {
     /// </summary>
     public static class CandleSymbolAttributes {
 
+        /// <summary>
+        /// Exchange attribute of {@link CandleSymbol} defines exchange identifier where data is
+        /// taken from to build the candles.
+        /// </summary>
         public static class Exchange {
             /// <summary>
             /// Composite exchange where data is taken from all exchanges.
@@ -28,6 +32,9 @@ namespace com.dxfeed.api.candle {
             }
         }
 
+        /// <summary>
+        /// Period attribute of {@link CandleSymbol} defines aggregation period of the candles.
+        /// </summary>
         public static class Period {
 
             /// <summary>
@@ -56,6 +63,9 @@ namespace com.dxfeed.api.candle {
             }
         }
 
+        /// <summary>
+        /// Price type attribute of {@link CandleSymbol} defines price that is used to build the candles.
+        /// </summary>
         public static class Price {
 
             /// <summary>
@@ -91,6 +101,9 @@ namespace com.dxfeed.api.candle {
             public static readonly ICandleSymbolAttribute DEFAULT = CandlePrice.DEFAULT;
         }
 
+        /// <summary>
+        /// Session attribute of {@link CandleSymbol} defines trading that is used to build the candles.
+        /// </summary>
         public static class Session {
 
             /// <summary>
@@ -109,6 +122,9 @@ namespace com.dxfeed.api.candle {
             public static readonly ICandleSymbolAttribute DEFAULT = CandleSession.DEFAULT;
         }
 
+        /// <summary>
+        /// Candle alignment attribute of {@link CandleSymbol} defines how candle are aligned with respect to time.
+        /// </summary>
         public static class Alignment {
 
             /// <summary>

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace com.dxfeed.api.candle {
     /// <summary>
-    ///  Session attribute of {@link CandleSymbol} defines trading that is used to build the candles.
+    /// Session attribute of {@link CandleSymbol} defines trading that is used to build the candles.
     ///
     /// <h3>Implementation details</h3>
     ///

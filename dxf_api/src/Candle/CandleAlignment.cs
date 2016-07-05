@@ -3,6 +3,20 @@ using System.Collections.Generic;
 
 namespace com.dxfeed.api.candle {
 
+    /// <summary>
+    /// Candle alignment attribute of {@link CandleSymbol} defines how candle are aligned with respect to time.
+    ///
+    /// <h3>Implementation details</h3>
+    ///
+    /// This attribute is encoded in a symbol string with
+    /// {@link MarketEventSymbols#getAttributeStringByKey(String, String) MarketEventSymbols.getAttributeStringByKey},
+    /// {@link MarketEventSymbols#changeAttributeStringByKey(String, String, String) changeAttributeStringByKey}, and
+    /// {@link MarketEventSymbols#removeAttributeStringByKey(String, String) removeAttributeStringByKey} methods.
+    /// The key to use with these methods is available via
+    /// {@link #ATTRIBUTE_KEY} constant.
+    /// The value that this key shall be set to is equal to
+    /// the corresponding {@link #toString() CandleAlignment.toString()}
+    /// </summary>
     class CandleAlignment : ICandleSymbolAttribute {
 
         /// <summary>

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace com.dxfeed.api.candle {
     /// <summary>
-    ///  * Price type attribute of {@link CandleSymbol} defines price that is used to build the candles.
+    /// Price type attribute of {@link CandleSymbol} defines price that is used to build the candles.
     ///
     /// <h3>Implementation details</h3>
     ///

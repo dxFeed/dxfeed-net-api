@@ -66,13 +66,25 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="src\candle\CandleAlignment.cs" />
+    <Compile Include="src\candle\CandleExchange.cs" />
+    <Compile Include="src\candle\CandlePeriod.cs" />
+    <Compile Include="src\candle\CandlePrice.cs" />
+    <Compile Include="src\candle\CandleSession.cs" />
+    <Compile Include="src\candle\CandleSymbol.cs" />
+    <Compile Include="src\candle\CandleSymbolAttributes.cs" />
+    <Compile Include="src\candle\CandleType.cs" />
+    <Compile Include="src\candle\ICandleSymbolAttribute.cs" />
+    <Compile Include="src\candle\MarketEventSymbols.cs" />
     <Compile Include="src\data\DxString.cs" />
     <Compile Include="src\data\Side.cs" />
     <Compile Include="src\DxException.cs" />
     <Compile Include="src\events\EventFlag.cs" />
     <Compile Include="src\events\EventParams.cs" />
+    <Compile Include="src\events\IDxCandle.cs" />
     <Compile Include="src\extras\EventPrinter.cs" />
     <Compile Include="src\extras\TimeConverter.cs" />
+    <Compile Include="src\IDxCandleListener.cs" />
     <Compile Include="src\IDxFeedListener.cs" />
     <Compile Include="src\events\EventType.cs" />
     <Compile Include="src\events\IDxEventBuf.cs" />

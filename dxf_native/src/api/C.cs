@@ -151,6 +151,17 @@ namespace com.dxfeed.native.api
         //[DllImport(DXFEED_DLL, CallingConvention = CallingConvention.Cdecl)]
         internal abstract int dxf_create_subscription(IntPtr connection, EventType event_types, out IntPtr subscription);
 
+        /*
+         *	Creates a subscription with the specified parameters.
+
+         *  connection - a handle of a previously created connection which the subscription will be using
+         *  event_types - a bitmask of the subscription event types. See 'dx_event_id_t' and 'DX_EVENT_BIT_MASK'
+         *                for information on how to create an event type bitmask
+         *  time - time in the past (unix time in milliseconds)
+         *  OUT subscription - a handle of the created subscription
+         */
+        internal abstract int dxf_create_subscription_timed(IntPtr connection, EventType event_types, 
+                                                            Int64 time, out IntPtr subscription);
 
         /*
          *	Closes a subscription.
@@ -183,6 +194,14 @@ namespace com.dxfeed.native.api
         //DXFEED_API ERRORCODE dxf_add_symbols (dxf_subscription_t subscription, dxf_const_string_t* symbols, int symbol_count);
         //[DllImport(DXFEED_DLL, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
         internal abstract int dxf_add_symbols(IntPtr subscription, string[] symbols, int count);
+
+        /*
+         *	Adds a candle symbol to the subscription.
+ 
+         *  subscription - a handle of the subscription to which a symbol is added
+         *  candle_attributes - pointer to the candle struct
+         */
+        internal abstract int dxf_add_candle_symbol(IntPtr subscription, IntPtr candle_attributes);
 
         /*
          *	Removes a single symbol from the subscription.
@@ -345,22 +364,62 @@ namespace com.dxfeed.native.api
         internal abstract int dxf_add_order_source(IntPtr subscription, byte[] source);
 
         /*
-         *  Creates Order or Candle snapshot with the specified parameters.
+         *	API that allows user to create candle symbol attributes
          *
-         *  For Order events.
+         *  base_symbol - the symbols to add
+         *  exchange_code - exchange attribute of this symbol
+         *  period_value -  aggregation period value of this symbol
+         *  period_type - aggregation period type of this symbol
+         *  price - price type attribute of this symbol
+         *  session - session attribute of this symbol
+         *  alignment - alignment attribute of this symbol
+         *  candle_attributes - pointer to the configured candle attributes struct
+         */
+        internal abstract int dxf_create_candle_symbol_attributes(string base_symbol,
+                                                                 char exchange_code,
+                                                                 double period_value,
+                                                                 int period_type,
+                                                                 int price,
+                                                                 int session,
+                                                                 int alignment,
+                                                                 out IntPtr candle_attributes);
+
+        /*
+         *	Free memory allocated by dxf_initialize_candle_symbol_attributes(...) function
+
+         *  candle_attributes - pointer to the candle attributes struct
+         */
+        internal abstract int dxf_delete_candle_symbol_attributes(IntPtr candle_attributes);
+
+        /*
+         *  Creates Order snapshot with the specified parameters.
+         *
          *  If source is NULL string subscription on Order event will be performed. You can specify order 
          *  source for Order event by passing suffix: "BYX", "BZX", "DEA", "DEX", "ISE", "IST", "NTV".
          *  If source is equal to "COMPOSITE_BID" or "COMPOSITE_ASK" subscription on MarketMaker event will 
          *  be performed.
          *
          *  connection - a handle of a previously created connection which the subscription will be using
-         *  event_id - identifier of event (dx_eid_order or dx_eid_candle)
+         *  symbol - the symbol to add
          *  source - order source for Order event with 4 symbols maximum length OR keyword which can be 
          *           one of COMPOSITE_BID or COMPOSITE_ASK
+         *  time - time in the past (unix time in milliseconds)
          *  OUT snapshot - a handle of the created snapshot
          */
-        internal abstract int dxf_create_snapshot(IntPtr connection, int eventId, string symbol,
-                                                byte[] source, int time, out IntPtr snapshot);
+        internal abstract int dxf_create_order_snapshot(IntPtr connection, string symbol, byte[] source, 
+                                                        Int64 time, out IntPtr snapshot);
+
+        /*
+         *  Creates Candle snapshot with the specified parameters.
+         *
+         *  connection - a handle of a previously created connection which the subscription will be using
+         *  candle_attributes - object specified symbol attributes of candle
+         *  time - time in the past (unix time in milliseconds)
+         *  OUT snapshot - a handle of the created snapshot
+         */
+        internal abstract int dxf_create_candle_snapshot(IntPtr connection, IntPtr candle_attributes, 
+                                                         Int64 time, out IntPtr snapshot);
+
         /*
          *  Closes a snapshot.
          *  All the data associated with it will be freed.

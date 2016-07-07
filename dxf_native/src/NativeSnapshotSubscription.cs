@@ -115,15 +115,11 @@ namespace com.dxfeed.native {
                 symbol.ExchangeCode, symbol.PeriodValue, symbol.PeriodId, symbol.PriceId,
                 symbol.SessionId, symbol.AlignmentId, out candleAttributesPtr));
             } catch (DxException) {
-                Dispose();
                 throw;
             }
 
             try {
                 C.CheckOk(C.Instance.dxf_create_candle_snapshot(connectionPtr, candleAttributesPtr, time, out snapshotPtr));
-            } catch (DxException) {
-                Dispose();
-                throw;
             } finally {
                 C.CheckOk(C.Instance.dxf_delete_candle_symbol_attributes(candleAttributesPtr));
             }

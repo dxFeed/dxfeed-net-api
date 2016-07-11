@@ -68,6 +68,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="src\api\CandleSymbolTest.cs" />
     <Compile Include="src\api\DxStringTest.cs" />
+    <Compile Include="src\api\NativeCandleSubscriptionTest.cs" />
+    <Compile Include="src\api\NativeSubscriptionTest.cs" />
+    <Compile Include="src\tools\TestListener.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\dxf_api\dxf_api.csproj">

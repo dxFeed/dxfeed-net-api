@@ -90,6 +90,13 @@ namespace com.dxfeed.native.api {
             return __dxf_add_candle_symbol(subscription, candle_attributes);
         }
 
+        [DllImport(DXFEED_DLL, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl, EntryPoint = "dxf_remove_candle_symbol")]
+        private static extern int __dxf_remove_candle_symbol(IntPtr subscription, IntPtr candle_attributes);
+        internal override int dxf_remove_candle_symbol(IntPtr subscription, IntPtr candle_attributes)
+        {
+            return __dxf_remove_candle_symbol(subscription, candle_attributes);
+        }
+
         [DllImport(DXFEED_DLL, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl, EntryPoint="dxf_remove_symbol")]
         private static extern int __dxf_remove_symbol(IntPtr subcription, string symbol);
         internal override int dxf_remove_symbol(IntPtr subcription, string symbol)
@@ -258,6 +265,13 @@ namespace com.dxfeed.native.api {
         internal override int dxf_detach_snapshot_listener(IntPtr snapshot, dxf_snapshot_listener_t snapshotListener)
         {
             return __dxf_detach_snapshot_listener(snapshot, snapshotListener);
+        }
+
+        [DllImport(DXFEED_DLL, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl, EntryPoint = "dxf_get_snapshot_symbol")]
+        private static extern int __dxf_get_snapshot_symbol(IntPtr snapshot, out IntPtr symbol);
+        internal override int dxf_get_snapshot_symbol(IntPtr snapshot, out IntPtr symbol)
+        {
+            return __dxf_get_snapshot_symbol(snapshot, out symbol);
         }
     }
 }

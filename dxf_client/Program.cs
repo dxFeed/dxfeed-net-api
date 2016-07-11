@@ -94,29 +94,39 @@ namespace dxf_client {
 				address, events, isSnapshot ? " snapshot" : string.Empty, symbols));
 
 			// NativeTools.InitializeLogging("dxf_client.log", true, true);
+
 			var listener = new EventPrinter();
 			using (var con = new NativeConnection(address, OnDisconnect)) {
-				IDxSubscription s;
-				if (isSnapshot) {
-					s = con.CreateSnapshotSubscription(0, new SnapshotPrinter());
-				} else if (events == EventType.Candle) {
-					s = con.CreateSubscription(null, listener);
-				} else {
-					s = con.CreateSubscription(events, listener);
+				IDxSubscription s = null;
+				try { 
+					if (isSnapshot) {
+						s = con.CreateSnapshotSubscription(0, new SnapshotPrinter());
+					} else if (events == EventType.Candle) {
+						s = con.CreateSubscription(null, listener);
+					} else {
+						s = con.CreateSubscription(events, listener);
+					}
+
+					if (events == EventType.Order && sources.Length > 0)
+						s.SetSource(sources);
+
+					if (events == EventType.Candle) {
+						CandleSymbol candleSymbol = CandleSymbol.ValueOf(symbols);
+						s.AddSymbol(candleSymbol);
+					} else {
+						s.AddSymbols(symbols.Split(','));
+					}
+
+					Console.WriteLine("Press enter to stop");
+					Console.ReadLine();
+				} catch (DxException dxException) {
+					Console.WriteLine("Native exception occured: " + dxException.Message);
+				} catch (Exception exc) {
+					Console.WriteLine("Exception occured: " + exc.Message);
+				} finally {
+					if (s != null)
+						s.Dispose();
 				}
-
-				if (events == EventType.Order && sources.Length > 0)
-					s.SetSource(sources);
-
-				if (events == EventType.Candle) {
-					CandleSymbol candleSymbol = CandleSymbol.ValueOf(symbols);
-					s.AddSymbol(candleSymbol);
-				} else {
-					s.AddSymbols(symbols.Split(','));
-				}
-
-				Console.WriteLine("Press enter to stop");
-				Console.ReadLine();
 			}
 		}
 

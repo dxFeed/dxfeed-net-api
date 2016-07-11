@@ -204,6 +204,14 @@ namespace com.dxfeed.native.api
         internal abstract int dxf_add_candle_symbol(IntPtr subscription, IntPtr candle_attributes);
 
         /*
+         *	Remove a candle symbol from the subscription.
+
+         *  subscription - a handle of the subscription from symbol will be removed
+         *  candle_attributes - pointer to the candle struct
+        */
+        internal abstract int dxf_remove_candle_symbol(IntPtr subscription, IntPtr candle_attributes);
+
+        /*
          *	Removes a single symbol from the subscription.
          *	
          *  subscription - a handle of the subscription from which a symbol is removed
@@ -447,6 +455,15 @@ namespace com.dxfeed.native.api
          *  snapshot_listener - a listener callback function pointer
          */
         internal abstract int dxf_detach_snapshot_listener(IntPtr snapshot, dxf_snapshot_listener_t snapshotListener);
+
+        /*
+         *  Retrieves the symbol currently added to the snapshot subscription.
+         *  The memory for the resulting symbol is allocated internally, so no actions to free it are required.
+         *
+         *  snapshot - a handle of the snapshot to which a listener is to be detached
+         *  OUT symbol - a pointer to the string object to which the symbol is to be stored
+         */
+        internal abstract int dxf_get_snapshot_symbol(IntPtr snapshot, out IntPtr symbol);
 
     }
 }

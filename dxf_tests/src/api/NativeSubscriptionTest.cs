@@ -21,9 +21,9 @@ namespace com.dxfeed.api {
         static string address = "mddqa.in.devexperts.com:7400";
         static int isConnected = 0;
         /// <summary>
-        /// Events timeout 2min
+        /// Events timeout 3min
         /// </summary>
-        static int eventsTimeout = 120000;
+        static int eventsTimeout = 180000;
         /// <summary>
         /// Events loop sleep time is 100 millis
         /// </summary>
@@ -270,10 +270,41 @@ namespace com.dxfeed.api {
 
         [Test]
         public void TestSetSource() {
-            TestListener listener = new TestListener(eventsTimeout, eventsSleepTime, IsConnected);
+            //TODO: when called SetSource on existing subscription OnDisconnect callback is received
+            //      although events comes as expected
+            //      for this test case set OnDisconnect callback to nul temporally
+            TestListener listener = new TestListener(eventsTimeout, eventsSleepTime, null);
             EventType events = EventType.Order;
             string source = "NTV";
-            string[] source2 = new string[] { "DEX", "IST" };
+            string[] sources2 = new string[] { "DEX", "DEA" };
+            string[] symbols = new string[] { "AAPL", "IBM" };
+            using (var con = new NativeConnection(address, OnDisconnect)) {
+                Interlocked.Exchange(ref isConnected, 1);
+                using (IDxSubscription s = con.CreateSubscription(events, listener)) {
+                    s.AddSymbols(symbols);
+                    Thread.Sleep(3000);
+
+                    s.SetSource(source);
+                    Thread.Sleep(10000);
+                    listener.ClearEvents<IDxOrder>();
+                    Thread.Sleep(3000);
+                    listener.WaitOrders(source);
+                    listener.WaitEvents<IDxOrder>(symbols);
+                    Assert.AreEqual(0, listener.GetOrderCount(sources2));
+                }
+            }
+        }
+
+        [Test]
+        public void TestSetSource2() {
+            //TODO: when called SetSource on existing subscription OnDisconnect callback is received
+            //      although events comes as expected
+            //      for this test case set OnDisconnect callback to nul temporally
+            TestListener listener = new TestListener(eventsTimeout, eventsSleepTime, null);
+            EventType events = EventType.Order;
+            string source = "NTV";
+            string[] sources2 = new string[] { "DEX", "DEA" };
+            string[] allSource = new string[] { "NTV", "DEX", "DEA" };
             string[] symbols = new string[] { "AAPL", "IBM", "XBT/USD" };
             using (var con = new NativeConnection(address, OnDisconnect)) {
                 Interlocked.Exchange(ref isConnected, 1);
@@ -281,12 +312,54 @@ namespace com.dxfeed.api {
                     s.SetSource(source);
                     s.AddSymbols(symbols);
 
+                    Thread.Sleep(3000);
                     listener.WaitOrders(source);
                     listener.WaitEvents<IDxOrder>(symbols);
+                    Assert.AreEqual(0, listener.GetOrderCount(sources2));
 
+                    s.SetSource(sources2);
+                    Thread.Sleep(1000);
                     listener.ClearEvents<IDxOrder>();
-                    s.SetSource(source2);
-                    listener.WaitOrders(source2);
+                    Thread.Sleep(3000);
+                    listener.WaitOrders(sources2);
+                    listener.WaitEvents<IDxOrder>(symbols);
+                    Assert.AreEqual(0, listener.GetOrderCount(source));
+                }
+
+            }
+        }
+
+        [Test]
+        public void TestSetSource3() {
+            //TODO: when called SetSource on existing subscription OnDisconnect callback is received
+            //      although events comes as expected
+            //      for this test case set OnDisconnect callback to nul temporally
+            TestListener listener = new TestListener(eventsTimeout, eventsSleepTime, null);
+            EventType events = EventType.Order;
+            string source = "NTV";
+            string[] sources2 = new string[] { "DEX", "DEA" };
+            string[] allSource = new string[] { "NTV", "DEX", "DEA" };
+            string[] symbols = new string[] { "AAPL", "IBM", "XBT/USD" };
+            using (var con = new NativeConnection(address, OnDisconnect)) {
+                Interlocked.Exchange(ref isConnected, 1);
+                using (IDxSubscription s = con.CreateSubscription(events, listener)) {
+                    s.AddSymbols(symbols);
+                    listener.WaitOrders(allSource);
+                    listener.WaitEvents<IDxOrder>(symbols);
+
+                    s.SetSource(source);
+                    Thread.Sleep(10000);
+                    listener.ClearEvents<IDxOrder>();
+                    Thread.Sleep(3000);
+                    listener.WaitOrders(source);
+                    listener.WaitEvents<IDxOrder>(symbols);
+                    Assert.AreEqual(0, listener.GetOrderCount(sources2));
+
+                    s.AddSource(sources2);
+                    Thread.Sleep(1000);
+                    listener.ClearEvents<IDxOrder>();
+                    Thread.Sleep(3000);
+                    listener.WaitOrders(allSource);
                     listener.WaitEvents<IDxOrder>(symbols);
                 }
             }

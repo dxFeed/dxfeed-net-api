@@ -193,6 +193,21 @@ namespace com.dxfeed.tests.tools
             }
         }
 
+        public int GetOrderCount(params string[] sources) {
+            rwl.AcquireReaderLock(lockTimeout);
+            try {
+                List<ReceivedEvent<IDxOrder>> list = GetList<IDxOrder>();
+                List<string> sourceList = new List<string>(sources);
+                int count = 0;
+                foreach (ReceivedEvent<IDxOrder> ev in list)
+                    if (sourceList.Contains(ev.Event.Source))
+                        count++;
+                return count;
+            } finally {
+                rwl.ReleaseReaderLock();
+            }
+        }
+
         #region Implementation of IDxFeedListener
 
         public void OnQuote<TB, TE>(TB buf)

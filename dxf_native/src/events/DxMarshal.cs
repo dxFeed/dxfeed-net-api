@@ -13,7 +13,7 @@ namespace com.dxfeed.native.events {
 		private static readonly int PROFILE_SIZE;
 		private static readonly int MM_SIZE;
 		private static readonly int TS_SIZE;
-        private static readonly int CANDLE_SIZE;
+		private static readonly int CANDLE_SIZE;
 
 		static DxMarshal() {
 			QUOTE_SIZE = sizeof (DxQuote);
@@ -23,7 +23,7 @@ namespace com.dxfeed.native.events {
 			PROFILE_SIZE = sizeof (DxProfile);
 			MM_SIZE = sizeof (DxMarketMaker);
 			TS_SIZE = sizeof (DxTimeAndSale);
-            CANDLE_SIZE = sizeof(DxCandle);
+			CANDLE_SIZE = sizeof(DxCandle);
 		}
 
 		public static string ReadString(IntPtr ptr) {
@@ -58,9 +58,9 @@ namespace com.dxfeed.native.events {
 			return new NativeTimeAndSale((DxTimeAndSale*) IntPtr.Add(head, offset*TS_SIZE));
 		}
 
-        public static NativeCandle ReadCandle(IntPtr head, int offset) {
-            return new NativeCandle((DxCandle*)IntPtr.Add(head, offset * CANDLE_SIZE));
-        }
+		public static NativeCandle ReadCandle(IntPtr head, int offset) {
+			return new NativeCandle((DxCandle*)IntPtr.Add(head, offset * CANDLE_SIZE));
+		}
 
 		public static DxString ReadDxString(IntPtr ptr) {
 			return new DxString((char *)ptr.ToPointer());

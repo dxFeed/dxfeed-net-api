@@ -57,12 +57,21 @@ namespace com.dxfeed.native.api
          */
         /* -------------------------------------------------------------------------- */
         /*
-        typedef void (*dxf_event_listener_t) (int event_type, dxf_const_string_t symbol_name,
-                                                const dxf_event_data_t* data, dxf_event_flags_t flags,
-                                                int data_count, void* user_data);
+         * typedef void (*dxf_event_listener_t) (int event_type, dxf_const_string_t symbol_name,
+                                                 const dxf_event_data_t* data, int data_count,
+                                                 void* user_data);
+         */
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        internal delegate void dxf_event_listener_t(EventType event_type, IntPtr symbol, IntPtr data, int data_count, IntPtr user_data);
+
+        /*
+            typedef void (*dxf_event_listener_t) (int event_type, dxf_const_string_t symbol_name,
+                                                  const dxf_event_data_t* data, int data_count, 
+                                                  const dxf_event_params_t* event_params, void* user_data);
         */
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        internal delegate void dxf_event_listener_t(EventType event_type, IntPtr symbol, IntPtr data, EventFlag flags, int data_count, IntPtr user_data);
+        internal delegate void dxf_event_listener_v2_t(EventType event_type, IntPtr symbol, IntPtr data, int data_count, DxEventParams event_params, IntPtr user_data);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate void dxf_conn_termination_notifier_t(IntPtr connection, IntPtr user_data);
@@ -76,6 +85,14 @@ namespace com.dxfeed.native.api
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate void dxf_socket_thread_destruction_notifier_t(IntPtr connection, IntPtr user_data);
+
+        /// <summary>
+        /// Snapshot listener prototype
+        /// </summary>
+        /// <param name="snapshotData">pointer to the received snapshot data</param>
+        /// <param name="userData">pointer to user struct, use NULL by default</param>
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        internal delegate void dxf_snapshot_listener_t(IntPtr snapshotData, IntPtr userData);
 
         /*
          *	Initializes the internal logger.
@@ -135,6 +152,17 @@ namespace com.dxfeed.native.api
         //[DllImport(DXFEED_DLL, CallingConvention = CallingConvention.Cdecl)]
         internal abstract int dxf_create_subscription(IntPtr connection, EventType event_types, out IntPtr subscription);
 
+        /*
+         *	Creates a subscription with the specified parameters.
+
+         *  connection - a handle of a previously created connection which the subscription will be using
+         *  event_types - a bitmask of the subscription event types. See 'dx_event_id_t' and 'DX_EVENT_BIT_MASK'
+         *                for information on how to create an event type bitmask
+         *  time - time in the past (unix time in milliseconds)
+         *  OUT subscription - a handle of the created subscription
+         */
+        internal abstract int dxf_create_subscription_timed(IntPtr connection, EventType event_types, 
+                                                            Int64 time, out IntPtr subscription);
 
         /*
          *	Closes a subscription.
@@ -167,6 +195,22 @@ namespace com.dxfeed.native.api
         //DXFEED_API ERRORCODE dxf_add_symbols (dxf_subscription_t subscription, dxf_const_string_t* symbols, int symbol_count);
         //[DllImport(DXFEED_DLL, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
         internal abstract int dxf_add_symbols(IntPtr subscription, string[] symbols, int count);
+
+        /*
+         *	Adds a candle symbol to the subscription.
+ 
+         *  subscription - a handle of the subscription to which a symbol is added
+         *  candle_attributes - pointer to the candle struct
+         */
+        internal abstract int dxf_add_candle_symbol(IntPtr subscription, IntPtr candle_attributes);
+
+        /*
+         *	Remove a candle symbol from the subscription.
+
+         *  subscription - a handle of the subscription from symbol will be removed
+         *  candle_attributes - pointer to the candle struct
+        */
+        internal abstract int dxf_remove_candle_symbol(IntPtr subscription, IntPtr candle_attributes);
 
         /*
          *	Removes a single symbol from the subscription.
@@ -237,7 +281,7 @@ namespace com.dxfeed.native.api
         //DXFEED_API ERRORCODE dxf_attach_event_listener (dxf_subscription_t subscription, dxf_event_listener_t event_listener, void* user_data);
         //[DllImport(DXFEED_DLL, CallingConvention = CallingConvention.Cdecl)]
         internal abstract int dxf_attach_event_listener(IntPtr subscription, dxf_event_listener_t event_listener,
-                                                             IntPtr user_data);
+                                                        IntPtr user_data);
 
         /*
          *	Detaches a listener from the subscription.
@@ -249,6 +293,29 @@ namespace com.dxfeed.native.api
         //DXFEED_API ERRORCODE dxf_detach_event_listener (dxf_subscription_t subscription, dxf_event_listener_t event_listener);
         //[DllImport(DXFEED_DLL, CallingConvention = CallingConvention.Cdecl)]
         internal abstract int dxf_detach_event_listener(IntPtr subscription, dxf_event_listener_t listener);
+
+        /*
+         *	Attaches a extended listener callback to the subscription.
+         *  This callback will be invoked when the new event data for the subscription symbols arrives.
+         *  No error occurs if it's attempted to attach the same listener twice or more.
+         *  
+         *  This listener differs with extend number of callback parameters.
+         * 
+         *  subscription - a handle of the subscription to which a listener is to be attached
+         *  event_listener - a listener callback function pointer
+         *  user_data - if there isn't user data pass NULL
+         */
+        internal abstract int dxf_attach_event_listener_v2(IntPtr subscription, dxf_event_listener_v2_t event_listener,
+                                                           IntPtr user_data);
+
+        /*
+         *	Detaches a extended listener from the subscription.
+         *  No error occurs if it's attempted to detach a listener which wasn't previously attached.
+         *
+         *  subscription - a handle of the subscription from which a listener is to be detached
+         *  event_listener - a listener callback function pointer
+         */
+        internal abstract int dxf_detach_event_listener_v2(IntPtr subscription, dxf_event_listener_v2_t listener);
 
         /*
          *	Retrieves the subscription event types.
@@ -304,5 +371,100 @@ namespace com.dxfeed.native.api
          *  source - source of order event to add, 4 symbols maximum length
          */
         internal abstract int dxf_add_order_source(IntPtr subscription, byte[] source);
+
+        /*
+         *	API that allows user to create candle symbol attributes
+         *
+         *  base_symbol - the symbols to add
+         *  exchange_code - exchange attribute of this symbol
+         *  period_value -  aggregation period value of this symbol
+         *  period_type - aggregation period type of this symbol
+         *  price - price type attribute of this symbol
+         *  session - session attribute of this symbol
+         *  alignment - alignment attribute of this symbol
+         *  candle_attributes - pointer to the configured candle attributes struct
+         */
+        internal abstract int dxf_create_candle_symbol_attributes(string base_symbol,
+                                                                 char exchange_code,
+                                                                 double period_value,
+                                                                 int period_type,
+                                                                 int price,
+                                                                 int session,
+                                                                 int alignment,
+                                                                 out IntPtr candle_attributes);
+
+        /*
+         *	Free memory allocated by dxf_initialize_candle_symbol_attributes(...) function
+
+         *  candle_attributes - pointer to the candle attributes struct
+         */
+        internal abstract int dxf_delete_candle_symbol_attributes(IntPtr candle_attributes);
+
+        /*
+         *  Creates Order snapshot with the specified parameters.
+         *
+         *  If source is NULL string subscription on Order event will be performed. You can specify order 
+         *  source for Order event by passing suffix: "BYX", "BZX", "DEA", "DEX", "ISE", "IST", "NTV".
+         *  If source is equal to "COMPOSITE_BID" or "COMPOSITE_ASK" subscription on MarketMaker event will 
+         *  be performed.
+         *
+         *  connection - a handle of a previously created connection which the subscription will be using
+         *  symbol - the symbol to add
+         *  source - order source for Order event with 4 symbols maximum length OR keyword which can be 
+         *           one of COMPOSITE_BID or COMPOSITE_ASK
+         *  time - time in the past (unix time in milliseconds)
+         *  OUT snapshot - a handle of the created snapshot
+         */
+        internal abstract int dxf_create_order_snapshot(IntPtr connection, string symbol, byte[] source, 
+                                                        Int64 time, out IntPtr snapshot);
+
+        /*
+         *  Creates Candle snapshot with the specified parameters.
+         *
+         *  connection - a handle of a previously created connection which the subscription will be using
+         *  candle_attributes - object specified symbol attributes of candle
+         *  time - time in the past (unix time in milliseconds)
+         *  OUT snapshot - a handle of the created snapshot
+         */
+        internal abstract int dxf_create_candle_snapshot(IntPtr connection, IntPtr candle_attributes, 
+                                                         Int64 time, out IntPtr snapshot);
+
+        /*
+         *  Closes a snapshot.
+         *  All the data associated with it will be freed.
+         *
+         *  snapshot - a handle of the snapshot to close
+         */
+        internal abstract int dxf_close_snapshot(IntPtr snapshot);
+
+        /*
+         *  Attaches a listener callback to the snapshot.
+         *  This callback will be invoked when the new snapshot arrives or existing updates.
+         *  No error occurs if it's attempted to attach the same listener twice or more.
+         *
+         *  snapshot - a handle of the snapshot to which a listener is to be attached
+         *  snapshot_listener - a listener callback function pointer
+        */
+        internal abstract int dxf_attach_snapshot_listener(IntPtr snapshot, dxf_snapshot_listener_t snapshotListener,
+                                                           IntPtr userData);
+
+        /*
+         *  Detaches a listener from the snapshot.
+         *  No error occurs if it's attempted to detach a listener which wasn't previously attached.
+         *
+         *  snapshot - a handle of the snapshot to which a listener is to be detached
+         *  snapshot_listener - a listener callback function pointer
+         */
+        internal abstract int dxf_detach_snapshot_listener(IntPtr snapshot, dxf_snapshot_listener_t snapshotListener);
+
+        /*
+         *  Retrieves the symbol currently added to the snapshot subscription.
+         *  The memory for the resulting symbol is allocated internally, so no actions to free it are required.
+         *
+         *  snapshot - a handle of the snapshot to which a listener is to be detached
+         *  OUT symbol - a pointer to the string object to which the symbol is to be stored
+         */
+        internal abstract int dxf_get_snapshot_symbol(IntPtr snapshot, out IntPtr symbol);
+
     }
 }

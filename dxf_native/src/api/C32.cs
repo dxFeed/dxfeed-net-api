@@ -52,6 +52,12 @@ namespace com.dxfeed.native.api {
         	return __dxf_create_subscription(connection, event_types, out subscription);
         }
 
+        [DllImport(DXFEED_DLL, CallingConvention = CallingConvention.Cdecl, EntryPoint = "dxf_create_subscription_timed")]
+        private static extern int __dxf_create_subscription_timed(IntPtr connection, EventType event_types, Int64 time, out IntPtr subscription);
+        internal override int dxf_create_subscription_timed(IntPtr connection, EventType event_types, Int64 time, out IntPtr subscription)
+        {
+            return __dxf_create_subscription_timed(connection, event_types, time, out subscription);
+        }
 
 
         [DllImport(DXFEED_DLL, CallingConvention = CallingConvention.Cdecl, EntryPoint="dxf_close_subscription")]
@@ -77,6 +83,19 @@ namespace com.dxfeed.native.api {
         	return __dxf_add_symbols(subscription, symbols, count);
         }
 
+        [DllImport(DXFEED_DLL, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl, EntryPoint = "dxf_add_candle_symbol")]
+        private static extern int __dxf_add_candle_symbol(IntPtr subscription, IntPtr candle_attributes);
+        internal override int dxf_add_candle_symbol(IntPtr subscription, IntPtr candle_attributes)
+        {
+            return __dxf_add_candle_symbol(subscription, candle_attributes);
+        }
+
+        [DllImport(DXFEED_DLL, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl, EntryPoint = "dxf_remove_candle_symbol")]
+        private static extern int __dxf_remove_candle_symbol(IntPtr subscription, IntPtr candle_attributes);
+        internal override int dxf_remove_candle_symbol(IntPtr subscription, IntPtr candle_attributes)
+        {
+            return __dxf_remove_candle_symbol(subscription, candle_attributes);
+        }
 
         [DllImport(DXFEED_DLL, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl, EntryPoint="dxf_remove_symbol")]
         private static extern int __dxf_remove_symbol(IntPtr subcription, string symbol);
@@ -123,15 +142,32 @@ namespace com.dxfeed.native.api {
                                                              IntPtr user_data);
         internal override int dxf_attach_event_listener(IntPtr subscription, dxf_event_listener_t event_listener,
                                                              IntPtr user_data)
-	{
-		return __dxf_attach_event_listener(subscription, event_listener, user_data);
-	}
+        {
+            return __dxf_attach_event_listener(subscription, event_listener, user_data);
+        }
 
         [DllImport(DXFEED_DLL, CallingConvention = CallingConvention.Cdecl, EntryPoint="dxf_detach_event_listener")]
         private static extern int __dxf_detach_event_listener(IntPtr subscription, dxf_event_listener_t listener);
         internal override int dxf_detach_event_listener(IntPtr subscription, dxf_event_listener_t listener)
         {
         	return __dxf_detach_event_listener(subscription, listener);
+        }
+
+
+        [DllImport(DXFEED_DLL, CallingConvention = CallingConvention.Cdecl, EntryPoint = "dxf_attach_event_listener_v2")]
+        private static extern int __dxf_attach_event_listener_v2(IntPtr subscription, dxf_event_listener_v2_t event_listener,
+                                                             IntPtr user_data);
+        internal override int dxf_attach_event_listener_v2(IntPtr subscription, dxf_event_listener_v2_t event_listener,
+                                                             IntPtr user_data)
+        {
+            return __dxf_attach_event_listener_v2(subscription, event_listener, user_data);
+        }
+
+        [DllImport(DXFEED_DLL, CallingConvention = CallingConvention.Cdecl, EntryPoint = "dxf_detach_event_listener_v2")]
+        private static extern int __dxf_detach_event_listener_v2(IntPtr subscription, dxf_event_listener_v2_t listener);
+        internal override int dxf_detach_event_listener_v2(IntPtr subscription, dxf_event_listener_v2_t listener)
+        {
+            return __dxf_detach_event_listener_v2(subscription, listener);
         }
 
 
@@ -170,6 +206,72 @@ namespace com.dxfeed.native.api {
         internal override int dxf_add_order_source(IntPtr subscription, byte[] source)
         {
             return __dxf_add_order_source(subscription, source);
+        }
+
+        [DllImport(DXFEED_DLL, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl, EntryPoint = "dxf_create_candle_symbol_attributes")]
+        private static extern int __dxf_create_candle_symbol_attributes(string base_symbol, char exchange_code, double period_value, int period_type, 
+                                                                        int price, int session, int alignment, out IntPtr candle_attributes);
+        internal override int dxf_create_candle_symbol_attributes(string base_symbol, char exchange_code, double period_value, int period_type, 
+                                                                        int price, int session, int alignment, out IntPtr candle_attributes)
+        {
+            return __dxf_create_candle_symbol_attributes(base_symbol, exchange_code, period_value, period_type, price, session, alignment, out candle_attributes);
+        }
+
+        [DllImport(DXFEED_DLL, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl, EntryPoint = "dxf_delete_candle_symbol_attributes")]
+        private static extern int __dxf_delete_candle_symbol_attributes(IntPtr candle_attributes);
+        internal override int dxf_delete_candle_symbol_attributes(IntPtr candle_attributes)
+        {
+            return __dxf_delete_candle_symbol_attributes(candle_attributes);
+        }
+
+        [DllImport(DXFEED_DLL, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl, EntryPoint = "dxf_create_order_snapshot")]
+        private static extern int __dxf_create_order_snapshot(IntPtr connection, string symbol,
+                                                byte[] source, Int64 time, out IntPtr snapshot);
+        internal override int dxf_create_order_snapshot(IntPtr connection, string symbol,
+                                                byte[] source, Int64 time, out IntPtr snapshot)
+        {
+            return __dxf_create_order_snapshot(connection, symbol, source, time, out snapshot);
+        }
+
+        [DllImport(DXFEED_DLL, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl, EntryPoint = "dxf_create_candle_snapshot")]
+        private static extern int __dxf_create_candle_snapshot(IntPtr connection, 
+                                                               IntPtr candle_attributes, 
+                                                               Int64 time, out IntPtr snapshot);
+        internal override int dxf_create_candle_snapshot(IntPtr connection,
+                                                         IntPtr candle_attributes,
+                                                         Int64 time, out IntPtr snapshot)
+        {
+            return __dxf_create_candle_snapshot(connection, candle_attributes, time, out snapshot);
+        }
+
+        [DllImport(DXFEED_DLL, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl, EntryPoint = "dxf_close_snapshot")]
+        private static extern int __dxf_close_snapshot(IntPtr snapshot);
+        internal override int dxf_close_snapshot(IntPtr snapshot)
+        {
+            return __dxf_close_snapshot(snapshot);
+        }
+
+        [DllImport(DXFEED_DLL, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl, EntryPoint = "dxf_attach_snapshot_listener")]
+        private static extern int __dxf_attach_snapshot_listener(IntPtr snapshot, dxf_snapshot_listener_t snapshotListener,
+                                                           IntPtr userData);
+        internal override int dxf_attach_snapshot_listener(IntPtr snapshot, dxf_snapshot_listener_t snapshotListener,
+                                                           IntPtr userData)
+        {
+            return __dxf_attach_snapshot_listener(snapshot, snapshotListener, userData);
+        }
+
+        [DllImport(DXFEED_DLL, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl, EntryPoint = "dxf_detach_snapshot_listener")]
+        private static extern int __dxf_detach_snapshot_listener(IntPtr snapshot, dxf_snapshot_listener_t snapshotListener);
+        internal override int dxf_detach_snapshot_listener(IntPtr snapshot, dxf_snapshot_listener_t snapshotListener)
+        {
+            return __dxf_detach_snapshot_listener(snapshot, snapshotListener);
+        }
+
+        [DllImport(DXFEED_DLL, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl, EntryPoint = "dxf_get_snapshot_symbol")]
+        private static extern int __dxf_get_snapshot_symbol(IntPtr snapshot, out IntPtr symbol);
+        internal override int dxf_get_snapshot_symbol(IntPtr snapshot, out IntPtr symbol)
+        {
+            return __dxf_get_snapshot_symbol(snapshot, out symbol);
         }
     }
 }

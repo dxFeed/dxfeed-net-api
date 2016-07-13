@@ -1,6 +1,10 @@
 using System;
 
 namespace com.dxfeed.api.events {
+
+	/// <summary>
+	/// Events flag enumeration
+	/// </summary>
 	[Flags]
 	public enum EventFlag : int {
 		TxPending = 0x01,

@@ -44,7 +44,8 @@ namespace com.dxfeed.native {
             this.time = time;
         }
 
-        private void OnEvent(DxSnapshotData snapshotData, IntPtr userData) {
+        private void OnEvent(IntPtr snapshotDataPtr, IntPtr userData) {
+            DxSnapshotData snapshotData = (DxSnapshotData)Marshal.PtrToStructure(snapshotDataPtr, typeof(DxSnapshotData));
             switch (snapshotData.event_type) {
                 case EventType.Order:
                     var orderBuf = NativeBufferFactory.CreateOrderBuf(snapshotData.symbol, snapshotData.records, snapshotData.records_count, null);
@@ -94,7 +95,7 @@ namespace com.dxfeed.native {
         public void AddSymbol(string symbol) {
             if (snapshotPtr != InvalidSnapshot)
                 throw new InvalidOperationException("It is allowed to add only one symbol to snapshot subscription");
-            if (symbol.Length == 0)
+            if (symbol == null || symbol.Length == 0)
                 throw new ArgumentException("Invalid symbol parameter");
            
 
@@ -195,7 +196,7 @@ namespace com.dxfeed.native {
         /// <exception cref="ArgumentException">Invalid symbol parameter</exception>
         /// <exception cref="DxException"></exception>
         public void RemoveSymbols(params string[] symbols) {
-            if (symbols == null)
+            if (symbols == null || symbols.Length == 0)
                 throw new ArgumentException("Invalid symbol parameter");
             List<string> symbolList = new List<string>(symbols);
             if (symbolList.Contains(Symbol))
@@ -214,9 +215,12 @@ namespace com.dxfeed.native {
         public void RemoveSymbols(params CandleSymbol[] symbols) {
             if (symbols == null)
                 throw new ArgumentException("Invalid symbol parameter");
-            foreach (CandleSymbol symbol in symbols)
+            foreach (CandleSymbol symbol in symbols) {
+                if (symbol == null)
+                    continue;
                 if (this.Symbol.Equals(symbol.ToString()))
                     Dispose();
+            }
         }
 
         /// <summary>
@@ -276,8 +280,9 @@ namespace com.dxfeed.native {
         public IList<string> GetSymbols() {
             IntPtr symbolPtr;
             C.Instance.dxf_get_snapshot_symbol(snapshotPtr, out symbolPtr);
-            List<string> symbols = new List<string>(1);
-            symbols.Add(Marshal.PtrToStringUni(symbolPtr));
+            List<string> symbols = new List<string>();
+            if (symbolPtr != IntPtr.Zero)
+                symbols.Add(Marshal.PtrToStringUni(symbolPtr));
             return symbols;
         }
 
@@ -289,6 +294,8 @@ namespace com.dxfeed.native {
         /// <exception cref="InvalidOperationException">You try to add more than one source to subscription</exception>
         /// <exception cref="DxException"></exception>
         public void AddSource(params string[] sources) {
+            if (eventType != EventType.Order && eventType != EventType.None)
+                return;
             if (!source.Equals(string.Empty))
                 throw new InvalidOperationException("It is allowed to use up to one source.");
 
@@ -303,11 +310,11 @@ namespace com.dxfeed.native {
         /// <exception cref="InvalidOperationException">You try to add more than one source to subscription</exception>
         /// <exception cref="DxException"></exception>
         public void SetSource(params string[] sources) {
-            if (eventType != EventType.Order)
+            if (eventType != EventType.Order && eventType != EventType.None)
                 return;
             if (sources == null)
                 throw new ArgumentException("Invalid source parameter");
-            if (sources.Length > 1)
+            if (sources.Length != 1)
                 throw new InvalidOperationException("It is allowed to use up to one source.");
             string newSource = sources[0];
             if (newSource.Length == 0)

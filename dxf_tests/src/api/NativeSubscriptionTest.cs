@@ -270,10 +270,7 @@ namespace com.dxfeed.api {
 
         [Test]
         public void TestSetSource() {
-            //TODO: when called SetSource on existing subscription OnDisconnect callback is received
-            //      although events comes as expected
-            //      for this test case set OnDisconnect callback to nul temporally
-            TestListener listener = new TestListener(eventsTimeout, eventsSleepTime, null);
+            TestListener listener = new TestListener(eventsTimeout, eventsSleepTime, IsConnected);
             EventType events = EventType.Order;
             string source = "NTV";
             string[] sources2 = new string[] { "DEX", "DEA" };
@@ -297,10 +294,7 @@ namespace com.dxfeed.api {
 
         [Test]
         public void TestSetSource2() {
-            //TODO: when called SetSource on existing subscription OnDisconnect callback is received
-            //      although events comes as expected
-            //      for this test case set OnDisconnect callback to nul temporally
-            TestListener listener = new TestListener(eventsTimeout, eventsSleepTime, null);
+            TestListener listener = new TestListener(eventsTimeout, eventsSleepTime, IsConnected);
             EventType events = EventType.Order;
             string source = "NTV";
             string[] sources2 = new string[] { "DEX", "DEA" };
@@ -331,10 +325,7 @@ namespace com.dxfeed.api {
 
         [Test]
         public void TestSetSource3() {
-            //TODO: when called SetSource on existing subscription OnDisconnect callback is received
-            //      although events comes as expected
-            //      for this test case set OnDisconnect callback to nul temporally
-            TestListener listener = new TestListener(eventsTimeout, eventsSleepTime, null);
+            TestListener listener = new TestListener(eventsTimeout, eventsSleepTime, IsConnected);
             EventType events = EventType.Order;
             string source = "NTV";
             string[] sources2 = new string[] { "DEX", "DEA" };
@@ -348,7 +339,7 @@ namespace com.dxfeed.api {
                     listener.WaitEvents<IDxOrder>(symbols);
 
                     s.SetSource(source);
-                    Thread.Sleep(10000);
+                    Thread.Sleep(12000);
                     listener.ClearEvents<IDxOrder>();
                     Thread.Sleep(3000);
                     listener.WaitOrders(source);

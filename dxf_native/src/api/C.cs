@@ -91,7 +91,8 @@ namespace com.dxfeed.native.api
         /// </summary>
         /// <param name="snapshotData">pointer to the received snapshot data</param>
         /// <param name="userData">pointer to user struct, use NULL by default</param>
-        internal delegate void dxf_snapshot_listener_t(DxSnapshotData snapshotData, IntPtr userData);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        internal delegate void dxf_snapshot_listener_t(IntPtr snapshotData, IntPtr userData);
 
         /*
          *	Initializes the internal logger.

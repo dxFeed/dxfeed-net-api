@@ -9,8 +9,7 @@ using com.dxfeed.api.events;
 using com.dxfeed.api.data;
 using com.dxfeed.native;
 
-namespace com.dxfeed.tests.tools
-{
+namespace com.dxfeed.tests.tools {
     /// <summary>
     /// Event listener class for tests.
     /// Allow to get any parameters from received events and transfer to test method.

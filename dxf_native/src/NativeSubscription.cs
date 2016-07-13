@@ -138,6 +138,8 @@ namespace com.dxfeed.native {
 		public void AddSymbol(string symbol) {
 			if (eventType == EventType.Candle)
 				return;
+			if (symbol == null || symbol.Length == 0)
+				throw new ArgumentException("Invalid symbol parameter");
 			C.CheckOk(C.Instance.dxf_add_symbol(subscriptionPtr, symbol));
 		}
 
@@ -152,6 +154,8 @@ namespace com.dxfeed.native {
 		public void AddSymbol(CandleSymbol symbol) {
 			if (eventType != EventType.Candle)
 				return;
+			if (symbol == null)
+				throw new ArgumentException("Invalid symbol parameter");
 			IntPtr candleAttributesPtr = IntPtr.Zero;
 			C.CheckOk(C.Instance.dxf_create_candle_symbol_attributes(symbol.BaseSymbol,
 				symbol.ExchangeCode, symbol.PeriodValue, symbol.PeriodId, symbol.PriceId,
@@ -174,6 +178,8 @@ namespace com.dxfeed.native {
 		public void AddSymbols(params string[] symbols) {
 			if (eventType == EventType.Candle)
 				return;
+			if (symbols == null || symbols.Length == 0)
+				throw new ArgumentException("Invalid symbol parameter");
 			C.CheckOk(C.Instance.dxf_add_symbols(subscriptionPtr, symbols, symbols.Length));
 		}
 
@@ -188,6 +194,8 @@ namespace com.dxfeed.native {
 		public void AddSymbols(params CandleSymbol[] symbols) {
 			if (eventType != EventType.Candle)
 				return;
+			if (symbols == null || symbols.Length == 0)
+				throw new ArgumentException("Invalid symbol parameter");
 			foreach (CandleSymbol symbol in symbols) {
 				AddSymbol(symbol);
 			}
@@ -205,6 +213,8 @@ namespace com.dxfeed.native {
 		public void RemoveSymbols(params string[] symbols) {
 			if (eventType == EventType.Candle)
 				return;
+			if (symbols == null || symbols.Length == 0)
+				throw new ArgumentException("Invalid symbol parameter");
 			C.CheckOk(C.Instance.dxf_remove_symbols(subscriptionPtr, symbols, symbols.Length));
 		}
 
@@ -220,6 +230,8 @@ namespace com.dxfeed.native {
 		public void RemoveSymbols(params CandleSymbol[] symbols) {
 			if (eventType != EventType.Candle)
 				return;
+			if (symbols == null || symbols.Length == 0)
+				throw new ArgumentException("Invalid symbol parameter");
 			foreach (CandleSymbol symbol in symbols) {
 				IntPtr candleAttributesPtr = IntPtr.Zero;
 				C.CheckOk(C.Instance.dxf_create_candle_symbol_attributes(symbol.BaseSymbol,
@@ -244,6 +256,8 @@ namespace com.dxfeed.native {
 		public void SetSymbols(params string[] symbols) {
 			if (eventType == EventType.Candle)
 				return;
+			if (symbols == null || symbols.Length == 0)
+				throw new ArgumentException("Invalid symbol parameter");
 			C.CheckOk(C.Instance.dxf_set_symbols(subscriptionPtr, symbols, symbols.Length));
 		}
 
@@ -258,6 +272,8 @@ namespace com.dxfeed.native {
 		public void SetSymbols(params CandleSymbol[] symbols) {
 			if (eventType != EventType.Candle)
 				return;
+			if (symbols == null || symbols.Length == 0)
+				throw new ArgumentException("Invalid symbol parameter");
 			Clear();
 			AddSymbols(symbols);
 		}

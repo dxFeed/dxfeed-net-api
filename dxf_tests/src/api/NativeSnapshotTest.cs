@@ -251,7 +251,7 @@ namespace com.dxfeed.api {
                     listener.WaitSnapshot<IDxCandle>(candleString);
 
                     s.SetSymbols(new CandleSymbol[] { CandleSymbol.ValueOf(otherCandleString) });
-                    listener.ClearEvents<IDxOrder>();
+                    listener.ClearEvents<IDxCandle>();
                     Thread.Sleep(10000);
                     listener.WaitSnapshot<IDxCandle>(otherCandleString);
                     Assert.AreEqual(1, listener.GetSnapshotsCount<IDxCandle>(otherCandleString));

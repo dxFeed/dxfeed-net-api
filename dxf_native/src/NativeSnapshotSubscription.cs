@@ -58,6 +58,9 @@ namespace com.dxfeed.native {
             }
         }
 
+        /// <summary>
+        /// Get symbol of snapshot
+        /// </summary>
         public string Symbol {
             get {
                 IList<string> symbols = GetSymbols();

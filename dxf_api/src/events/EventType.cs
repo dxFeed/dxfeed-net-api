@@ -9,6 +9,7 @@ namespace com.dxfeed.api.events {
 		Summary = 4,
 		Profile = 8,
 		Order = 16,
-		TimeAndSale = 32
+		TimeAndSale = 32,
+		Candle = 64
 	}
 }

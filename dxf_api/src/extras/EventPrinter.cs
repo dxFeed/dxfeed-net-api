@@ -2,7 +2,7 @@ using System;
 using com.dxfeed.api.events;
 
 namespace com.dxfeed.api.extras {
-	public class EventPrinter : IDxFeedListener {
+	public class EventPrinter : IDxFeedListener, IDxCandleListener {
 		#region Implementation of IDxFeedListener
 
 		public void OnQuote<TB, TE>(TB buf)
@@ -46,6 +46,17 @@ namespace com.dxfeed.api.extras {
 			foreach (var ts in buf)
 				Console.WriteLine(string.Format("{0} {1}", buf.Symbol, ts));
 		}
+
+        #endregion
+
+        #region Implementation of IDxCandleListener
+
+        public void OnCandle<TB, TE>(TB buf)
+            where TB : IDxEventBuf<TE>
+            where TE : IDxCandle {
+            foreach (var c in buf)
+                Console.WriteLine(string.Format("{0} {1}", buf.Symbol, c));
+        }
 
 		#endregion
 	}

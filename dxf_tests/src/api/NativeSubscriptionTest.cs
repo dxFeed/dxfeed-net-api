@@ -274,7 +274,7 @@ namespace com.dxfeed.api {
             EventType events = EventType.Order;
             string source = "NTV";
             string[] sources2 = new string[] { "DEX", "DEA" };
-            string[] symbols = new string[] { "AAPL", "XBT/USD" };
+            string[] symbols = new string[] { "AAPL", "IBM" };
             using (var con = new NativeConnection(address, OnDisconnect)) {
                 Interlocked.Exchange(ref isConnected, 1);
                 using (IDxSubscription s = con.CreateSubscription(events, listener)) {
@@ -330,7 +330,7 @@ namespace com.dxfeed.api {
             string source = "NTV";
             string[] sources2 = new string[] { "DEX", "DEA" };
             string[] allSource = new string[] { "NTV", "DEX", "DEA" };
-            string[] symbols = new string[] { "AAPL", "XBT/USD" };
+            string[] symbols = new string[] { "AAPL", "IBM", "XBT/USD" };
             using (var con = new NativeConnection(address, OnDisconnect)) {
                 Interlocked.Exchange(ref isConnected, 1);
                 using (IDxSubscription s = con.CreateSubscription(events, listener)) {

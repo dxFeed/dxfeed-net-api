@@ -38,16 +38,16 @@ namespace dxf_candle_sample
 
             var address = args[hostIndex];
 
-            var symbols = new List<CandleSymbol>();
-            for (int i = symbolsIndex; i < args.Length; i++)
-                symbols.Add(CandleSymbol.ValueOf(args[i]));
-
-            Console.WriteLine(string.Format("Connecting to {0} for Candle on [{1}] ...",
-                address, String.Join(", ", symbols)));
-
             try
             {
                 DateTime dateTime = DateTime.Parse(args[dateIndex]);
+                var symbols = new List<CandleSymbol>();
+                for (int i = symbolsIndex; i < args.Length; i++)
+                    symbols.Add(CandleSymbol.ValueOf(args[i]));
+
+                Console.WriteLine(string.Format("Connecting to {0} for Candle on [{1}] ...",
+                    address, String.Join(", ", symbols)));
+
                 using (var con = new NativeConnection(address, OnDisconnect))
                 {
                     using (var s = con.CreateSubscription(dateTime, new EventListener()))

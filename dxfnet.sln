@@ -1,6 +1,8 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.40629.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dxf_native", "dxf_native\dxf_native.csproj", "{D56EED21-EE2C-441C-B0D5-E85F10436CEA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dxf_api", "dxf_api\dxf_api.csproj", "{F0E087DF-6C09-42FF-90FF-A470B3391F76}"
@@ -13,6 +15,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{A9A4BC
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dxf_client", "dxf_client\dxf_client.csproj", "{45D91ED6-CB30-41F0-832C-04AFBCED76F1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dxf_candle_sample", "samples\dxf_candle_sample\dxf_candle_sample.csproj", "{86D53D61-BEB0-41D9-A4B1-E3D89A260D65}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{6993ED0A-8F3F-4C95-A5CB-42E12955561E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,8 +41,15 @@ Global
 		{45D91ED6-CB30-41F0-832C-04AFBCED76F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{45D91ED6-CB30-41F0-832C-04AFBCED76F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{45D91ED6-CB30-41F0-832C-04AFBCED76F1}.Release|Any CPU.ActiveCfg = Release|x86
+		{86D53D61-BEB0-41D9-A4B1-E3D89A260D65}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{86D53D61-BEB0-41D9-A4B1-E3D89A260D65}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{86D53D61-BEB0-41D9-A4B1-E3D89A260D65}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{86D53D61-BEB0-41D9-A4B1-E3D89A260D65}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{86D53D61-BEB0-41D9-A4B1-E3D89A260D65} = {6993ED0A-8F3F-4C95-A5CB-42E12955561E}
 	EndGlobalSection
 EndGlobal

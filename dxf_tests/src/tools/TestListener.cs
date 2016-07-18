@@ -172,7 +172,7 @@ namespace com.dxfeed.tests.tools {
                 if (IsConnected != null)
                     Assert.IsTrue(IsConnected(), "Connection was lost");
                 if (DateTime.Now.Subtract(time).TotalMilliseconds >= eventsTimeout)
-                    Assert.Fail("Timeout elapsed! Not received events for next symbols: " + String.Join(", ", sourceList.ToArray()));
+                    Assert.Fail("Timeout elapsed! Not received events for next sources: " + String.Join(", ", sourceList.ToArray()));
 
                 List<ReceivedEvent<IDxOrder>> list = GetList<IDxOrder>();
                 rwl.AcquireReaderLock(lockTimeout);

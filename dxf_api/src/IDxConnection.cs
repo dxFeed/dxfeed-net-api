@@ -14,35 +14,35 @@ namespace com.dxfeed.api {
 		void Disconnect();
 
 		/// <summary>
-		/// Create event subscription
+		/// Create event subscription.
 		/// </summary>
-		/// <param name="type">event type</param>
-		/// <param name="listener">event listener callback</param>
-		/// <returns></returns>
+		/// <param name="type">event type.</param>
+		/// <param name="listener">event listener callback.</param>
+		/// <returns>Event subscription.</returns>
 		IDxSubscription CreateSubscription(EventType type, IDxFeedListener listener);
 
 		/// <summary>
-		/// Create candle event subscription
+		/// Create candle event subscription.
 		/// </summary>
-		/// <param name="time">date time in the past</param>
-		/// <param name="listener">candle listener callback</param>
-		/// <returns></returns>
+		/// <param name="time">Date time in the past.</param>
+		/// <param name="listener">Candle listener callback.</param>
+		/// <returns>Candle event subscription.</returns>
 		IDxSubscription CreateSubscription(DateTime? time, IDxCandleListener listener);
 
 		/// <summary>
-		/// Creates snapshot subscription
+		/// Creates snapshot subscription.
 		/// </summary>
-		/// <param name="time">Time in the past - number of milliseconds from 1.1.1970 (unix time)</param>
-		/// <param name="listener"></param>
-		/// <returns></returns>
+		/// <param name="time">Time in the past - number of milliseconds from 1.1.1970 (unix time).</param>
+		/// <param name="listener">The snapshot listener callback.</param>
+		/// <returns>Snapshot subscription.</returns>
 		IDxSubscription CreateSnapshotSubscription(Int64 time, IDxSnapshotListener listener);
 
 		/// <summary>
-		/// Creates snapshot subscription
+		/// Creates snapshot subscription.
 		/// </summary>
-		/// <param name="time">Date time in the past</param>
-		/// <param name="listener"></param>
-		/// <returns></returns>
+		/// <param name="time">Date time in the past.</param>
+		/// <param name="listener">The snapshot listener callback.</param>
+		/// <returns>Snapshot subscription.</returns>
 		IDxSubscription CreateSnapshotSubscription(DateTime? time, IDxSnapshotListener listener);
 	}
 }

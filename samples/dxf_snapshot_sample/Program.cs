@@ -69,6 +69,7 @@ namespace dxf_snapshot_sample {
                     address, symbol, source == string.Empty ? string.Empty : "#" + source));
 
             try {
+                NativeTools.InitializeLogging("log.log", true, true);
                 using (var con = new NativeConnection(address, OnDisconnect)) {
                     using (var s = con.CreateSnapshotSubscription(defaultTime, new SnapshotListener())) {
                         if (eventType == EventType.Order) {

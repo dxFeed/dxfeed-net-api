@@ -42,6 +42,7 @@ namespace dxf_candle_sample {
                 Console.WriteLine(string.Format("Connecting to {0} for Candle on [{1}] ...",
                     address, String.Join(", ", symbols)));
 
+                NativeTools.InitializeLogging("log.log", true, true);
                 using (var con = new NativeConnection(address, OnDisconnect)) {
                     using (var s = con.CreateSubscription(dateTime, new EventListener())) {
                         s.AddSymbols(symbols.ToArray());

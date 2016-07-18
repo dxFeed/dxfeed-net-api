@@ -4,14 +4,12 @@ using com.dxfeed.api.candle;
 using com.dxfeed.api.events;
 using com.dxfeed.native;
 
-namespace dxf_snapshot_sample
-{
+namespace dxf_snapshot_sample {
     /// <summary>
     /// This sample class demonstrates subscription to snapshots.
     /// The sample configures via command line, subscribes to snapshot and prints received data.
     /// </summary>
-    class Program
-    {
+    class Program {
 
         private const int hostIndex = 0;
         private const int eventIndex = 1;
@@ -19,15 +17,12 @@ namespace dxf_snapshot_sample
         private const int sourceIndex = 3;
         private const int defaultTime = 0;
 
-        private static void OnDisconnect(IDxConnection con)
-        {
+        private static void OnDisconnect(IDxConnection con) {
             Console.WriteLine("Disconnected");
         }
 
-        static void Main(string[] args)
-        {
-            if (args.Length < 3)
-            {
+        static void Main(string[] args) {
+            if (args.Length < 3) {
                 Console.WriteLine(
                     "Usage: dxf_snapshot_sample <host:port> <event> <symbol> [<source>]\n" +
                     "where\n" +
@@ -56,8 +51,8 @@ namespace dxf_snapshot_sample
 
             EventType eventType;
             if (!Enum.TryParse(args[eventIndex], true, out eventType) ||
-                eventType != EventType.Order && eventType != EventType.Candle)
-            {
+                eventType != EventType.Order && eventType != EventType.Candle) {
+
                 Console.WriteLine("Unsupported event type: " + args[eventIndex]);
                 return;
             }
@@ -73,20 +68,14 @@ namespace dxf_snapshot_sample
                 Console.WriteLine(string.Format("Connecting to {0} for Order snapshot on {1}{2}...",
                     address, symbol, source == string.Empty ? string.Empty : "#" + source));
 
-            try
-            {
-                using (var con = new NativeConnection(address, OnDisconnect))
-                {
-                    using (var s = con.CreateSnapshotSubscription(defaultTime, new SnapshotListener()))
-                    {
-                        if (eventType == EventType.Order)
-                        {
+            try {
+                using (var con = new NativeConnection(address, OnDisconnect)) {
+                    using (var s = con.CreateSnapshotSubscription(defaultTime, new SnapshotListener())) {
+                        if (eventType == EventType.Order) {
                             if (source != string.Empty)
                                 s.AddSource(source);
                             s.AddSymbol(symbol);
-                        }
-                        else
-                        {
+                        } else {
                             s.AddSymbol(CandleSymbol.ValueOf(symbol));
                         }
 
@@ -94,13 +83,9 @@ namespace dxf_snapshot_sample
                         Console.ReadLine();
                     }
                 }
-            }
-            catch (DxException dxException)
-            {
+            } catch (DxException dxException) {
                 Console.WriteLine("Native exception occured: " + dxException.Message);
-            }
-            catch (Exception exc)
-            {
+            } catch (Exception exc) {
                 Console.WriteLine("Exception occured: " + exc.Message);
             }
         }

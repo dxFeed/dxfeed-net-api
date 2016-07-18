@@ -4,27 +4,22 @@ using com.dxfeed.api;
 using com.dxfeed.api.candle;
 using com.dxfeed.native;
 
-namespace dxf_candle_sample
-{
+namespace dxf_candle_sample {
     /// <summary>
     /// This sample class demonstrates subscription to candle events.
     /// The sample configures via command line, subscribes to candle events and prints received data.
     /// </summary>
-    class Program
-    {
+    class Program {
         private const int hostIndex = 0;
         private const int dateIndex = 1;
         private const int symbolsIndex = 2;
 
-        private static void OnDisconnect(IDxConnection con)
-        {
+        private static void OnDisconnect(IDxConnection con) {
             Console.WriteLine("Disconnected");
         }
 
-        static void Main(string[] args)
-        {
-            if (args.Length < 3)
-            {
+        static void Main(string[] args) {
+            if (args.Length < 3) {
                 Console.WriteLine(
                     "Usage: dxf_candle_sample <host:port> <date> <symbols>\n" +
                     "where\n" +
@@ -38,8 +33,7 @@ namespace dxf_candle_sample
 
             var address = args[hostIndex];
 
-            try
-            {
+            try {
                 DateTime dateTime = DateTime.Parse(args[dateIndex]);
                 var symbols = new List<CandleSymbol>();
                 for (int i = symbolsIndex; i < args.Length; i++)
@@ -48,23 +42,17 @@ namespace dxf_candle_sample
                 Console.WriteLine(string.Format("Connecting to {0} for Candle on [{1}] ...",
                     address, String.Join(", ", symbols)));
 
-                using (var con = new NativeConnection(address, OnDisconnect))
-                {
-                    using (var s = con.CreateSubscription(dateTime, new EventListener()))
-                    {
+                using (var con = new NativeConnection(address, OnDisconnect)) {
+                    using (var s = con.CreateSubscription(dateTime, new EventListener())) {
                         s.AddSymbols(symbols.ToArray());
 
                         Console.WriteLine("Press enter to stop");
                         Console.ReadLine();
                     }
                 }
-            }
-            catch (DxException dxException)
-            {
+            } catch (DxException dxException) {
                 Console.WriteLine("Native exception occured: " + dxException.Message);
-            }
-            catch (Exception exc)
-            {
+            } catch (Exception exc) {
                 Console.WriteLine("Exception occured: " + exc.Message);
             }
         }

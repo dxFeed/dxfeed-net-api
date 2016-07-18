@@ -2,13 +2,11 @@
 using com.dxfeed.api;
 using com.dxfeed.api.events;
 
-namespace dxf_candle_sample
-{
+namespace dxf_candle_sample {
     /// <summary>
     /// Candle event listener
     /// </summary>
-    public class EventListener : IDxCandleListener
-    {
+    public class EventListener : IDxCandleListener {
 
         #region Implementation of IDxCandleListener
 
@@ -20,8 +18,8 @@ namespace dxf_candle_sample
         /// <param name="buf">Event buffer object.</param>
         public void OnCandle<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
-            where TE : IDxCandle
-        {
+            where TE : IDxCandle {
+
             foreach (var c in buf)
                 Console.WriteLine(string.Format("{0} {1}", buf.Symbol, c));
         }

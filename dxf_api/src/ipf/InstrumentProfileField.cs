@@ -325,7 +325,7 @@ namespace com.dxfeed.ipf {
         }
 
         public static double parseNumber(string s) {
-            if (s == null || Tools.IsEmpty(s))
+            if (s == null || String.IsNullOrEmpty(s))
                 return 0;
             if (PARSED_NUMBERS.ContainsKey(s)) {
                 return PARSED_NUMBERS[s];
@@ -351,7 +351,7 @@ namespace com.dxfeed.ipf {
         }
 
         public static int parseDate(string s) {
-            if (s == null || Tools.IsEmpty(s))
+            if (s == null || String.IsNullOrEmpty(s))
                 return 0;
 
             if (PARSED_DATES.ContainsKey(s)) {

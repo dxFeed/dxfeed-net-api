@@ -15,11 +15,6 @@ namespace com.dxfeed.api {
             return dtDateTime;
         }
 
-        //TODO: temp
-        public static bool IsEmpty(string s) {
-            return s == null || s.Length == 0;
-        }
-
         public static bool IsEquals(double double1, double double2) {
             //TODO: diff
             double difference = 0.000001d;

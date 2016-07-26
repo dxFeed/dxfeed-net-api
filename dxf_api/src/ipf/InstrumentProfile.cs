@@ -96,7 +96,7 @@ namespace com.dxfeed.ipf {
             tradingHours = ip.tradingHours;
 
             //string[] customFields = ip.customFields; // Atomic read.
-            //this.customFields = customFields == null || /*ArrayMap.*/Tools.isEmpty(customFields) ? null : (string[])customFields.Clone();
+            //this.customFields = customFields == null || /*ArrayMap.*/String.IsNullOrEmpty(customFields) ? null : (string[])customFields.Clone();
             this.customFields = new Dictionary<string,string>(ip.customFields);
         }
 
@@ -119,7 +119,7 @@ namespace com.dxfeed.ipf {
         /// </summary>
         /// <param name="type">Type type of instrument.</param>
         public void setType(string type) {
-            this.type = type == null || Tools.IsEmpty(type) ? "" : type;
+            this.type = type == null || String.IsNullOrEmpty(type) ? "" : type;
         }
 
         /// <summary>
@@ -141,7 +141,7 @@ namespace com.dxfeed.ipf {
         /// </summary>
         /// <param name="symbol">Symbol identifier of instrument.</param>
         public void setSymbol(string symbol) {
-            this.symbol = symbol == null || Tools.IsEmpty(symbol) ? "" : symbol;
+            this.symbol = symbol == null || String.IsNullOrEmpty(symbol) ? "" : symbol;
         }
 
         /// <summary>
@@ -161,7 +161,7 @@ namespace com.dxfeed.ipf {
         /// </summary>
         /// <param name="description">Description of instrument.</param>
         public void setDescription(string description) {
-            this.description = description == null || Tools.IsEmpty(description) ? "" : description;
+            this.description = description == null || String.IsNullOrEmpty(description) ? "" : description;
         }
 
         /// <summary>
@@ -179,7 +179,7 @@ namespace com.dxfeed.ipf {
         /// </summary>
         /// <param name="localSymbol">Identifier of instrument in national language.</param>
         public void setLocalSymbol(string localSymbol) {
-            this.localSymbol = localSymbol == null || Tools.IsEmpty(localSymbol) ? "" : localSymbol;
+            this.localSymbol = localSymbol == null || String.IsNullOrEmpty(localSymbol) ? "" : localSymbol;
         }
 
         /// <summary>
@@ -197,7 +197,7 @@ namespace com.dxfeed.ipf {
         /// </summary>
         /// <param name="localDescription">Description of instrument in national language.</param>
         public void setLocalDescription(string localDescription) {
-            this.localDescription = localDescription == null || Tools.IsEmpty(localDescription) ? "" : localDescription;
+            this.localDescription = localDescription == null || String.IsNullOrEmpty(localDescription) ? "" : localDescription;
         }
 
         /// <summary>
@@ -219,7 +219,7 @@ namespace com.dxfeed.ipf {
         /// </summary>
         /// <param name="country">Country of origin (incorporation) of corresponding company or parent entity.</param>
         public void setCountry(string country) {
-            this.country = country == null || Tools.IsEmpty(country) ? "" : country;
+            this.country = country == null || String.IsNullOrEmpty(country) ? "" : country;
         }
 
         /// <summary>
@@ -245,7 +245,7 @@ namespace com.dxfeed.ipf {
         /// </summary>
         /// <param name="opol">Official Place Of Listing, the organization that have listed this instrument.</param>
         public void setOPOL(string opol) {
-            this.opol = opol == null || Tools.IsEmpty(opol) ? "" : opol;
+            this.opol = opol == null || String.IsNullOrEmpty(opol) ? "" : opol;
         }
 
         /// <summary>
@@ -263,7 +263,7 @@ namespace com.dxfeed.ipf {
         /// </summary>
         /// <param name="exchangeData">Exchange-specific data required to properly identify instrument when communicating with exchange.</param>
         public void setExchangeData(string exchangeData) {
-            this.exchangeData = exchangeData == null || Tools.IsEmpty(exchangeData) ? "" : exchangeData;
+            this.exchangeData = exchangeData == null || String.IsNullOrEmpty(exchangeData) ? "" : exchangeData;
         }
 
         /// <summary>
@@ -291,7 +291,7 @@ namespace com.dxfeed.ipf {
         /// </summary>
         /// <param name="exchanges">List of exchanges where instrument is quoted or traded.</param>
         public void setExchanges(string exchanges) {
-            this.exchanges = exchanges == null || Tools.IsEmpty(exchanges) ? "" : exchanges;
+            this.exchanges = exchanges == null || String.IsNullOrEmpty(exchanges) ? "" : exchanges;
         }
 
         /// <summary>
@@ -313,7 +313,7 @@ namespace com.dxfeed.ipf {
         /// </summary>
         /// <param name="currency">Currency currency of quotation, pricing and trading.</param>
         public void setCurrency(string currency) {
-            this.currency = currency == null || Tools.IsEmpty(currency) ? "" : currency;
+            this.currency = currency == null || String.IsNullOrEmpty(currency) ? "" : currency;
         }
 
         /// <summary>
@@ -331,7 +331,7 @@ namespace com.dxfeed.ipf {
         /// </summary>
         /// <param name="baseCurrency">BaseCurrency base currency of currency pair (FOREX instruments).</param>
         public void setBaseCurrency(string baseCurrency) {
-            this.baseCurrency = baseCurrency == null || Tools.IsEmpty(baseCurrency) ? "" : baseCurrency;
+            this.baseCurrency = baseCurrency == null || String.IsNullOrEmpty(baseCurrency) ? "" : baseCurrency;
         }
 
         /// <summary>
@@ -359,7 +359,7 @@ namespace com.dxfeed.ipf {
         /// </summary>
         /// <param name="cfi">CFI code.</param>
         public void setCFI(string cfi) {
-            this.cfi = cfi == null || Tools.IsEmpty(cfi) ? "" : cfi;
+            this.cfi = cfi == null || String.IsNullOrEmpty(cfi) ? "" : cfi;
         }
 
         /// <summary>
@@ -384,7 +384,7 @@ namespace com.dxfeed.ipf {
         /// </summary>
         /// <param name="isin">International Securities Identifying Number.</param>
         public void setISIN(string isin) {
-            this.isin = isin == null || Tools.IsEmpty(isin) ? "" : isin;
+            this.isin = isin == null || String.IsNullOrEmpty(isin) ? "" : isin;
         }
 
         /// <summary>
@@ -408,7 +408,7 @@ namespace com.dxfeed.ipf {
         /// </summary>
         /// <param name="sedol">Stock Exchange Daily Official List.</param>
         public void setSEDOL(string sedol) {
-            this.sedol = sedol == null || Tools.IsEmpty(sedol) ? "" : sedol;
+            this.sedol = sedol == null || String.IsNullOrEmpty(sedol) ? "" : sedol;
         }
 
         /// <summary>
@@ -430,7 +430,7 @@ namespace com.dxfeed.ipf {
         /// </summary>
         /// <param name="cusip">CUSIP code.</param>
         public void setCUSIP(string cusip) {
-            this.cusip = cusip == null || Tools.IsEmpty(cusip) ? "" : cusip;
+            this.cusip = cusip == null || String.IsNullOrEmpty(cusip) ? "" : cusip;
         }
 
         /// <summary>
@@ -514,7 +514,7 @@ namespace com.dxfeed.ipf {
         /// </summary>
         /// <param name="product">Product product for futures and options on futures (underlying asset name).</param>
         public void setProduct(string product) {
-            this.product = product == null || Tools.IsEmpty(product) ? "" : product;
+            this.product = product == null || String.IsNullOrEmpty(product) ? "" : product;
         }
 
         /// <summary>
@@ -532,7 +532,7 @@ namespace com.dxfeed.ipf {
         /// </summary>
         /// <param name="underlying">Underlying primary underlying symbol for options.</param>
         public void setUnderlying(string underlying) {
-            this.underlying = underlying == null || Tools.IsEmpty(underlying) ? "" : underlying;
+            this.underlying = underlying == null || String.IsNullOrEmpty(underlying) ? "" : underlying;
         }
 
         /// <summary>
@@ -580,7 +580,7 @@ namespace com.dxfeed.ipf {
         /// </summary>
         /// <param name="additionalUnderlyings">AdditionalUnderlyings additional underlyings for options, including additional cash.</param>
         public void setAdditionalUnderlyings(string additionalUnderlyings) {
-            this.additionalUnderlyings = additionalUnderlyings == null || Tools.IsEmpty(additionalUnderlyings) ? "" : additionalUnderlyings;
+            this.additionalUnderlyings = additionalUnderlyings == null || String.IsNullOrEmpty(additionalUnderlyings) ? "" : additionalUnderlyings;
         }
 
         /// <summary>
@@ -608,7 +608,7 @@ namespace com.dxfeed.ipf {
         /// </summary>
         /// <param name="mmy">Maturity month-year as provided for corresponding FIX tag (200).</param>
         public void setMMY(string mmy) {
-            this.mmy = mmy == null || Tools.IsEmpty(mmy) ? "" : mmy;
+            this.mmy = mmy == null || String.IsNullOrEmpty(mmy) ? "" : mmy;
         }
 
         /// <summary>
@@ -698,7 +698,7 @@ namespace com.dxfeed.ipf {
         /// </summary>
         /// <param name="optionType">Type of option.</param>
         public void setOptionType(string optionType) {
-            this.optionType = optionType == null || Tools.IsEmpty(optionType) ? "" : optionType;
+            this.optionType = optionType == null || String.IsNullOrEmpty(optionType) ? "" : optionType;
         }
 
         /// <summary>
@@ -714,7 +714,7 @@ namespace com.dxfeed.ipf {
         /// </summary>
         /// <param name="expirationStyle">Expiration cycle style.</param>
         public void setExpirationStyle(string expirationStyle) {
-            this.expirationStyle = expirationStyle == null || Tools.IsEmpty(expirationStyle) ? "" : expirationStyle;
+            this.expirationStyle = expirationStyle == null || String.IsNullOrEmpty(expirationStyle) ? "" : expirationStyle;
         }
 
         /// <summary>
@@ -730,7 +730,7 @@ namespace com.dxfeed.ipf {
         /// </summary>
         /// <param name="settlementStyle">Settlement price determination style.</param>
         public void setSettlementStyle(string settlementStyle) {
-            this.settlementStyle = settlementStyle == null || Tools.IsEmpty(settlementStyle) ? "" : settlementStyle;
+            this.settlementStyle = settlementStyle == null || String.IsNullOrEmpty(settlementStyle) ? "" : settlementStyle;
         }
 
         /// <summary>
@@ -760,7 +760,7 @@ namespace com.dxfeed.ipf {
         /// </summary>
         /// <param name="priceIncrements">Minimum allowed price increments with corresponding price ranges.</param>
         public void setPriceIncrements(string priceIncrements) {
-            this.priceIncrements = priceIncrements == null || Tools.IsEmpty(priceIncrements) ? "" : priceIncrements;
+            this.priceIncrements = priceIncrements == null || String.IsNullOrEmpty(priceIncrements) ? "" : priceIncrements;
         }
 
         /// <summary>
@@ -778,7 +778,7 @@ namespace com.dxfeed.ipf {
         /// </summary>
         /// <param name="tradingHours">Trading hours specification.</param>
         public void setTradingHours(string tradingHours) {
-            this.tradingHours = tradingHours == null || Tools.IsEmpty(tradingHours) ? "" : tradingHours;
+            this.tradingHours = tradingHours == null || String.IsNullOrEmpty(tradingHours) ? "" : tradingHours;
         }
 
         /// <summary>
@@ -828,7 +828,7 @@ namespace com.dxfeed.ipf {
             if (ipf != null)
                 ipf.setField(this, value);
             else
-                setCustomField(name, value == null || Tools.IsEmpty(value) ? "" : value);
+                setCustomField(name, value == null || String.IsNullOrEmpty(value) ? "" : value);
         }
 
         /// <summary>
@@ -841,7 +841,7 @@ namespace com.dxfeed.ipf {
             if (ipf != null)
                 return ipf.getNumericField(this);
             string value = getCustomField(name);
-            return value == null || Tools.IsEmpty(value) ? 0 :
+            return value == null || String.IsNullOrEmpty(value) ? 0 :
                 value.Length == 10 && value[4] == '-' && value[7] == '-' ? InstrumentProfileField.parseDate(value) :
                 InstrumentProfileField.parseNumber(value);
         }
@@ -869,7 +869,7 @@ namespace com.dxfeed.ipf {
             if (ipf != null)
                 return (int)ipf.getNumericField(this);
             string value = getCustomField(name);
-            return value == null || Tools.IsEmpty(value) ? 0 : InstrumentProfileField.parseDate(value);
+            return value == null || String.IsNullOrEmpty(value) ? 0 : InstrumentProfileField.parseDate(value);
         }
 
         /// <summary>
@@ -993,7 +993,7 @@ namespace com.dxfeed.ipf {
             foreach (var item in dict) {
                 string key = item.Key;
                 string value = item.Value;
-                if (key != null && value != null && !Tools.IsEmpty(value))
+                if (key != null && value != null && !String.IsNullOrEmpty(value))
                     hash += key.GetHashCode() ^ value.GetHashCode();
             }
             return hash;
@@ -1021,7 +1021,7 @@ namespace com.dxfeed.ipf {
         //    for (int i = b.length & ~1; (i -= 2) >= 0;) {
         //        string key = b[i];
         //        string value = b[i + 1];
-        //        if (key != null && value != null && !value.Tools.isEmpty())
+        //        if (key != null && value != null && !value.String.IsNullOrEmpty())
         //            if (a == null || !value.Equals(ArrayMap.get(a, key)))
         //                return false;
         //    }

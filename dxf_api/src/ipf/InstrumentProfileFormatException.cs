@@ -16,7 +16,6 @@ namespace com.dxfeed.ipf {
     /// Please see <b>Instrument Profile Format</b> documentation for complete description.
     /// </summary>
     public class InstrumentProfileFormatException : IOException {
-        private static readonly long serialVersionUID = 0;
 
         /// <summary>
         /// Constructs a InstrumentProfileFormatException without detail message.

@@ -18,20 +18,20 @@ namespace com.dxfeed.ipf {
     /// </summary>
     class InstrumentProfileType {
         
-        public static readonly InstrumentProfileType CURRENCY = new InstrumentProfileType("CURRENCY");
-        public static readonly InstrumentProfileType FOREX = new InstrumentProfileType("FOREX");
-        public static readonly InstrumentProfileType BOND = new InstrumentProfileType("BOND");
-        public static readonly InstrumentProfileType INDEX = new InstrumentProfileType("INDEX");
-        public static readonly InstrumentProfileType STOCK = new InstrumentProfileType("STOCK");
-        public static readonly InstrumentProfileType ETF = new InstrumentProfileType("ETF");
-        public static readonly InstrumentProfileType MUTUAL_FUND = new InstrumentProfileType("MUTUAL_FUND");
-        public static readonly InstrumentProfileType MONEY_MARKET_FUND = new InstrumentProfileType("MONEY_MARKET_FUND");
-        public static readonly InstrumentProfileType PRODUCT = new InstrumentProfileType("PRODUCT");
-        public static readonly InstrumentProfileType FUTURE = new InstrumentProfileType("FUTURE");
-        public static readonly InstrumentProfileType OPTION = new InstrumentProfileType("OPTION");
-        public static readonly InstrumentProfileType SPREAD = new InstrumentProfileType("SPREAD");
-        public static readonly InstrumentProfileType OTHER = new InstrumentProfileType("OTHER");
-        public static readonly InstrumentProfileType REMOVED = new InstrumentProfileType("REMOVED");
+        public static readonly InstrumentProfileType CURRENCY = new InstrumentProfileType(T_CURRENCY);
+        public static readonly InstrumentProfileType FOREX = new InstrumentProfileType(T_FOREX);
+        public static readonly InstrumentProfileType BOND = new InstrumentProfileType(T_BOND);
+        public static readonly InstrumentProfileType INDEX = new InstrumentProfileType(T_INDEX);
+        public static readonly InstrumentProfileType STOCK = new InstrumentProfileType(T_STOCK);
+        public static readonly InstrumentProfileType ETF = new InstrumentProfileType(T_ETF);
+        public static readonly InstrumentProfileType MUTUAL_FUND = new InstrumentProfileType(T_MUTUAL_FUND);
+        public static readonly InstrumentProfileType MONEY_MARKET_FUND = new InstrumentProfileType(T_MONEY_MARKET_FUND);
+        public static readonly InstrumentProfileType PRODUCT = new InstrumentProfileType(T_PRODUCT);
+        public static readonly InstrumentProfileType FUTURE = new InstrumentProfileType(T_FUTURE);
+        public static readonly InstrumentProfileType OPTION = new InstrumentProfileType(T_OPTION);
+        public static readonly InstrumentProfileType SPREAD = new InstrumentProfileType(T_SPREAD);
+        public static readonly InstrumentProfileType OTHER = new InstrumentProfileType(T_OTHER);
+        public static readonly InstrumentProfileType REMOVED = new InstrumentProfileType(T_REMOVED);
 
         private const string T_CURRENCY = "CURRENCY";
         private const string T_FOREX = "FOREX";
@@ -49,12 +49,15 @@ namespace com.dxfeed.ipf {
         private const string T_REMOVED = "REMOVED";
         private static Dictionary<string, InstrumentProfileType> MAP = new Dictionary<string, InstrumentProfileType>();
 
-        private string type;
-
-        private InstrumentProfileType(string type) {
-            this.type = type;
-            MAP[type] = this;
+        private InstrumentProfileType(string name) {
+            this.Name = name;
+            MAP[name] = this;
         }
+
+        /// <summary>
+        /// Get the name of instrument profile type.
+        /// </summary>
+        public string Name { get; private set; }
 
         /// <summary>
         /// Returns field for specified name or <b>null</b> if field is not found.
@@ -98,7 +101,7 @@ namespace com.dxfeed.ipf {
         /// <param name="other">Other type to compare.</param>
         /// <returns></returns>
         public int CompareTo(InstrumentProfileType other) {
-            return this.type.CompareTo(other.type);
+            return this.Name.CompareTo(other.Name);
         }
     }
 }

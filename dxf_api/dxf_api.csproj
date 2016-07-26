@@ -106,15 +106,18 @@
     <Compile Include="src\IDxSubscription.cs" />
     <Compile Include="src\io\CSVFormatException.cs" />
     <Compile Include="src\io\CSVReader.cs" />
+    <Compile Include="src\io\CSVWriter.cs" />
     <Compile Include="src\io\URLInputStream.cs" />
     <Compile Include="src\ipf\impl\Constants.cs" />
     <Compile Include="src\ipf\impl\DateFormat.cs" />
+    <Compile Include="src\ipf\impl\InstrumentProfileComposer.cs" />
     <Compile Include="src\ipf\impl\InstrumentProfileParser.cs" />
     <Compile Include="src\ipf\InstrumentProfile.cs" />
     <Compile Include="src\ipf\InstrumentProfileField.cs" />
     <Compile Include="src\ipf\InstrumentProfileFormatException.cs" />
     <Compile Include="src\ipf\InstrumentProfileReader.cs" />
     <Compile Include="src\ipf\InstrumentProfileType.cs" />
+    <Compile Include="src\ipf\InstrumentProfileWriter.cs" />
     <Compile Include="src\Tools.cs" />
     <Compile Include="src\util\StringCache.cs" />
   </ItemGroup>

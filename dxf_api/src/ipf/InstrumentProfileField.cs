@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 using System.Globalization;
+using System.Linq;
 using System.Threading;
 using com.dxfeed.api;
 
@@ -86,13 +87,23 @@ namespace com.dxfeed.ipf {
 
         private static Dictionary<string, InstrumentProfileField> MAP = new Dictionary<string, InstrumentProfileField>();
 
-        private string Name {
-            get; set;
-        }
-
         private InstrumentProfileField(string name) {
             this.Name = name;
             MAP.Add(name, this);
+        }
+
+        /// <summary>
+        /// Get name of instrument profile field.
+        /// </summary>
+        public string Name {
+            get;
+            private set;
+        }
+
+        public static InstrumentProfileField[] Values {
+            get {
+                return (new List<InstrumentProfileField>(MAP.Values)).ToArray();
+            }
         }
 
         /// <summary>

@@ -17,8 +17,6 @@ namespace com.dxfeed.io {
     /// </summary>
     public class CSVFormatException : IOException {
 
-        private static readonly long serialVersionUID = 0;
-
         /// <summary>
         /// Constructs a CSVFormatException without detail message.
         /// </summary>

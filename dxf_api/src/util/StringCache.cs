@@ -14,7 +14,7 @@ namespace com.dxfeed.util {
     /// <summary>
     /// Caches strings and provides lookup methods by raw character data to avoid string construction.
     /// It is intended to be used in various parsers to reduce memory footprint and garbage.
-    /// <p>
+    /// 
     /// The <tt>StringCache</tt> is a <b>N-way set associative cache</b> which distributes all strings
     /// into buckets based on hash function and then uses LRU algorithm within each bucket.
     /// The <tt>StringCache</tt> is a thread-safe, asynchronous, wait-free data structure.

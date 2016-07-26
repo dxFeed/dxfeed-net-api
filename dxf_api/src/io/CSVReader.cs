@@ -52,7 +52,7 @@ namespace com.dxfeed.io {
         /// Creates new CSVReader with default separator and quote characters.
         /// </summary>
         /// <param name="reader"></param>
-        /// <exception cref="ArgumentNullException">If reader is null.</exception>
+        /// <exception cref="NullReferenceException">If reader is null.</exception>
         public CSVReader(StreamReader reader)
             : this(reader, ',', '"') { }
 
@@ -62,11 +62,11 @@ namespace com.dxfeed.io {
         /// <param name="reader"></param>
         /// <param name="separator">Separator.</param>
         /// <param name="quote">Quote charachter.</param>
-        /// <exception cref="ArgumentNullException">If reader is null.</exception>
+        /// <exception cref="NullReferenceException">If reader is null.</exception>
         /// <exception cref="ArgumentException">If separator or quote characters are invalid.</exception>
         public CSVReader(StreamReader reader, char separator, char quote) {
             if (reader == null)
-                throw new ArgumentNullException("reader is null");
+                throw new NullReferenceException("reader is null");
             if (separator == CR || separator == LF)
                 throw new ArgumentException("separator is CR or LF");
             if (quote == CR || quote == LF || quote == separator)

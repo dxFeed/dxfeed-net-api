@@ -890,7 +890,7 @@ namespace com.dxfeed.ipf {
         /// </summary>
         /// <param name="targetFieldNames"></param>
         /// <returns><tt>true</tt> if {@code targetFieldNames} changed as a result of the call</returns>
-        public bool addNonEmptyCustomFieldNames(IList<string> targetFieldNames) {
+        public bool addNonEmptyCustomFieldNames(ICollection<string> targetFieldNames) {
             int size = targetFieldNames.Count;
             foreach (KeyValuePair<string, string> item in this.customFields) {
                 string name = item.Key; // Atomic read.

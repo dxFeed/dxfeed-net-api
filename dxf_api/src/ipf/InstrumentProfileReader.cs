@@ -144,15 +144,15 @@ namespace com.dxfeed.ipf {
             // However we shall not close underlying stream here to allow proper nesting of data streams.
             if (name.ToLower().EndsWith(".zip")) {
 
-                //TODO: make Zip here!
-
-                //try (ZipInputStream zip = new ZipInputStream(new UncloseableInputStream(inputStream))) {
-                //    IList<InstrumentProfile> profiles = new ArrayList<>();
-                //    for (ZipEntry entry = zip.getNextEntry(); entry != null; entry = zip.getNextEntry())
-                //        if (!entry.isDirectory())
-                //            profiles.addAll(read(zip, entry.getName()));
-                //    return profiles;
-                //}
+                //TODO: uncloseable streams
+                using (ZipArchive zip = new ZipArchive(inputStream)) {
+                    List<InstrumentProfile> profiles = new List<InstrumentProfile>();
+                    foreach (ZipArchiveEntry entry in zip.Entries) {
+                        //TODO: check directory
+                        profiles.AddRange(read(entry.Open(), entry.Name));
+                    }
+                    return profiles;
+                }
             }
             if (name.ToLower().EndsWith(".gz")) {
                 //TODO: uncloseable streams

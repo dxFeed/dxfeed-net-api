@@ -98,6 +98,9 @@
     <Compile Include="src\IDxConnection.cs" />
     <Compile Include="src\IDxSnapshotListener.cs" />
     <Compile Include="src\IDxSubscription.cs" />
+    <Compile Include="src\ipf\option\OptionChain.cs" />
+    <Compile Include="src\ipf\option\OptionChainsBuilder.cs" />
+    <Compile Include="src\ipf\option\OptionSeries.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

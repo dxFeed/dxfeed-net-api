@@ -84,7 +84,7 @@ namespace com.dxfeed.ipf.impl {
         private void captureTypes(List<InstrumentProfile> profiles) {
             types.Clear();
             foreach (InstrumentProfile ip in profiles)
-                types.Add(ip.getType());
+                types.Add(ip.GetTypeName());
         }
 
         private void writeFormats(List<InstrumentProfile> profiles, bool skipRemoved) {
@@ -107,10 +107,10 @@ namespace com.dxfeed.ipf.impl {
                 if (!REMOVED_TYPE.Equals(type)) {
                     // collect actual used fields for non-removed instrument profiles
                     foreach (InstrumentProfileField ipf in FIELDS)
-                        if (ipf != InstrumentProfileField.TYPE && ipf.getField(ip).Length > 0)
+                        if (ipf != InstrumentProfileField.TYPE && ipf.GetField(ip).Length > 0)
                             if (enumFormat.Add(ipf))
                                 updated.Add(type);
-                    if (ip.addNonEmptyCustomFieldNames(customFormat))
+                    if (ip.AddNonEmptyCustomFieldNames(customFormat))
                         updated.Add(type);
                 }
             }
@@ -140,9 +140,9 @@ namespace com.dxfeed.ipf.impl {
         private void writeProfile(string type, InstrumentProfile ip) {
             writer.writeField(type);
             foreach (InstrumentProfileField field in enumFormats[type])
-                writer.writeField(field.getField(ip));
+                writer.writeField(field.GetField(ip));
             foreach (string field in customFormats[type])
-                writer.writeField(ip.getField(field));
+                writer.writeField(ip.GetField(field));
             writer.writeRecord(null);
         }
     }

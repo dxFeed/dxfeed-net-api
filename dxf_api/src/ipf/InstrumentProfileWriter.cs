@@ -36,9 +36,9 @@ namespace com.dxfeed.ipf {
         /// <param name="file"></param>
         /// <param name="profiles"></param>
         /// <exception cref="System.IO.IOException">If an I/O error occurs.</exception>
-        public void writeToFile(string file, List<InstrumentProfile> profiles) {
+        public void WriteToFile(string file, List<InstrumentProfile> profiles) {
             using (FileStream outStream = new FileStream(file, FileMode.Create)) {
-                write(outStream, file, profiles);
+                Write(outStream, file, profiles);
             }
         }
 
@@ -53,7 +53,7 @@ namespace com.dxfeed.ipf {
         /// <param name="name"></param>
         /// <param name="profiles"></param>
         /// <exception cref="System.IO.IOException">If an I/O error occurs.</exception>
-        public void write(Stream outStream, string name, List<InstrumentProfile> profiles) {
+        public void Write(Stream outStream, string name, List<InstrumentProfile> profiles) {
             // NOTE: compression streams (zip and gzip) require explicit call to "close()" method to properly
             // finish writing of compressed file format and to release native Deflater resources.
             // However we shall not close underlying stream here to allow proper nesting of data streams.
@@ -62,18 +62,18 @@ namespace com.dxfeed.ipf {
                 //TODO: ucloseable stream
                 using (ZipArchive zip = new ZipArchive(outStream)) {
                     ZipArchiveEntry entry = zip.CreateEntry(name);
-                    write(entry.Open(), name, profiles);
+                    Write(entry.Open(), name, profiles);
                 }
                 return;
             }
             if (name.ToLower().EndsWith(".gz")) {
                 //TODO: ucloseable stream
                 using (GZipStream gzip = new GZipStream(outStream, CompressionMode.Compress)) {
-                    write(gzip, profiles);
+                    Write(gzip, profiles);
                 }
                 return;
             }
-            write(outStream, profiles);
+            Write(outStream, profiles);
         }
 
         /// <summary>
@@ -82,7 +82,7 @@ namespace com.dxfeed.ipf {
         /// <param name="outStream"></param>
         /// <param name="profiles"></param>
         /// <exception cref="System.IO.IOException">If an I/O error occurs.</exception>
-        public void write(Stream outStream, List<InstrumentProfile> profiles) {
+        public void Write(Stream outStream, List<InstrumentProfile> profiles) {
             InstrumentProfileComposer composer = new InstrumentProfileComposer(outStream);
             composer.compose(profiles, false);
             composer.composeNewLine();

@@ -34,8 +34,9 @@ namespace com.dxfeed.ipf.impl {
         /// <summary>
         /// Return next instrument profile.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Next instrument profile.</returns>
         /// <exception cref="InstrumentProfileFormatException"></exception>
+        /// <exception cref="System.IO.IOException"></exception>
         public InstrumentProfile next() {
             while (true) {
                 int line = reader.getLineNumber();
@@ -64,7 +65,7 @@ namespace com.dxfeed.ipf.impl {
                     object[] newFormat = new object[record.Length];
                     newFormat[0] = InstrumentProfileField.TYPE;
                     for (int i = 1; i < record.Length; i++)
-                        if ((newFormat[i] = InstrumentProfileField.find(record[i])) == null)
+                        if ((newFormat[i] = InstrumentProfileField.Find(record[i])) == null)
                             newFormat[i] = String.Intern(record[i]);
                     string key = record[0].Substring(
                         Constants.METADATA_PREFIX.Length, 
@@ -83,9 +84,9 @@ namespace com.dxfeed.ipf.impl {
                     try {
                         if (format[i].GetType() == typeof(InstrumentProfileField)) {
                             InstrumentProfileField field = (InstrumentProfileField)format[i];
-                            field.setField(ip, (field.isNumericField()) ? record[i] : intern(record[i]));
+                            field.SetField(ip, (field.IsNumericField()) ? record[i] : intern(record[i]));
                         } else {
-                            ip.setField((string)format[i], intern(record[i]));
+                            ip.SetField((string)format[i], intern(record[i]));
                         }
                     } catch (Exception e) {
                         throw new InstrumentProfileFormatException(e.Message + " (line " + line + ")");

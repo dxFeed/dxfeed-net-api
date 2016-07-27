@@ -107,7 +107,7 @@ namespace com.dxfeed.ipf {
         /// Example: "STOCK", "FUTURE", "OPTION".
         /// </summary>
         /// <returns>Type of instrument.</returns>
-        public string getType() {
+        public string GetTypeName() {
             return type;
         }
 
@@ -118,7 +118,7 @@ namespace com.dxfeed.ipf {
         /// Example: "STOCK", "FUTURE", "OPTION".
         /// </summary>
         /// <param name="type">Type type of instrument.</param>
-        public void setType(string type) {
+        public void SetType(string type) {
             this.type = type == null || String.IsNullOrEmpty(type) ? "" : type;
         }
 
@@ -129,7 +129,7 @@ namespace com.dxfeed.ipf {
         /// Example: "GOOG", "/YGM9", ".ZYEAD".
         /// </summary>
         /// <returns>Identifier of instrument.</returns>
-        public string getSymbol() {
+        public string GetSymbol() {
             return symbol;
         }
 
@@ -140,7 +140,7 @@ namespace com.dxfeed.ipf {
         /// Example: "GOOG", "/YGM9", ".ZYEAD".
         /// </summary>
         /// <param name="symbol">Symbol identifier of instrument.</param>
-        public void setSymbol(string symbol) {
+        public void SetSymbol(string symbol) {
             this.symbol = symbol == null || String.IsNullOrEmpty(symbol) ? "" : symbol;
         }
 
@@ -150,7 +150,7 @@ namespace com.dxfeed.ipf {
         /// Example: "Google Inc.", "Mini Gold Futures,Jun-2009,ETH".
         /// </summary>
         /// <returns>Description of instrument.</returns>
-        public string getDescription() {
+        public string GetDescription() {
             return description;
         }
 
@@ -160,7 +160,7 @@ namespace com.dxfeed.ipf {
         /// Example: "Google Inc.", "Mini Gold Futures,Jun-2009,ETH".
         /// </summary>
         /// <param name="description">Description of instrument.</param>
-        public void setDescription(string description) {
+        public void SetDescription(string description) {
             this.description = description == null || String.IsNullOrEmpty(description) ? "" : description;
         }
 
@@ -169,7 +169,7 @@ namespace com.dxfeed.ipf {
         /// It shall be empty if same as {@link #getSymbol symbol}.
         /// </summary>
         /// <returns>Identifier of instrument in national language.</returns>
-        public string getLocalSymbol() {
+        public string GetLocalSymbol() {
             return localSymbol;
         }
 
@@ -178,7 +178,7 @@ namespace com.dxfeed.ipf {
         /// It shall be empty if same as {@link #setSymbol symbol}.
         /// </summary>
         /// <param name="localSymbol">Identifier of instrument in national language.</param>
-        public void setLocalSymbol(string localSymbol) {
+        public void SetLocalSymbol(string localSymbol) {
             this.localSymbol = localSymbol == null || String.IsNullOrEmpty(localSymbol) ? "" : localSymbol;
         }
 
@@ -187,7 +187,7 @@ namespace com.dxfeed.ipf {
         /// It shall be empty if same as {@link #getDescription description}.
         /// </summary>
         /// <returns>Description of instrument in national language.</returns>
-        public string getLocalDescription() {
+        public string GetLocalDescription() {
             return localDescription;
         }
 
@@ -196,7 +196,7 @@ namespace com.dxfeed.ipf {
         /// It shall be empty if same as {@link #getDescription description}.
         /// </summary>
         /// <param name="localDescription">Description of instrument in national language.</param>
-        public void setLocalDescription(string localDescription) {
+        public void SetLocalDescription(string localDescription) {
             this.localDescription = localDescription == null || String.IsNullOrEmpty(localDescription) ? "" : localDescription;
         }
 
@@ -207,7 +207,7 @@ namespace com.dxfeed.ipf {
         /// Example: "US", "RU".
         /// </summary>
         /// <returns>Country of origin (incorporation) of corresponding company or parent entity.</returns>
-        public string getCountry() {
+        public string GetCountry() {
             return country;
         }
 
@@ -218,7 +218,7 @@ namespace com.dxfeed.ipf {
         /// Example: "US", "RU".
         /// </summary>
         /// <param name="country">Country of origin (incorporation) of corresponding company or parent entity.</param>
-        public void setCountry(string country) {
+        public void SetCountry(string country) {
             this.country = country == null || String.IsNullOrEmpty(country) ? "" : country;
         }
 
@@ -231,7 +231,7 @@ namespace com.dxfeed.ipf {
         /// Example: "XNAS", "RTSX"/
         /// </summary>
         /// <returns>Official Place Of Listing, the organization that have listed this instrument.</returns>
-        public string getOPOL() {
+        public string GetOPOL() {
             return opol;
         }
 
@@ -244,7 +244,7 @@ namespace com.dxfeed.ipf {
         /// Example: "XNAS", "RTSX"/
         /// </summary>
         /// <param name="opol">Official Place Of Listing, the organization that have listed this instrument.</param>
-        public void setOPOL(string opol) {
+        public void SetOPOL(string opol) {
             this.opol = opol == null || String.IsNullOrEmpty(opol) ? "" : opol;
         }
 
@@ -253,7 +253,7 @@ namespace com.dxfeed.ipf {
         /// It uses exchange-specific format.
         /// </summary>
         /// <returns>Exchange-specific data required to properly identify instrument when communicating with exchange.</returns>
-        public string getExchangeData() {
+        public string GetExchangeData() {
             return exchangeData;
         }
 
@@ -262,7 +262,7 @@ namespace com.dxfeed.ipf {
         /// It uses exchange-specific format.
         /// </summary>
         /// <param name="exchangeData">Exchange-specific data required to properly identify instrument when communicating with exchange.</param>
-        public void setExchangeData(string exchangeData) {
+        public void SetExchangeData(string exchangeData) {
             this.exchangeData = exchangeData == null || String.IsNullOrEmpty(exchangeData) ? "" : exchangeData;
         }
 
@@ -276,7 +276,7 @@ namespace com.dxfeed.ipf {
         /// Example: "ARCX;CBSX ;XNAS;XNYS".
         /// </summary>
         /// <returns>List of exchanges where instrument is quoted or traded.</returns>
-        public string getExchanges() {
+        public string GetExchanges() {
             return exchanges;
         }
 
@@ -290,7 +290,7 @@ namespace com.dxfeed.ipf {
         /// Example: "ARCX;CBSX ;XNAS;XNYS".
         /// </summary>
         /// <param name="exchanges">List of exchanges where instrument is quoted or traded.</param>
-        public void setExchanges(string exchanges) {
+        public void SetExchanges(string exchanges) {
             this.exchanges = exchanges == null || String.IsNullOrEmpty(exchanges) ? "" : exchanges;
         }
 
@@ -301,7 +301,7 @@ namespace com.dxfeed.ipf {
         /// Example: "USD", "RUB".
         /// </summary>
         /// <returns>Currency of quotation, pricing and trading.</returns>
-        public string getCurrency() {
+        public string GetCurrency() {
             return currency;
         }
 
@@ -312,7 +312,7 @@ namespace com.dxfeed.ipf {
         /// Example: "USD", "RUB".
         /// </summary>
         /// <param name="currency">Currency currency of quotation, pricing and trading.</param>
-        public void setCurrency(string currency) {
+        public void SetCurrency(string currency) {
             this.currency = currency == null || String.IsNullOrEmpty(currency) ? "" : currency;
         }
 
@@ -321,7 +321,7 @@ namespace com.dxfeed.ipf {
         /// It shall use three-letter currency code similarly to {@link #getCurrency currency}.
         /// </summary>
         /// <returns>Base currency of currency pair (FOREX instruments).</returns>
-        public string getBaseCurrency() {
+        public string GetBaseCurrency() {
             return baseCurrency;
         }
 
@@ -330,7 +330,7 @@ namespace com.dxfeed.ipf {
         /// It shall use three-letter currency code similarly to {@link #setCurrency currency}.
         /// </summary>
         /// <param name="baseCurrency">BaseCurrency base currency of currency pair (FOREX instruments).</param>
-        public void setBaseCurrency(string baseCurrency) {
+        public void SetBaseCurrency(string baseCurrency) {
             this.baseCurrency = baseCurrency == null || String.IsNullOrEmpty(baseCurrency) ? "" : baseCurrency;
         }
 
@@ -344,7 +344,7 @@ namespace com.dxfeed.ipf {
         /// Example: "ESNTPB", "ESXXXX", "ES" , "OPASPS".
         /// </summary>
         /// <returns>CFI code.</returns>
-        public string getCFI() {
+        public string GetCFI() {
             return cfi;
         }
 
@@ -358,7 +358,7 @@ namespace com.dxfeed.ipf {
         /// Example: "ESNTPB", "ESXXXX", "ES" , "OPASPS".
         /// </summary>
         /// <param name="cfi">CFI code.</param>
-        public void setCFI(string cfi) {
+        public void SetCFI(string cfi) {
             this.cfi = cfi == null || String.IsNullOrEmpty(cfi) ? "" : cfi;
         }
 
@@ -371,7 +371,7 @@ namespace com.dxfeed.ipf {
         /// @return International Securities Identifying Number.
         /// </summary>
         /// <returns></returns>
-        public string getISIN() {
+        public string GetISIN() {
             return isin;
         }
 
@@ -383,7 +383,7 @@ namespace com.dxfeed.ipf {
         /// Example: "DE0007100000", "US38259P5089".
         /// </summary>
         /// <param name="isin">International Securities Identifying Number.</param>
-        public void setISIN(string isin) {
+        public void SetISIN(string isin) {
             this.isin = isin == null || String.IsNullOrEmpty(isin) ? "" : isin;
         }
 
@@ -395,7 +395,7 @@ namespace com.dxfeed.ipf {
         /// Example: "2310967", "5766857".
         /// </summary>
         /// <returns>Exchange Daily Official List.</returns>
-        public string getSEDOL() {
+        public string GetSEDOL() {
             return sedol;
         }
 
@@ -407,7 +407,7 @@ namespace com.dxfeed.ipf {
         /// Example: "2310967", "5766857".
         /// </summary>
         /// <param name="sedol">Stock Exchange Daily Official List.</param>
-        public void setSEDOL(string sedol) {
+        public void SetSEDOL(string sedol) {
             this.sedol = sedol == null || String.IsNullOrEmpty(sedol) ? "" : sedol;
         }
 
@@ -418,7 +418,7 @@ namespace com.dxfeed.ipf {
         /// Example: "38259P508".
         /// </summary>
         /// <returns>CUSIP code.</returns>
-        public string getCUSIP() {
+        public string GetCUSIP() {
             return cusip;
         }
 
@@ -429,7 +429,7 @@ namespace com.dxfeed.ipf {
         /// Example: "38259P508".
         /// </summary>
         /// <param name="cusip">CUSIP code.</param>
-        public void setCUSIP(string cusip) {
+        public void SetCUSIP(string cusip) {
             this.cusip = cusip == null || String.IsNullOrEmpty(cusip) ? "" : cusip;
         }
 
@@ -441,7 +441,7 @@ namespace com.dxfeed.ipf {
         /// Example: "9535".
         /// </summary>
         /// <returns>Industry Classification Benchmark.</returns>
-        public int getICB() {
+        public int GetICB() {
             return icb;
         }
 
@@ -453,7 +453,7 @@ namespace com.dxfeed.ipf {
         /// Example: "9535".
         /// </summary>
         /// <param name="icb">Industry Classification Benchmark.</param>
-        public void setICB(int icb) {
+        public void SetICB(int icb) {
             this.icb = icb;
         }
 
@@ -465,7 +465,7 @@ namespace com.dxfeed.ipf {
         /// Example: "7371".
         /// </summary>
         /// <returns>Standard Industrial Classification.</returns>
-        public int getSIC() {
+        public int GetSIC() {
             return sic;
         }
 
@@ -477,7 +477,7 @@ namespace com.dxfeed.ipf {
         /// Example: "7371".
         /// </summary>
         /// <param name="sic">Standard Industrial Classification.</param>
-        public void setSIC(int sic) {
+        public void SetSIC(int sic) {
             this.sic = sic;
         }
 
@@ -486,7 +486,7 @@ namespace com.dxfeed.ipf {
         /// Example: 100, 33.2.
         /// </summary>
         /// <returns>Market value multiplier.</returns>
-        public double getMultiplier() {
+        public double GetMultiplier() {
             return multiplier;
         }
 
@@ -495,7 +495,7 @@ namespace com.dxfeed.ipf {
         /// Example: 100, 33.2.
         /// </summary>
         /// <param name="multiplier">Multiplier market value multiplier.</param>
-        public void setMultiplier(double multiplier) {
+        public void SetMultiplier(double multiplier) {
             this.multiplier = multiplier;
         }
 
@@ -504,7 +504,7 @@ namespace com.dxfeed.ipf {
         /// Example: "/YG".
         /// </summary>
         /// <returns>Product for futures and options on futures (underlying asset name).</returns>
-        public string getProduct() {
+        public string GetProduct() {
             return product;
         }
 
@@ -513,7 +513,7 @@ namespace com.dxfeed.ipf {
         /// Example: "/YG".
         /// </summary>
         /// <param name="product">Product product for futures and options on futures (underlying asset name).</param>
-        public void setProduct(string product) {
+        public void SetProduct(string product) {
             this.product = product == null || String.IsNullOrEmpty(product) ? "" : product;
         }
 
@@ -522,7 +522,7 @@ namespace com.dxfeed.ipf {
         /// Example: "C", "/YGM9"
         /// </summary>
         /// <returns>Primary underlying symbol for options.</returns>
-        public string getUnderlying() {
+        public string GetUnderlying() {
             return underlying;
         }
 
@@ -531,7 +531,7 @@ namespace com.dxfeed.ipf {
         /// Example: "C", "/YGM9"
         /// </summary>
         /// <param name="underlying">Underlying primary underlying symbol for options.</param>
-        public void setUnderlying(string underlying) {
+        public void SetUnderlying(string underlying) {
             this.underlying = underlying == null || String.IsNullOrEmpty(underlying) ? "" : underlying;
         }
 
@@ -540,7 +540,7 @@ namespace com.dxfeed.ipf {
         /// Example: 1, 100.
         /// </summary>
         /// <returns>Shares per contract for options.</returns>
-        public double getSPC() {
+        public double GetSPC() {
             return spc;
         }
 
@@ -549,7 +549,7 @@ namespace com.dxfeed.ipf {
         /// Example: 1, 100.
         /// </summary>
         /// <param name="spc">Shares per contract for options.</param>
-        public void setSPC(double spc) {
+        public void SetSPC(double spc) {
             this.spc = spc;
         }
 
@@ -564,7 +564,7 @@ namespace com.dxfeed.ipf {
         /// Example: "SE 50", "FIS 53; US$ 45.46".
         /// </summary>
         /// <returns>Additional underlyings for options, including additional cash.</returns>
-        public string getAdditionalUnderlyings() {
+        public string GetAdditionalUnderlyings() {
             return additionalUnderlyings;
         }
 
@@ -579,7 +579,7 @@ namespace com.dxfeed.ipf {
         /// Example: "SE 50", "FIS 53; US$ 45.46".
         /// </summary>
         /// <param name="additionalUnderlyings">AdditionalUnderlyings additional underlyings for options, including additional cash.</param>
-        public void setAdditionalUnderlyings(string additionalUnderlyings) {
+        public void SetAdditionalUnderlyings(string additionalUnderlyings) {
             this.additionalUnderlyings = additionalUnderlyings == null || String.IsNullOrEmpty(additionalUnderlyings) ? "" : additionalUnderlyings;
         }
 
@@ -593,7 +593,7 @@ namespace com.dxfeed.ipf {
         /// </ul>
         /// </summary>
         /// <returns>Maturity month-year as provided for corresponding FIX tag (200).</returns>
-        public string getMMY() {
+        public string GetMMY() {
             return mmy;
         }
 
@@ -607,7 +607,7 @@ namespace com.dxfeed.ipf {
         /// </ul>
         /// </summary>
         /// <param name="mmy">Maturity month-year as provided for corresponding FIX tag (200).</param>
-        public void setMMY(string mmy) {
+        public void SetMMY(string mmy) {
             this.mmy = mmy == null || String.IsNullOrEmpty(mmy) ? "" : mmy;
         }
 
@@ -616,7 +616,7 @@ namespace com.dxfeed.ipf {
         /// Example: {@link DayUtil#getDayIdByYearMonthDay DayUtil.getDayIdByYearMonthDay}(20090117).
         /// </summary>
         /// <returns>Day id of expiration.</returns>
-        public int getExpiration() {
+        public int GetExpiration() {
             return expiration;
         }
 
@@ -625,7 +625,7 @@ namespace com.dxfeed.ipf {
         /// Example: {@link DayUtil#getDayIdByYearMonthDay DayUtil.getDayIdByYearMonthDay}(20090117).
         /// </summary>
         /// <param name="expiration">Expiration day id of expiration.</param>
-        public void setExpiration(int expiration) {
+        public void SetExpiration(int expiration) {
             this.expiration = expiration;
         }
 
@@ -634,7 +634,7 @@ namespace com.dxfeed.ipf {
         /// Example: {@link DayUtil#getDayIdByYearMonthDay DayUtil.getDayIdByYearMonthDay}(20090116).
         /// </summary>
         /// <returns>Day id of last trading day.</returns>
-        public int getLastTrade() {
+        public int GetLastTrade() {
             return lastTrade;
         }
 
@@ -643,7 +643,7 @@ namespace com.dxfeed.ipf {
         /// Example: {@link DayUtil#getDayIdByYearMonthDay DayUtil.getDayIdByYearMonthDay}(20090116).
         /// </summary>
         /// <param name="lastTrade">Day id of last trading day.</param>
-        public void setLastTrade(int lastTrade) {
+        public void SetLastTrade(int lastTrade) {
             this.lastTrade = lastTrade;
         }
 
@@ -652,7 +652,7 @@ namespace com.dxfeed.ipf {
         /// Example: 80, 22.5.
         /// </summary>
         /// <returns>Strike price for options.</returns>
-        public double getStrike() {
+        public double GetStrike() {
             return strike;
         }
 
@@ -661,7 +661,7 @@ namespace com.dxfeed.ipf {
         /// Example: 80, 22.5.
         /// </summary>
         /// <param name="strike">Strike strike price for options.</param>
-        public void setStrike(double strike) {
+        public void SetStrike(double strike) {
             this.strike = strike;
         }
 
@@ -679,7 +679,7 @@ namespace com.dxfeed.ipf {
         /// </ul>
         /// </summary>
         /// <returns>Type of option.</returns>
-        public string getOptionType() {
+        public string GetOptionType() {
             return optionType;
         }
 
@@ -697,7 +697,7 @@ namespace com.dxfeed.ipf {
         /// </ul>
         /// </summary>
         /// <param name="optionType">Type of option.</param>
-        public void setOptionType(string optionType) {
+        public void SetOptionType(string optionType) {
             this.optionType = optionType == null || String.IsNullOrEmpty(optionType) ? "" : optionType;
         }
 
@@ -705,7 +705,7 @@ namespace com.dxfeed.ipf {
         /// Returns expiration cycle style, such as "Weeklys", "Quarterlys".
         /// </summary>
         /// <returns>Expiration cycle style.</returns>
-        public string getExpirationStyle() {
+        public string GetExpirationStyle() {
             return expirationStyle;
         }
 
@@ -713,7 +713,7 @@ namespace com.dxfeed.ipf {
         /// Returns expiration cycle style, such as "Weeklys", "Quarterlys".
         /// </summary>
         /// <param name="expirationStyle">Expiration cycle style.</param>
-        public void setExpirationStyle(string expirationStyle) {
+        public void SetExpirationStyle(string expirationStyle) {
             this.expirationStyle = expirationStyle == null || String.IsNullOrEmpty(expirationStyle) ? "" : expirationStyle;
         }
 
@@ -721,7 +721,7 @@ namespace com.dxfeed.ipf {
         /// Returns settlement price determination style, such as "Open", "Close".
         /// </summary>
         /// <returns>Settlement price determination style.</returns>
-        public string getSettlementStyle() {
+        public string GetSettlementStyle() {
             return settlementStyle;
         }
 
@@ -729,7 +729,7 @@ namespace com.dxfeed.ipf {
         /// Changes settlement price determination style, such as "Open", "Close".
         /// </summary>
         /// <param name="settlementStyle">Settlement price determination style.</param>
-        public void setSettlementStyle(string settlementStyle) {
+        public void SetSettlementStyle(string settlementStyle) {
             this.settlementStyle = settlementStyle == null || String.IsNullOrEmpty(settlementStyle) ? "" : settlementStyle;
         }
 
@@ -744,7 +744,7 @@ namespace com.dxfeed.ipf {
         /// Example: "0.25", "0.01 3; 0.05".
         /// </summary>
         /// <returns>Minimum allowed price increments with corresponding price ranges.</returns>
-        public string getPriceIncrements() {
+        public string GetPriceIncrements() {
             return priceIncrements;
         }
 
@@ -759,7 +759,7 @@ namespace com.dxfeed.ipf {
         /// Example: "0.25", "0.01 3; 0.05".
         /// </summary>
         /// <param name="priceIncrements">Minimum allowed price increments with corresponding price ranges.</param>
-        public void setPriceIncrements(string priceIncrements) {
+        public void SetPriceIncrements(string priceIncrements) {
             this.priceIncrements = priceIncrements == null || String.IsNullOrEmpty(priceIncrements) ? "" : priceIncrements;
         }
 
@@ -768,7 +768,7 @@ namespace com.dxfeed.ipf {
         /// See {@link Schedule#getInstance(string)}.
         /// </summary>
         /// <returns>Trading hours specification.</returns>
-        public string getTradingHours() {
+        public string GetTradingHours() {
             return tradingHours;
         }
 
@@ -777,7 +777,7 @@ namespace com.dxfeed.ipf {
         /// See {@link Schedule#getInstance(string)}.
         /// </summary>
         /// <param name="tradingHours">Trading hours specification.</param>
-        public void setTradingHours(string tradingHours) {
+        public void SetTradingHours(string tradingHours) {
             this.tradingHours = tradingHours == null || String.IsNullOrEmpty(tradingHours) ? "" : tradingHours;
         }
 
@@ -799,7 +799,7 @@ namespace com.dxfeed.ipf {
         /// </summary>
         /// <param name="name">Name of custom field.</param>
         /// <param name="value">Custom field value.</param>
-        private void setCustomField(string name, string value) {
+        private void SetCustomField(string name, string value) {
             //string[] customFields = this.customFields; // Atomic read.
             //this.customFields = ArrayMap.put(customFields == null ? new string[4] : customFields, name, value);
             customFields[name] = value;
@@ -810,10 +810,10 @@ namespace com.dxfeed.ipf {
         /// </summary>
         /// <param name="name">Name of field.</param>
         /// <returns>Field value.</returns>
-        public string getField(string name) {
-            InstrumentProfileField ipf = InstrumentProfileField.find(name);
+        public string GetField(string name) {
+            InstrumentProfileField ipf = InstrumentProfileField.Find(name);
             if (ipf != null)
-                return ipf.getField(this);
+                return ipf.GetField(this);
             string value = getCustomField(name);
             return value == null ? "" : value;
         }
@@ -823,12 +823,12 @@ namespace com.dxfeed.ipf {
         /// </summary>
         /// <param name="name">Name of field.</param>
         /// <param name="value">Field value.</param>
-        public void setField(string name, string value) {
-            InstrumentProfileField ipf = InstrumentProfileField.find(name);
+        public void SetField(string name, string value) {
+            InstrumentProfileField ipf = InstrumentProfileField.Find(name);
             if (ipf != null)
-                ipf.setField(this, value);
+                ipf.SetField(this, value);
             else
-                setCustomField(name, value == null || String.IsNullOrEmpty(value) ? "" : value);
+                SetCustomField(name, value == null || String.IsNullOrEmpty(value) ? "" : value);
         }
 
         /// <summary>
@@ -836,14 +836,14 @@ namespace com.dxfeed.ipf {
         /// </summary>
         /// <param name="name">Name of field.</param>
         /// <returns>Field value.</returns>
-        public double getNumericField(string name) {
-            InstrumentProfileField ipf = InstrumentProfileField.find(name);
+        public double GetNumericField(string name) {
+            InstrumentProfileField ipf = InstrumentProfileField.Find(name);
             if (ipf != null)
-                return ipf.getNumericField(this);
+                return ipf.GetNumericField(this);
             string value = getCustomField(name);
             return value == null || String.IsNullOrEmpty(value) ? 0 :
-                value.Length == 10 && value[4] == '-' && value[7] == '-' ? InstrumentProfileField.parseDate(value) :
-                InstrumentProfileField.parseNumber(value);
+                value.Length == 10 && value[4] == '-' && value[7] == '-' ? InstrumentProfileField.ParseDate(value) :
+                InstrumentProfileField.ParseNumber(value);
         }
 
         /// <summary>
@@ -851,12 +851,12 @@ namespace com.dxfeed.ipf {
         /// </summary>
         /// <param name="name">Name of field.</param>
         /// <param name="value">Field value.</param>
-        public void setNumericField(string name, double value) {
-            InstrumentProfileField ipf = InstrumentProfileField.find(name);
+        public void SetNumericField(string name, double value) {
+            InstrumentProfileField ipf = InstrumentProfileField.Find(name);
             if (ipf != null)
-                ipf.setNumericField(this, value);
+                ipf.SetNumericField(this, value);
             else
-                setCustomField(name, InstrumentProfileField.formatNumber(value));
+                SetCustomField(name, InstrumentProfileField.FormatNumber(value));
         }
 
         /// <summary>
@@ -864,12 +864,12 @@ namespace com.dxfeed.ipf {
         /// </summary>
         /// <param name="name">Name of field.</param>
         /// <returns>Day id value.</returns>
-        public int getDateField(string name) {
-            InstrumentProfileField ipf = InstrumentProfileField.find(name);
+        public int GetDateField(string name) {
+            InstrumentProfileField ipf = InstrumentProfileField.Find(name);
             if (ipf != null)
-                return (int)ipf.getNumericField(this);
+                return (int)ipf.GetNumericField(this);
             string value = getCustomField(name);
-            return value == null || String.IsNullOrEmpty(value) ? 0 : InstrumentProfileField.parseDate(value);
+            return value == null || String.IsNullOrEmpty(value) ? 0 : InstrumentProfileField.ParseDate(value);
         }
 
         /// <summary>
@@ -877,12 +877,12 @@ namespace com.dxfeed.ipf {
         /// </summary>
         /// <param name="name">Name of field.</param>
         /// <param name="value">Day id value.</param>
-        public void setDateField(string name, int value) {
-            InstrumentProfileField ipf = InstrumentProfileField.find(name);
+        public void SetDateField(string name, int value) {
+            InstrumentProfileField ipf = InstrumentProfileField.Find(name);
             if (ipf != null)
-                ipf.setNumericField(this, value);
+                ipf.SetNumericField(this, value);
             else
-                setCustomField(name, InstrumentProfileField.formatDate(value));
+                SetCustomField(name, InstrumentProfileField.FormatDate(value));
         }
 
         /// <summary>
@@ -890,7 +890,7 @@ namespace com.dxfeed.ipf {
         /// </summary>
         /// <param name="targetFieldNames"></param>
         /// <returns><tt>true</tt> if {@code targetFieldNames} changed as a result of the call</returns>
-        public bool addNonEmptyCustomFieldNames(ICollection<string> targetFieldNames) {
+        public bool AddNonEmptyCustomFieldNames(ICollection<string> targetFieldNames) {
             int size = targetFieldNames.Count;
             foreach (KeyValuePair<string, string> item in this.customFields) {
                 string name = item.Key; // Atomic read.
@@ -941,7 +941,7 @@ namespace com.dxfeed.ipf {
             if (!settlementStyle.Equals(that.settlementStyle)) return false;
             if (!priceIncrements.Equals(that.priceIncrements)) return false;
             if (!tradingHours.Equals(that.tradingHours)) return false;
-            return customEquals(customFields, that.customFields);
+            return CustomEquals(customFields, that.customFields);
         }
 
         /// <summary>
@@ -985,10 +985,10 @@ namespace com.dxfeed.ipf {
             result = 31 * result + settlementStyle.GetHashCode();
             result = 31 * result + priceIncrements.GetHashCode();
             result = 31 * result + tradingHours.GetHashCode();
-            return 31 * result + customHashCode(customFields);
+            return 31 * result + CustomHashCode(customFields);
         }
 
-        private static int customHashCode(Dictionary<string, string> dict) {
+        private static int CustomHashCode(Dictionary<string, string> dict) {
             int hash = 0;
             foreach (var item in dict) {
                 string key = item.Key;
@@ -999,7 +999,7 @@ namespace com.dxfeed.ipf {
             return hash;
         }
 
-        public bool customEquals<TKey, TValue>(Dictionary<TKey, TValue> dict1, Dictionary<TKey, TValue> dict2) {
+        public bool CustomEquals<TKey, TValue>(Dictionary<TKey, TValue> dict1, Dictionary<TKey, TValue> dict2) {
             if (dict1 == dict2) return true;
             if ((dict1 == null) || (dict2 == null)) return false;
             if (dict1.Count != dict2.Count) return false;

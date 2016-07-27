@@ -65,7 +65,7 @@ namespace com.dxfeed.ipf {
         /// <param name="name">Name of type.</param>
         /// <returns>Field for specified name or <b>null</b> if field is not found.</returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public static InstrumentProfileType find(string name) {
+        public static InstrumentProfileType Find(string name) {
             if (MAP.ContainsKey(name))
                 return MAP[name];
             return null;
@@ -86,8 +86,8 @@ namespace com.dxfeed.ipf {
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
         public static int CompareTypes(string type1, string type2) {
-            InstrumentProfileType t1 = find(type1);
-            InstrumentProfileType t2 = find(type2);
+            InstrumentProfileType t1 = Find(type1);
+            InstrumentProfileType t2 = Find(type2);
             if (t1 == null)
                 return t2 == null ? type1.CompareTo(type2) : +1;
             if (t2 == null)

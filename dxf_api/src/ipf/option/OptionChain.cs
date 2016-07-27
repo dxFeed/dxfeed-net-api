@@ -6,11 +6,12 @@ using System.Text;
 namespace com.dxfeed.ipf.option {
 	class OptionChain {
 		/// <summary>
-		///Returns symbol(product or underlying) of this option chain.
+		/// Symbol(product or underlying) of this option chain.
 		/// </summary>
-		/// <returns>Symbol (product or underlying) of this option chain.</returns>
+		/// <value>Gets symbol (product or underlying) of this option chain.</value>
 		public string Symbol {
-			get; private set;
+			get;
+			private set;
 		}
 
 		OptionChain(string symbol) {

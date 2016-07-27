@@ -37,12 +37,12 @@ namespace com.dxfeed.ipf.impl {
         /// <returns>Next instrument profile.</returns>
         /// <exception cref="InstrumentProfileFormatException"></exception>
         /// <exception cref="System.IO.IOException"></exception>
-        public InstrumentProfile next() {
+        public InstrumentProfile Next() {
             while (true) {
-                int line = reader.getLineNumber();
+                int line = reader.GetLineNumber();
                 string[] record;
                 try {
-                    record = reader.readRecord();
+                    record = reader.ReadRecord();
                 } catch (CSVFormatException e) {
                     throw new InstrumentProfileFormatException(e.Message);
                 }
@@ -53,10 +53,10 @@ namespace com.dxfeed.ipf.impl {
                 if (record[0].StartsWith(Constants.METADATA_PREFIX)) {
                     switch (record[0]) {
                     case Constants.FLUSH_COMMAND:
-                        onFlush();
+                        OnFlush();
                         break;
                     case Constants.COMPLETE_COMMAND:
-                        onComplete();
+                        OnComplete();
                         break;
                     }
                     if (!record[0].EndsWith(Constants.METADATA_SUFFIX)) // skip comments
@@ -70,7 +70,7 @@ namespace com.dxfeed.ipf.impl {
                     string key = record[0].Substring(
                         Constants.METADATA_PREFIX.Length, 
                         record[0].Length - Constants.METADATA_SUFFIX.Length - Constants.METADATA_PREFIX.Length);
-                    formats.Add(key, newFormat);
+                    formats[key] = newFormat;
                     continue;
                 }
                 // detected instrument profile record - parse and remember new profile
@@ -84,9 +84,9 @@ namespace com.dxfeed.ipf.impl {
                     try {
                         if (format[i].GetType() == typeof(InstrumentProfileField)) {
                             InstrumentProfileField field = (InstrumentProfileField)format[i];
-                            field.SetField(ip, (field.IsNumericField()) ? record[i] : intern(record[i]));
+                            field.SetField(ip, (field.IsNumericField()) ? record[i] : Intern(record[i]));
                         } else {
-                            ip.SetField((string)format[i], intern(record[i]));
+                            ip.SetField((string)format[i], Intern(record[i]));
                         }
                     } catch (Exception e) {
                         throw new InstrumentProfileFormatException(e.Message + " (line " + line + ")");
@@ -95,13 +95,13 @@ namespace com.dxfeed.ipf.impl {
             }
         }
 
-        protected string intern(string value) {
+        protected string Intern(string value) {
             return value;
         }
 
-        protected void onFlush() {}
+        protected void OnFlush() {}
 
-        protected void onComplete() {}
+        protected void OnComplete() {}
 
     }
 }

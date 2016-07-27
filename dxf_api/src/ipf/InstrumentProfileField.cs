@@ -21,37 +21,6 @@ namespace com.dxfeed.ipf {
     /// Please see <b>Instrument Profile Format</b> documentation for complete description.
     /// </summary>
     class InstrumentProfileField {
-        public static readonly InstrumentProfileField TYPE = new InstrumentProfileField(F_TYPE);
-        public static readonly InstrumentProfileField SYMBOL = new InstrumentProfileField(F_SYMBOL);
-        public static readonly InstrumentProfileField DESCRIPTION = new InstrumentProfileField(F_DESCRIPTION);
-        public static readonly InstrumentProfileField LOCAL_SYMBOL = new InstrumentProfileField(F_LOCAL_SYMBOL);
-        public static readonly InstrumentProfileField LOCAL_DESCRIPTION = new InstrumentProfileField(F_LOCAL_DESCRIPTION);
-        public static readonly InstrumentProfileField COUNTRY = new InstrumentProfileField(F_COUNTRY);
-        public static readonly InstrumentProfileField OPOL = new InstrumentProfileField(F_OPOL);
-        public static readonly InstrumentProfileField EXCHANGE_DATA = new InstrumentProfileField(F_EXCHANGE_DATA);
-        public static readonly InstrumentProfileField EXCHANGES = new InstrumentProfileField(F_EXCHANGES);
-        public static readonly InstrumentProfileField CURRENCY = new InstrumentProfileField(F_CURRENCY);
-        public static readonly InstrumentProfileField BASE_CURRENCY = new InstrumentProfileField(F_BASE_CURRENCY);
-        public static readonly InstrumentProfileField CFI = new InstrumentProfileField(F_CFI);
-        public static readonly InstrumentProfileField ISIN = new InstrumentProfileField(F_ISIN);
-        public static readonly InstrumentProfileField SEDOL = new InstrumentProfileField(F_SEDOL);
-        public static readonly InstrumentProfileField CUSIP = new InstrumentProfileField(F_CUSIP);
-        public static readonly InstrumentProfileField ICB = new InstrumentProfileField(F_ICB);
-        public static readonly InstrumentProfileField SIC = new InstrumentProfileField(F_SIC);
-        public static readonly InstrumentProfileField MULTIPLIER = new InstrumentProfileField(F_MULTIPLIER);
-        public static readonly InstrumentProfileField PRODUCT = new InstrumentProfileField(F_PRODUCT);
-        public static readonly InstrumentProfileField UNDERLYING = new InstrumentProfileField(F_UNDERLYING);
-        public static readonly InstrumentProfileField SPC = new InstrumentProfileField(F_SPC);
-        public static readonly InstrumentProfileField ADDITIONAL_UNDERLYINGS = new InstrumentProfileField(F_ADDITIONAL_UNDERLYINGS);
-        public static readonly InstrumentProfileField MMY = new InstrumentProfileField(F_MMY);
-        public static readonly InstrumentProfileField EXPIRATION = new InstrumentProfileField(F_EXPIRATION);
-        public static readonly InstrumentProfileField LAST_TRADE = new InstrumentProfileField(F_LAST_TRADE);
-        public static readonly InstrumentProfileField STRIKE = new InstrumentProfileField(F_STRIKE);
-        public static readonly InstrumentProfileField OPTION_TYPE = new InstrumentProfileField(F_OPTION_TYPE);
-        public static readonly InstrumentProfileField EXPIRATION_STYLE = new InstrumentProfileField(F_EXPIRATION_STYLE);
-        public static readonly InstrumentProfileField SETTLEMENT_STYLE = new InstrumentProfileField(F_SETTLEMENT_STYLE);
-        public static readonly InstrumentProfileField PRICE_INCREMENTS = new InstrumentProfileField(F_PRICE_INCREMENTS);
-        public static readonly InstrumentProfileField TRADING_HOURS = new InstrumentProfileField(F_TRADING_HOURS);
 
         private const string F_TYPE = "TYPE";
         private const string F_SYMBOL = "SYMBOL";
@@ -86,6 +55,38 @@ namespace com.dxfeed.ipf {
         private const string F_TRADING_HOURS = "TRADING_HOURS";
 
         private static Dictionary<string, InstrumentProfileField> MAP = new Dictionary<string, InstrumentProfileField>();
+
+        public static readonly InstrumentProfileField TYPE = new InstrumentProfileField(F_TYPE);
+        public static readonly InstrumentProfileField SYMBOL = new InstrumentProfileField(F_SYMBOL);
+        public static readonly InstrumentProfileField DESCRIPTION = new InstrumentProfileField(F_DESCRIPTION);
+        public static readonly InstrumentProfileField LOCAL_SYMBOL = new InstrumentProfileField(F_LOCAL_SYMBOL);
+        public static readonly InstrumentProfileField LOCAL_DESCRIPTION = new InstrumentProfileField(F_LOCAL_DESCRIPTION);
+        public static readonly InstrumentProfileField COUNTRY = new InstrumentProfileField(F_COUNTRY);
+        public static readonly InstrumentProfileField OPOL = new InstrumentProfileField(F_OPOL);
+        public static readonly InstrumentProfileField EXCHANGE_DATA = new InstrumentProfileField(F_EXCHANGE_DATA);
+        public static readonly InstrumentProfileField EXCHANGES = new InstrumentProfileField(F_EXCHANGES);
+        public static readonly InstrumentProfileField CURRENCY = new InstrumentProfileField(F_CURRENCY);
+        public static readonly InstrumentProfileField BASE_CURRENCY = new InstrumentProfileField(F_BASE_CURRENCY);
+        public static readonly InstrumentProfileField CFI = new InstrumentProfileField(F_CFI);
+        public static readonly InstrumentProfileField ISIN = new InstrumentProfileField(F_ISIN);
+        public static readonly InstrumentProfileField SEDOL = new InstrumentProfileField(F_SEDOL);
+        public static readonly InstrumentProfileField CUSIP = new InstrumentProfileField(F_CUSIP);
+        public static readonly InstrumentProfileField ICB = new InstrumentProfileField(F_ICB);
+        public static readonly InstrumentProfileField SIC = new InstrumentProfileField(F_SIC);
+        public static readonly InstrumentProfileField MULTIPLIER = new InstrumentProfileField(F_MULTIPLIER);
+        public static readonly InstrumentProfileField PRODUCT = new InstrumentProfileField(F_PRODUCT);
+        public static readonly InstrumentProfileField UNDERLYING = new InstrumentProfileField(F_UNDERLYING);
+        public static readonly InstrumentProfileField SPC = new InstrumentProfileField(F_SPC);
+        public static readonly InstrumentProfileField ADDITIONAL_UNDERLYINGS = new InstrumentProfileField(F_ADDITIONAL_UNDERLYINGS);
+        public static readonly InstrumentProfileField MMY = new InstrumentProfileField(F_MMY);
+        public static readonly InstrumentProfileField EXPIRATION = new InstrumentProfileField(F_EXPIRATION);
+        public static readonly InstrumentProfileField LAST_TRADE = new InstrumentProfileField(F_LAST_TRADE);
+        public static readonly InstrumentProfileField STRIKE = new InstrumentProfileField(F_STRIKE);
+        public static readonly InstrumentProfileField OPTION_TYPE = new InstrumentProfileField(F_OPTION_TYPE);
+        public static readonly InstrumentProfileField EXPIRATION_STYLE = new InstrumentProfileField(F_EXPIRATION_STYLE);
+        public static readonly InstrumentProfileField SETTLEMENT_STYLE = new InstrumentProfileField(F_SETTLEMENT_STYLE);
+        public static readonly InstrumentProfileField PRICE_INCREMENTS = new InstrumentProfileField(F_PRICE_INCREMENTS);
+        public static readonly InstrumentProfileField TRADING_HOURS = new InstrumentProfileField(F_TRADING_HOURS);
 
         private InstrumentProfileField(string name) {
             this.Name = name;
@@ -224,7 +225,7 @@ namespace com.dxfeed.ipf {
             } catch (InvalidOperationException) {
                 throw;
             } catch (Exception exc) {
-                throw new InvalidOperationException("SetField failed", exc);
+                throw new InvalidOperationException("SetField failed:" + exc.ToString());
             }
         }
 
@@ -379,7 +380,7 @@ namespace com.dxfeed.ipf {
                 } else {
                     if (PARSED_NUMBERS.Count > 10000)
                         PARSED_NUMBERS.Clear();
-                    double cached = Double.Parse(s);
+                    double cached = Double.Parse(s, CultureInfo.GetCultureInfo("en-US"));
                     PARSED_NUMBERS[s] = cached;
                     return cached;
                 }
@@ -388,7 +389,7 @@ namespace com.dxfeed.ipf {
             } catch (ArgumentNullException) {
                 throw;
             } catch (Exception exc) {
-                throw new FormatException("ParseNumber failed", exc);
+                throw new FormatException("ParseNumber failed: " + exc.ToString());
             }
         }
 

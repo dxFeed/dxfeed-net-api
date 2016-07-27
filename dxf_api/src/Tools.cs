@@ -2,6 +2,9 @@
 
 namespace com.dxfeed.api {
 
+    /// <summary>
+    /// Class provides some helpers for library.
+    /// </summary>
     public class Tools {
 
         /// <summary>

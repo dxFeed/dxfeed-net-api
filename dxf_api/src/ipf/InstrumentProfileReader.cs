@@ -142,8 +142,8 @@ namespace com.dxfeed.ipf {
         /// <param name="inputStream">Stream from which read profiles.</param>
         /// <param name="name">Profile name.</param>
         /// <returns>Instrument profile list.</returns>
-        /// <exception cref="com.dxfeed.ipf.InstrumentProfileFormatException">If input stream does not conform to the Simple File Format.</exception>
         /// <exception cref="System.IO.IOException">If an I/O error occurs.</exception>
+        /// <exception cref="com.dxfeed.ipf.InstrumentProfileFormatException">If input stream does not conform to the Simple File Format.</exception>
         public IList<InstrumentProfile> Read(Stream inputStream, string name) {
             try { 
                 // NOTE: decompression streams (zip and gzip) require explicit call to "close()" method to release native Inflater resources.
@@ -180,8 +180,8 @@ namespace com.dxfeed.ipf {
         /// </summary>
         /// <param name="inputStream">Stream from which read profiles.</param>
         /// <returns>Instrument profiles from specified stream.</returns>
-        /// <exception cref="com.dxfeed.ipf.InstrumentProfileFormatException">If input stream does not conform to the Simple File Format.</exception>
         /// <exception cref="System.IO.IOException">If an I/O error occurs.</exception>
+        /// <exception cref="com.dxfeed.ipf.InstrumentProfileFormatException">If input stream does not conform to the Simple File Format.</exception>
         public IList<InstrumentProfile> Read(Stream inputStream) {
             IList<InstrumentProfile> profiles = new List<InstrumentProfile>();
             InstrumentProfileParser parser = new InstrumentProfileParser(inputStream);
@@ -193,7 +193,7 @@ namespace com.dxfeed.ipf {
             //    }
             //};
             InstrumentProfile ip;
-            while ((ip = parser.next()) != null)
+            while ((ip = parser.Next()) != null)
                 profiles.Add(ip);
             return profiles;
         }

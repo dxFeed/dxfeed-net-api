@@ -50,17 +50,17 @@ namespace com.dxfeed.ipf.impl {
         /// <param name="profiles">List of instrument profiles.</param>
         /// <param name="skipRemoved">When skipRemoved == true, it ignores removed instruments when composing.</param>
         /// <exception cref="System.IO.IOException"></exception>
-        public void compose(List<InstrumentProfile> profiles, bool skipRemoved)  {
-            captureTypes(profiles);
-            writeFormats(profiles, skipRemoved);
-            writeProfiles(profiles, skipRemoved);
+        public void Compose(List<InstrumentProfile> profiles, bool skipRemoved)  {
+            CaptureTypes(profiles);
+            WriteFormats(profiles, skipRemoved);
+            WriteProfiles(profiles, skipRemoved);
             types.Clear();
         }
 
         /// <summary>
         /// Writes a new line.
         /// </summary>
-        public void composeNewLine() {
+        public void ComposeNewLine() {
             writer.writeRecord(new string[] {""}); // Force CRLF
             writer.flush();
         }
@@ -68,26 +68,26 @@ namespace com.dxfeed.ipf.impl {
         /// <summary>
         /// Writes FLUSH command
         /// </summary>
-        public void composeFlush()  {
+        public void ComposeFlush()  {
             writer.writeRecord(new string[] { Constants.FLUSH_COMMAND });
-            composeNewLine();
+            ComposeNewLine();
         }
 
         /// <summary>
         /// Writes COMPLETE command.
         /// </summary>
-        public void composeComplete()  {
+        public void ComposeComplete()  {
             writer.writeRecord(new string[] { Constants.COMPLETE_COMMAND });
-            composeNewLine();
+            ComposeNewLine();
         }
 
-        private void captureTypes(List<InstrumentProfile> profiles) {
+        private void CaptureTypes(List<InstrumentProfile> profiles) {
             types.Clear();
             foreach (InstrumentProfile ip in profiles)
                 types.Add(ip.GetTypeName());
         }
 
-        private void writeFormats(List<InstrumentProfile> profiles, bool skipRemoved) {
+        private void WriteFormats(List<InstrumentProfile> profiles, bool skipRemoved) {
             HashSet<string> updated = new HashSet<string>();
             for (int i = 0; i < profiles.Count; i++) {
                 string type = types[i]; // atomically captured
@@ -101,8 +101,9 @@ namespace com.dxfeed.ipf.impl {
                     enumFormat = new HashSet<InstrumentProfileField>();
                     enumFormat.Add(InstrumentProfileField.SYMBOL);
                     // always write symbol (type is always written by a special code)
-                    enumFormats.Add(type, enumFormat);
-                    customFormats.Add(type, customFormat = new HashSet<string>());
+                    enumFormats[type] = enumFormat;
+                    customFormat = new HashSet<string>();
+                    customFormats[type] = customFormat;
                 }
                 if (!REMOVED_TYPE.Equals(type)) {
                     // collect actual used fields for non-removed instrument profiles
@@ -115,10 +116,10 @@ namespace com.dxfeed.ipf.impl {
                 }
             }
             foreach (string type in updated)
-                writeFormat(type);
+                WriteFormat(type);
         }
 
-        private void writeFormat(string type) {
+        private void WriteFormat(string type) {
             writer.writeField(Constants.METADATA_PREFIX + type + Constants.METADATA_SUFFIX);
             foreach (InstrumentProfileField field in enumFormats[type])
                 writer.writeField(field.Name);
@@ -127,17 +128,17 @@ namespace com.dxfeed.ipf.impl {
             writer.writeRecord(null);
         }
 
-        private void writeProfiles(List<InstrumentProfile> profiles, bool skipRemoved) {
+        private void WriteProfiles(List<InstrumentProfile> profiles, bool skipRemoved) {
             for (int i = 0; i < profiles.Count; i++) {
                 string type = types[i]; // atomically captured
                 if (REMOVED_TYPE.Equals(type) && skipRemoved)
                     continue;
                 InstrumentProfile ip = profiles[i];
-                writeProfile(type, ip);
+                WriteProfile(type, ip);
             }
         }
 
-        private void writeProfile(string type, InstrumentProfile ip) {
+        private void WriteProfile(string type, InstrumentProfile ip) {
             writer.writeField(type);
             foreach (InstrumentProfileField field in enumFormats[type])
                 writer.writeField(field.GetField(ip));
@@ -145,5 +146,6 @@ namespace com.dxfeed.ipf.impl {
                 writer.writeField(ip.GetField(field));
             writer.writeRecord(null);
         }
+
     }
 }

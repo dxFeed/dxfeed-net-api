@@ -83,7 +83,7 @@ namespace com.dxfeed.io {
         /// Line number points to new line after completion of the current record.
         /// </summary>
         /// <returns></returns>
-        public int getLineNumber() {
+        public int GetLineNumber() {
             return lineNumber;
         }
 
@@ -93,7 +93,7 @@ namespace com.dxfeed.io {
         /// Record number points to new record after completion of the current record.
         /// </summary>
         /// <returns></returns>
-        public int getRecordNumber() {
+        public int GetRecordNumber() {
             return recordNumber;
         }
 
@@ -105,7 +105,7 @@ namespace com.dxfeed.io {
         /// <returns></returns>
         /// <exception cref="CSVFormatException">If input stream does not conform to the CSV format.</exception>
         /// <exception cref="IOException">If an I/O error occurs.</exception>
-        public string readField() {
+        public string ReadField() {
             if (eol || eof)
                 return null;
             if (position > buf.Length / 2) {
@@ -120,12 +120,12 @@ namespace com.dxfeed.io {
             bool oddQuote = false; // true if we just met odd quote inside quoted field; become false if pair quote follows
             while (true) {
                 if (pos >= limit)
-                    read();
+                    Read();
                 if (pos >= limit) {
                     if (inQuotes && !oddQuote)
-                        throw new CSVFormatException(fail("quoted field does not have terminating quote character", firstLine));
+                        throw new CSVFormatException(Fail("quoted field does not have terminating quote character", firstLine));
                     eof = true;
-                    return good(pos, inQuotes, hasQuotes, false);
+                    return Good(pos, inQuotes, hasQuotes, false);
                 }
                 char c = buf[pos];
                 if (c == quote) {
@@ -133,15 +133,15 @@ namespace com.dxfeed.io {
                         hasQuotes |= oddQuote;
                         oddQuote = !oddQuote;
                     } else if (pos > position)
-                        throw new CSVFormatException(fail("unquoted field has quote character", firstLine));
+                        throw new CSVFormatException(Fail("unquoted field has quote character", firstLine));
                     inQuotes = true;
                     pos++;
                     continue;
                 }
                 if ((c == separator || c == CR || c == LF) && (!inQuotes || oddQuote))
-                    return good(pos, inQuotes, hasQuotes, c == separator);
+                    return Good(pos, inQuotes, hasQuotes, c == separator);
                 if (oddQuote)
-                    throw new CSVFormatException(fail("quoted field has unpaired quote character", firstLine));
+                    throw new CSVFormatException(Fail("quoted field has unpaired quote character", firstLine));
                 // below: CR or LF imply inQuotes=true, thus buf[pos-1] exists as buf holds at least quote char
                 if (c == CR || c == LF && buf[pos - 1] != CR) // count CRLF only once
                     lineNumber++;
@@ -149,7 +149,7 @@ namespace com.dxfeed.io {
             }
         }
 
-        private string good(int fieldEnd, bool inQuotes, bool hasQuotes, bool bySeparator) {
+        private string Good(int fieldEnd, bool inQuotes, bool hasQuotes, bool bySeparator) {
             // NOTE: this method not only unquotes field, but it also updates state machine
             int pos = position + (inQuotes ? 1 : 0);
             int end = fieldEnd - (inQuotes ? 1 : 0);
@@ -165,7 +165,7 @@ namespace com.dxfeed.io {
             return strings.get(buf, pos, end - pos);
         }
 
-        private string fail(string message, int firstLine) {
+        private string Fail(string message, int firstLine) {
             // NOTE: this method not only formats error, but it also updates state machine
             if (firstLine == lineNumber)
                 return message + " (line " + firstLine + ")";
@@ -174,7 +174,7 @@ namespace com.dxfeed.io {
             return message;
         }
 
-        private void read() {
+        private void Read() {
             if (buf.Length - limit < buf.Length / 4)
                 Array.Resize(ref buf, 0);
             int n;
@@ -195,16 +195,16 @@ namespace com.dxfeed.io {
         /// <returns></returns>
         /// <exception cref="CSVFormatException">If input stream does not conform to the CSV format.</exception>
         /// <exception cref="IOException">If an I/O error occurs.</exception>
-        public string[] readRecord() {
+        public string[] ReadRecord() {
             List<string> fields = new List<string>();
-            for (string field = readField(); field != null; field = readField())
+            for (string field = ReadField(); field != null; field = ReadField())
                 fields.Add(field);
             if (eol) {
                 eol = false;
                 bool skipLF = false;
                 while (!eof) {
                     if (position >= limit)
-                        read();
+                        Read();
                     if (position >= limit) {
                         eof = true;
                         break;
@@ -234,9 +234,9 @@ namespace com.dxfeed.io {
         /// <returns></returns>
         /// <exception cref="CSVFormatException">If input stream does not conform to the CSV format.</exception>
         /// <exception cref="IOException">If an I/O error occurs.</exception>
-        public List<string[]> readAll() {
+        public List<string[]> ReadAll() {
             List<string[]> records = new List<string[]>();
-            for (string[] record = readRecord(); record != null; record = readRecord())
+            for (string[] record = ReadRecord(); record != null; record = ReadRecord())
                 records.Add(record);
             return records;
         }

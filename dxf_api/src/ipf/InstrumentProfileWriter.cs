@@ -84,8 +84,8 @@ namespace com.dxfeed.ipf {
         /// <exception cref="System.IO.IOException">If an I/O error occurs.</exception>
         public void Write(Stream outStream, List<InstrumentProfile> profiles) {
             InstrumentProfileComposer composer = new InstrumentProfileComposer(outStream);
-            composer.compose(profiles, false);
-            composer.composeNewLine();
+            composer.Compose(profiles, false);
+            composer.ComposeNewLine();
         }
     }
 }

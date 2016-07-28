@@ -14,8 +14,9 @@ namespace com.dxfeed.native.events {
 		}
 
 		public override string ToString() {
-			return string.Format(CultureInfo.InvariantCulture, "Trade {{Time: {0:o}, ExchangeCode: '{1}', Price: {2}, Size: {3}, DayVolume: {4}}}",
-				Time, ExchangeCode, Price, Size, DayVolume);
+			return string.Format(CultureInfo.InvariantCulture, "Trade {{Time: {0:o}, ExchangeCode: '{1}', " +
+				"Price: {2}, Size: {3}, Tick: {4}, Change: {5}, DayVolume: {5}}}",
+				Time, ExchangeCode, Price, Size, Tick, Change, DayVolume);
 		}
 
 		#region Implementation of IDxTrade
@@ -34,6 +35,14 @@ namespace com.dxfeed.native.events {
 
 		public long Size {
 			get { return trade.size; }
+		}
+
+		public long Tick {
+			get { return trade.tick; }
+		}
+
+		public double Change {
+			get { return trade.change; }
 		}
 
 		public double DayVolume {

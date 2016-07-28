@@ -25,6 +25,8 @@ namespace com.dxfeed.native.api {
 		internal char exchange_code;
 		internal double price;
 		internal long size;
+		internal long tick;
+		internal double change;
 		internal double day_volume;
 	}
 
@@ -56,7 +58,21 @@ namespace com.dxfeed.native.api {
 
 	[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
 	internal struct DxProfile {
+		internal double beta;
+		internal double eps;
+		internal long div_freq;
+		internal double exd_div_amount;
+		internal int exd_div_date;
+		internal double _52_high_price;
+		internal double _52_low_price;
+		internal double shares;
 		internal IntPtr description;
+		internal long flags;
+		internal IntPtr status_reason;
+		internal long halt_start_time;
+		internal long halt_end_time;
+		internal double high_limit_price;
+		internal double low_limit_price;
 	}
 
 	[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]

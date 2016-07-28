@@ -49,11 +49,16 @@ namespace com.dxfeed.native.api {
 
 	[StructLayout(LayoutKind.Sequential)]
 	internal struct DxSummary {
+		internal int day_id;
+		internal double day_open_price;
 		internal double day_high_price;
 		internal double day_low_price;
-		internal double day_open_price;
+		internal double day_close_price;
+		internal int prev_day_id;
 		internal double prev_day_close_price;
 		internal long open_interest;
+		internal long flags;
+		internal char exchange_code;
 	}
 
 	[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]

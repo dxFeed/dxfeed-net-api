@@ -17,6 +17,8 @@ namespace dxf_snapshot_sample {
         private const int sourceIndex = 3;
         private const int defaultTime = 0;
 
+        private const string COMPOSITE_BID = "COMPOSITE_BID";
+
         private static void OnDisconnect(IDxConnection con) {
             Console.WriteLine("Disconnected");
         }
@@ -33,14 +35,19 @@ namespace dxf_snapshot_sample {
                     "                a) event symbol: IBM, MSFT, ...\n" +
                     "                b) candle symbol attribute: XBT/USD{=d},\n" +
                     "                   AAPL{=d,price=mark}, ...\n" +
-                    "    source    - a) source for Order (also it may be empty), e.g. NTV, BYX,\n" +
-                    "                   BZX, DEA, ISE, DEX, IST\n" +
-                    "                   it is allowed to use only one source\n" +
-                    "                b) source for MarketMaker, one of following: COMPOSITE_BID\n" +
-                    "                   or COMPOSITE_ASK\n\n" +
+                    "    source    - used only for Order or MarketMaker subscription,\n" +
+                    "                also it is allowed to use only one source\n" +
+                    "                a) source for Order, e.g. NTV, BYX, BZX, DEA, ISE, \n" +
+                    "                   DEX, IST\n" +
+                    "                b) source for MarketMaker, one of following: COMPOSITE_ASK\n" +
+                    "                   or COMPOSITE_BID (default value for Order snapshots)\n" +
+                    "                If source is not specified MarketMaker snapshot will be\n" +
+                    "                subscribed by default.\n\n" +
                     "order example: dxf_snapshot_sample demo.dxfeed.com:7300 Order AAPL NTV\n" +
                     "market maker example:\n" +
                     "    dxf_snapshot_sample demo.dxfeed.com:7300 Order AAPL COMPOSITE_BID\n" +
+                    "or just:\n" +
+                    "    dxf_snapshot_sample demo.dxfeed.com:7300 Order AAPL\n" +
                     "candle example: dxf_snapshot_sample demo.dxfeed.com:7300 Candle XBT/USD{=d}"
                 );
                 return;
@@ -57,23 +64,28 @@ namespace dxf_snapshot_sample {
                 return;
             }
 
-            var source = string.Empty;
+            var source = COMPOSITE_BID;
             if (args.Length == sourceIndex + 1)
                 source = args[sourceIndex];
 
-            if (eventType == EventType.Candle)
+            if (eventType == EventType.Candle) {
                 Console.WriteLine(string.Format("Connecting to {0} for Candle snapshot on {1}...", 
                     address, symbol));
-            else
-                Console.WriteLine(string.Format("Connecting to {0} for Order snapshot on {1}{2}...",
-                    address, symbol, source == string.Empty ? string.Empty : "#" + source));
+            } else {
+                if (source.Equals(COMPOSITE_BID)) {
+                    Console.WriteLine(string.Format("Connecting to {0} for MarketMaker snapshot on {1}...",
+                        address, symbol));
+                } else {
+                    Console.WriteLine(string.Format("Connecting to {0} for Order#{1} snapshot on {2}...",
+                        address, source, symbol));
+                }
+            }
 
             try {
                 NativeTools.InitializeLogging("log.log", true, true);
                 using (var con = new NativeConnection(address, OnDisconnect)) {
                     using (var s = con.CreateSnapshotSubscription(defaultTime, new SnapshotListener())) {
                         if (eventType == EventType.Order) {
-                            if (source != string.Empty)
                                 s.AddSource(source);
                             s.AddSymbol(symbol);
                         } else {

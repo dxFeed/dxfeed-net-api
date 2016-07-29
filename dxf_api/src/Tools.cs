@@ -19,7 +19,7 @@ namespace com.dxfeed.api {
                 TimeSpan diff = (DateTime)dateTime - origin;
                 return Convert.ToInt64(Math.Floor(diff.TotalMilliseconds));
             } catch (Exception exc) {
-                throw new FormatException("DateToUnixTime failed", exc);
+                throw new FormatException("DateToUnixTime failed: " + exc.ToString());
             }
         }
 
@@ -32,10 +32,10 @@ namespace com.dxfeed.api {
         public static DateTime UnixTimeToDate(double unixTimeStamp) {
             try {
                 DateTime dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc);
-                dtDateTime = dtDateTime.AddSeconds(unixTimeStamp).ToLocalTime();
+                dtDateTime = dtDateTime.AddMilliseconds(unixTimeStamp).ToUniversalTime();
                 return dtDateTime;
             } catch (Exception exc) {
-                throw new FormatException("UnixTimeToDate failed", exc);
+                throw new FormatException("UnixTimeToDate failed:" + exc.ToString());
             }
         }
 

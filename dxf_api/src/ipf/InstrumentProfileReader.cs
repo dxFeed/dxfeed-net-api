@@ -153,7 +153,7 @@ namespace com.dxfeed.ipf {
                     using (ZipArchive zip = new ZipArchive(inputStream)) {
                         List<InstrumentProfile> profiles = new List<InstrumentProfile>();
                         foreach (ZipArchiveEntry entry in zip.Entries) {
-                            //TODO: check directory
+                            //TODO: check directory (archive can contains directory?)
                             profiles.AddRange(Read(entry.Open(), entry.Name));
                         }
                         return profiles;
@@ -195,9 +195,6 @@ namespace com.dxfeed.ipf {
             InstrumentProfile ip;
             while ((ip = parser.Next()) != null) {
                 profiles.Add(ip);
-                //TODO: temp writeline
-                if (profiles.Count % 1000 == 0)
-                    Console.WriteLine(profiles.Count + " rows");
             }
             return profiles;
         }

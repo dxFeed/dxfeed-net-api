@@ -177,12 +177,7 @@ namespace com.dxfeed.io {
         private void Read() {
             if (buf.Length - limit < buf.Length / 4)
                 Array.Resize(ref buf, 0);
-            int n;
-            do {
-                n = reader.Read(buf, limit, buf.Length - limit);
-            } while (n > 0);
-            //TODO: here is bug! reader.Read of C# and Java are differs.
-            //} while (n == 0);
+            int n= reader.Read(buf, limit, buf.Length - limit);
             if (n > 0)
                 limit += n;
         }

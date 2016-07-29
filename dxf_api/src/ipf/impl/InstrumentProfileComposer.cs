@@ -50,7 +50,7 @@ namespace com.dxfeed.ipf.impl {
         /// <param name="profiles">List of instrument profiles.</param>
         /// <param name="skipRemoved">When skipRemoved == true, it ignores removed instruments when composing.</param>
         /// <exception cref="System.IO.IOException"></exception>
-        public void Compose(List<InstrumentProfile> profiles, bool skipRemoved)  {
+        public void Compose(IList<InstrumentProfile> profiles, bool skipRemoved)  {
             CaptureTypes(profiles);
             WriteFormats(profiles, skipRemoved);
             WriteProfiles(profiles, skipRemoved);
@@ -81,22 +81,23 @@ namespace com.dxfeed.ipf.impl {
             ComposeNewLine();
         }
 
-        private void CaptureTypes(List<InstrumentProfile> profiles) {
+        private void CaptureTypes(IList<InstrumentProfile> profiles) {
             types.Clear();
             foreach (InstrumentProfile ip in profiles)
                 types.Add(ip.GetTypeName());
         }
 
-        private void WriteFormats(List<InstrumentProfile> profiles, bool skipRemoved) {
+        private void WriteFormats(IList<InstrumentProfile> profiles, bool skipRemoved) {
             HashSet<string> updated = new HashSet<string>();
             for (int i = 0; i < profiles.Count; i++) {
                 string type = types[i]; // atomically captured
                 if (REMOVED_TYPE.Equals(type) && skipRemoved)
                     continue;
                 InstrumentProfile ip = profiles[i];
-                HashSet<InstrumentProfileField> enumFormat = enumFormats[type];
-                HashSet<string> customFormat = customFormats[type];
-                if (enumFormat == null) {
+                HashSet<InstrumentProfileField> enumFormat;
+                HashSet<string> customFormat;
+                customFormats.TryGetValue(type, out customFormat);
+                if (!enumFormats.TryGetValue(type, out enumFormat)) {
                     updated.Add(type);
                     enumFormat = new HashSet<InstrumentProfileField>();
                     enumFormat.Add(InstrumentProfileField.SYMBOL);
@@ -128,7 +129,7 @@ namespace com.dxfeed.ipf.impl {
             writer.writeRecord(null);
         }
 
-        private void WriteProfiles(List<InstrumentProfile> profiles, bool skipRemoved) {
+        private void WriteProfiles(IList<InstrumentProfile> profiles, bool skipRemoved) {
             for (int i = 0; i < profiles.Count; i++) {
                 string type = types[i]; // atomically captured
                 if (REMOVED_TYPE.Equals(type) && skipRemoved)

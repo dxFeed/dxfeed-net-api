@@ -193,8 +193,12 @@ namespace com.dxfeed.ipf {
             //    }
             //};
             InstrumentProfile ip;
-            while ((ip = parser.Next()) != null)
+            while ((ip = parser.Next()) != null) {
                 profiles.Add(ip);
+                //TODO: temp writeline
+                if (profiles.Count % 1000 == 0)
+                    Console.WriteLine(profiles.Count + " rows");
+            }
             return profiles;
         }
 

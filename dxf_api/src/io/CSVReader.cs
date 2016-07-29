@@ -180,7 +180,9 @@ namespace com.dxfeed.io {
             int n;
             do {
                 n = reader.Read(buf, limit, buf.Length - limit);
-            } while (n == 0);
+            } while (n > 0);
+            //TODO: here is bug! reader.Read of C# and Java are differs.
+            //} while (n == 0);
             if (n > 0)
                 limit += n;
         }

@@ -171,7 +171,7 @@ namespace com.dxfeed.ipf {
             } catch (IOException) {
                 throw;
             } catch (Exception exc) {
-                throw new IOException("Read profiles from stream failed", exc);
+                throw new IOException("Read profiles from stream failed" + exc);
             }
         }
 

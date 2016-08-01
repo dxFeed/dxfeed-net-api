@@ -45,9 +45,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\..\dxf_api\dxf_api.csproj">
       <Project>{f0e087df-6c09-42ff-90ff-a470b3391f76}</Project>
       <Name>dxf_api</Name>

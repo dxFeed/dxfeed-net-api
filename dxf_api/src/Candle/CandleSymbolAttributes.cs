@@ -99,6 +99,18 @@ namespace com.dxfeed.api.candle {
             /// Default price type is {@link #LAST}.
             /// </summary>
             public static readonly ICandleSymbolAttribute DEFAULT = CandlePrice.DEFAULT;
+
+            /// <summary>
+            /// Parses string representation of candle price type into object.
+            /// Any string that was returned by {@link #toString()} can be parsed
+            /// and case is ignored for parsing.
+            /// </summary>
+            /// <param name="s">string representation of candle price type.</param>
+            /// <returns>candle price type.</returns>
+            /// <exception cref="InvalidOperationException">if the string representation is invalid.</exception>
+            public static ICandleSymbolAttribute Parse(string s) {
+                return CandlePrice.Parse(s);
+            }
         }
 
         /// <summary>
@@ -120,6 +132,18 @@ namespace com.dxfeed.api.candle {
             /// Default trading session is {@link #ANY}.
             /// </summary>
             public static readonly ICandleSymbolAttribute DEFAULT = CandleSession.DEFAULT;
+
+            /// <summary>
+            /// Parses string representation of candle session attribute into object.
+            /// Any string that was returned by {@link #toString()} can be parsed
+            /// and case is ignored for parsing.
+            /// </summary>
+            /// <param name="s">string representation of candle candle session attribute.</param>
+            /// <returns>candle session attribute.</returns>
+            /// <exception cref="InvalidOperationException">if the string representation is invalid.</exception>
+            public static ICandleSymbolAttribute Parse(string s) {
+                return CandleSession.Parse(s);
+            }
         }
 
         /// <summary>
@@ -141,6 +165,19 @@ namespace com.dxfeed.api.candle {
             /// Default alignment is {@link #MIDNIGHT}.
             /// </summary>
             public static readonly ICandleSymbolAttribute DEFAULT = CandleAlignment.DEFAULT;
+
+            /// <summary>
+            /// Parses string representation of candle alignment into object.
+            /// Any string that was returned by {@link #toString()} can be parsed
+            /// and case is ignored for parsing.
+            /// 
+            /// </summary>
+            /// <param name="s">string representation of candle alignment.</param>
+            /// <returns>candle alignment</returns>
+            /// <exception cref="ArgumentNullException">Canlde alignment in string is unknown</exception>
+            public static ICandleSymbolAttribute Parse(string s) {
+                return CandleAlignment.Parse(s);
+            }
         }
     }
 }

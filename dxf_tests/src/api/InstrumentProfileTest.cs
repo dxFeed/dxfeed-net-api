@@ -72,10 +72,17 @@ namespace com.dxfeed.api {
             Assert.Greater(profilesFromHttp.Count, 0);
             writer.WriteToFile(filePath, profilesFromHttp);
 
+            IList<InstrumentProfile> profilesFromFile;
             using (FileStream inputStream = new FileStream(filePath, FileMode.Open)) {
-                IList<InstrumentProfile> profilesFromFile = reader.Read(inputStream, filePath);
-                Assert.AreEqual(profilesFromFile.Count, profilesFromFile.Count);
+                profilesFromFile = reader.Read(inputStream, filePath);
             }
+
+            Assert.AreEqual(profilesFromHttp.Count, profilesFromFile.Count);
+            /* NOTE: Next commented code may not performed if current instrument 
+               format was extended with new. */
+            //for (int i = 0; i < profilesFromHttp.Count; i++) {
+            //    Assert.AreEqual(profilesFromHttp[i], profilesFromFile[i]);
+            //}
         }
 
         [Test]

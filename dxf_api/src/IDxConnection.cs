@@ -44,5 +44,12 @@ namespace com.dxfeed.api {
 		/// <param name="listener"></param>
 		/// <returns></returns>
 		IDxSubscription CreateSnapshotSubscription(DateTime? time, IDxSnapshotListener listener);
-	}
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="listener"></param>
+        /// <returns></returns>
+        IDxSubscription CreateOrderViewSubscription(IDxOrderViewListener listener);
+    }
 }

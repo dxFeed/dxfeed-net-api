@@ -1,14 +1,13 @@
 ﻿using System;
 using com.dxfeed.api;
-using com.dxfeed.api.candle;
 using com.dxfeed.api.events;
 using com.dxfeed.native.api;
 
 namespace com.dxfeed.native {
-	/// <summary>
-	/// Class provides operations with event subscription
-	/// </summary>
-	public class NativeConnection : IDxConnection {
+    /// <summary>
+    /// Class provides operations with event subscription
+    /// </summary>
+    public class NativeConnection : IDxConnection {
 		private IntPtr handler = IntPtr.Zero;
 		private readonly C.dxf_conn_termination_notifier_t callback;
 		private readonly Action<IDxConnection> disconnectListener;
@@ -23,7 +22,7 @@ namespace com.dxfeed.native {
 		/// <param name="address">server address to connect</param>
 		/// <param name="disconnectListener">listener will be called when the connection is interrupted</param>
 		/// <exception cref="DxEception"></exception>
-		public NativeConnection(String address, Action<IDxConnection> disconnectListener) {
+		public NativeConnection(string address, Action<IDxConnection> disconnectListener) {
 			callback = OnDisconnect;
 			this.disconnectListener = disconnectListener;
 			C.CheckOk(C.Instance.dxf_create_connection(address, callback, null, null, IntPtr.Zero, out handler));

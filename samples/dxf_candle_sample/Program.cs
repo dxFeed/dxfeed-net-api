@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using com.dxfeed.api;
 using com.dxfeed.api.candle;
-//using com.dxfeed.api.candle.;
 using com.dxfeed.native;
 
 namespace dxf_candle_sample {

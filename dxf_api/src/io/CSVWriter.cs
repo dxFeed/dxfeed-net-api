@@ -58,8 +58,8 @@ namespace com.dxfeed.io {
         /// <param name="writer"></param>
         /// <param name="separator"></param>
         /// <param name="quote"></param>
-        /// <exception cref="NullReferenceException">If writer is null.</exception>
-        /// <exception cref="ArgumentException">If separator or quote characters are invalid.</exception>
+        /// <exception cref="System.NullReferenceException">If writer is null.</exception>
+        /// <exception cref="System.ArgumentException">If separator or quote characters are invalid.</exception>
         public CSVWriter(StreamWriter writer, char separator, char quote) {
             if (writer == null)
                 throw new NullReferenceException("writer is null");
@@ -78,8 +78,8 @@ namespace com.dxfeed.io {
         /// Both <b>CR</b> and <b>LF</b> are counted as new lines, although <b>CRLF</b> sequence is counted only once.
         /// Line number points to new line after completion of the current record.
         /// </summary>
-        /// <returns></returns>
-        public int getLineNumber() {
+        /// <returns>Current line number.</returns>
+        public int GetLineNumber() {
             return lineNumber;
         }
 
@@ -88,8 +88,8 @@ namespace com.dxfeed.io {
         /// Record numeration starts with 1 and does not count new lines within record fields.
         /// Record number points to new record after completion of the current record.
         /// </summary>
-        /// <returns></returns>
-        public int getRecordNumber() {
+        /// <returns>Current record number.</returns>
+        public int GetRecordNumber() {
             return recordNumber;
         }
 
@@ -100,7 +100,7 @@ namespace com.dxfeed.io {
         /// </summary>
         /// <param name="field"></param>
         /// <exception cref="System.IO.IOException">If an I/O error occurs.</exception>
-        public void writeField(string field) {
+        public void WriteField(string field) {
             try {
                 if (needCRLF) {
                     writer.Write(CRLF);
@@ -132,7 +132,7 @@ namespace com.dxfeed.io {
                 buf[n++] = quote;
                 writer.Write(buf, 0, n);
             } catch (Exception exc) {
-                throw new IOException("WriteField failed", exc);
+                throw new IOException("WriteField failed: " + exc);
             }
         }
 
@@ -145,12 +145,12 @@ namespace com.dxfeed.io {
         /// the record will be completed and writer will advance to the next record.
         /// </summary>
         /// <param name="record"></param>
-        /// <exception cref="ArgumentException">If attempt to write record without fields was made.</exception>
+        /// <exception cref="System.ArgumentException">If attempt to write record without fields was made.</exception>
         /// <exception cref="System.IO.IOException">If an I/O error occurs.</exception>
-        public void writeRecord(string[] record) {
+        public void WriteRecord(string[] record) {
             if (record != null)
                 foreach (string field in record)
-                    writeField(field);
+                    WriteField(field);
             if (!insideRecord)
                 throw new ArgumentException("records without fields are not allowed");
             needCRLF = true;
@@ -167,35 +167,34 @@ namespace com.dxfeed.io {
         /// the record will be completed and writer will advance to the next record.
         /// </summary>
         /// <param name="records"></param>
-        /// <exception cref="ArgumentException">If attempt to write record without fields was made.</exception>
+        /// <exception cref="System.ArgumentException">If attempt to write record without fields was made.</exception>
         /// <exception cref="System.IO.IOException">If an I/O error occurs.</exception>
-        public void writeAll(List<string[]> records) {
+        public void WriteAll(IList<string[]> records) {
             foreach (string[] record in records)
-                writeRecord(record);
+                WriteRecord(record);
         }
 
         /// <summary>
         /// Flushes the stream.
         /// </summary>
         /// <exception cref="System.IO.IOException">If an I/O error occurs.</exception>
-        public void flush() {
+        public void Flush() {
             try { 
                 writer.Flush();
             } catch (Exception exc) {
-                throw new IOException("Flush failed", exc);
+                throw new IOException("Flush failed: " + exc);
             }
         }
 
         /// <summary>
         /// Closes the stream.
-        ///
-        /// @throws IOException  If an I/O error occurs
         /// </summary>
+        /// <exception cref="System.IO.IOException">If an I/O error occurs.</exception>
         public void Dispose() {
             try {
                 writer.Close();
             } catch (Exception exc) {
-                throw new IOException("Dispose failed", exc);
+                throw new IOException("Dispose failed: " + exc);
             }
         }
 

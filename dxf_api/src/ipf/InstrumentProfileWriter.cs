@@ -6,7 +6,6 @@
  * If a copy of the MPL was not distributed with this file, You can obtain one at
  * http://mozilla.org/MPL/2.0/.
  */
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
@@ -35,9 +34,11 @@ namespace com.dxfeed.ipf {
         /// If file name ends with ".gz" then profiles will be compressed and written using "gzip" format.
         /// In other cases file will be considered uncompressed and profiles will be written as is.
         /// </summary>
-        /// <param name="file"></param>
-        /// <param name="profiles"></param>
+        /// <param name="file">Path to output file.</param>
+        /// <param name="profiles">Params list which will be written.</param>
+        /// <exception cref="System.ArgumentException">If attempt to write record without fields was made.</exception>
         /// <exception cref="System.IO.IOException">If an I/O error occurs.</exception>
+        /// <exception cref="System.InvalidOperationException">Can't format certain profile.</exception>
         public void WriteToFile(string file, IList<InstrumentProfile> profiles) {
             using (FileStream outStream = new FileStream(file, FileMode.Create)) {
                 Write(outStream, file, profiles);
@@ -51,17 +52,15 @@ namespace com.dxfeed.ipf {
         /// If file name ends with ".gz" then profiles will be compressed and written using "gzip" format.
         /// In other cases file will be considered uncompressed and profiles will be written as is.
         /// </summary>
-        /// <param name="outStream"></param>
-        /// <param name="name"></param>
-        /// <param name="profiles"></param>
+        /// <param name="outStream">Where writes profiles.</param>
+        /// <param name="name">Name of output entry.</param>
+        /// <param name="profiles">Params list which will be written.</param>
+        /// <exception cref="System.ArgumentException">If attempt to write record without fields was made.</exception>
         /// <exception cref="System.IO.IOException">If an I/O error occurs.</exception>
+        /// <exception cref="System.InvalidOperationException">Can't format certain profile.</exception>
         public void Write(Stream outStream, string name, IList<InstrumentProfile> profiles) {
-            // NOTE: compression streams (zip and gzip) require explicit call to "close()" method to properly
-            // finish writing of compressed file format and to release native Deflater resources.
-            // However we shall not close underlying stream here to allow proper nesting of data streams.
             if (name.ToLower().EndsWith(".zip")) {
                 name = Path.GetFileNameWithoutExtension(name);
-                //TODO: ucloseable stream
                 using (ZipArchive zip = new ZipArchive(outStream, ZipArchiveMode.Update)) {
                     ZipArchiveEntry entry = zip.CreateEntry(Path.GetFileNameWithoutExtension(name) + FILE_EXTENSION);
                     Write(entry.Open(), name, profiles);
@@ -69,7 +68,6 @@ namespace com.dxfeed.ipf {
                 return;
             }
             if (name.ToLower().EndsWith(".gz")) {
-                //TODO: ucloseable stream
                 using (GZipStream gzip = new GZipStream(outStream, CompressionMode.Compress)) {
                     Write(gzip, profiles);
                 }
@@ -81,9 +79,11 @@ namespace com.dxfeed.ipf {
         /// <summary>
         /// Writes specified instrument profiles into specified stream.
         /// </summary>
-        /// <param name="outStream"></param>
-        /// <param name="profiles"></param>
+        /// <param name="outStream">Where writes profiles.</param>
+        /// <param name="profiles">Params list which will be written.</param>
+        /// <exception cref="System.ArgumentException">If attempt to write record without fields was made.</exception>
         /// <exception cref="System.IO.IOException">If an I/O error occurs.</exception>
+        /// <exception cref="System.InvalidOperationException">Can't format certain profile.</exception>
         public void Write(Stream outStream, IList<InstrumentProfile> profiles) {
             InstrumentProfileComposer composer = new InstrumentProfileComposer(outStream);
             composer.Compose(profiles, false);

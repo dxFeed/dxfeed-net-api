@@ -30,8 +30,8 @@ namespace com.dxfeed.ipf.impl {
         /// Creates a new instrument profile composer.
         /// </summary>
         /// <param name="outStream"></param>
-        /// <exception cref="ArgumentNullException"></exception>
-        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="System.ArgumentNullException"></exception>
+        /// <exception cref="System.ArgumentException"></exception>
         public InstrumentProfileComposer(Stream outStream) {
             writer = new CSVWriter(new StreamWriter(outStream, System.Text.Encoding.UTF8));
         }
@@ -49,7 +49,9 @@ namespace com.dxfeed.ipf.impl {
         /// </summary>
         /// <param name="profiles">List of instrument profiles.</param>
         /// <param name="skipRemoved">When skipRemoved == true, it ignores removed instruments when composing.</param>
-        /// <exception cref="System.IO.IOException"></exception>
+        /// <exception cref="System.ArgumentException">If attempt to write record without fields was made.</exception>
+        /// <exception cref="System.IO.IOException">If an I/O error occurs.</exception>
+        /// <exception cref="System.InvalidOperationException">Can't format certain profile.</exception>
         public void Compose(IList<InstrumentProfile> profiles, bool skipRemoved)  {
             CaptureTypes(profiles);
             WriteFormats(profiles, skipRemoved);
@@ -61,15 +63,15 @@ namespace com.dxfeed.ipf.impl {
         /// Writes a new line.
         /// </summary>
         public void ComposeNewLine() {
-            writer.writeRecord(new string[] {""}); // Force CRLF
-            writer.flush();
+            writer.WriteRecord(new string[] {""}); // Force CRLF
+            writer.Flush();
         }
 
         /// <summary>
         /// Writes FLUSH command
         /// </summary>
         public void ComposeFlush()  {
-            writer.writeRecord(new string[] { Constants.FLUSH_COMMAND });
+            writer.WriteRecord(new string[] { Constants.FLUSH_COMMAND });
             ComposeNewLine();
         }
 
@@ -77,7 +79,7 @@ namespace com.dxfeed.ipf.impl {
         /// Writes COMPLETE command.
         /// </summary>
         public void ComposeComplete()  {
-            writer.writeRecord(new string[] { Constants.COMPLETE_COMMAND });
+            writer.WriteRecord(new string[] { Constants.COMPLETE_COMMAND });
             ComposeNewLine();
         }
 
@@ -87,6 +89,13 @@ namespace com.dxfeed.ipf.impl {
                 types.Add(ip.GetTypeName());
         }
 
+        /// <summary>
+        /// Writes formats from list.
+        /// </summary>
+        /// <param name="profiles"></param>
+        /// <param name="skipRemoved"></param>
+        /// <exception cref="System.ArgumentException">If attempt to write record without fields was made.</exception>
+        /// <exception cref="System.IO.IOException">If an I/O error occurs.</exception>
         private void WriteFormats(IList<InstrumentProfile> profiles, bool skipRemoved) {
             HashSet<string> updated = new HashSet<string>();
             for (int i = 0; i < profiles.Count; i++) {
@@ -120,15 +129,28 @@ namespace com.dxfeed.ipf.impl {
                 WriteFormat(type);
         }
 
+        /// <summary>
+        /// Writes format.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <exception cref="System.ArgumentException">If attempt to write record without fields was made.</exception>
+        /// <exception cref="System.IO.IOException">If an I/O error occurs.</exception>
         private void WriteFormat(string type) {
-            writer.writeField(Constants.METADATA_PREFIX + type + Constants.METADATA_SUFFIX);
+            writer.WriteField(Constants.METADATA_PREFIX + type + Constants.METADATA_SUFFIX);
             foreach (InstrumentProfileField field in enumFormats[type])
-                writer.writeField(field.Name);
+                writer.WriteField(field.Name);
             foreach (string field in customFormats[type])
-                writer.writeField(field);
-            writer.writeRecord(null);
+                writer.WriteField(field);
+            writer.WriteRecord(null);
         }
 
+        /// <summary>
+        /// Writes profiles from list.
+        /// </summary>
+        /// <param name="profiles"></param>
+        /// <param name="skipRemoved"></param>
+        /// <exception cref="System.InvalidOperationException">Can't format certain profile.</exception>
+        /// <exception cref="System.IO.IOException">If an I/O error occurs.</exception>
         private void WriteProfiles(IList<InstrumentProfile> profiles, bool skipRemoved) {
             for (int i = 0; i < profiles.Count; i++) {
                 string type = types[i]; // atomically captured
@@ -139,13 +161,20 @@ namespace com.dxfeed.ipf.impl {
             }
         }
 
+        /// <summary>
+        /// Write profile.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="ip"></param>
+        /// <exception cref="System.InvalidOperationException">Can't format certain profile.</exception>
+        /// <exception cref="System.IO.IOException">If an I/O error occurs.</exception>
         private void WriteProfile(string type, InstrumentProfile ip) {
-            writer.writeField(type);
+            writer.WriteField(type);
             foreach (InstrumentProfileField field in enumFormats[type])
-                writer.writeField(field.GetField(ip));
+                writer.WriteField(field.GetField(ip));
             foreach (string field in customFormats[type])
-                writer.writeField(ip.GetField(field));
-            writer.writeRecord(null);
+                writer.WriteField(ip.GetField(field));
+            writer.WriteRecord(null);
         }
 
     }

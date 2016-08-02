@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace com.dxfeed.ipf {
     class DateFormat {
@@ -17,7 +14,6 @@ namespace com.dxfeed.ipf {
         }
 
         public string Format(DateTime dateTime) {
-            //TODO: timezone?
             return dateTime.ToString(format);
         }
 

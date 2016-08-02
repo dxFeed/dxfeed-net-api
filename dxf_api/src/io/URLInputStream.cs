@@ -2,7 +2,6 @@
 using System.IO;
 using System.Net;
 using System.Text;
-using com.dxfeed.api;
 
 namespace com.dxfeed.io {
 
@@ -15,8 +14,8 @@ namespace com.dxfeed.io {
         /// </summary>
         /// <param name="url">Url, relative, or absolute file name.</param>
         /// <returns>Resolved url.</returns>
-        /// <exception cref="ArgumentNullException"></exception>
-        /// <exception cref="UriFormatException"></exception>
+        /// <exception cref="System.ArgumentNullException"></exception>
+        /// <exception cref="System.UriFormatException"></exception>
         public static Uri ResolveURL(string url) {
             if (url.Length > 2 && url[1] == ':' && Path.PathSeparator == '\\')
                 url = "/" + url; // special case for full file path with drive letter on windows
@@ -36,8 +35,8 @@ namespace com.dxfeed.io {
         /// <exception cref="System.NotSupportedException">The request scheme specified in requestUri is not registered.</exception>
         /// <exception cref="System.ArgumentNullException">RequestUri is null.</exception>
         /// <exception cref="System.Security.SecurityException">The caller does not have permission to connect to the requested URI or a URI that the request is redirected to.</exception>
-        public static WebRequest openConnection(String url) {
-            return openConnection(ResolveURL(url), null, null);
+        public static WebRequest OpenConnection(String url) {
+            return OpenConnection(ResolveURL(url), null, null);
         }
 
         /// <summary>
@@ -55,9 +54,8 @@ namespace com.dxfeed.io {
         /// <exception cref="System.NotSupportedException">The request scheme specified in requestUri is not registered.</exception>
         /// <exception cref="System.ArgumentNullException">RequestUri is null.</exception>
         /// <exception cref="System.Security.SecurityException">The caller does not have permission to connect to the requested URI or a URI that the request is redirected to.</exception>
-        public static WebRequest openConnection(Uri url, String user, String password) {
+        public static WebRequest OpenConnection(Uri url, String user, String password) {
             WebRequest webRequest = WebRequest.Create(url);
-            //webRequest.Credentials = new NetworkCredential(user, password);
             webRequest.Timeout = READ_TIMEOUT;
             String auth;
             if (user != null && !String.IsNullOrEmpty(user) && password != null && !String.IsNullOrEmpty(password))
@@ -70,40 +68,17 @@ namespace com.dxfeed.io {
             return webRequest;
         }
 
-        //TODO: possible need ftpwebresponse too
-
         /// <summary>
         /// Checks connection response code and throws {@link IOException} if it is not Ok.
         /// </summary>
         /// <param name="webResponse"></param>
-        /// <exception cref="IOException">if an I/O error occurs</exception>
-        public static void checkConnectionResponseCode(WebResponse webResponse) {
-            if (webResponse.GetType() == typeof(HttpWebResponse) && ((HttpWebResponse)webResponse).StatusCode != HttpStatusCode.OK)
-                throw new IOException("Unexpected response: " + webResponse.Headers.Get(0));
+        /// <exception cref="System.IO.IOException">if an I/O error occurs</exception>
+        public static void CheckConnectionResponseCode(WebResponse webResponse) {
+            if (webResponse.GetType() == typeof(HttpWebResponse) && (((HttpWebResponse)webResponse).StatusCode == HttpStatusCode.OK) ||
+                webResponse.GetType() == typeof(FtpWebResponse) && (((FtpWebResponse)webResponse).StatusCode == FtpStatusCode.FileActionOK))
+                return;
+            throw new IOException("Unexpected response: " + webResponse.Headers.Get(0));
         }
-
-        ///// <summary>
-        ///// Returns last modification time for a specified URL.
-        ///// </summary>
-        ///// <param name="url"></param>
-        ///// <returns>Last modification time for a specified URL.</returns>
-        ///// <exception cref="IOException">If there is some problem retrieving last modification time or it is not known.</exception>
-        //public static DateTime getLastModified(String url) {
-        //    try { 
-        //        WebRequest webRequest = openConnection(url);
-        //        if (webRequest.GetType() == typeof(HttpWebRequest))
-        //            ((HttpWebRequest)webRequest).Method = "HEAD";
-        //        using (HttpWebResponse webResponse = (HttpWebResponse)webRequest.GetResponse()) {
-        //            DateTime lastModified = webResponse.LastModified;
-        //            checkConnectionResponseCode(webResponse);
-        //            if (lastModified == default(DateTime))
-        //                throw new IOException("Last modified time is not known");
-        //            return lastModified;
-        //        }
-        //    } catch (Exception exc) {
-        //        throw new IOException(exc.Message);
-        //    }
-        //}
 
     }
 }

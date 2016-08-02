@@ -46,9 +46,9 @@ namespace com.dxfeed.api {
         /// <param name="double2">Second double to compare.</param>
         /// <returns>True if doubles are differs not greater than some epsilon, otherwise returns false.</returns>
         public static bool IsEquals(double double1, double double2) {
-            //TODO: diff
-            double difference = 0.000001d;
-            return Math.Abs(double1 - double2) <= difference;
+            //simple tollerance
+            double tolerance = 0.000001d;
+            return Math.Abs(double1 - double2) <= tolerance;
         }
 
     }

@@ -88,11 +88,11 @@ namespace com.dxfeed.ipf {
         public IList<InstrumentProfile> ReadFromFile(string address, string user, string password)  {
             string url = ResolveSourceURL(address);
             try {
-                WebRequest webRequest = URLInputStream.openConnection(URLInputStream.ResolveURL(url), user, password);
+                WebRequest webRequest = URLInputStream.OpenConnection(URLInputStream.ResolveURL(url), user, password);
                 webRequest.Headers.Add(LIVE_PROP_KEY, LIVE_PROP_REQUEST_NO);
                 using (HttpWebResponse response = (HttpWebResponse)webRequest.GetResponse()) {
                     using (Stream dataStream = response.GetResponseStream()) {
-                        URLInputStream.checkConnectionResponseCode(response);
+                        URLInputStream.CheckConnectionResponseCode(response);
                         lastModified = response.LastModified;
                         return Read(dataStream, url);
                     }
@@ -102,7 +102,7 @@ namespace com.dxfeed.ipf {
             } catch (IOException) {
                 throw;
             } catch (Exception exc) {
-                throw new IOException("Read profiles from file failed", exc);
+                throw new IOException("Read profiles from file failed: " + exc);
             }
         }
 
@@ -146,21 +146,16 @@ namespace com.dxfeed.ipf {
         /// <exception cref="com.dxfeed.ipf.InstrumentProfileFormatException">If input stream does not conform to the Simple File Format.</exception>
         public IList<InstrumentProfile> Read(Stream inputStream, string name) {
             try { 
-                // NOTE: decompression streams (zip and gzip) require explicit call to "close()" method to release native Inflater resources.
-                // However we shall not close underlying stream here to allow proper nesting of data streams.
                 if (name.ToLower().EndsWith(".zip")) {
-                    //TODO: uncloseable streams
                     using (ZipArchive zip = new ZipArchive(inputStream)) {
                         List<InstrumentProfile> profiles = new List<InstrumentProfile>();
                         foreach (ZipArchiveEntry entry in zip.Entries) {
-                            //TODO: check directory (archive can contains directory?)
                             profiles.AddRange(Read(entry.Open(), entry.Name));
                         }
                         return profiles;
                     }
                 }
                 if (name.ToLower().EndsWith(".gz")) {
-                    //TODO: uncloseable streams
                     using (GZipStream gzip = new GZipStream(inputStream, CompressionMode.Decompress)) {
                         return Read(gzip);
                     }
@@ -171,7 +166,7 @@ namespace com.dxfeed.ipf {
             } catch (IOException) {
                 throw;
             } catch (Exception exc) {
-                throw new IOException("Read profiles from stream failed" + exc);
+                throw new IOException("Read profiles from stream failed: " + exc);
             }
         }
 
@@ -185,32 +180,15 @@ namespace com.dxfeed.ipf {
         public IList<InstrumentProfile> Read(Stream inputStream) {
             IList<InstrumentProfile> profiles = new List<InstrumentProfile>();
             InstrumentProfileParser parser = new InstrumentProfileParser(inputStream);
-            //TODO:
-            //{
-                
-            //    protected override string intern(string value) {
-            //        return InstrumentProfileReader.this.intern(value);
-            //    }
-            //};
             InstrumentProfile ip;
             while ((ip = parser.Next()) != null) {
-                profiles.Add(ip);
+                try {
+                    profiles.Add(ip);
+                } catch (Exception exc) {
+                    throw new IOException("Read failed: " + exc);
+                }
             }
             return profiles;
-        }
-
-        /// <summary>
-        /// To be overridden in subclasses to allow {@link string#intern() intern} strings using pools
-        /// (like {@link com.devexperts.util.StringCache StringCache}) to reduce memory footprint. Default implementation does nothing
-        /// (returns value itself).
-        ///
-        /// @param value string value to intern
-        /// @return canonical representation of the given string value
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        protected string Intern(string value) {
-            return value;
         }
 
     }

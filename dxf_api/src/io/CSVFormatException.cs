@@ -6,7 +6,6 @@
  * If a copy of the MPL was not distributed with this file, You can obtain one at
  * http://mozilla.org/MPL/2.0/.
  */
-using System;
 using System.IO;
 
 namespace com.dxfeed.io {
@@ -20,14 +19,12 @@ namespace com.dxfeed.io {
         /// <summary>
         /// Constructs a CSVFormatException without detail message.
         /// </summary>
-        public CSVFormatException() : base() {
-        }
+        public CSVFormatException() : base() { }
 
         /// <summary>
         /// Constructs a CSVFormatException with specified detail message.
         /// </summary>
         /// <param name="s"></param>
-        public CSVFormatException(String s) : base(s) {
-        }
+        public CSVFormatException(string s) : base(s) { }
     }
 }

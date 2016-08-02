@@ -95,8 +95,6 @@ namespace com.dxfeed.ipf {
             priceIncrements = ip.priceIncrements;
             tradingHours = ip.tradingHours;
 
-            //string[] customFields = ip.customFields; // Atomic read.
-            //this.customFields = customFields == null || /*ArrayMap.*/String.IsNullOrEmpty(customFields) ? null : (string[])customFields.Clone();
             this.customFields = new Dictionary<string,string>(ip.customFields);
         }
 
@@ -388,7 +386,7 @@ namespace com.dxfeed.ipf {
         }
 
         /// <summary>
-        /// * Returns Stock Exchange Daily Official List.
+        /// Returns Stock Exchange Daily Official List.
         /// It shall use seven-letter code assigned by London Stock Exchange.
         /// See <a href="http://en.wikipedia.org/wiki/SEDOL">SEDOL on Wikipedia</a> or
         /// <a href="http://www.londonstockexchange.com/en-gb/products/informationproducts/sedol/">SEDOL on LSE</a>.
@@ -400,7 +398,7 @@ namespace com.dxfeed.ipf {
         }
 
         /// <summary>
-        /// * Changes Stock Exchange Daily Official List.
+        /// Changes Stock Exchange Daily Official List.
         /// It shall use seven-letter code assigned by London Stock Exchange.
         /// See <a href="http://en.wikipedia.org/wiki/SEDOL">SEDOL on Wikipedia</a> or
         /// <a href="http://www.londonstockexchange.com/en-gb/products/informationproducts/sedol/">SEDOL on LSE</a>.
@@ -739,7 +737,8 @@ namespace com.dxfeed.ipf {
         /// <pre>
         ///     &lt;VALUE> ::= &lt;empty> | &lt;LIST>
         ///     &lt;LIST> ::= &lt;INCREMENT> | &lt;RANGE> &lt;semicolon> &lt;space> &lt;LIST>
-        ///     &lt;RANGE> ::= &lt;INCREMENT> &lt;space> &lt;UPPER_LIMIT> </pre>
+        ///     &lt;RANGE> ::= &lt;INCREMENT> &lt;space> &lt;UPPER_LIMIT> 
+        /// </pre>
         /// the list shall be sorted by &lt;UPPER_LIMIT>.
         /// Example: "0.25", "0.01 3; 0.05".
         /// </summary>
@@ -754,7 +753,8 @@ namespace com.dxfeed.ipf {
         /// <pre>
         ///     &lt;VALUE> ::= &lt;empty> | &lt;LIST>
         ///     &lt;LIST> ::= &lt;INCREMENT> | &lt;RANGE> &lt;semicolon> &lt;space> &lt;LIST>
-        ///     &lt;RANGE> ::= &lt;INCREMENT> &lt;space> &lt;UPPER_LIMIT> </pre>
+        ///     &lt;RANGE> ::= &lt;INCREMENT> &lt;space> &lt;UPPER_LIMIT> 
+        /// </pre>
         /// the list shall be sorted by &lt;UPPER_LIMIT>.
         /// Example: "0.25", "0.01 3; 0.05".
         /// </summary>
@@ -786,9 +786,7 @@ namespace com.dxfeed.ipf {
         /// </summary>
         /// <param name="name">Name of custom field.</param>
         /// <returns>Custom field value with a specified name.</returns>
-        private string getCustomField(string name) {
-            //string[] customFields = this.customFields; // Atomic read.
-            //return customFields == null ? null : ArrayMap.get(customFields, name);
+        private string GetCustomField(string name) {
             if (customFields.ContainsKey(name))
                 return customFields[name];
             return null;
@@ -800,8 +798,6 @@ namespace com.dxfeed.ipf {
         /// <param name="name">Name of custom field.</param>
         /// <param name="value">Custom field value.</param>
         private void SetCustomField(string name, string value) {
-            //string[] customFields = this.customFields; // Atomic read.
-            //this.customFields = ArrayMap.put(customFields == null ? new string[4] : customFields, name, value);
             customFields[name] = value;
         }
 
@@ -810,11 +806,13 @@ namespace com.dxfeed.ipf {
         /// </summary>
         /// <param name="name">Name of field.</param>
         /// <returns>Field value.</returns>
+        /// <exception cref="System.ArgumentNullException">If name is null.</exception>
+        /// <exception cref="System.InvalidOperationException">Can't format certain field.</exception>
         public string GetField(string name) {
             InstrumentProfileField ipf = InstrumentProfileField.Find(name);
             if (ipf != null)
                 return ipf.GetField(this);
-            string value = getCustomField(name);
+            string value = GetCustomField(name);
             return value == null ? "" : value;
         }
 
@@ -823,6 +821,8 @@ namespace com.dxfeed.ipf {
         /// </summary>
         /// <param name="name">Name of field.</param>
         /// <param name="value">Field value.</param>
+        /// <exception cref="System.ArgumentNullException">If name is null.</exception>
+        /// <exception cref="System.InvalidOperationException">If text uses wrong format or contains invalid values.</exception>
         public void SetField(string name, string value) {
             InstrumentProfileField ipf = InstrumentProfileField.Find(name);
             if (ipf != null)
@@ -836,14 +836,24 @@ namespace com.dxfeed.ipf {
         /// </summary>
         /// <param name="name">Name of field.</param>
         /// <returns>Field value.</returns>
+        /// <exception cref="System.ArgumentException">If this field has no numeric representation.</exception>
+        /// <exception cref="System.InvalidOperationException">If number formatter error occurs.</exception>
         public double GetNumericField(string name) {
-            InstrumentProfileField ipf = InstrumentProfileField.Find(name);
-            if (ipf != null)
-                return ipf.GetNumericField(this);
-            string value = getCustomField(name);
-            return value == null || String.IsNullOrEmpty(value) ? 0 :
-                value.Length == 10 && value[4] == '-' && value[7] == '-' ? InstrumentProfileField.ParseDate(value) :
-                InstrumentProfileField.ParseNumber(value);
+            try {
+                InstrumentProfileField ipf = InstrumentProfileField.Find(name);
+                if (ipf != null)
+                    return ipf.GetNumericField(this);
+                string value = GetCustomField(name);
+                return value == null || String.IsNullOrEmpty(value) ? 0 :
+                    value.Length == 10 && value[4] == '-' && value[7] == '-' ? InstrumentProfileField.ParseDate(value) :
+                    InstrumentProfileField.ParseNumber(value);
+            } catch (ArgumentException) {
+                throw;
+            } catch (InvalidOperationException) {
+                throw;
+            } catch (Exception exc) {
+                throw new InvalidOperationException("GetNumericField failed: " + exc);
+            }
         }
 
         /// <summary>
@@ -851,6 +861,8 @@ namespace com.dxfeed.ipf {
         /// </summary>
         /// <param name="name">Name of field.</param>
         /// <param name="value">Field value.</param>
+        /// <exception cref="System.ArgumentException">If this field has no numeric representation.</exception>
+        /// <exception cref="System.InvalidOperationException">If number formatter error occurs.</exception>
         public void SetNumericField(string name, double value) {
             InstrumentProfileField ipf = InstrumentProfileField.Find(name);
             if (ipf != null)
@@ -864,12 +876,22 @@ namespace com.dxfeed.ipf {
         /// </summary>
         /// <param name="name">Name of field.</param>
         /// <returns>Day id value.</returns>
+        /// <exception cref="System.ArgumentException">If this field has no numeric (date) representation.</exception>
+        /// <exception cref="System.InvalidOperationException">If number formatter error occurs.</exception>
         public int GetDateField(string name) {
-            InstrumentProfileField ipf = InstrumentProfileField.Find(name);
-            if (ipf != null)
-                return (int)ipf.GetNumericField(this);
-            string value = getCustomField(name);
-            return value == null || String.IsNullOrEmpty(value) ? 0 : InstrumentProfileField.ParseDate(value);
+            try {
+                InstrumentProfileField ipf = InstrumentProfileField.Find(name);
+                if (ipf != null)
+                    return (int)ipf.GetNumericField(this);
+                string value = GetCustomField(name);
+                return value == null || String.IsNullOrEmpty(value) ? 0 : InstrumentProfileField.ParseDate(value);
+            } catch (ArgumentException) {
+                throw;
+            } catch (InvalidOperationException) {
+                throw;
+            } catch (Exception exc) {
+                throw new InvalidOperationException("GetDateField failed: " + exc);
+            }
         }
 
         /// <summary>
@@ -877,12 +899,22 @@ namespace com.dxfeed.ipf {
         /// </summary>
         /// <param name="name">Name of field.</param>
         /// <param name="value">Day id value.</param>
+        /// <exception cref="System.ArgumentException">If this field has no numeric (date) representation.</exception>
+        /// <exception cref="System.InvalidOperationException">If number formatter error occurs.</exception>
         public void SetDateField(string name, int value) {
-            InstrumentProfileField ipf = InstrumentProfileField.Find(name);
-            if (ipf != null)
-                ipf.SetNumericField(this, value);
-            else
-                SetCustomField(name, InstrumentProfileField.FormatDate(value));
+            try {
+                InstrumentProfileField ipf = InstrumentProfileField.Find(name);
+                if (ipf != null)
+                    ipf.SetNumericField(this, value);
+                else
+                    SetCustomField(name, InstrumentProfileField.FormatDate(value));
+            } catch (ArgumentException) {
+                throw;
+            } catch (InvalidOperationException) {
+                throw;
+            } catch (Exception exc) {
+                throw new InvalidOperationException("SetDateField failed: " + exc);
+            }
         }
 
         /// <summary>
@@ -1013,20 +1045,6 @@ namespace com.dxfeed.ipf {
             }
             return true;
         }
-
-        //TODO: not used?
-        //private static bool customContainsAll(string[] a, string[] b) {
-        //    if (b == null)
-        //        return true;
-        //    for (int i = b.length & ~1; (i -= 2) >= 0;) {
-        //        string key = b[i];
-        //        string value = b[i + 1];
-        //        if (key != null && value != null && !value.String.IsNullOrEmpty())
-        //            if (a == null || !value.Equals(ArrayMap.get(a, key)))
-        //                return false;
-        //    }
-        //    return true;
-        //}
 
         /// <summary>
         /// Compares this profile with the specified profile for order. Returns a negative integer, zero,

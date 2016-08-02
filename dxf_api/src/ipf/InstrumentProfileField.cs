@@ -10,7 +10,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 using System.Globalization;
-using System.Linq;
 using System.Threading;
 using com.dxfeed.api;
 
@@ -54,7 +53,7 @@ namespace com.dxfeed.ipf {
         private const string F_PRICE_INCREMENTS = "PRICE_INCREMENTS";
         private const string F_TRADING_HOURS = "TRADING_HOURS";
 
-        private static Dictionary<string, InstrumentProfileField> MAP = new Dictionary<string, InstrumentProfileField>();
+        private static Dictionary<string, InstrumentProfileField> fieldsMap = new Dictionary<string, InstrumentProfileField>();
 
         public static readonly InstrumentProfileField TYPE = new InstrumentProfileField(F_TYPE);
         public static readonly InstrumentProfileField SYMBOL = new InstrumentProfileField(F_SYMBOL);
@@ -90,7 +89,7 @@ namespace com.dxfeed.ipf {
 
         private InstrumentProfileField(string name) {
             this.Name = name;
-            MAP.Add(name, this);
+            fieldsMap.Add(name, this);
         }
 
         /// <summary>
@@ -106,7 +105,7 @@ namespace com.dxfeed.ipf {
         /// </summary>
         public static InstrumentProfileField[] Values {
             get {
-                return (new List<InstrumentProfileField>(MAP.Values)).ToArray();
+                return (new List<InstrumentProfileField>(fieldsMap.Values)).ToArray();
             }
         }
 
@@ -123,10 +122,10 @@ namespace com.dxfeed.ipf {
         /// </summary>
         /// <param name="name">Name of field to find.</param>
         /// <returns>Field for specified name or <b>null</b> if field is not found.</returns>
-        /// <exception cref="System.ArgumentNullException"></exception>
+        /// <exception cref="System.ArgumentNullException">If name is null.</exception>
         public static InstrumentProfileField Find(string name)  {
             InstrumentProfileField value;
-            if (!MAP.TryGetValue(name, out value))
+            if (!fieldsMap.TryGetValue(name, out value))
                 return null;
             return value;
         }
@@ -136,7 +135,7 @@ namespace com.dxfeed.ipf {
         /// </summary>
         /// <param name="ip">Profile fot which get field.</param>
         /// <returns>Value of this field for specified profile in textual representation.</returns>
-        /// <exception cref="System.InvalidOperationException"></exception>
+        /// <exception cref="System.InvalidOperationException">Can't format certain field.</exception>
         public string GetField(InstrumentProfile ip) {
             try {
                 switch (this.Name) {
@@ -173,10 +172,8 @@ namespace com.dxfeed.ipf {
                     case F_TRADING_HOURS: return ip.GetTradingHours();
                     default: throw new InvalidOperationException("cannot process field " + this);
                 }
-            } catch (InvalidOperationException) {
-                throw;
             } catch (Exception exc) {
-                throw new InvalidOperationException("SetField failed", exc);
+                throw new InvalidOperationException(String.Format("Can't get field '{0}': {1}", this, exc));
             }
         }
 
@@ -185,7 +182,7 @@ namespace com.dxfeed.ipf {
         /// </summary>
         /// <param name="ip">Profile to set field.</param>
         /// <param name="value">Value that set into field.</param>
-        /// <exception cref="System.InvalidOperationException">if text uses wrong format or contains invalid values</exception>
+        /// <exception cref="System.InvalidOperationException">If text uses wrong format or contains invalid values.</exception>
         public void SetField(InstrumentProfile ip, string value) {
             try {
                 switch (this.Name) {
@@ -222,10 +219,8 @@ namespace com.dxfeed.ipf {
                     case F_TRADING_HOURS: ip.SetTradingHours(value); return;
                     default: throw new InvalidOperationException("cannot process field " + this);
                 }
-            } catch (InvalidOperationException) {
-                throw;
             } catch (Exception exc) {
-                throw new InvalidOperationException("SetField failed:" + exc.ToString());
+                throw new InvalidOperationException(String.Format("Can't set field '{0}': {1}", this, exc));
             }
         }
 
@@ -239,7 +234,6 @@ namespace com.dxfeed.ipf {
                 case F_SIC: return typeof(Double);
                 case F_MULTIPLIER: return typeof(Double);
                 case F_SPC: return typeof(Double);
-                    //TODO: check this Date
                 case F_EXPIRATION: return typeof(DateTime);
                 case F_LAST_TRADE: return typeof(DateTime);
                 case F_STRIKE: return typeof(Double);
@@ -305,13 +299,13 @@ namespace com.dxfeed.ipf {
 
         // ========== Internal Implementation ==========
 
-        private static readonly ThreadLocal<NumberFormatInfo> NUMBER_FORMATTER = new ThreadLocal<NumberFormatInfo>();
-        private static readonly ThreadLocal<DateFormat> DATE_FORMATTER = new ThreadLocal<DateFormat>();
+        private static readonly ThreadLocal<NumberFormatInfo> numberFormatter = new ThreadLocal<NumberFormatInfo>();
+        private static readonly ThreadLocal<DateFormat> dateFormatter = new ThreadLocal<DateFormat>();
 
-        private static readonly string[] FORMATTED_NUMBERS = new string[20000]; // A "sparse" cache for small numbers
-        private static readonly string[] FORMATTED_DATES = new string[30000]; // A "sparse" cache for common dates (1970-2052)
-        private static readonly ConcurrentDictionary<string, Double> PARSED_NUMBERS = new ConcurrentDictionary<string, Double>();
-        private static readonly ConcurrentDictionary<string, int> PARSED_DATES = new ConcurrentDictionary<string, int>();
+        private static readonly string[] formattedNumbers = new string[20000]; // A "sparse" cache for small numbers
+        private static readonly string[] formattedDates = new string[30000]; // A "sparse" cache for common dates (1970-2052)
+        private static readonly ConcurrentDictionary<string, Double> parsedNumbers = new ConcurrentDictionary<string, Double>();
+        private static readonly ConcurrentDictionary<string, int> parsedDates = new ConcurrentDictionary<string, int>();
 
         private static readonly long DAY = 24 * 3600 * 1000;
 
@@ -325,15 +319,21 @@ namespace com.dxfeed.ipf {
             if (d == 0)
                 return "";
             int n4 = (int)(d * 4) + 4000;
-            if (n4 == d * 4 + 4000 && n4 >= 0 && n4 < FORMATTED_NUMBERS.Length) {
-                string cached = FORMATTED_NUMBERS[n4];
+            if (n4 == d * 4 + 4000 && n4 >= 0 && n4 < formattedNumbers.Length) {
+                string cached = formattedNumbers[n4];
                 if (cached == null)
-                    FORMATTED_NUMBERS[n4] = cached = FormatNumberImpl(d);
+                    formattedNumbers[n4] = cached = FormatNumberImpl(d);
                 return cached;
             }
             return FormatNumberImpl(d);
         }
 
+        /// <summary>
+        /// Format number implementztion.
+        /// </summary>
+        /// <param name="d">Number to format.</param>
+        /// <returns>String representation of number.</returns>
+        /// <exception cref="System.InvalidOperationException">If number formatter error occurs.</exception>
         private static string FormatNumberImpl(double d) {
             if (d == (double)(int)d)
                 return Convert.ToString((int)d);
@@ -343,24 +343,19 @@ namespace com.dxfeed.ipf {
             if (ad > 1e-9 && ad < 1e12) {
                 NumberFormatInfo nf;
                 try {
-                    nf = NUMBER_FORMATTER.Value;
+                    nf = numberFormatter.Value;
+                    if (nf == null) {
+                        nf = NumberFormatInfo.GetInstance(new CultureInfo("en-US"));
+                        nf.NumberDecimalDigits = 20;
+                        numberFormatter.Value = nf;
+                    }
                 } catch (InvalidOperationException) {
                     throw;
                 } catch (Exception exc) {
-                    throw new InvalidOperationException("FormatNumber failed", exc);
-                }
-                if (nf == null) {
-                    nf = NumberFormatInfo.GetInstance(new CultureInfo("en-US"));
-                    //nf.SetMaximumFractionDigits(20);
-                    //nf.setGroupingUsed(false);
-                    //TODO: check number format
-                    nf.NumberDecimalDigits = 20;
-                    NUMBER_FORMATTER.Value = nf;
+                    throw new InvalidOperationException("FormatNumber failed: " + exc);
                 }
                 return Convert.ToString(d, nf);
-                //return nf.format(d);
             }
-            //return Double.ToString(d);
             return d.ToString();
         }
 
@@ -375,13 +370,13 @@ namespace com.dxfeed.ipf {
             if (s == null || String.IsNullOrEmpty(s))
                 return 0;
             try {
-                if (PARSED_NUMBERS.ContainsKey(s)) {
-                    return PARSED_NUMBERS[s];
+                if (parsedNumbers.ContainsKey(s)) {
+                    return parsedNumbers[s];
                 } else {
-                    if (PARSED_NUMBERS.Count > 10000)
-                        PARSED_NUMBERS.Clear();
+                    if (parsedNumbers.Count > 10000)
+                        parsedNumbers.Clear();
                     double cached = Double.Parse(s, CultureInfo.GetCultureInfo("en-US"));
-                    PARSED_NUMBERS[s] = cached;
+                    parsedNumbers[s] = cached;
                     return cached;
                 }
             } catch (FormatException) {
@@ -389,7 +384,7 @@ namespace com.dxfeed.ipf {
             } catch (ArgumentNullException) {
                 throw;
             } catch (Exception exc) {
-                throw new FormatException("ParseNumber failed: " + exc.ToString());
+                throw new FormatException("ParseNumber failed: " + exc);
             }
         }
 
@@ -399,13 +394,14 @@ namespace com.dxfeed.ipf {
         /// <param name="d">Date time in unix time.</param>
         /// <returns>String representation of date tinme.</returns>
         /// <exception cref="System.FormatException"></exception>
+        /// <exception cref="System.InvalidOperationException">If number formatter error occurs.</exception>
         public static string FormatDate(int d) {
             if (d == 0)
                 return "";
-            if (d >= 0 && d < FORMATTED_DATES.Length) {
-                string cached = FORMATTED_DATES[d];
+            if (d >= 0 && d < formattedDates.Length) {
+                string cached = formattedDates[d];
                 if (cached == null)
-                    FORMATTED_DATES[d] = cached = GetDateFormat().Format(Tools.UnixTimeToDate(d * DAY));
+                    formattedDates[d] = cached = GetDateFormat().Format(Tools.UnixTimeToDate(d * DAY));
                 return cached;
             }
             return GetDateFormat().Format(Tools.UnixTimeToDate(d * DAY));
@@ -417,31 +413,39 @@ namespace com.dxfeed.ipf {
         /// <param name="s">String representation of date.</param>
         /// <returns></returns>
         /// <exception cref="System.ArgumentNullException"></exception>
+        /// <exception cref="System.InvalidOperationException">If number formatter error occurs.</exception>
         /// <exception cref="System.FormatException"></exception>
         public static int ParseDate(string s) {
             if (s == null || String.IsNullOrEmpty(s))
                 return 0;
 
-            if (PARSED_DATES.ContainsKey(s)) {
-                return PARSED_DATES[s];
+            if (parsedDates.ContainsKey(s)) {
+                return parsedDates[s];
             } else {
-                if (PARSED_DATES.Count > 10000)
-                    PARSED_DATES.Clear();
+                if (parsedDates.Count > 10000)
+                    parsedDates.Clear();
                 int cached = (int)(Tools.DateToUnixTime(GetDateFormat().Parse(s)) / DAY);
-                PARSED_DATES[s] = cached;
+                parsedDates[s] = cached;
                 return cached;
             }
         }
 
+        /// <summary>
+        /// Returns date formatter instance.
+        /// </summary>
+        /// <returns>Date formatter instance.</returns>
+        /// <exception cref="System.InvalidOperationException">If number formatter error occurs.</exception>
         private static DateFormat GetDateFormat() {
-            DateFormat df = DATE_FORMATTER.Value;
-            if (df == null) {
-                df = new DateFormat("yyyy-MM-dd");
-                //TODO: make timezone
-                //df.SetTimeZone(TimeZone.getTimeZone("GMT"));
-                DATE_FORMATTER.Value = df;
+            try {
+                DateFormat df = dateFormatter.Value;
+                if (df == null) {
+                    df = new DateFormat("yyyy-MM-dd");
+                    dateFormatter.Value = df;
+                }
+                return df;
+            } catch (Exception exc) {
+                throw new InvalidOperationException("GetDateFormat failed: " + exc);
             }
-            return df;
         }
     }
 }

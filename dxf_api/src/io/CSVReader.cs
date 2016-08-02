@@ -52,7 +52,7 @@ namespace com.dxfeed.io {
         /// Creates new CSVReader with default separator and quote characters.
         /// </summary>
         /// <param name="reader"></param>
-        /// <exception cref="NullReferenceException">If reader is null.</exception>
+        /// <exception cref="System.NullReferenceException">If reader is null.</exception>
         public CSVReader(StreamReader reader)
             : this(reader, ',', '"') { }
 
@@ -62,8 +62,8 @@ namespace com.dxfeed.io {
         /// <param name="reader"></param>
         /// <param name="separator">Separator.</param>
         /// <param name="quote">Quote charachter.</param>
-        /// <exception cref="NullReferenceException">If reader is null.</exception>
-        /// <exception cref="ArgumentException">If separator or quote characters are invalid.</exception>
+        /// <exception cref="System.NullReferenceException">If reader is null.</exception>
+        /// <exception cref="System.ArgumentException">If separator or quote characters are invalid.</exception>
         public CSVReader(StreamReader reader, char separator, char quote) {
             if (reader == null)
                 throw new NullReferenceException("reader is null");
@@ -82,7 +82,7 @@ namespace com.dxfeed.io {
         /// Both <b>CR</b> and <b>LF</b> are counted as new lines, although <b>CRLF</b> sequence is counted only once.
         /// Line number points to new line after completion of the current record.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Current line number.</returns>
         public int GetLineNumber() {
             return lineNumber;
         }
@@ -92,7 +92,7 @@ namespace com.dxfeed.io {
         /// Record numeration starts with 1 and does not count new lines within record fields.
         /// Record number points to new record after completion of the current record.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Current record number.</returns>
         public int GetRecordNumber() {
             return recordNumber;
         }
@@ -103,13 +103,18 @@ namespace com.dxfeed.io {
         /// This method does not advance to the next record - it keeps to return <b>null</b>.
         /// </summary>
         /// <returns></returns>
-        /// <exception cref="CSVFormatException">If input stream does not conform to the CSV format.</exception>
-        /// <exception cref="IOException">If an I/O error occurs.</exception>
+        /// <exception cref="System.InvalidOperationException">If buffers error occurs.</exception>
+        /// <exception cref="System.IO.IOException">If an I/O error occurs.</exception>
+        /// <exception cref="com.dxfeed.io.CSVFormatException">If input stream does not conform to the CSV format.</exception>
         public string ReadField() {
             if (eol || eof)
                 return null;
             if (position > buf.Length / 2) {
-                Array.Copy(buf, position, buf, 0, limit - position);
+                try {
+                    Array.Copy(buf, position, buf, 0, limit - position);
+                } catch (Exception exc) {
+                    throw new InvalidOperationException("Read field failed: " + exc);
+                }
                 limit -= position;
                 position = 0;
             }
@@ -162,7 +167,7 @@ namespace com.dxfeed.io {
                         i++;
                 end = n;
             }
-            return strings.get(buf, pos, end - pos);
+            return strings.Get(buf, pos, end - pos);
         }
 
         private string Fail(string message, int firstLine) {
@@ -174,12 +179,23 @@ namespace com.dxfeed.io {
             return message;
         }
 
+        /// <summary>
+        /// Read charachters from the stream according to internal buffer.
+        /// </summary>
+        /// <exception cref="System.InvalidOperationException">If buffer error occurs.</exception>
+        /// <exception cref="System.IO.IOException">If an I/O error occurs.</exception>
         private void Read() {
-            if (buf.Length - limit < buf.Length / 4)
-                Array.Resize(ref buf, 0);
-            int n= reader.Read(buf, limit, buf.Length - limit);
-            if (n > 0)
-                limit += n;
+            try {
+                if (buf.Length - limit < buf.Length / 4)
+                    Array.Resize(ref buf, 0);
+                int n = reader.Read(buf, limit, buf.Length - limit);
+                if (n > 0)
+                    limit += n;
+            } catch (IOException) {
+                throw;
+            } catch (Exception exc) {
+                throw new InvalidOperationException("Read failed: " + exc);
+            }
         }
 
         /// <summary>
@@ -190,8 +206,9 @@ namespace com.dxfeed.io {
         /// This method advances to the next record upon completion.
         /// </summary>
         /// <returns></returns>
-        /// <exception cref="CSVFormatException">If input stream does not conform to the CSV format.</exception>
-        /// <exception cref="IOException">If an I/O error occurs.</exception>
+        /// <exception cref="System.InvalidOperationException">If buffer error occurs.</exception>
+        /// <exception cref="System.IO.IOException">If an I/O error occurs.</exception>
+        /// <exception cref="com.dxfeed.io.CSVFormatException">If input stream does not conform to the CSV format.</exception>
         public string[] ReadRecord() {
             List<string> fields = new List<string>();
             for (string field = ReadField(); field != null; field = ReadField())
@@ -229,9 +246,10 @@ namespace com.dxfeed.io {
         /// Empty fields are represented by empty strings.
         /// </summary>
         /// <returns></returns>
-        /// <exception cref="CSVFormatException">If input stream does not conform to the CSV format.</exception>
-        /// <exception cref="IOException">If an I/O error occurs.</exception>
-        public List<string[]> ReadAll() {
+        /// <exception cref="System.InvalidOperationException">If buffer error occurs.</exception>
+        /// <exception cref="System.IO.IOException">If an I/O error occurs.</exception>
+        /// <exception cref="com.dxfeed.io.CSVFormatException">If input stream does not conform to the CSV format.</exception>
+        public IList<string[]> ReadAll() {
             List<string[]> records = new List<string[]>();
             for (string[] record = ReadRecord(); record != null; record = ReadRecord())
                 records.Add(record);

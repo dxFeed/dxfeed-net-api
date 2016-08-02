@@ -6,7 +6,6 @@
  * If a copy of the MPL was not distributed with this file, You can obtain one at
  * http://mozilla.org/MPL/2.0/.
  */
-using System;
 using System.Collections.Generic;
 
 namespace com.dxfeed.ipf {
@@ -33,7 +32,7 @@ namespace com.dxfeed.ipf {
         private const string T_OTHER = "OTHER";
         private const string T_REMOVED = "REMOVED";
 
-        private static Dictionary<string, InstrumentProfileType> MAP = new Dictionary<string, InstrumentProfileType>();
+        private static Dictionary<string, InstrumentProfileType> typesMap = new Dictionary<string, InstrumentProfileType>();
         
         public static readonly InstrumentProfileType CURRENCY = new InstrumentProfileType(T_CURRENCY);
         public static readonly InstrumentProfileType FOREX = new InstrumentProfileType(T_FOREX);
@@ -52,7 +51,7 @@ namespace com.dxfeed.ipf {
 
         private InstrumentProfileType(string name) {
             this.Name = name;
-            MAP[name] = this;
+            typesMap[name] = this;
         }
 
         /// <summary>
@@ -65,10 +64,10 @@ namespace com.dxfeed.ipf {
         /// </summary>
         /// <param name="name">Name of type.</param>
         /// <returns>Field for specified name or <b>null</b> if field is not found.</returns>
-        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="System.ArgumentNullException"></exception>
         public static InstrumentProfileType Find(string name) {
-            if (MAP.ContainsKey(name))
-                return MAP[name];
+            if (typesMap.ContainsKey(name))
+                return typesMap[name];
             return null;
         }
 
@@ -85,7 +84,7 @@ namespace com.dxfeed.ipf {
         /// <param name="type1">First type to compare.</param>
         /// <param name="type2">Second type to compare.</param>
         /// <returns></returns>
-        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="System.ArgumentNullException"></exception>
         public static int CompareTypes(string type1, string type2) {
             InstrumentProfileType t1 = Find(type1);
             InstrumentProfileType t2 = Find(type2);

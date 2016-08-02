@@ -35,16 +35,18 @@ namespace com.dxfeed.ipf.impl {
         /// Return next instrument profile.
         /// </summary>
         /// <returns>Next instrument profile.</returns>
-        /// <exception cref="InstrumentProfileFormatException"></exception>
         /// <exception cref="System.IO.IOException"></exception>
+        /// <exception cref="com.dxfeed.ipf.InstrumentProfileFormatException"></exception>
         public InstrumentProfile Next() {
             while (true) {
                 int line = reader.GetLineNumber();
                 string[] record;
                 try {
                     record = reader.ReadRecord();
-                } catch (CSVFormatException e) {
-                    throw new InstrumentProfileFormatException(e.Message);
+                } catch (CSVFormatException csvException) {
+                    throw new InstrumentProfileFormatException(csvException.Message);
+                } catch (Exception exc) {
+                    throw new IOException("Next failed: " + exc);
                 }
                 if (record == null) // EOF reached
                     return null;
@@ -66,7 +68,7 @@ namespace com.dxfeed.ipf.impl {
                     newFormat[0] = InstrumentProfileField.TYPE;
                     for (int i = 1; i < record.Length; i++)
                         if ((newFormat[i] = InstrumentProfileField.Find(record[i])) == null)
-                            newFormat[i] = String.Intern(record[i]);
+                            newFormat[i] = record[i];
                     string key = record[0].Substring(
                         Constants.METADATA_PREFIX.Length, 
                         record[0].Length - Constants.METADATA_SUFFIX.Length - Constants.METADATA_PREFIX.Length);
@@ -84,19 +86,15 @@ namespace com.dxfeed.ipf.impl {
                     try {
                         if (format[i].GetType() == typeof(InstrumentProfileField)) {
                             InstrumentProfileField field = (InstrumentProfileField)format[i];
-                            field.SetField(ip, (field.IsNumericField()) ? record[i] : Intern(record[i]));
+                            field.SetField(ip, record[i]);
                         } else {
-                            ip.SetField((string)format[i], Intern(record[i]));
+                            ip.SetField((string)format[i], record[i]);
                         }
                     } catch (Exception e) {
                         throw new InstrumentProfileFormatException(e.Message + " (line " + line + ")");
                     }
                 return ip;
             }
-        }
-
-        protected string Intern(string value) {
-            return value;
         }
 
         protected void OnFlush() {}

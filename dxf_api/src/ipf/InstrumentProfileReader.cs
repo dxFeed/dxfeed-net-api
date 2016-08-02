@@ -60,8 +60,8 @@ namespace com.dxfeed.ipf {
         /// </summary>
         /// <param name="address">URL of file to read from.</param>
         /// <returns>List of instrument profiles.</returns>
-        /// <exception cref="com.dxfeed.ipf.InstrumentProfileFormatException">If input stream does not conform to the Simple File Format.</exception>
         /// <exception cref="System.IO.IOException">If an I/O error occurs.</exception>
+        /// <exception cref="com.dxfeed.ipf.InstrumentProfileFormatException">If input stream does not conform to the Simple File Format.</exception>
         public IList<InstrumentProfile> ReadFromFile(string address) {
             return ReadFromFile(address, null, null);
         }
@@ -83,8 +83,8 @@ namespace com.dxfeed.ipf {
         /// <param name="user">The user name (may be null).</param>
         /// <param name="password">The password (may be null).</param>
         /// <returns>List of instrument profiles.</returns>
-        /// <exception cref="com.dxfeed.ipf.InstrumentProfileFormatException">If input stream does not conform to the Simple File Format.</exception>
         /// <exception cref="System.IO.IOException">If an I/O error occurs.</exception>
+        /// <exception cref="com.dxfeed.ipf.InstrumentProfileFormatException">If input stream does not conform to the Simple File Format.</exception>
         public IList<InstrumentProfile> ReadFromFile(string address, string user, string password)  {
             string url = ResolveSourceURL(address);
             try {
@@ -142,6 +142,8 @@ namespace com.dxfeed.ipf {
         /// <param name="inputStream">Stream from which read profiles.</param>
         /// <param name="name">Profile name.</param>
         /// <returns>Instrument profile list.</returns>
+        /// <exception cref="System.ArgumentException">Stream does not support reading.</exception>
+        /// <exception cref="System.ArgumentNullException">Stream is null.</exception>
         /// <exception cref="System.IO.IOException">If an I/O error occurs.</exception>
         /// <exception cref="com.dxfeed.ipf.InstrumentProfileFormatException">If input stream does not conform to the Simple File Format.</exception>
         public IList<InstrumentProfile> Read(Stream inputStream, string name) {
@@ -161,6 +163,10 @@ namespace com.dxfeed.ipf {
                     }
                 }
                 return Read(inputStream);
+            } catch (ArgumentNullException) {
+                throw;
+            } catch (ArgumentException) {
+                throw;
             } catch (InstrumentProfileFormatException) {
                 throw;
             } catch (IOException) {
@@ -175,6 +181,8 @@ namespace com.dxfeed.ipf {
         /// </summary>
         /// <param name="inputStream">Stream from which read profiles.</param>
         /// <returns>Instrument profiles from specified stream.</returns>
+        /// <exception cref="System.ArgumentException">Stream does not support reading.</exception>
+        /// <exception cref="System.ArgumentNullException">Stream is null.</exception>
         /// <exception cref="System.IO.IOException">If an I/O error occurs.</exception>
         /// <exception cref="com.dxfeed.ipf.InstrumentProfileFormatException">If input stream does not conform to the Simple File Format.</exception>
         public IList<InstrumentProfile> Read(Stream inputStream) {

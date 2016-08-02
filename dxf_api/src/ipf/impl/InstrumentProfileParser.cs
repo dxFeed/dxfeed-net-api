@@ -23,6 +23,12 @@ namespace com.dxfeed.ipf.impl {
         private Dictionary<string, object[]> formats = new Dictionary<string,object[]>();
         private CSVReader reader;
 
+        /// <summary>
+        /// Creates new instrument profile parser.
+        /// </summary>
+        /// <param name="stream">Stream from profiles will be read.</param>
+        /// <exception cref="System.ArgumentException">Stream does not support reading.</exception>
+        /// <exception cref="System.ArgumentNullException">Stream is null.</exception>
         public InstrumentProfileParser(Stream stream) {
             reader = new CSVReader(new StreamReader(stream, Encoding.UTF8));
         }

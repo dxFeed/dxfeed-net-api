@@ -18,7 +18,7 @@ namespace com.dxfeed.ipf.impl {
     /// Please see <b>Instrument Profile Format</b> documentation for complete description.
     /// </summary>
     class InstrumentProfileComposer : IDisposable {
-        private static readonly InstrumentProfileField[] FIELDS = InstrumentProfileField.Values;
+        private static readonly InstrumentProfileField[] fields = InstrumentProfileField.Values;
         private static readonly string REMOVED_TYPE = InstrumentProfileType.REMOVED.Name;
 
         private Dictionary<string, HashSet<InstrumentProfileField>> enumFormats = new Dictionary<string, HashSet<InstrumentProfileField>>();
@@ -39,6 +39,7 @@ namespace com.dxfeed.ipf.impl {
         /// <summary>
         /// Dispose object.
         /// </summary>
+        /// <exception cref="System.IO.IOException">If an I/O error occurs.</exception>
         public void Dispose() {
             writer.Dispose();
         }
@@ -62,6 +63,8 @@ namespace com.dxfeed.ipf.impl {
         /// <summary>
         /// Writes a new line.
         /// </summary>
+        /// <exception cref="System.ArgumentException">If attempt to write record without fields was made.</exception>
+        /// <exception cref="System.IO.IOException">If an I/O error occurs.</exception>
         public void ComposeNewLine() {
             writer.WriteRecord(new string[] {""}); // Force CRLF
             writer.Flush();
@@ -70,6 +73,8 @@ namespace com.dxfeed.ipf.impl {
         /// <summary>
         /// Writes FLUSH command
         /// </summary>
+        /// <exception cref="System.ArgumentException">If attempt to write record without fields was made.</exception>
+        /// <exception cref="System.IO.IOException">If an I/O error occurs.</exception>
         public void ComposeFlush()  {
             writer.WriteRecord(new string[] { Constants.FLUSH_COMMAND });
             ComposeNewLine();
@@ -78,6 +83,8 @@ namespace com.dxfeed.ipf.impl {
         /// <summary>
         /// Writes COMPLETE command.
         /// </summary>
+        /// <exception cref="System.ArgumentException">If attempt to write record without fields was made.</exception>
+        /// <exception cref="System.IO.IOException">If an I/O error occurs.</exception>
         public void ComposeComplete()  {
             writer.WriteRecord(new string[] { Constants.COMPLETE_COMMAND });
             ComposeNewLine();
@@ -96,6 +103,7 @@ namespace com.dxfeed.ipf.impl {
         /// <param name="skipRemoved"></param>
         /// <exception cref="System.ArgumentException">If attempt to write record without fields was made.</exception>
         /// <exception cref="System.IO.IOException">If an I/O error occurs.</exception>
+        /// <exception cref="System.InvalidOperationException">Can't format profile field.</exception>
         private void WriteFormats(IList<InstrumentProfile> profiles, bool skipRemoved) {
             HashSet<string> updated = new HashSet<string>();
             for (int i = 0; i < profiles.Count; i++) {
@@ -117,7 +125,7 @@ namespace com.dxfeed.ipf.impl {
                 }
                 if (!REMOVED_TYPE.Equals(type)) {
                     // collect actual used fields for non-removed instrument profiles
-                    foreach (InstrumentProfileField ipf in FIELDS)
+                    foreach (InstrumentProfileField ipf in fields)
                         if (ipf != InstrumentProfileField.TYPE && ipf.GetField(ip).Length > 0)
                             if (enumFormat.Add(ipf))
                                 updated.Add(type);

@@ -49,7 +49,7 @@ namespace com.dxfeed.io {
         /// Creates new CSVWriter with default separator and quote characters.
         /// </summary>
         /// <param name="writer"></param>
-        /// <exception cref="NullReferenceException">If writer is null.</exception>
+        /// <exception cref="System.NullReferenceException">If writer is null.</exception>
         public CSVWriter(StreamWriter writer) : this(writer, ',', '"') { }
 
         /// <summary>

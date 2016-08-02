@@ -22,8 +22,8 @@ namespace com.dxfeed.ipf {
         /// </summary>
         /// <param name="s">String that should be parsed.</param>
         /// <returns>Parsed value.</returns>
-        /// <exception cref="ArgumentNullException"></exception>
-        /// <exception cref="FormatException"></exception>
+        /// <exception cref="System.ArgumentNullException"></exception>
+        /// <exception cref="System.FormatException"></exception>
         public DateTime Parse(string s) {
             return DateTime.ParseExact(s, format, System.Globalization.CultureInfo.InvariantCulture);
         }

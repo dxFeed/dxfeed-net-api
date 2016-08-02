@@ -29,16 +29,16 @@ namespace com.dxfeed.util {
         private long compareCount; // counts compares except first checks (i.e. add requestCount to get total)
         private long missCount; // counts misses when new string was placed into cache
 
-        /**
-         * Creates a <tt>StringCache</tt> with default parameters.
-         */
+        /// <summary>
+        /// Creates a <tt>StringCache</tt> with default parameters.
+        /// </summary>
         public StringCache() : this(997, 4) { }
 
         /// <summary>
         /// Creates a <tt>StringCache</tt> with the specified number of elements and default bucket size.
         /// </summary>
         /// <param name="size">The number of elements.</param>
-        /// <exception cref="ArgumentException">If parameters are not positive or result in too large cache.</exception>
+        /// <exception cref="System.ArgumentException">If parameters are not positive or result in too large cache.</exception>
         public StringCache(int size) : this((size + 3) / 4, 4) { }
 
         /// <summary>
@@ -47,7 +47,7 @@ namespace com.dxfeed.util {
         /// </summary>
         /// <param name="bucketNumber">The number of buckets.</param>
         /// <param name="bucketSize">The size of each bucket.</param>
-        /// <exception cref="ArgumentException">If parameters are not positive or result in too large cache.</exception>
+        /// <exception cref="System.ArgumentException">If parameters are not positive or result in too large cache.</exception>
         public StringCache(int bucketNumber, int bucketSize) {
             if (bucketNumber <= 0 || bucketSize <= 0 || bucketSize >= int.MaxValue / 2 / bucketNumber)
                 throw new ArgumentException();

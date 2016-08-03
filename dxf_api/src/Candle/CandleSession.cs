@@ -97,6 +97,16 @@ namespace com.dxfeed.api.candle {
         }
 
         /// <summary>
+        /// Returns full string representation of this candle session attribute. 
+        /// It is contains attribute key and its value. 
+        /// The full string representation of {@link #ANY} is "tho=any"
+        /// </summary>
+        /// <returns></returns>
+        public string ToFullString() {
+            return String.Format("{0}={1}", ATTRIBUTE_KEY, value);
+        }
+
+        /// <summary>
         /// Parses string representation of candle session attribute into object.
         /// Any string that was returned by {@link #toString()} can be parsed
         /// and case is ignored for parsing.

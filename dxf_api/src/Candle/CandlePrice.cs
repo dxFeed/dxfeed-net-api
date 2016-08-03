@@ -112,6 +112,16 @@ namespace com.dxfeed.api.candle {
         }
 
         /// <summary>
+        /// Returns full string representation of this candle price type. It is 
+        /// contains attribute key and its value. 
+        /// The full string representation of {@link #LAST} is "price=last"
+        /// </summary>
+        /// <returns></returns>
+        public string ToFullString() {
+            return String.Format("{0}={1}", ATTRIBUTE_KEY, value);
+        }
+
+        /// <summary>
         /// Parses string representation of candle price type into object.
         /// Any string that was returned by {@link #toString()} can be parsed
         /// and case is ignored for parsing.

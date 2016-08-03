@@ -61,12 +61,15 @@ namespace dxf_snapshot_sample {
             if (args.Length == sourceIndex + 1)
                 source = args[sourceIndex];
 
-            if (eventType == EventType.Candle)
+            if (eventType == EventType.Candle) {
+                CandleSymbol candleSymbol = CandleSymbol.ValueOf(symbol);
                 Console.WriteLine(string.Format("Connecting to {0} for Candle snapshot on {1}...", 
-                    address, symbol));
-            else
+                    address, 
+                    candleSymbol.IsDefault() ? candleSymbol.ToFullString() : candleSymbol.ToString()));
+            } else {
                 Console.WriteLine(string.Format("Connecting to {0} for Order snapshot on {1}{2}...",
                     address, symbol, source == string.Empty ? string.Empty : "#" + source));
+                }
 
             try {
                 NativeTools.InitializeLogging("log.log", true, true);

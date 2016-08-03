@@ -1,5 +1,6 @@
 ﻿using System;
 using com.dxfeed.api;
+using com.dxfeed.api.candle;
 using com.dxfeed.api.events;
 
 namespace dxf_snapshot_sample {
@@ -12,8 +13,12 @@ namespace dxf_snapshot_sample {
         private const int recordsPrintlimit = 7;
 
         private void PrintSnapshot<TE>(IDxEventBuf<TE> buf) {
+            string symbolStr = buf.Symbol.ToString();
+            CandleSymbol candleSymbol = CandleSymbol.ValueOf(symbolStr);
+            if (candleSymbol.IsDefault())
+                symbolStr = candleSymbol.ToFullString();
             Console.WriteLine(string.Format("Snapshot {0} {{Symbol: '{1}', RecordsCount: {2}}}",
-                buf.EventType, buf.Symbol, buf.Size));
+                buf.EventType, symbolStr, buf.Size));
             int count = 0;
             foreach (var o in buf) {
                 Console.WriteLine(string.Format("   {{ {0} }}", o));

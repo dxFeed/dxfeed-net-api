@@ -62,6 +62,11 @@ namespace com.dxfeed.api.candle {
         public CandlePeriod(double value, CandleType type) {
             this.value = value;
             this.type = type;
+            if (stringBuf == null)
+                if (value == PERIOD_VALUE_DEFAULT)
+                    stringBuf = type.ToString();
+                else
+                    stringBuf = value == (long)value ? (long)value + "" + type : value.ToString(new CultureInfo("en-US")) + "" + type;
         }
 
         /// <summary>
@@ -158,11 +163,6 @@ namespace com.dxfeed.api.candle {
         /// </summary>
         /// <returns>string representation of this aggregation period.</returns>
         public override string ToString() {
-            if (stringBuf == null)
-                if (value == PERIOD_VALUE_DEFAULT)
-                    stringBuf = type.ToString();
-                else
-                    stringBuf = value == (long)value ? (long)value + "" + type : value.ToString(new CultureInfo("en-US")) + "" + type;
             return stringBuf;
         }
 

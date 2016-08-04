@@ -191,7 +191,7 @@ namespace com.dxfeed.api.candle {
             }
             string value = s.Substring(0, i);
             string type = s.Substring(i);
-            return ValueOf(value.Length == 0 ? PERIOD_VALUE_DEFAULT : Double.Parse(value, new CultureInfo("en-US")), CandleType.Parse(type));
+            return ValueOf(value.Length == 0 ? PERIOD_VALUE_DEFAULT : double.Parse(value, new CultureInfo("en-US")), CandleType.Parse(type));
         }
 
         /// <summary>

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 
 namespace com.dxfeed.api.candle {
     /// <summary>
@@ -161,7 +162,7 @@ namespace com.dxfeed.api.candle {
                 if (value == PERIOD_VALUE_DEFAULT)
                     stringBuf = type.ToString();
                 else
-                    stringBuf = value == (long)value ? (long)value + "" + type : value + "" + type;
+                    stringBuf = value == (long)value ? (long)value + "" + type : value.ToString(new CultureInfo("en-US")) + "" + type;
             return stringBuf;
         }
 

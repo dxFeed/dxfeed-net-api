@@ -48,6 +48,7 @@ namespace dxf_candle_sample {
                 "period=1 type=d price=last session=false alignment=m"
             );
         }
+
         static void Main(string[] args) {
             if (args.Length < 3) {
                 WriteHelp();

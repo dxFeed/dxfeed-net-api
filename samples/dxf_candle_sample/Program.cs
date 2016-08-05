@@ -81,7 +81,7 @@ namespace dxf_candle_sample {
                 for (int i = index; i < args.Length; i++) {
                     const string regEx = @"([a-z]+)(=)([a-z]+|\d+\.?\d*)";
                     Match match = Regex.Match(args[i], regEx, RegexOptions.IgnoreCase);
-                    if (match.Groups.Count < 4) {
+                    if (match.Groups.Count < 4 || !match.Success) {
                         Console.WriteLine("Invalid Attributes");
                         WriteHelp();
                         return;

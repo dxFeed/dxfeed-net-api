@@ -219,7 +219,7 @@ namespace com.dxfeed.api.candle {
         /// <returns>String representation of this symbol.</returns>
         public string ToFullString() {
             string exchangeString = (exchange == CandleExchange.DEFAULT ? string.Empty : "&" + exchange.ToString());
-            return String.Format("{0}{1}{{={2},{3},{4},{5}}}", baseSymbol, exchangeString, period.ToString(), 
+            return string.Format("{0}{1}{{={2},{3},{4},{5}}}", baseSymbol, exchangeString, period.ToString(), 
                 alignment.ToFullString(), price.ToFullString(), session.ToFullString());
         }
 

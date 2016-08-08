@@ -59,14 +59,13 @@ namespace com.dxfeed.api.candle {
         /// </summary>
         /// <param name="value"></param>
         /// <param name="type"></param>
-        public CandlePeriod(double value, CandleType type) {
+        CandlePeriod(double value, CandleType type) {
             this.value = value;
             this.type = type;
-            if (stringBuf == null)
-                if (value == PERIOD_VALUE_DEFAULT)
-                    stringBuf = type.ToString();
-                else
-                    stringBuf = value == (long)value ? (long)value + "" + type : value.ToString(new CultureInfo("en-US")) + "" + type;
+            if (value == PERIOD_VALUE_DEFAULT)
+                stringBuf = type.ToString();
+            else
+                stringBuf = value == (long)value ? (long)value + "" + type : value.ToString(new CultureInfo("en-US")) + "" + type;
         }
 
         /// <summary>

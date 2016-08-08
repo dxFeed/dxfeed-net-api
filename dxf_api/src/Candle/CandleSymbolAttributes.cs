@@ -28,7 +28,7 @@ namespace com.dxfeed.api.candle {
             /// <param name="code">exchange code</param>
             /// <returns>new candle exchange</returns>
             public static ICandleSymbolAttribute NewExchange(char code) {
-                return new CandleExchange(code);
+                return CandleExchange.ValueOf(code);
             }
         }
 
@@ -59,7 +59,7 @@ namespace com.dxfeed.api.candle {
             /// <param name="type">type of candle period</param>
             /// <returns>new candle period</returns>
             public static ICandleSymbolAttribute NewPeriod(double period, CandleType type) {
-                return new CandlePeriod(period, type);
+                return CandlePeriod.ValueOf(period, type);
             }
         }
 

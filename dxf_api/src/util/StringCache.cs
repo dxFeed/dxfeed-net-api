@@ -75,7 +75,7 @@ namespace com.dxfeed.util {
         public string Get(string s, bool copy) {
             if (s == null)
                 return null;
-            if (String.IsNullOrEmpty(s))
+            if (string.IsNullOrEmpty(s))
                 return "";
             requestCount++;
             int hash = s.GetHashCode();

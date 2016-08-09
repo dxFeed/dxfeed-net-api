@@ -122,7 +122,7 @@ namespace com.dxfeed.ipf {
                         query = address.Substring(j);
                         address = address.Substring(0, j);
                     }
-                    int port = Int32.Parse(address.Substring(address.IndexOf(':') + 1));
+                    int port = int.Parse(address.Substring(address.IndexOf(':') + 1));
                     if (port > 0 && port < 65536)
                         address = "http://" + address + "/ipf/all.ipf.gz" + query;
                 } catch (FormatException) {

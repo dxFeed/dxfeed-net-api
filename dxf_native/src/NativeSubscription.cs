@@ -68,7 +68,7 @@ namespace com.dxfeed.native {
 			if (time == null) {
 				C.CheckOk(C.Instance.dxf_create_subscription(connectionPtr, eventType, out subscriptionPtr));
 			} else {
-				Int64 unixTimestamp = Tools.DateToUnixTime((DateTime)time);
+				long unixTimestamp = Tools.DateToUnixTime((DateTime)time);
 				C.CheckOk(C.Instance.dxf_create_subscription_timed(connectionPtr, EventType.Candle, unixTimestamp, out subscriptionPtr));
 			}
 

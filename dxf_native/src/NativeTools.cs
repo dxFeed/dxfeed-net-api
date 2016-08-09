@@ -1,5 +1,4 @@
-﻿using System;
-using com.dxfeed.native.api;
+﻿using com.dxfeed.native.api;
 
 namespace com.dxfeed.native {
     public class NativeTools {

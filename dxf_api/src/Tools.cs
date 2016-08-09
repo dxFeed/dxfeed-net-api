@@ -13,10 +13,10 @@ namespace com.dxfeed.api {
         /// <param name="dateTime">Date time value to convert.</param>
         /// <returns>Unix time value of date time.</returns>
         /// <exception cref="System.FormatException"></exception>
-        public static Int64 DateToUnixTime(DateTime dateTime) {
+        public static long DateToUnixTime(DateTime dateTime) {
             try {
                 DateTime origin = new DateTime(1970, 1, 1, 0, 0, 0, 0);
-                TimeSpan diff = (DateTime)dateTime - origin;
+                TimeSpan diff = dateTime - origin;
                 return Convert.ToInt64(Math.Floor(diff.TotalMilliseconds));
             } catch (Exception exc) {
                 throw new FormatException("DateToUnixTime failed: " + exc.ToString());

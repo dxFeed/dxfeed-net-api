@@ -34,7 +34,8 @@ namespace com.dxfeed.io {
         /// <returns>A new WebRequest object.</returns>
         /// <exception cref="System.NotSupportedException">The request scheme specified in requestUri is not registered.</exception>
         /// <exception cref="System.ArgumentNullException">RequestUri is null.</exception>
-        /// <exception cref="System.Security.SecurityException">The caller does not have permission to connect to the requested URI or a URI that the request is redirected to.</exception>
+        /// <exception cref="System.Security.SecurityException">The caller does not have permission to connect
+        /// to the requested URI or a URI that the request is redirected to.</exception>
         public static WebRequest OpenConnection(String url) {
             return OpenConnection(ResolveURL(url), null, null);
         }
@@ -54,15 +55,15 @@ namespace com.dxfeed.io {
         /// <exception cref="System.NotSupportedException">The request scheme specified in requestUri is not registered.</exception>
         /// <exception cref="System.ArgumentNullException">RequestUri is null.</exception>
         /// <exception cref="System.Security.SecurityException">The caller does not have permission to connect to the requested URI or a URI that the request is redirected to.</exception>
-        public static WebRequest OpenConnection(Uri url, String user, String password) {
+        public static WebRequest OpenConnection(Uri url, string user, string password) {
             WebRequest webRequest = WebRequest.Create(url);
             webRequest.Timeout = READ_TIMEOUT;
-            String auth;
-            if (user != null && !String.IsNullOrEmpty(user) && password != null && !String.IsNullOrEmpty(password))
+            string auth;
+            if (user != null && !string.IsNullOrEmpty(user) && password != null && !string.IsNullOrEmpty(password))
                 auth = user + ":" + password;
             else
                 auth = url.UserInfo;
-            if (auth != null && !String.IsNullOrEmpty(auth))
+            if (auth != null && !string.IsNullOrEmpty(auth))
                 webRequest.Headers.Add("Authorization", "Basic " +
                     Convert.ToBase64String(Encoding.UTF8.GetBytes(auth)));
             return webRequest;

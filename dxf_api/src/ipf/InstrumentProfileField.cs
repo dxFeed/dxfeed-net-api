@@ -88,7 +88,7 @@ namespace com.dxfeed.ipf {
         public static readonly InstrumentProfileField TRADING_HOURS = new InstrumentProfileField(F_TRADING_HOURS);
 
         private InstrumentProfileField(string name) {
-            this.Name = name;
+            Name = name;
             fieldsMap.Add(name, this);
         }
 
@@ -138,7 +138,7 @@ namespace com.dxfeed.ipf {
         /// <exception cref="System.InvalidOperationException">Can't format certain field.</exception>
         public string GetField(InstrumentProfile ip) {
             try {
-                switch (this.Name) {
+                switch (Name) {
                     case F_TYPE: return ip.GetTypeName();
                     case F_SYMBOL: return ip.GetSymbol();
                     case F_DESCRIPTION: return ip.GetDescription();
@@ -185,7 +185,7 @@ namespace com.dxfeed.ipf {
         /// <exception cref="System.InvalidOperationException">If text uses wrong format or contains invalid values.</exception>
         public void SetField(InstrumentProfile ip, string value) {
             try {
-                switch (this.Name) {
+                switch (Name) {
                     case F_TYPE: ip.SetType(value); return;
                     case F_SYMBOL: ip.SetSymbol(value); return;
                     case F_DESCRIPTION: ip.SetDescription(value); return;
@@ -229,14 +229,14 @@ namespace com.dxfeed.ipf {
         /// </summary>
         /// <returns>Type of this field.</returns>
         public Type GetFieldType() {
-            switch (this.Name) {
-                case F_ICB: return typeof(Double);
-                case F_SIC: return typeof(Double);
-                case F_MULTIPLIER: return typeof(Double);
-                case F_SPC: return typeof(Double);
+            switch (Name) {
+                case F_ICB: return typeof(double);
+                case F_SIC: return typeof(double);
+                case F_MULTIPLIER: return typeof(double);
+                case F_SPC: return typeof(double);
                 case F_EXPIRATION: return typeof(DateTime);
                 case F_LAST_TRADE: return typeof(DateTime);
-                case F_STRIKE: return typeof(Double);
+                case F_STRIKE: return typeof(double);
             }
             return typeof(string);
         }
@@ -246,7 +246,7 @@ namespace com.dxfeed.ipf {
         /// </summary>
         /// <returns>"true" if this field supports numeric representation of a value.</returns>
         public bool IsNumericField() {
-            switch (this.Name) {
+            switch (Name) {
                 case F_ICB: return true;
                 case F_SIC: return true;
                 case F_MULTIPLIER: return true;
@@ -265,7 +265,7 @@ namespace com.dxfeed.ipf {
         /// <returns>Value of this field for specified profile in numeric representation.</returns>
         /// <exception cref="System.ArgumentException">If this field has no numeric representation.</exception>
         public double GetNumericField(InstrumentProfile ip) {
-            switch (this.Name) {
+            switch (Name) {
                 case F_ICB: return ip.GetICB();
                 case F_SIC: return ip.GetSIC();
                 case F_MULTIPLIER: return ip.GetMultiplier();
@@ -284,7 +284,7 @@ namespace com.dxfeed.ipf {
         /// <param name="value">Value ehich set to field.</param>
         /// <exception cref="System.ArgumentException">If this field has no numeric representation</exception>
         public void SetNumericField(InstrumentProfile ip, double value) {
-            switch (this.Name) {
+            switch (Name) {
                 case F_ICB: ip.SetICB((int)value); return;
                 case F_SIC: ip.SetSIC((int)value); return;
                 case F_MULTIPLIER: ip.SetMultiplier(value); return;
@@ -304,7 +304,7 @@ namespace com.dxfeed.ipf {
 
         private static readonly string[] formattedNumbers = new string[20000]; // A "sparse" cache for small numbers
         private static readonly string[] formattedDates = new string[30000]; // A "sparse" cache for common dates (1970-2052)
-        private static readonly ConcurrentDictionary<string, Double> parsedNumbers = new ConcurrentDictionary<string, Double>();
+        private static readonly ConcurrentDictionary<string, double> parsedNumbers = new ConcurrentDictionary<string, double>();
         private static readonly ConcurrentDictionary<string, int> parsedDates = new ConcurrentDictionary<string, int>();
 
         private static readonly long DAY = 24 * 3600 * 1000;
@@ -367,7 +367,7 @@ namespace com.dxfeed.ipf {
         /// <exception cref="System.ArgumentNullException"></exception>
         /// <exception cref="System.FormatException"></exception>
         public static double ParseNumber(string s) {
-            if (s == null || String.IsNullOrEmpty(s))
+            if (s == null || string.IsNullOrEmpty(s))
                 return 0;
             try {
                 if (parsedNumbers.ContainsKey(s)) {
@@ -375,7 +375,7 @@ namespace com.dxfeed.ipf {
                 } else {
                     if (parsedNumbers.Count > 10000)
                         parsedNumbers.Clear();
-                    double cached = Double.Parse(s, CultureInfo.GetCultureInfo("en-US"));
+                    double cached = double.Parse(s, CultureInfo.GetCultureInfo("en-US"));
                     parsedNumbers[s] = cached;
                     return cached;
                 }
@@ -416,7 +416,7 @@ namespace com.dxfeed.ipf {
         /// <exception cref="System.InvalidOperationException">If number formatter error occurs.</exception>
         /// <exception cref="System.FormatException"></exception>
         public static int ParseDate(string s) {
-            if (s == null || String.IsNullOrEmpty(s))
+            if (s == null || string.IsNullOrEmpty(s))
                 return 0;
 
             if (parsedDates.ContainsKey(s)) {

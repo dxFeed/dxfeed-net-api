@@ -50,7 +50,7 @@ namespace com.dxfeed.ipf {
         public static readonly InstrumentProfileType REMOVED = new InstrumentProfileType(T_REMOVED);
 
         private InstrumentProfileType(string name) {
-            this.Name = name;
+            Name = name;
             typesMap[name] = this;
         }
 
@@ -101,7 +101,7 @@ namespace com.dxfeed.ipf {
         /// <param name="other">Other type to compare.</param>
         /// <returns></returns>
         public int CompareTo(InstrumentProfileType other) {
-            return this.Name.CompareTo(other.Name);
+            return Name.CompareTo(other.Name);
         }
     }
 }

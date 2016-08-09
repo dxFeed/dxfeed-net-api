@@ -67,7 +67,7 @@ namespace com.dxfeed.api.candle {
         CandlePrice(CandlePriceType priceType, string value) {
             this.value = value;
             this.priceType = priceType;
-            CandlePrice.objCash.Add(value, this);
+            objCash.Add(value, this);
         }
 
         /// <summary>
@@ -118,7 +118,7 @@ namespace com.dxfeed.api.candle {
         /// </summary>
         /// <returns></returns>
         public string ToFullString() {
-            return String.Format("{0}={1}", ATTRIBUTE_KEY, value);
+            return string.Format("{0}={1}", ATTRIBUTE_KEY, value);
         }
 
         /// <summary>
@@ -134,10 +134,10 @@ namespace com.dxfeed.api.candle {
             if (n == 0)
                 throw new InvalidOperationException("Missing candle price");
             // fast path to reverse toString result
-            if (CandlePrice.objCash.ContainsKey(s))
-                return CandlePrice.objCash[s];
+            if (objCash.ContainsKey(s))
+                return objCash[s];
             // slow path for everything else
-            foreach (CandlePrice price in CandlePrice.objCash.Values) {
+            foreach (CandlePrice price in objCash.Values) {
                 string ps = price.ToString();
                 if (ps.Length >= n && ps.Substring(0, n).Equals(s, StringComparison.InvariantCultureIgnoreCase))
                     return price;

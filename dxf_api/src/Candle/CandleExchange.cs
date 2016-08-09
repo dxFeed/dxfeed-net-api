@@ -26,7 +26,7 @@ namespace com.dxfeed.api.candle {
 
         private readonly char exchangeCode;
 
-        public CandleExchange(char exchangeCode) {
+        CandleExchange(char exchangeCode) {
             this.exchangeCode = exchangeCode;
         }
 

@@ -52,7 +52,7 @@ namespace com.dxfeed.api.candle {
         CandleSession(CandleSessionType sessionFilter, string value) {
             this.sessionFilter = sessionFilter;
             this.value = value;
-            CandleSession.objCash.Add(value, this);
+            objCash.Add(value, this);
         }
 
         /// <summary>
@@ -103,7 +103,7 @@ namespace com.dxfeed.api.candle {
         /// </summary>
         /// <returns></returns>
         public string ToFullString() {
-            return String.Format("{0}={1}", ATTRIBUTE_KEY, value);
+            return string.Format("{0}={1}", ATTRIBUTE_KEY, value);
         }
 
         /// <summary>
@@ -118,7 +118,7 @@ namespace com.dxfeed.api.candle {
             int n = s.Length;
             if (n == 0)
                 throw new InvalidOperationException("Missing candle session");
-            foreach (CandleSession session in CandleSession.objCash.Values) {
+            foreach (CandleSession session in objCash.Values) {
                 string ss = session.ToString();
                 if (ss.Length >= n && ss.Substring(0, n).Equals(s, StringComparison.InvariantCultureIgnoreCase))
                     return session;
@@ -134,7 +134,7 @@ namespace com.dxfeed.api.candle {
         /// <returns>candle session attribute of the given candle symbol string.</returns>
         public static CandleSession GetAttributeForSymbol(string symbol) {
             string a = MarketEventSymbols.GetAttributeStringByKey(symbol, ATTRIBUTE_KEY);
-            return a != null && Boolean.Parse(a) ? REGULAR : DEFAULT;
+            return a != null && bool.Parse(a) ? REGULAR : DEFAULT;
         }
 
         /// <summary>
@@ -147,7 +147,7 @@ namespace com.dxfeed.api.candle {
             if (a == null)
                 return symbol;
             try {
-                bool b = Boolean.Parse(a);
+                bool b = bool.Parse(a);
                 if (!b)
                     MarketEventSymbols.RemoveAttributeStringByKey(symbol, ATTRIBUTE_KEY);
                 if (b && !a.Equals(REGULAR.ToString()))

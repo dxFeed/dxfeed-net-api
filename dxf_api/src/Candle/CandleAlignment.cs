@@ -71,7 +71,7 @@ namespace com.dxfeed.api.candle {
         /// </summary>
         /// <returns></returns>
         public string ToFullString() {
-            return String.Format("{0}={1}", ATTRIBUTE_KEY, value);
+            return string.Format("{0}={1}", ATTRIBUTE_KEY, value);
         }
 
         /// <summary>

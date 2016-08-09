@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 
 namespace com.dxfeed.api.candle {
     /// <summary>
@@ -58,9 +59,13 @@ namespace com.dxfeed.api.candle {
         /// </summary>
         /// <param name="value"></param>
         /// <param name="type"></param>
-        public CandlePeriod(double value, CandleType type) {
+        CandlePeriod(double value, CandleType type) {
             this.value = value;
             this.type = type;
+            if (value == PERIOD_VALUE_DEFAULT)
+                stringBuf = type.ToString();
+            else
+                stringBuf = value == (long)value ? (long)value + "" + type : value.ToString(new CultureInfo("en-US")) + "" + type;
         }
 
         /// <summary>
@@ -157,11 +162,6 @@ namespace com.dxfeed.api.candle {
         /// </summary>
         /// <returns>string representation of this aggregation period.</returns>
         public override string ToString() {
-            if (stringBuf == null)
-                if (value == PERIOD_VALUE_DEFAULT)
-                    stringBuf = type.ToString();
-                else
-                    stringBuf = value == (long)value ? (long)value + "" + type : value + "" + type;
             return stringBuf;
         }
 
@@ -190,7 +190,7 @@ namespace com.dxfeed.api.candle {
             }
             string value = s.Substring(0, i);
             string type = s.Substring(i);
-            return ValueOf(value.Length == 0 ? PERIOD_VALUE_DEFAULT : Double.Parse(value), CandleType.Parse(type));
+            return ValueOf(value.Length == 0 ? PERIOD_VALUE_DEFAULT : double.Parse(value, new CultureInfo("en-US")), CandleType.Parse(type));
         }
 
         /// <summary>

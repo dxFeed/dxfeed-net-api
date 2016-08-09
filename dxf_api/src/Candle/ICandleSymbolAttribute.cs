@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace com.dxfeed.api.candle {
+﻿namespace com.dxfeed.api.candle {
 
     /// <summary>
     /// Attribute of the {@link CandleSymbol}

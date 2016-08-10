@@ -56,12 +56,12 @@ namespace dxf_instrument_profile_sample {
                 }
 
                 //Iterate through received profiles
-                Console.WriteLine(String.Format("Profiles from '{0}' count: {1}", path, profiles.Count));
-                Console.WriteLine(String.Format("Print first {0} instruments:", MAX_PRINT_COUNT));
+                Console.WriteLine(string.Format("Profiles from '{0}' count: {1}", path, profiles.Count));
+                Console.WriteLine(string.Format("Print first {0} instruments:", MAX_PRINT_COUNT));
                 for (int i = 0; i < Math.Min(profiles.Count, MAX_PRINT_COUNT); i++)
-                    Console.WriteLine(String.Format("#{0}:{1}", i, profiles[i].ToString()));
+                    Console.WriteLine(string.Format("#{0}:{1}", i, profiles[i].ToString()));
                 if (profiles.Count > MAX_PRINT_COUNT)
-                    Console.WriteLine(String.Format("   {0} instruments left...", profiles.Count - MAX_PRINT_COUNT));
+                    Console.WriteLine(string.Format("   {0} instruments left...", profiles.Count - MAX_PRINT_COUNT));
 
                 //Write profiles to local file system
                 InstrumentProfileWriter writer = new InstrumentProfileWriter();

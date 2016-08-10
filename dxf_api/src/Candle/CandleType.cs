@@ -104,7 +104,7 @@ namespace com.dxfeed.api.candle {
             this.typeStr = typeStr;
             this.periodIntervalMillis = periodIntervalMillis;
 
-            CandleType.objCash.Add(typeStr, this);
+            objCash.Add(typeStr, this);
         }
 
         /// <summary>
@@ -158,10 +158,10 @@ namespace com.dxfeed.api.candle {
             if (n == 0)
                 throw new ArgumentException("Missing candle type");
             // fast path to reverse toString result
-            if (CandleType.objCash.ContainsKey(s))
-                return CandleType.objCash[s];
+            if (objCash.ContainsKey(s))
+                return objCash[s];
             // slow path for everything else
-            foreach (CandleType type in CandleType.objCash.Values) {
+            foreach (CandleType type in objCash.Values) {
                 string name = type.ToString();
                 if (name.Length >= n && name.Substring(0, n).Equals(s, StringComparison.InvariantCultureIgnoreCase))
                     return type;

@@ -212,6 +212,30 @@ namespace com.dxfeed.api.candle {
             return new CandleSymbol(symbol, attribute, attributes);
         }
 
+        /// <summary>
+        /// Returns full string representation of this symbol. In this case 
+        /// default attributes are not ignored.
+        /// </summary>
+        /// <returns>String representation of this symbol.</returns>
+        public string ToFullString() {
+            string exchangeString = (exchange == CandleExchange.DEFAULT ? string.Empty : "&" + exchange.ToString());
+            return string.Format("{0}{1}{{={2},{3},{4},{5}}}", baseSymbol, exchangeString, period.ToString(), 
+                alignment.ToFullString(), price.ToFullString(), session.ToFullString());
+        }
+
+        /// <summary>
+        /// Checks this candle symbol have all default attributes.
+        /// </summary>
+        /// <returns>"true" if all attributes is default, otherwise returns false.</returns>
+        public bool IsDefault() {
+            return (
+                exchange.Equals(CandleExchange.DEFAULT) &&
+                period.Equals(CandlePeriod.DEFAULT) &&
+                alignment.Equals(CandleAlignment.DEFAULT) &&
+                price.Equals(CandlePrice.DEFAULT) &&
+                session.Equals(CandleSession.DEFAULT));
+        }
+
         //----------------------- private implementation details -----------------------
 
         private static string ChangeAttributes(string symbol, ICandleSymbolAttribute attribute, 

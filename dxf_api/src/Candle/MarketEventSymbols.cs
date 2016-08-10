@@ -53,7 +53,7 @@ namespace com.dxfeed.api.candle {
         /// <param name="symbol">symbol</param>
         /// <returns>exchange code of the specified symbol or {@code '\0'} if none is defined.</returns>
         public static char GetExchangeCode(string symbol) {
-            return HasExchangeCode(symbol) ? symbol[GetLengthWithoutAttributesInternal(symbol) - 1] : '0';
+            return HasExchangeCode(symbol) ? symbol[GetLengthWithoutAttributesInternal(symbol) - 1] : CandleExchange.DEFAULT.GetExchangeCode();
         }
 
         /// <summary>
@@ -178,7 +178,7 @@ namespace com.dxfeed.api.candle {
         private static bool HasAttributesInternal(string symbol, int length) {
             if (length >= 3 && symbol[length - 1] == ATTRIBUTES_CLOSE) {
                 int i = symbol.LastIndexOf(ATTRIBUTES_OPEN, length - 2);
-                return i >= 0 && i < length - 2;
+                return i >= 0 && i < length - 1;
             }
             else
                 return false;

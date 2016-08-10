@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 
 namespace com.dxfeed.api.candle {
     /// <summary>
@@ -19,14 +20,19 @@ namespace com.dxfeed.api.candle {
     class CandlePeriod : ICandleSymbolAttribute {
 
         /// <summary>
+        /// The number represents default period value.
+        /// </summary>
+        private static readonly int PERIOD_VALUE_DEFAULT = 1;
+
+        /// <summary>
         /// Tick aggregation where each candle represents an individual tick.
         /// </summary>
-        public static readonly CandlePeriod TICK = new CandlePeriod(1, CandleType.TICK);
+        public static readonly CandlePeriod TICK = new CandlePeriod(PERIOD_VALUE_DEFAULT, CandleType.TICK);
 
         /// <summary>
         /// Day aggregation where each candle represents a day.
         /// </summary>
-        public static readonly CandlePeriod DAY = new CandlePeriod(1, CandleType.DAY);
+        public static readonly CandlePeriod DAY = new CandlePeriod(PERIOD_VALUE_DEFAULT, CandleType.DAY);
 
         /// <summary>
         /// Default period is {@link #TICK}.
@@ -53,9 +59,13 @@ namespace com.dxfeed.api.candle {
         /// </summary>
         /// <param name="value"></param>
         /// <param name="type"></param>
-        public CandlePeriod(double value, CandleType type) {
+        CandlePeriod(double value, CandleType type) {
             this.value = value;
             this.type = type;
+            if (value == PERIOD_VALUE_DEFAULT)
+                stringBuf = type.ToString();
+            else
+                stringBuf = value == (long)value ? (long)value + "" + type : value.ToString(new CultureInfo("en-US")) + "" + type;
         }
 
         /// <summary>
@@ -152,8 +162,6 @@ namespace com.dxfeed.api.candle {
         /// </summary>
         /// <returns>string representation of this aggregation period.</returns>
         public override string ToString() {
-            if (stringBuf == null)
-                stringBuf = value == 1 ? type.ToString() : value == (long)value ? (long)value + "" + type : value + "" + type;
             return stringBuf;
         }
 
@@ -182,7 +190,7 @@ namespace com.dxfeed.api.candle {
             }
             string value = s.Substring(0, i);
             string type = s.Substring(i);
-            return ValueOf(value.Length == 0 ? 1 : Double.Parse(value), CandleType.Parse(type));
+            return ValueOf(value.Length == 0 ? PERIOD_VALUE_DEFAULT : double.Parse(value, new CultureInfo("en-US")), CandleType.Parse(type));
         }
 
         /// <summary>
@@ -192,9 +200,9 @@ namespace com.dxfeed.api.candle {
         /// <param name="type">candle period type.</param>
         /// <returns>candle period with the given value and type.</returns>
         public static CandlePeriod ValueOf(double value, CandleType type) {
-            if (value == 1 && type == CandleType.DAY)
+            if (value == PERIOD_VALUE_DEFAULT && type == CandleType.DAY)
                 return DAY;
-            if (value == 1 && type == CandleType.TICK)
+            if (value == PERIOD_VALUE_DEFAULT && type == CandleType.TICK)
                 return TICK;
             return new CandlePeriod(value, type);
         }

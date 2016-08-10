@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("dxf_instrument_profile_sample")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("dxf_candle_sample")]
+[assembly: AssemblyDescription("dxFeed candle sample")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Microsoft")]
-[assembly: AssemblyProduct("dxf_instrument_profile_sample")]
-[assembly: AssemblyCopyright("Copyright © Microsoft 2016")]
+[assembly: AssemblyCompany("DevExperts")]
+[assembly: AssemblyProduct("dxf_candle_sample")]
+[assembly: AssemblyCopyright("Copyright © 2014-2016 Devexperts LLC")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("bafdefa2-22fa-481d-993f-c98fbcd214a8")]
+[assembly: Guid("766baf34-d541-4b73-87a1-7d32d7f7d2ff")]
 
 // Version information for an assembly consists of the following four values:
 //

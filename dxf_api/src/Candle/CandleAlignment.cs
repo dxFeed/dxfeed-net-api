@@ -65,6 +65,16 @@ namespace com.dxfeed.api.candle {
         }
 
         /// <summary>
+        /// Returns full string representation of this candle alignment. It is 
+        /// contains attribute key and its value. 
+        /// The full string representation of {@link #MIDNIGHT} is "a=m"
+        /// </summary>
+        /// <returns></returns>
+        public string ToFullString() {
+            return string.Format("{0}={1}", ATTRIBUTE_KEY, value);
+        }
+
+        /// <summary>
         /// Returns candle event symbol string with this candle alignment set.
         /// </summary>
         /// <param name="symbol">original candle event symbol</param>

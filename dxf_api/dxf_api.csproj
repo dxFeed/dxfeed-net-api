@@ -10,8 +10,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>com.dxfeed.api</RootNamespace>
     <AssemblyName>dxf_api</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -23,6 +24,7 @@
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <PlatformTarget>AnyCPU</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -33,6 +35,7 @@
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -43,6 +46,7 @@
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>bin\x86\Release\</OutputPath>
@@ -54,10 +58,12 @@
     <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
     <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.IO.Compression" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -98,6 +104,22 @@
     <Compile Include="src\IDxConnection.cs" />
     <Compile Include="src\IDxSnapshotListener.cs" />
     <Compile Include="src\IDxSubscription.cs" />
+    <Compile Include="src\io\CSVFormatException.cs" />
+    <Compile Include="src\io\CSVReader.cs" />
+    <Compile Include="src\io\CSVWriter.cs" />
+    <Compile Include="src\io\URLInputStream.cs" />
+    <Compile Include="src\ipf\impl\Constants.cs" />
+    <Compile Include="src\ipf\impl\DateFormat.cs" />
+    <Compile Include="src\ipf\impl\InstrumentProfileComposer.cs" />
+    <Compile Include="src\ipf\impl\InstrumentProfileParser.cs" />
+    <Compile Include="src\ipf\InstrumentProfile.cs" />
+    <Compile Include="src\ipf\InstrumentProfileField.cs" />
+    <Compile Include="src\ipf\InstrumentProfileFormatException.cs" />
+    <Compile Include="src\ipf\InstrumentProfileReader.cs" />
+    <Compile Include="src\ipf\InstrumentProfileType.cs" />
+    <Compile Include="src\ipf\InstrumentProfileWriter.cs" />
+    <Compile Include="src\Tools.cs" />
+    <Compile Include="src\util\StringCache.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

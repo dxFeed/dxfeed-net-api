@@ -342,7 +342,7 @@ namespace com.dxfeed.ipf {
         /// Example: "ESNTPB", "ESXXXX", "ES" , "OPASPS".
         /// </summary>
         /// <returns>CFI code.</returns>
-        public string GetCFI() {
+        public string GetCfi() {
             return cfi;
         }
 
@@ -591,7 +591,7 @@ namespace com.dxfeed.ipf {
         /// </ul>
         /// </summary>
         /// <returns>Maturity month-year as provided for corresponding FIX tag (200).</returns>
-        public string GetMMY() {
+        public string GetMmy() {
             return mmy;
         }
 

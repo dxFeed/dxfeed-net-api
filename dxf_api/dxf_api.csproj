@@ -122,6 +122,8 @@
     <Compile Include="src\ipf\option\OptionChainsBuilder.cs" />
     <Compile Include="src\ipf\option\OptionSeries.cs" />
     <Compile Include="src\Tools.cs" />
+    <Compile Include="src\util\DayUtil.cs" />
+    <Compile Include="src\util\MathUtil.cs" />
     <Compile Include="src\util\StringCache.cs" />
   </ItemGroup>
   <ItemGroup />

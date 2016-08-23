@@ -8,6 +8,7 @@ namespace com.dxfeed.ipf.option {
     /// @param <T> The type of option instrument instances.
     /// </summary>
     class OptionChainsBuilder<T> {
+
         /// <summary>
         /// Builds options chains for all options from the given collections of {@link InstrumentProfile instrument profiles}.
         /// </summary>
@@ -40,6 +41,9 @@ namespace com.dxfeed.ipf.option {
         private readonly Dictionary<string, OptionChain<T>> chains = new Dictionary<string, OptionChain<T>>();
         OptionSeries<T> series = new OptionSeries<T>();
 
+        /// <summary>
+        /// Creates new option chains builder.
+        /// </summary>
         public OptionChainsBuilder() {
             Product = "";
             Underlying = "";

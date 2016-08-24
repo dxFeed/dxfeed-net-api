@@ -9,7 +9,7 @@ namespace com.dxfeed.ipf.option {
     /// expiration, last trading day, spc, multiplies, etc.
     /// </summary>
     /// <typeparam name="T">The type of option instrument instances.</typeparam>
-    class OptionSeries<T> : ICloneable, IComparable<OptionSeries<T>> {
+    public sealed class OptionSeries<T> : ICloneable, IComparable<OptionSeries<T>> {
 
         private readonly SortedDictionary<double, T> calls = new SortedDictionary<double, T>();
         private readonly SortedDictionary<double, T> puts = new SortedDictionary<double, T>();

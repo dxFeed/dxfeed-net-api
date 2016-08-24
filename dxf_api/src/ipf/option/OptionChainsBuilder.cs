@@ -7,7 +7,7 @@ namespace com.dxfeed.ipf.option {
     /// This class is <b>NOT</b> thread-safe and cannot be used from multiple threads without external synchronization.
     /// @param <T> The type of option instrument instances.
     /// </summary>
-    class OptionChainsBuilder<T> {
+    public class OptionChainsBuilder<T> {
 
         /// <summary>
         /// Builds options chains for all options from the given collections of {@link InstrumentProfile instrument profiles}.

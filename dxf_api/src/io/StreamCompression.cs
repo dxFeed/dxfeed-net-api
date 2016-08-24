@@ -28,7 +28,7 @@ namespace com.dxfeed.io {
 
         private CompressionType type;
         private string name;
-	    private string extension;
+        private string extension;
 
         private StreamCompression(CompressionType type, string name, string extension) {
             this.type = type;
@@ -61,7 +61,7 @@ namespace com.dxfeed.io {
             return NONE;
         }
 
-            /**
+        /**
          * Detects compression format by the magic number in the file header and decompresses
          * the given input stream. This method wraps the input stream in {@link BufferedInputStream} if
          * the original stream does not {@link InputStream#markSupported() support mark} before using
@@ -72,7 +72,7 @@ namespace com.dxfeed.io {
          * @throws IOException if an I/O error occurs.
          */
         public static Stream DetectCompressionByHeaderAndDecompress(Stream inputStream) {
-            return DetectCompressionByHeader(inputStream).decompress(inputStream);
+            return DetectCompressionByHeader(inputStream).Decompress(inputStream);
         }
 
         /**
@@ -83,24 +83,21 @@ namespace com.dxfeed.io {
          * @throws IOException if an I/O error occurs.
          */
         public Stream Decompress(Stream inputStream) {
-		    switch (type) {
-		        case CompressionType.None:
+            switch (type) {
+                case CompressionType.None:
                         return inputStream;
-		        case CompressionType.Gzip:
+                case CompressionType.Gzip:
                     return new GZipStream(inputStream, CompressionMode.Decompress);
                 case CompressionType.Zip:
-                    //using (ZipArchive zip = new ZipArchive(inputStream))
-                    //{
-                    //    foreach (ZipArchiveEntry entry in zip.Entries)
-                    //    {
-                            
-                    //    }
-                    //}
-                    //TODO: implement
-                    break;
-                //return new ZipInput(inputStream, ZIP_BUFFER_SIZE);
+                    MemoryStream zipStream = new MemoryStream();
+                    using (ZipArchive zip = new ZipArchive(inputStream)) {
+                        foreach (ZipArchiveEntry entry in zip.Entries) {
+                            entry.Open().CopyTo(zipStream);
+                        }
+                    }
+                    return zipStream;
                 default:
-			        throw new InvalidOperationException("Unsupported compression type: " + type);
+                    throw new InvalidOperationException("Unsupported compression type: " + type);
             }
         }
 

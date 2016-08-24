@@ -6,6 +6,7 @@ using com.dxfeed.ipf.impl;
 using com.dxfeed.api;
 using System.Globalization;
 using System.IO;
+using System.Collections.Generic;
 
 namespace com.dxfeed.ipf.live {
 
@@ -47,14 +48,18 @@ namespace com.dxfeed.ipf.live {
         }
 
         private State state = State.NotConnected;
-        private int updatePeriod;
+        private int updatePeriod = 60000;
         private string address = string.Empty;
         private object stateLocker = new object();
         private object lastModifiedLocker = new object();
+        private object listenersLocker = new object();
         private Thread handlerThread; // != null when state in (CONNECTING, CONNECTED, COMPLETE)
         private DateTime lastModified = DateTime.MinValue;
         private bool supportsLive;
         private bool completed = false;
+        private List<InstrumentProfileUpdateListener> listeners = new List<InstrumentProfileUpdateListener>();
+        private List<InstrumentProfile> instrumentProfiles = new List<InstrumentProfile>();
+        private InstrumentProfileUpdater updater = new InstrumentProfileUpdater();
 
         /// <summary>
         /// Creates instrument profile connection with a specified address.
@@ -131,6 +136,36 @@ namespace com.dxfeed.ipf.live {
         }
 
         /// <summary>
+        /// Adds listener that is notified about any updates in the set of instrument profiles.
+        /// If a set of instrument profiles is not empty, then this listener is immediately
+        /// notified right from inside this add method.
+        /// </summary>
+        /// <param name="listener">Profile update listener.</param>
+        /// <exception cref="ArgumentNullException">If listener is null.</exception>
+        public void AddUpdateListener(InstrumentProfileUpdateListener listener) {
+            if (listener == null)
+                throw new ArgumentNullException("null listener");
+            lock(listenersLocker) {
+                if (!listeners.Contains(listener))
+                    listeners.Add(listener);
+                listener.InstrumentProfilesUpdated(updater.InstrumentProfiles);
+            }
+        }
+
+        /// <summary>
+        /// Removes listener that is notified about any updates in the set of instrument profiles.
+        /// </summary>
+        /// <param name="listener">Profile update listener.</param>
+        /// <exception cref="ArgumentNullException">If listener is null.</exception>
+        public void RemoveUpdateListener(InstrumentProfileUpdateListener listener) {
+            if (listener == null)
+                throw new ArgumentNullException("null listener");
+            lock (listenersLocker) {
+                listeners.Remove(listener);
+            }
+        }
+
+        /// <summary>
         /// Returns a string representation of the object.
         /// </summary>
         /// <returns>String representation of the object.</returns>
@@ -183,37 +218,64 @@ namespace com.dxfeed.ipf.live {
                 } else {
                     webResponse = webRequest.GetResponse();
                 }
-                using (Stream dataStream = webResponse.GetResponseStream()) {
+                using (Stream inputStream = webResponse.GetResponseStream()) {
                     URLInputStream.CheckConnectionResponseCode(webResponse);
                     DateTime time = ((HttpWebResponse)webResponse).LastModified;
-                    if (time == lastModified)
+                    if (time == LastModified)
                         return; // nothing changed
                     supportsLive = Constants.LIVE_PROP_RESPONSE.Equals(webResponse.Headers.Get(Constants.LIVE_PROP_KEY));
-                    //TODO: commented log
-                    //if (supportsLive)
-                        //log.info("Live streaming connection has been open");
                     MakeConnected();
-                    try (InputStream decompressedIn = StreamCompression.detectCompressionByHeaderAndDecompress(in)) {
+                    using (Stream decompressedIn = StreamCompression.DetectCompressionByHeaderAndDecompress(inputStream)) {
                         int count = process(decompressedIn);
                         // Update timestamp only after first successful processing
-                        lastModified = time;
-                        //TODO: commented
-                        //log.info("Downloaded " + count + " instrument profiles " +
-                        //    (lastModified == 0 ? "" : " (last modified on " + TimeFormat.DEFAULT.format(lastModified) + ")"));
-                    } finally {
-                        // move this generation to old (if anything was received), so that we can drop those
-                        // instruments when we receive new update later on
-                        if (newGeneration != null) {
-                            oldGenerations.add(newGeneration);
-                            newGeneration = null;
-                        }
-                    }
+                        LastModified = time;
+                    } 
                 }
-            } finally
-                {
-                    if (webResponse != null)
-                        webResponse.Dispose();
+            } finally {
+                if (webResponse != null)
+                    webResponse.Dispose();
+            }
+        }
+
+
+        private int process(Stream inputStream) {
+            int count = 0;
+            InstrumentProfileParser parser = new InstrumentProfileParser(inputStream);
+            parser.OnFlush += Flush;
+            parser.OnComplete += Complete;
+            InstrumentProfile ip;
+            while ((ip = parser.Next()) != null) {
+                count++;
+                instrumentProfiles.Add(ip);
+            }
+
+            //Flush(this, new EventArgs());
+            // EOF of live connection is _NOT_ a signal that snapshot was complete (it sends an explicit complete)
+            // for non-live data sources, though, EOF is a completion signal
+            if (!supportsLive)
+                Complete(this, new EventArgs());
+            return count;
+        }
+
+        private void Flush(object sender, EventArgs e) {
+            if (instrumentProfiles.Count == 0)
+                return;
+            ICollection<InstrumentProfile> updateList = updater.Update(instrumentProfiles);
+            CallListeners(updateList);
+            instrumentProfiles.Clear();
+        }
+
+        private void Complete(object sender, EventArgs e) {
+            Flush(this, e);
+            MakeComplete();
+        }
+
+        private void CallListeners(ICollection<InstrumentProfile> instrumentProfiles) {
+            lock(listenersLocker) {
+                foreach (InstrumentProfileUpdateListener listener in listeners) {
+                    listener.InstrumentProfilesUpdated(instrumentProfiles);
                 }
+            }
         }
 
     }

@@ -124,6 +124,7 @@
     <Compile Include="src\ipf\live\InstrumentProfileUpdater.cs" />
     <Compile Include="src\Tools.cs" />
     <Compile Include="src\util\StringCache.cs" />
+    <Compile Include="src\util\TimePeriod.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

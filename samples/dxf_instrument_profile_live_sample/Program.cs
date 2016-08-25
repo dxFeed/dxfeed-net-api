@@ -23,18 +23,17 @@ namespace dxf_instrument_profile_live_sample {
             if (args.Length == 0) {
                 //TODO: update time period if needed
                 Console.WriteLine(
-                    "Usage: dxf_instrument_profile_live_sample <host>[update=<time-period>]\n" +
+                    "Usage: dxf_instrument_profile_live_sample <host:port>[update=<time-period>]\n" +
                     "where\n" +
-                    "    host        - valid host to download instruments (https://tools.dxfeed.com/ipf)\n" +
-                    "    time-period - update period in ISO8601 duration format\n" +
+                    "    host:port   - valid host and port to download instruments (https://tools.dxfeed.com/ipf)\n" +
+                    "    time-period - update period in ISO8601 duration format (optional)\n" +
                     "example: dxf_instrument_profile_live_sample https://tools.dxfeed.com/ipf[update=P30S]\n"
                 );
                 return;
             }
 
             string path = args[0];
-            try
-            {
+            try {
                 InstrumentProfileConnection connection = new InstrumentProfileConnection(path);
                 UpdateListener updateListener = new UpdateListener();
                 connection.AddUpdateListener(updateListener);
@@ -43,9 +42,7 @@ namespace dxf_instrument_profile_live_sample {
                 Console.WriteLine("Press enter to stop");
                 Console.ReadLine();
 
-            }
-            catch (Exception exc)
-            {
+            } catch (Exception exc) {
                 Console.WriteLine("Exception occured: " + exc.ToString());
             }
 

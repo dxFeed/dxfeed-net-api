@@ -7,6 +7,8 @@ using com.dxfeed.api;
 using System.Globalization;
 using System.IO;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
+using com.dxfeed.util;
 
 namespace com.dxfeed.ipf.live {
 
@@ -15,6 +17,8 @@ namespace com.dxfeed.ipf.live {
 
         private static readonly string IF_MODIFIED_SINCE = "If-Modified-Since";
         private static readonly string HTTP_DATE_FORMAT = "ddd, dd MMM yyyy HH:mm:ss zzz";
+        private static readonly string UPDATE_PATTERN = "(.*)\\[update=([^\\]]+)\\]";
+        private static readonly long DEFAULT_UPDATE_PERIOD = 60000;
 
         /// <summary>
         /// Instrument profile connection state.
@@ -48,30 +52,35 @@ namespace com.dxfeed.ipf.live {
         }
 
         private State state = State.NotConnected;
-        private int updatePeriod = 60000;
+        private long updatePeriod = DEFAULT_UPDATE_PERIOD;
         private string address = string.Empty;
         private object stateLocker = new object();
         private object lastModifiedLocker = new object();
         private object listenersLocker = new object();
         private Thread handlerThread; // != null when state in (CONNECTING, CONNECTED, COMPLETE)
         private DateTime lastModified = DateTime.MinValue;
-        private bool supportsLive;
-        private bool completed = false;
+        private bool supportsLive = false;
         private List<InstrumentProfileUpdateListener> listeners = new List<InstrumentProfileUpdateListener>();
-        private List<InstrumentProfile> instrumentProfiles = new List<InstrumentProfile>();
+        private List<InstrumentProfile> ipBuffer = new List<InstrumentProfile>();
         private InstrumentProfileUpdater updater = new InstrumentProfileUpdater();
 
         /// <summary>
         /// Creates instrument profile connection with a specified address.
         /// Address may be just "<host>:<port>" of server, URL, or a file path.
         /// The "[update=<period>]" clause can be optionally added at the end of the address to
-        /// specify an #UpdatePeriod via an address string.
+        /// specify an UpdatePeriod via an address string.
         /// Default update period is 1 minute.
         /// Connection needs to be started to begin an actual operation.
         /// </summary>
         /// <param name="address">Address of server</param>
         public InstrumentProfileConnection(string address) {
             this.address = address;
+            Regex regex = new Regex(UPDATE_PATTERN, RegexOptions.IgnoreCase);
+            Match match = regex.Match(address);
+            if (match.Success) {
+                this.address = match.Groups[1].ToString();
+                updatePeriod = TimePeriod.ValueOf(match.Groups[2].ToString()).GetTime();
+            }
         }
 
         /// <summary>
@@ -80,7 +89,7 @@ namespace com.dxfeed.ipf.live {
         /// and/or when connection is dropped.
         /// Default update period is 1 minute.
         /// </summary>
-        public int UpdatePeriod {
+        public long UpdatePeriod {
             get {
                 return Thread.VolatileRead(ref updatePeriod);
             }
@@ -136,6 +145,18 @@ namespace com.dxfeed.ipf.live {
         }
 
         /// <summary>
+        /// Closes this instrument profile connection. This connection's state immediately changes to
+        /// State#.Closed and the background update procedures are terminated.
+        /// </summary>
+        public void Close() {
+            if (state == State.Closed)
+                return;
+            lock (stateLocker) {
+                state = State.Closed;
+            }
+        }
+
+        /// <summary>
         /// Adds listener that is notified about any updates in the set of instrument profiles.
         /// If a set of instrument profiles is not empty, then this listener is immediately
         /// notified right from inside this add method.
@@ -148,7 +169,7 @@ namespace com.dxfeed.ipf.live {
             lock(listenersLocker) {
                 if (!listeners.Contains(listener))
                     listeners.Add(listener);
-                listener.InstrumentProfilesUpdated(updater.InstrumentProfiles);
+                CheckAndCallListener(listener, updater.InstrumentProfiles);
             }
         }
 
@@ -175,14 +196,18 @@ namespace com.dxfeed.ipf.live {
         }
 
         private void Handler() {
+            DateTime downloadStart = DateTime.MinValue;
             while (CurrentState != State.Closed) {
-                try {
-                    Download();
-                } catch (Exception) {
-                    //TODO: error handling
-                }
                 // wait before retrying
-                Thread.Sleep(UpdatePeriod);
+                if (DateTime.Now.Subtract(downloadStart).TotalMilliseconds > UpdatePeriod) {
+                    try {
+                        Download();
+                    } catch (Exception e) {
+                        //TODO: error handling
+                        int a = 1;
+                    }
+                    downloadStart = DateTime.Now;
+                }
             }
         }
 
@@ -196,7 +221,6 @@ namespace com.dxfeed.ipf.live {
         private void MakeComplete() {
             lock (stateLocker) {
                 if (state == State.Connected) {
-                    completed = true;
                     state = State.Completed;
                 }
             }
@@ -204,7 +228,7 @@ namespace com.dxfeed.ipf.live {
 
         private void Download() {
             WebResponse webResponse = null;
-            try { 
+            try {
                 WebRequest webRequest = URLInputStream.OpenConnection(address);
                 webRequest.Headers.Add(Constants.LIVE_PROP_KEY, Constants.LIVE_PROP_REQUEST_YES);
                 if (LastModified != DateTime.MinValue && !supportsLive &&
@@ -218,8 +242,8 @@ namespace com.dxfeed.ipf.live {
                 } else {
                     webResponse = webRequest.GetResponse();
                 }
+                URLInputStream.CheckConnectionResponseCode(webResponse);
                 using (Stream inputStream = webResponse.GetResponseStream()) {
-                    URLInputStream.CheckConnectionResponseCode(webResponse);
                     DateTime time = ((HttpWebResponse)webResponse).LastModified;
                     if (time == LastModified)
                         return; // nothing changed
@@ -229,8 +253,11 @@ namespace com.dxfeed.ipf.live {
                         int count = process(decompressedIn);
                         // Update timestamp only after first successful processing
                         LastModified = time;
-                    } 
+                    }
                 }
+            //} catch (Exception e) {
+            //    int a = 1;
+            //    //TODO: error handling?
             } finally {
                 if (webResponse != null)
                     webResponse.Dispose();
@@ -246,7 +273,7 @@ namespace com.dxfeed.ipf.live {
             InstrumentProfile ip;
             while ((ip = parser.Next()) != null) {
                 count++;
-                instrumentProfiles.Add(ip);
+                ipBuffer.Add(ip);
             }
 
             //Flush(this, new EventArgs());
@@ -258,11 +285,11 @@ namespace com.dxfeed.ipf.live {
         }
 
         private void Flush(object sender, EventArgs e) {
-            if (instrumentProfiles.Count == 0)
+            if (ipBuffer.Count == 0)
                 return;
-            ICollection<InstrumentProfile> updateList = updater.Update(instrumentProfiles);
+            ICollection<InstrumentProfile> updateList = updater.Update(ipBuffer);
             CallListeners(updateList);
-            instrumentProfiles.Clear();
+            ipBuffer.Clear();
         }
 
         private void Complete(object sender, EventArgs e) {
@@ -270,10 +297,18 @@ namespace com.dxfeed.ipf.live {
             MakeComplete();
         }
 
+        private void CheckAndCallListener(InstrumentProfileUpdateListener listener, 
+            ICollection<InstrumentProfile> instrumentProfiles) {
+
+            if (instrumentProfiles == null || instrumentProfiles.Count == 0)
+                return;
+            listener.InstrumentProfilesUpdated(instrumentProfiles);
+        }
+
         private void CallListeners(ICollection<InstrumentProfile> instrumentProfiles) {
             lock(listenersLocker) {
                 foreach (InstrumentProfileUpdateListener listener in listeners) {
-                    listener.InstrumentProfilesUpdated(instrumentProfiles);
+                    CheckAndCallListener(listener, instrumentProfiles);
                 }
             }
         }

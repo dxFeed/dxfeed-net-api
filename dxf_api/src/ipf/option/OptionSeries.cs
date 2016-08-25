@@ -13,6 +13,7 @@ namespace com.dxfeed.ipf.option {
 
         private readonly SortedDictionary<double, T> calls = new SortedDictionary<double, T>();
         private readonly SortedDictionary<double, T> puts = new SortedDictionary<double, T>();
+        private List<double> strikes;
 
         internal OptionSeries() {
             AdditionalUnderlyings = "";
@@ -198,15 +199,15 @@ namespace com.dxfeed.ipf.option {
         /// </summary>
         public List<double> Strikes {
             get {
-                if (Strikes == null) {
+                if (strikes == null) {
                     SortedSet<double> strikesSet = new SortedSet<double>(calls.Keys);
                     strikesSet.UnionWith(puts.Keys);
-                    Strikes = new List<double>(strikesSet);
+                    strikes = new List<double>(strikesSet);
                 }
-                return Strikes;
+                return strikes;
             }
             private set {
-                Strikes = value;
+                strikes = value;
             }
         }
 
@@ -273,7 +274,7 @@ namespace com.dxfeed.ipf.option {
         /// </summary>
         /// <param name="o"></param>
         /// <returns>another object to compare with.</returns>
-        public bool equals(object o) {
+        public override bool Equals(object o) {
             if (this == o)
                 return true;
             if (!(o is OptionSeries<T>))
@@ -295,7 +296,7 @@ namespace com.dxfeed.ipf.option {
         /// Returns a hash code value for this option series.
         /// </summary>
         /// <returns>a hash code value.</returns>
-        public int hashCode() {
+        public override int GetHashCode() {
             int result;
             long temp;
             result = Expiration;
@@ -344,7 +345,7 @@ namespace com.dxfeed.ipf.option {
         /// Returns a string representation of this series.
         /// </summary>
         /// <returns>a string representation of this series.</returns>
-        public string toString()
+        public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
             sb.Append("expiration=").Append(DayUtil.GetYearMonthDayByDayId(Expiration));

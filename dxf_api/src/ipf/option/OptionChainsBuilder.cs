@@ -41,13 +41,15 @@ namespace com.dxfeed.ipf.option {
         private readonly Dictionary<string, OptionChain<T>> chains = new Dictionary<string, OptionChain<T>>();
         OptionSeries<T> series = new OptionSeries<T>();
 
+        string product = string.Empty;
+        string underlying = string.Empty;
+        string cfi = string.Empty;
+
+
         /// <summary>
         /// Creates new option chains builder.
         /// </summary>
         public OptionChainsBuilder() {
-            Product = "";
-            Underlying = "";
-            Cfi = "";
         }
 
         /// <summary>
@@ -55,8 +57,8 @@ namespace com.dxfeed.ipf.option {
         /// Example: "/YG".
         /// </summary>
         public string Product {
-            internal get { return Product; }
-            set { Product = value == null || value.Length == 0 ? "" : value; }
+            internal get { return product; }
+            set { product = value == null || value.Length == 0 ? "" : value; }
         }
 
         /// <summary>
@@ -64,8 +66,8 @@ namespace com.dxfeed.ipf.option {
         /// Example: "C", "/YGM9"
         /// </summary>
         public string Underlying {
-            internal get { return Underlying; }
-            set { Underlying = value == null || value.Length == 0 ? "" : value; }
+            internal get { return underlying; }
+            set { underlying = value == null || value.Length == 0 ? "" : value; }
         }
 
         /// <summary>
@@ -78,10 +80,10 @@ namespace com.dxfeed.ipf.option {
         /// Example: "OC" for generic call, "OP" for generic put.
         /// </summary>
         public string Cfi {
-            internal get { return Cfi; }
+            internal get { return cfi; }
             set {
-                Cfi = value == null || value.Length == 0 ? "" : value;
-                series.Cfi = Cfi.Length < 2 ? Cfi : Cfi[0] + "X" + Cfi.Substring(2);
+                cfi = value == null || value.Length == 0 ? "" : value;
+                series.Cfi = cfi.Length < 2 ? cfi : cfi[0] + "X" + cfi.Substring(2);
             }
         }
 

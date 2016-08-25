@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using com.dxfeed.ipf;
+﻿using com.dxfeed.ipf;
 using com.dxfeed.ipf.live;
+using System;
+using System.Collections.Generic;
 
-namespace dxf_instrument_profile_live_sample {
+namespace dxf_instrument_profile_live_sample
+{
 
     class UpdateListener : InstrumentProfileUpdateListener {
         public void InstrumentProfilesUpdated(ICollection<InstrumentProfile> instruments) {

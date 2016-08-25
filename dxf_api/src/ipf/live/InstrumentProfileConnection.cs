@@ -1,18 +1,55 @@
 ﻿using com.dxfeed.io;
-using System;
-using System.Net;
-using System.Threading;
 using com.dxfeed.ipf.impl;
-using com.dxfeed.api;
+using com.dxfeed.util;
+using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Collections.Generic;
+using System.Net;
 using System.Text.RegularExpressions;
-using com.dxfeed.util;
+using System.Threading;
 
-namespace com.dxfeed.ipf.live {
+namespace com.dxfeed.ipf.live
+{
 
-    //TODO: comment
+    /// <summary>
+    /// Connects to an instrument profile URL and reads instrument profiles using Simple File Format with support of
+    /// streaming live updates.
+    /// Please see Instrument Profile Format documentation for complete description.
+    ///
+    /// The key different between this class and InstrumentProfileReader is that the later just reads
+    /// a snapshot of a set of instrument profiles, while this classes allows to track live updates, e.g.
+    /// addition and removal of instruments.
+    ///
+    /// To use this class you need an address of the data source from you data provider. The name of the IPF file can
+    /// also serve as an address for debugging purposes.
+    ///
+    /// The recommended usage of this class to receive a live stream of instrument profile updates is:
+    ///
+    ///     class UpdateListener : InstrumentProfileUpdateListener {
+    ///         public void InstrumentProfilesUpdated(ICollection<InstrumentProfile> instruments) {
+    ///             foreach (InstrumentProfile ip in instruments) {
+    ///                 // do something with instrument here.
+    ///             }
+    ///         }
+    ///     }
+    /// 
+    ///     class Program {
+    ///         static void Main(string[] args) {
+    ///             String address = "<host>:<port>";
+    ///             InstrumentProfileConnection connection = new InstrumentProfileConnection(path);
+    ///             UpdateListener updateListener = new UpdateListener();
+    ///             connection.AddUpdateListener(updateListener);
+    ///             connection.Start();
+    ///         }
+    ///     }
+    ///
+    /// If long-running processing of instrument profile is needed, then it is better to use
+    /// InstrumentProfileUpdateListener.InstrumentProfilesUpdated notification
+    /// to schedule processing task in a separate thread.
+    ///
+    //// This class is thread-safe.
+    /// </summary>
     public class InstrumentProfileConnection {
 
         private static readonly string IF_MODIFIED_SINCE = "If-Modified-Since";
@@ -195,6 +232,9 @@ namespace com.dxfeed.ipf.live {
             return "IPC:" + address;
         }
 
+        /// <summary>
+        /// Method of worker thread. Runs downloading process by specified update period.
+        /// </summary>
         private void Handler() {
             DateTime downloadStart = DateTime.MinValue;
             while (CurrentState != State.Closed) {
@@ -211,6 +251,9 @@ namespace com.dxfeed.ipf.live {
             }
         }
 
+        /// <summary>
+        /// Change connection status to connected.
+        /// </summary>
         private void MakeConnected() {
             lock (stateLocker) {
                 if (state == State.Connecting)
@@ -218,6 +261,9 @@ namespace com.dxfeed.ipf.live {
             }
         }
 
+        /// <summary>
+        /// Change connection status to completed.
+        /// </summary>
         private void MakeComplete() {
             lock (stateLocker) {
                 if (state == State.Connected) {
@@ -226,6 +272,9 @@ namespace com.dxfeed.ipf.live {
             }
         }
 
+        /// <summary>
+        /// Opens (or keeps) connection for receiving instrument profiles from server.
+        /// </summary>
         private void Download() {
             WebResponse webResponse = null;
             try {
@@ -255,16 +304,17 @@ namespace com.dxfeed.ipf.live {
                         LastModified = time;
                     }
                 }
-            //} catch (Exception e) {
-            //    int a = 1;
-            //    //TODO: error handling?
             } finally {
                 if (webResponse != null)
                     webResponse.Dispose();
             }
         }
 
-
+        /// <summary>
+        /// Instrument profiles parser operations.
+        /// </summary>
+        /// <param name="inputStream">Decompressed input stream of instrument profiles.</param>
+        /// <returns>Number of received instrument profiles.</returns>
         private int process(Stream inputStream) {
             int count = 0;
             InstrumentProfileParser parser = new InstrumentProfileParser(inputStream);
@@ -276,7 +326,6 @@ namespace com.dxfeed.ipf.live {
                 ipBuffer.Add(ip);
             }
 
-            //Flush(this, new EventArgs());
             // EOF of live connection is _NOT_ a signal that snapshot was complete (it sends an explicit complete)
             // for non-live data sources, though, EOF is a completion signal
             if (!supportsLive)
@@ -284,6 +333,11 @@ namespace com.dxfeed.ipf.live {
             return count;
         }
 
+        /// <summary>
+        /// Sends updates to listeners.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Flush(object sender, EventArgs e) {
             if (ipBuffer.Count == 0)
                 return;
@@ -292,11 +346,21 @@ namespace com.dxfeed.ipf.live {
             ipBuffer.Clear();
         }
 
+        /// <summary>
+        /// Set status of completed snapshot and sends updates to listeners.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Complete(object sender, EventArgs e) {
             Flush(this, e);
             MakeComplete();
         }
 
+        /// <summary>
+        /// Check that instrument profiles update is not empty and call listener.
+        /// </summary>
+        /// <param name="listener">Listener to call.</param>
+        /// <param name="instrumentProfiles">Instrument profiles updates.</param>
         private void CheckAndCallListener(InstrumentProfileUpdateListener listener, 
             ICollection<InstrumentProfile> instrumentProfiles) {
 
@@ -305,6 +369,10 @@ namespace com.dxfeed.ipf.live {
             listener.InstrumentProfilesUpdated(instrumentProfiles);
         }
 
+        /// <summary>
+        /// Iterate through listeners and call them.
+        /// </summary>
+        /// <param name="instrumentProfiles"></param>
         private void CallListeners(ICollection<InstrumentProfile> instrumentProfiles) {
             lock(listenersLocker) {
                 foreach (InstrumentProfileUpdateListener listener in listeners) {

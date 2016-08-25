@@ -1,16 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
-namespace com.dxfeed.ipf.live {
+namespace com.dxfeed.ipf.live
+{
+
+    /// <summary>
+    /// This class tracks changes in instrument profile snapshot and filter
+    /// bulk data. It is possible while live streaming connection was broken.
+    /// Reconnection accompanied with repeated receiving of whole snapshot.
+    /// This class allow to send user only changed data, i.e without duplicates.
+    /// </summary>
     class InstrumentProfileUpdater {
 
         private object updaterLocker = new object();
         private Dictionary<int, InstrumentProfile> dictionaryByKey = null;
         private List<InstrumentProfile> buffer = null;
 
+        /// <summary>
+        /// Get full instrument profiles collection.
+        /// </summary>
         public ICollection<InstrumentProfile> InstrumentProfiles {
             get {
                 lock (updaterLocker) {
@@ -19,6 +26,11 @@ namespace com.dxfeed.ipf.live {
             }
         }
 
+        /// <summary>
+        /// Update buffered collection and returns only changed data.
+        /// </summary>
+        /// <param name="instrumentProfiles">Updatet data.</param>
+        /// <returns>Changed data.</returns>
         public ICollection<InstrumentProfile> Update(IList<InstrumentProfile> instrumentProfiles) {
             lock(updaterLocker) {
                 if (buffer == null) {
@@ -58,6 +70,11 @@ namespace com.dxfeed.ipf.live {
             }
         }
 
+        /// <summary>
+        /// Make a instrument profile key for hashing inside this class.
+        /// </summary>
+        /// <param name="ip"></param>
+        /// <returns></returns>
         private int GetInstrumentProfileKey(InstrumentProfile ip) {
             return (ip.GetType() + ip.GetSymbol()).GetHashCode();
         }

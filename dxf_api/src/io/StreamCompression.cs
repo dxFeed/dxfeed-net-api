@@ -37,6 +37,33 @@ namespace com.dxfeed.io {
         }
 
         /**
+         * Detects compression format by the extension at the end of the file name.
+         *
+         * @param fileName the file name.
+         * @return detected compression format or {@link #NONE} is the file name extension is not recognized.
+         * @throws NullPointerException if {@code fileName} is {@code null}.
+         */
+        public static StreamCompression DetectCompressionByExtension(string fileName) {
+            string ext = Path.GetExtension(fileName).ToLower();
+            if (ext.Equals(GZIP.extension))
+                return GZIP;
+            if (ext.Equals(ZIP.extension))
+                return ZIP;
+            return NONE;
+        }
+
+        /**
+         * Detects compression format by the extension at the end of the file name.
+         *
+         * @param fileName the file name.
+         * @return detected compression format or {@link #NONE} is the file name extension is not recognized.
+         * @throws NullPointerException if {@code fileName} is {@code null}.
+         */
+        public static StreamCompression DetectCompressionByExtension(Uri fileUri) {
+            return DetectCompressionByExtension(fileUri.AbsolutePath);
+        }
+
+        /**
          * Detects compression format by the magic number in the file header. This method
          * {@link InputStream#mark(int) marks} the stream, read first 4 bytes, and
          * {@link InputStream#reset() resets} the stream to an original state.
@@ -95,6 +122,7 @@ namespace com.dxfeed.io {
                             entry.Open().CopyTo(zipStream);
                         }
                     }
+                    zipStream.Position = 0;
                     return zipStream;
                 default:
                     throw new InvalidOperationException("Unsupported compression type: " + type);

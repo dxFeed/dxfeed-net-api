@@ -3,8 +3,7 @@ using com.dxfeed.ipf.live;
 using System;
 using System.Collections.Generic;
 
-namespace dxf_instrument_profile_live_sample
-{
+namespace dxf_instrument_profile_live_sample {
 
     class UpdateListener : InstrumentProfileUpdateListener {
         public void InstrumentProfilesUpdated(ICollection<InstrumentProfile> instruments) {
@@ -19,7 +18,6 @@ namespace dxf_instrument_profile_live_sample
         static void Main(string[] args) {
 
             if (args.Length == 0) {
-                //TODO: update time period if needed
                 Console.WriteLine(
                     "Usage: dxf_instrument_profile_live_sample <host:port>[update=<time-period>]\n" +
                     "where\n" +

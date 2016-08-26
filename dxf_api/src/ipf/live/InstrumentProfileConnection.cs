@@ -291,14 +291,23 @@ namespace com.dxfeed.ipf.live
                 } else {
                     webResponse = webRequest.GetResponse();
                 }
-                URLInputStream.CheckConnectionResponseCode(webResponse);
-                using (Stream inputStream = webResponse.GetResponseStream()) {
-                    DateTime time = ((HttpWebResponse)webResponse).LastModified;
-                    if (time == LastModified)
-                        return; // nothing changed
+                bool isFileStream = webResponse.GetType() == typeof(FileWebResponse);
+                DateTime time;
+                if (isFileStream) {
+                    Uri fileUri = new Uri(address);
+                    time = File.GetLastWriteTime(fileUri.AbsolutePath);
+                } else {
+                    URLInputStream.CheckConnectionResponseCode(webResponse);
+                    time = ((HttpWebResponse)webResponse).LastModified;
                     supportsLive = Constants.LIVE_PROP_RESPONSE.Equals(webResponse.Headers.Get(Constants.LIVE_PROP_KEY));
-                    MakeConnected();
-                    using (Stream decompressedIn = StreamCompression.DetectCompressionByHeaderAndDecompress(inputStream)) {
+                }
+                if (time == LastModified)
+                    return; // nothing changed
+                MakeConnected();
+                using (Stream inputStream = webResponse.GetResponseStream()) {
+                    StreamCompression compress = (isFileStream ? StreamCompression.DetectCompressionByExtension(new Uri(address)) :
+                        StreamCompression.DetectCompressionByHeader(inputStream));
+                    using (Stream decompressedIn = compress.Decompress(inputStream)) {
                         int count = process(decompressedIn);
                         // Update timestamp only after first successful processing
                         LastModified = time;

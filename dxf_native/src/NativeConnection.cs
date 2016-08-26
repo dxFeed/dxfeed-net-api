@@ -100,7 +100,7 @@ namespace com.dxfeed.native {
 			if (handler == IntPtr.Zero)
 				throw new NativeDxException("not connected");
 
-			Int64 unixTime = time == null ? 0 : NativeTools.DateToUnixTime((DateTime)time);
+			long unixTime = time == null ? 0 : Tools.DateToUnixTime((DateTime)time);
 			return new NativeSnapshotSubscription(this, unixTime, listener);
 		}
 

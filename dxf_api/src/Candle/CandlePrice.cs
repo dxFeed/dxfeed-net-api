@@ -67,7 +67,7 @@ namespace com.dxfeed.api.candle {
         CandlePrice(CandlePriceType priceType, string value) {
             this.value = value;
             this.priceType = priceType;
-            CandlePrice.objCash.Add(value, this);
+            objCash.Add(value, this);
         }
 
         /// <summary>
@@ -112,6 +112,16 @@ namespace com.dxfeed.api.candle {
         }
 
         /// <summary>
+        /// Returns full string representation of this candle price type. It is 
+        /// contains attribute key and its value. 
+        /// The full string representation of {@link #LAST} is "price=last"
+        /// </summary>
+        /// <returns></returns>
+        public string ToFullString() {
+            return string.Format("{0}={1}", ATTRIBUTE_KEY, value);
+        }
+
+        /// <summary>
         /// Parses string representation of candle price type into object.
         /// Any string that was returned by {@link #toString()} can be parsed
         /// and case is ignored for parsing.
@@ -124,10 +134,10 @@ namespace com.dxfeed.api.candle {
             if (n == 0)
                 throw new InvalidOperationException("Missing candle price");
             // fast path to reverse toString result
-            if (CandlePrice.objCash.ContainsKey(s))
-                return CandlePrice.objCash[s];
+            if (objCash.ContainsKey(s))
+                return objCash[s];
             // slow path for everything else
-            foreach (CandlePrice price in CandlePrice.objCash.Values) {
+            foreach (CandlePrice price in objCash.Values) {
                 string ps = price.ToString();
                 if (ps.Length >= n && ps.Substring(0, n).Equals(s, StringComparison.InvariantCultureIgnoreCase))
                     return price;

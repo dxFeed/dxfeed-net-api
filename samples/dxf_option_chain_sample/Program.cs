@@ -7,8 +7,7 @@ using System.Globalization;
 namespace dxf_option_chain_sample {
     class Program {
         static void Main(string[] args) {
-            if (args.Length < 7)
-            {
+            if (args.Length < 7) {
                 Console.WriteLine(
                     "Usage: dxf_option_chain_sample <host> <user> <password> <symbol> <nStrikes> <nMonths> <price>\n" +
                     "where\n" +

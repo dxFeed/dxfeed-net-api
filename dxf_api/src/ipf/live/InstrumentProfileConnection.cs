@@ -3,7 +3,6 @@ using com.dxfeed.ipf.impl;
 using com.dxfeed.util;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Text.RegularExpressions;
@@ -52,11 +51,9 @@ namespace com.dxfeed.ipf.live
     /// </summary>
     public class InstrumentProfileConnection {
 
-        private static readonly string IF_MODIFIED_SINCE = "If-Modified-Since";
-        private static readonly string HTTP_DATE_FORMAT = "ddd, dd MMM yyyy HH:mm:ss zzz";
-        private static readonly string UPDATE_PATTERN = "(.*)\\[update=([^\\]]+)\\]";
-        private static readonly long DEFAULT_UPDATE_PERIOD = 60000;
-
+        public delegate void OnErrorEventHandler(object sender, ErrorEventArgs e);
+        public event OnErrorEventHandler OnError;
+        
         /// <summary>
         /// Instrument profile connection state.
         /// </summary>
@@ -88,6 +85,8 @@ namespace com.dxfeed.ipf.live
             Closed
         }
 
+        private static readonly string UPDATE_PATTERN = "(.*)\\[update=([^\\]]+)\\]";
+        private static readonly long DEFAULT_UPDATE_PERIOD = 60000;
         private State state = State.NotConnected;
         private long updatePeriod = DEFAULT_UPDATE_PERIOD;
         private string address = string.Empty;
@@ -168,7 +167,7 @@ namespace com.dxfeed.ipf.live
 
         /// <summary>
         /// Starts this instrument profile connection. This connection's state immediately changes to
-        /// State#Connecting and the actual connection establishment proceeds in the background.
+        /// State.Connecting and the actual connection establishment proceeds in the background.
         /// </summary>
         public void Start() {
             lock(stateLocker) {
@@ -183,12 +182,12 @@ namespace com.dxfeed.ipf.live
 
         /// <summary>
         /// Closes this instrument profile connection. This connection's state immediately changes to
-        /// State#.Closed and the background update procedures are terminated.
+        /// State.Closed and the background update procedures are terminated.
         /// </summary>
         public void Close() {
-            if (state == State.Closed)
-                return;
             lock (stateLocker) {
+                if (state == State.Closed)
+                    return;
                 state = State.Closed;
             }
         }
@@ -243,8 +242,7 @@ namespace com.dxfeed.ipf.live
                     try {
                         Download();
                     } catch (Exception e) {
-                        //TODO: error handling
-                        int a = 1;
+                        CallOnError(e);
                     }
                     downloadStart = DateTime.Now;
                 }
@@ -276,46 +274,47 @@ namespace com.dxfeed.ipf.live
         /// Opens (or keeps) connection for receiving instrument profiles from server.
         /// </summary>
         private void Download() {
-            WebResponse webResponse = null;
-            try {
-                WebRequest webRequest = URLInputStream.OpenConnection(address);
-                webRequest.Headers.Add(Constants.LIVE_PROP_KEY, Constants.LIVE_PROP_REQUEST_YES);
-                if (LastModified != DateTime.MinValue && !supportsLive &&
-                    webRequest.GetType() == typeof(HttpWebRequest)) {
+            WebRequest webRequest = URLInputStream.OpenConnection(address);
+            webRequest.Headers.Add(Constants.LIVE_PROP_KEY, Constants.LIVE_PROP_REQUEST_YES);
+            if (LastModified != DateTime.MinValue && !supportsLive &&
+                webRequest.GetType() == typeof(HttpWebRequest)) {
 
-                    // Use If-Modified-Since
-                    webRequest.Headers.Add(IF_MODIFIED_SINCE, lastModified.ToString(HTTP_DATE_FORMAT, new CultureInfo("en-US")));
-                    webResponse = webRequest.GetResponse();
-                    if (((HttpWebResponse)webResponse).StatusCode == HttpStatusCode.NotModified)
-                        return; // not modified
-                } else {
-                    webResponse = webRequest.GetResponse();
-                }
-                bool isFileStream = webResponse.GetType() == typeof(FileWebResponse);
-                DateTime time;
-                if (isFileStream) {
-                    Uri fileUri = new Uri(address);
-                    time = File.GetLastWriteTime(fileUri.AbsolutePath);
-                } else {
-                    URLInputStream.CheckConnectionResponseCode(webResponse);
-                    time = ((HttpWebResponse)webResponse).LastModified;
-                    supportsLive = Constants.LIVE_PROP_RESPONSE.Equals(webResponse.Headers.Get(Constants.LIVE_PROP_KEY));
-                }
-                if (time == LastModified)
-                    return; // nothing changed
-                MakeConnected();
-                using (Stream inputStream = webResponse.GetResponseStream()) {
-                    StreamCompression compress = (isFileStream ? StreamCompression.DetectCompressionByExtension(new Uri(address)) :
-                        StreamCompression.DetectCompressionByHeader(inputStream));
-                    using (Stream decompressedIn = compress.Decompress(inputStream)) {
-                        int count = process(decompressedIn);
-                        // Update timestamp only after first successful processing
-                        LastModified = time;
+                // Use If-Modified-Since
+                ((HttpWebRequest)webRequest).IfModifiedSince = lastModified;
+            }
+
+            try {
+                using (WebResponse webResponse = webRequest.GetResponse()) {
+                    bool isFileStream = webResponse.GetType() == typeof(FileWebResponse);
+                    DateTime time;
+                    if (isFileStream) {
+                        Uri fileUri = new Uri(address);
+                        time = File.GetLastWriteTime(fileUri.AbsolutePath);
+                    } else {
+                        URLInputStream.CheckConnectionResponseCode(webResponse);
+                        time = ((HttpWebResponse)webResponse).LastModified;
+                        supportsLive = Constants.LIVE_PROP_RESPONSE.Equals(webResponse.Headers.Get(Constants.LIVE_PROP_KEY));
+                    }
+                    if (time == LastModified)
+                        return; // nothing changed
+                    MakeConnected();
+                    using (Stream inputStream = webResponse.GetResponseStream()) {
+                        StreamCompression compress = (isFileStream ? StreamCompression.DetectCompressionByExtension(new Uri(address)) :
+                            StreamCompression.DetectCompressionByMimeType(webResponse.ContentType));
+                        using (Stream decompressedIn = compress.Decompress(inputStream)) {
+                            int count = process(decompressedIn);
+                            // Update timestamp only after first successful processing
+                            LastModified = time;
+                        }
                     }
                 }
-            } finally {
-                if (webResponse != null)
-                    webResponse.Dispose();
+            } catch (WebException we) {
+                using (WebResponse webResponse = we.Response) {
+                    if (webResponse != null && webResponse.GetType() == typeof(HttpWebResponse) &&
+                        ((HttpWebResponse)webResponse).StatusCode == HttpStatusCode.NotModified)
+                        return; // not modified
+                }
+                throw;
             }
         }
 
@@ -333,6 +332,8 @@ namespace com.dxfeed.ipf.live
             while ((ip = parser.Next()) != null) {
                 count++;
                 ipBuffer.Add(ip);
+                if (CurrentState == State.Closed)
+                    return count;
             }
 
             // EOF of live connection is _NOT_ a signal that snapshot was complete (it sends an explicit complete)
@@ -361,8 +362,8 @@ namespace com.dxfeed.ipf.live
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void Complete(object sender, EventArgs e) {
-            Flush(this, e);
             MakeComplete();
+            Flush(this, e);
         }
 
         /// <summary>
@@ -386,6 +387,18 @@ namespace com.dxfeed.ipf.live
             lock(listenersLocker) {
                 foreach (InstrumentProfileUpdateListener listener in listeners) {
                     CheckAndCallListener(listener, instrumentProfiles);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Call error listener.
+        /// </summary>
+        /// <param name="e">Exception object.</param>
+        private void CallOnError(Exception e) {
+            lock (listenersLocker) {
+                if (OnError != null) {
+                    OnError(this, new ErrorEventArgs(e));
                 }
             }
         }

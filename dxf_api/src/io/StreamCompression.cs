@@ -25,26 +25,44 @@ namespace com.dxfeed.io
         /// <summary>
         /// No compression.
         /// </summary>
-        public static StreamCompression NONE = new StreamCompression(CompressionType.None, "none", "");
+        public static StreamCompression NONE = new StreamCompression(CompressionType.None, "none", "", "");
 
         /// <summary>
         /// Gzip compression format.
         /// </summary>
-        public static StreamCompression GZIP = new StreamCompression(CompressionType.Gzip, "gzip", ".gz");
+        public static StreamCompression GZIP = new StreamCompression(CompressionType.Gzip, "gzip", "application/gzip", ".gz");
 
         /// <summary>
         /// Zip compression format.
         /// </summary>
-        public static StreamCompression ZIP = new StreamCompression(CompressionType.Zip, "zip", ".zip");
+        public static StreamCompression ZIP = new StreamCompression(CompressionType.Zip, "zip", "application/zip", ".zip");
 
         private CompressionType type;
         private string name;
+        private string mimeType;
         private string extension;
 
-        private StreamCompression(CompressionType type, string name, string extension) {
+        private StreamCompression(CompressionType type, string name, string mimeType, string extension) {
             this.type = type;
             this.name = name;
+            this.mimeType = mimeType;
             this.extension = extension;
+        }
+
+        /// <summary>
+        /// Detects compression format by the mime type.
+        /// </summary>
+        /// <param name="mimeType">The mime type.</param>
+        /// <returns>Detected compression format or NONE is the mime type is not recognized.</returns>
+        /// <exception cref="ArgumentNullException">If mimeType is null.</exception>
+        public static StreamCompression DetectCompressionByMimeType(string mimeType) {
+            if (mimeType == null)
+                throw new ArgumentNullException("Parameter is null.");
+            if (mimeType.Equals(GZIP.mimeType) || mimeType.Equals("application/gzip") || mimeType.Equals("application/x-gzip"))
+                return GZIP;
+            if (mimeType.Equals(ZIP.mimeType))
+                return ZIP;
+            return NONE;
         }
 
         /// <summary>
@@ -72,48 +90,6 @@ namespace com.dxfeed.io
             if (fileUri == null)
                 throw new ArgumentException("File Uri is null");
             return DetectCompressionByExtension(fileUri.AbsolutePath);
-        }
-
-        /// <summary>
-        /// Detects compression format by the magic number in the file header. This method
-        /// marks the stream, read first 4 bytes, and resets the stream to an original state.
-        /// </summary>
-        /// <param name="inputStream">The input stream.</param>
-        /// <returns>Detected compression format or NONE is the header is not recognized.</returns>
-        /// <exception cref="IOException">If an I/O error occurs.</exception>
-        /// <exception cref="InvalidOperationException"></exception>
-        public static StreamCompression DetectCompressionByHeader(Stream inputStream) {
-            int n = 4;
-            byte[] buffer = new byte[n];
-            int mark = n;
-            try {
-                int read = inputStream.Read(buffer, 0, n);
-                inputStream.Position = mark;
-                if (read != n)
-                    return NONE;
-                if (buffer[0] == (byte)0x1f && buffer[1] == (byte)0x8b)
-                    return GZIP;
-                if (buffer[0] == 'P' && buffer[1] == 'K' && buffer[2] == 0x03 && buffer[3] == 0x04)
-                    return ZIP;
-                return NONE;
-            } catch (IOException) {
-                throw;
-            } catch (Exception e) {
-                throw new InvalidOperationException("Detect compression exception: " + e);
-            }
-        }
-
-        /// <summary>
-        /// Detects compression format by the magic number in the file header and decompresses
-        /// the given input stream. 
-        /// </summary>
-        /// <param name="inputStream">In the input stream.</param>
-        /// <returns>The decompressed stream.</returns>
-        /// <exception cref="ArgumentException">If input stream is null.</exception>
-        /// <exception cref="IOException">If an I/O error occurs.</exception>
-        /// <exception cref="InvalidOperationException"></exception>
-        public static Stream DetectCompressionByHeaderAndDecompress(Stream inputStream) {
-            return DetectCompressionByHeader(inputStream).Decompress(inputStream);
         }
 
         /// <summary>

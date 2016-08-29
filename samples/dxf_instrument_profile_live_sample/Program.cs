@@ -15,6 +15,11 @@ namespace dxf_instrument_profile_live_sample {
     }
 
     class Program {
+
+        static void OnErrorHandler(object sender, System.IO.ErrorEventArgs e) {
+            Console.WriteLine("Error occured: " + e.GetException().Message);
+        }
+
         static void Main(string[] args) {
 
             if (args.Length == 0) {
@@ -31,12 +36,15 @@ namespace dxf_instrument_profile_live_sample {
             string path = args[0];
             try {
                 InstrumentProfileConnection connection = new InstrumentProfileConnection(path);
+                connection.OnError += OnErrorHandler;
                 UpdateListener updateListener = new UpdateListener();
                 connection.AddUpdateListener(updateListener);
                 connection.Start();
 
                 Console.WriteLine("Press enter to stop");
                 Console.ReadLine();
+
+                connection.Close();
 
             } catch (Exception exc) {
                 Console.WriteLine("Exception occured: " + exc.ToString());

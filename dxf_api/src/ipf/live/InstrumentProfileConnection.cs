@@ -8,8 +8,7 @@ using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading;
 
-namespace com.dxfeed.ipf.live
-{
+namespace com.dxfeed.ipf.live {
 
     /// <summary>
     /// Connects to an instrument profile URL and reads instrument profiles using Simple File Format with support of
@@ -35,7 +34,7 @@ namespace com.dxfeed.ipf.live
     /// 
     ///     class Program {
     ///         static void Main(string[] args) {
-    ///             String address = "<host>:<port>";
+    ///             string address = "<host>:<port>";
     ///             InstrumentProfileConnection connection = new InstrumentProfileConnection(path);
     ///             UpdateListener updateListener = new UpdateListener();
     ///             connection.AddUpdateListener(updateListener);
@@ -60,7 +59,7 @@ namespace com.dxfeed.ipf.live
         public enum State {
             /// <summary>
             /// Instrument profile connection is not started yet.
-            /// InstrumentProfileConnection#start() was not invoked yet.
+            /// InstrumentProfileConnection.Start() was not invoked yet.
             /// </summary>
             NotConnected,
 
@@ -93,7 +92,11 @@ namespace com.dxfeed.ipf.live
         private object stateLocker = new object();
         private object lastModifiedLocker = new object();
         private object listenersLocker = new object();
-        private Thread handlerThread; // != null when state in (CONNECTING, CONNECTED, COMPLETE)
+        /// <summary>
+        /// Working thread to download instruments.
+        /// Thread must != null when state in (CONNECTING, CONNECTED, COMPLETE).
+        /// </summary>
+        private Thread handlerThread;
         private DateTime lastModified = DateTime.MinValue;
         private bool supportsLive = false;
         private List<InstrumentProfileUpdateListener> listeners = new List<InstrumentProfileUpdateListener>();
@@ -137,7 +140,7 @@ namespace com.dxfeed.ipf.live
         /// <summary>
         /// Returns state of this instrument profile connections.
         /// </summary>
-        public State CurrentState {
+        private State CurrentState {
             get {
                 State currentState = State.Closed;
                 lock (stateLocker) {
@@ -279,7 +282,6 @@ namespace com.dxfeed.ipf.live
             if (LastModified != DateTime.MinValue && !supportsLive &&
                 webRequest.GetType() == typeof(HttpWebRequest)) {
 
-                // Use If-Modified-Since
                 ((HttpWebRequest)webRequest).IfModifiedSince = lastModified;
             }
 

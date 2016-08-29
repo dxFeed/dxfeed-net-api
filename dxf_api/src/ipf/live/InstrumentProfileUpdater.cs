@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace com.dxfeed.ipf.live
-{
+namespace com.dxfeed.ipf.live {
 
     /// <summary>
     /// This class tracks changes in instrument profile snapshot and filter

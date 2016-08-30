@@ -10,7 +10,7 @@ namespace com.dxfeed.api {
     [TestFixture]
     class InstrumentProfileLiveTest {
 
-        const string DATA_PATH = "src/data/instrument_profile_data";
+        const string DATA_PATH = "src\\data\\instrument_profile_data";
         const string ZIP_FILE_NAME = "profiles.zip";
         const string TEST_FILE_NAME = "instrument_profile_live_data.zip";
         //default update period id 3 seconds
@@ -20,12 +20,16 @@ namespace com.dxfeed.api {
         class UpdateListener : InstrumentProfileUpdateListener {
 
             List<InstrumentProfile> buffer = new List<InstrumentProfile>();
+            bool isUpdatedNonSync = false;
+            object isUpdatedLocker = new object();
 
             public UpdateListener() {
                 IsUpdated = false;
             }
 
             public void InstrumentProfilesUpdated(ICollection<InstrumentProfile> instruments) {
+                if (IsUpdated)
+                    return;
                 buffer.AddRange(instruments);
                 IsUpdated = true;
             }
@@ -37,7 +41,18 @@ namespace com.dxfeed.api {
             }
 
             public bool IsUpdated {
-                get; private set;
+                get {
+                    bool value = false;
+                    lock(isUpdatedLocker) {
+                        value = isUpdatedNonSync;
+                    }
+                    return value;
+                }
+                private set {
+                    lock (isUpdatedLocker) {
+                        isUpdatedNonSync = value;
+                    }
+                }
             }
 
             public void DropState() {
@@ -62,9 +77,11 @@ namespace com.dxfeed.api {
             string sourceFile = Path.GetFullPath(Path.Combine(DATA_PATH, ZIP_FILE_NAME));
             string updateFile = Path.GetFullPath(Path.Combine(DATA_PATH, UPDATE_CHANGE_1_FILE_NAME));
             string targetFile = Path.GetFullPath(Path.Combine(DATA_PATH, TEST_FILE_NAME));
-            Uri uri = new Uri(targetFile + UPDATE_PERIOD_STR);
+            Assert.True(File.Exists(sourceFile));
+            Assert.True(File.Exists(updateFile));
+            Uri uri = new Uri(targetFile);
             File.Copy(sourceFile, targetFile, true);
-            InstrumentProfileConnection connection = new InstrumentProfileConnection(uri.AbsoluteUri);
+            InstrumentProfileConnection connection = new InstrumentProfileConnection(uri.AbsoluteUri + UPDATE_PERIOD_STR);
             UpdateListener updateListener = new UpdateListener();
             connection.AddUpdateListener(updateListener);
             connection.Start();
@@ -99,6 +116,8 @@ namespace com.dxfeed.api {
                     continue;
                 }
             }
+
+            connection.Close();
         }
 
         [Test]
@@ -110,9 +129,11 @@ namespace com.dxfeed.api {
             string sourceFile = Path.GetFullPath(Path.Combine(DATA_PATH, ZIP_FILE_NAME));
             string updateFile = Path.GetFullPath(Path.Combine(DATA_PATH, UPDATE_ADD_FILE_NAME));
             string targetFile = Path.GetFullPath(Path.Combine(DATA_PATH, TEST_FILE_NAME));
-            Uri uri = new Uri(targetFile + UPDATE_PERIOD_STR);
+            Assert.True(File.Exists(sourceFile));
+            Assert.True(File.Exists(updateFile));
+            Uri uri = new Uri(targetFile);
             File.Copy(sourceFile, targetFile, true);
-            InstrumentProfileConnection connection = new InstrumentProfileConnection(uri.AbsoluteUri);
+            InstrumentProfileConnection connection = new InstrumentProfileConnection(uri.AbsoluteUri + UPDATE_PERIOD_STR);
             UpdateListener updateListener = new UpdateListener();
             connection.AddUpdateListener(updateListener);
             connection.Start();
@@ -133,6 +154,8 @@ namespace com.dxfeed.api {
                 }
                 Assert.Fail("Unexpected instrument profiles here!");
             }
+
+            connection.Close();
         }
 
         [Test]
@@ -144,9 +167,11 @@ namespace com.dxfeed.api {
             string sourceFile = Path.GetFullPath(Path.Combine(DATA_PATH, ZIP_FILE_NAME));
             string updateFile = Path.GetFullPath(Path.Combine(DATA_PATH, UPDATE_REMOVE_FILE_NAME));
             string targetFile = Path.GetFullPath(Path.Combine(DATA_PATH, TEST_FILE_NAME));
-            Uri uri = new Uri(targetFile + UPDATE_PERIOD_STR);
+            Assert.True(File.Exists(sourceFile));
+            Assert.True(File.Exists(updateFile));
+            Uri uri = new Uri(targetFile);
             File.Copy(sourceFile, targetFile, true);
-            InstrumentProfileConnection connection = new InstrumentProfileConnection(uri.AbsoluteUri);
+            InstrumentProfileConnection connection = new InstrumentProfileConnection(uri.AbsoluteUri + UPDATE_PERIOD_STR);
             UpdateListener updateListener = new UpdateListener();
             connection.AddUpdateListener(updateListener);
             connection.Start();
@@ -167,6 +192,78 @@ namespace com.dxfeed.api {
                 }
                 Assert.Fail("Unexpected instrument profiles here!");
             }
+
+            connection.Close();
+        }
+
+        [Test]
+        public void SetPeriodTest() {
+            const int TEST_TIMES = 3;
+            const long PERIOD_NEW = 5000;
+            const double PERIOD_DELTA = 1000;
+            const string UPDATE_CHANGE_FILE_NAME = "update_change_field_profiles.zip";
+            string sourceFile = Path.GetFullPath(Path.Combine(DATA_PATH, ZIP_FILE_NAME));
+            string updateFile = Path.GetFullPath(Path.Combine(DATA_PATH, UPDATE_CHANGE_FILE_NAME));
+            string targetFile = Path.GetFullPath(Path.Combine(DATA_PATH, TEST_FILE_NAME));
+            Assert.True(File.Exists(sourceFile));
+            Assert.True(File.Exists(updateFile));
+            Uri uri = new Uri(targetFile);
+            File.Copy(sourceFile, targetFile, true);
+            InstrumentProfileConnection connection = new InstrumentProfileConnection(uri.AbsoluteUri + UPDATE_PERIOD_STR);
+            UpdateListener updateListener = new UpdateListener();
+            connection.AddUpdateListener(updateListener);
+            connection.Start();
+
+            while (!updateListener.IsUpdated) { }
+            DateTime time = DateTime.Now;
+            for (int i = 0; i < TEST_TIMES * 2; i++) {
+                if (i == TEST_TIMES) {
+                    connection.UpdatePeriod = PERIOD_NEW;
+                }
+                updateListener.DropState();
+                File.Copy(updateFile, targetFile, true);
+                File.SetLastWriteTime(targetFile, DateTime.Now);
+                while (!updateListener.IsUpdated) { }
+                Assert.AreEqual(connection.UpdatePeriod, DateTime.Now.Subtract(time).TotalMilliseconds, PERIOD_DELTA);
+                time = DateTime.Now;
+                //swap source/update files
+                string temp = updateFile;
+                updateFile = sourceFile;
+                sourceFile = temp;
+            }
+
+            connection.Close();
+        }
+
+        [Test]
+        public void AddListenerTest() {
+            const string UPDATE_CHANGE_FILE_NAME = "update_change_field_profiles.zip";
+            string sourceFile = Path.GetFullPath(Path.Combine(DATA_PATH, ZIP_FILE_NAME));
+            string updateFile = Path.GetFullPath(Path.Combine(DATA_PATH, UPDATE_CHANGE_FILE_NAME));
+            string targetFile = Path.GetFullPath(Path.Combine(DATA_PATH, TEST_FILE_NAME));
+            Assert.True(File.Exists(sourceFile));
+            Assert.True(File.Exists(updateFile));
+            Uri uri = new Uri(targetFile);
+            File.Copy(sourceFile, targetFile, true);
+            InstrumentProfileConnection connection = new InstrumentProfileConnection(uri.AbsoluteUri + UPDATE_PERIOD_STR);
+            UpdateListener updateListener = new UpdateListener();
+            connection.AddUpdateListener(updateListener);
+            connection.Start();
+
+            while (!updateListener.IsUpdated) { }
+            Assert.AreEqual(IPF_COUNT, updateListener.LastUpdate.Count);
+
+            updateListener.DropState();
+            File.Copy(updateFile, targetFile, true);
+            File.SetLastWriteTime(targetFile, DateTime.Now);
+            while (!updateListener.IsUpdated) { }
+
+            UpdateListener newListener = new UpdateListener();
+            connection.AddUpdateListener(newListener);
+            while (!newListener.IsUpdated) { }
+            Assert.AreEqual(IPF_COUNT, newListener.LastUpdate.Count);
+
+            connection.Close();
         }
 
     }

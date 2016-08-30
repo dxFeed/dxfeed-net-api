@@ -153,7 +153,7 @@ namespace com.dxfeed.ipf.live {
         /// <summary>
         /// Get or set modification time of instrument profiles or DateTime.MinValue if it is unknown.
         /// </summary>
-        public DateTime LastModified {
+        private DateTime LastModified {
             get {
                 DateTime value;
                 lock (lastModifiedLocker) {
@@ -161,7 +161,7 @@ namespace com.dxfeed.ipf.live {
                 }
                 return value;
             }
-            private set {
+            set {
                 lock (lastModifiedLocker) {
                     lastModified = value;
                 }

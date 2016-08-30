@@ -104,6 +104,19 @@ namespace com.dxfeed.native {
 			return new NativeSnapshotSubscription(this, unixTime, listener);
 		}
 
+        /// <summary>
+        /// Creates Order View subscription
+        /// </summary>
+        /// <param name="listener"></param>
+        /// <returns>subscription object</returns>
+        /// <exception cref="DxEception"></exception>
+        public IDxSubscription CreateOrderViewSubscription(IDxOrderViewListener listener) {
+			if (handler == IntPtr.Zero)
+				throw new NativeDxException("not connected");
+
+            throw new NotImplementedException();
+		}
+
 		#endregion
 
 		#region Implementation of IDisposable

@@ -1,6 +1,6 @@
 ﻿using com.dxfeed.api.events;
 
-namespace com.dxfeed.api {
+namespace com.dxfeed.api.orderview {
 
     /// <summary>
     /// Interface provides receiving Order View events
@@ -8,7 +8,7 @@ namespace com.dxfeed.api {
     public interface IDxOrderViewListener {
 
         /// <summary>
-        ///                          +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        /// On shopshot event received
         /// </summary>
         /// <typeparam name="TB">event buffer type</typeparam>
         /// <typeparam name="TE">event type</typeparam>
@@ -18,7 +18,7 @@ namespace com.dxfeed.api {
             where TE : IDxOrder;
 
         /// <summary>
-        ///                          +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        /// On event received
         /// </summary>
         /// <typeparam name="TB">event buffer type</typeparam>
         /// <typeparam name="TE">event type</typeparam>

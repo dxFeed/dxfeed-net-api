@@ -42,7 +42,7 @@ namespace dxf_events_sample {
             string[] symbols = args[symbolIndex].Split(',');
 
             Console.WriteLine(string.Format("Connecting to {0} for [{1}] on [{2}] ...",
-                address, events, String.Join(", ", symbols)));
+                address, events, string.Join(", ", symbols)));
 
             try {
                 NativeTools.InitializeLogging("log.log", true, true);

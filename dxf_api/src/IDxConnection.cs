@@ -46,7 +46,7 @@ namespace com.dxfeed.api {
 		IDxSubscription CreateSnapshotSubscription(DateTime? time, IDxSnapshotListener listener);
 
         /// <summary>
-        /// 
+        /// Creates Order View subscription
         /// </summary>
         /// <param name="listener"></param>
         /// <returns></returns>

@@ -118,8 +118,7 @@
     <Compile Include="src\ipf\InstrumentProfileReader.cs" />
     <Compile Include="src\ipf\InstrumentProfileType.cs" />
     <Compile Include="src\ipf\InstrumentProfileWriter.cs" />
-    <Compile Include="src\orderview\IDxOrderViewListener.cs" />
-    <Compile Include="src\orderview\OrderViewSubscription.cs" />
+    <Compile Include="src\IDxOrderViewListener.cs" />
     <Compile Include="src\Tools.cs" />
     <Compile Include="src\util\StringCache.cs" />
   </ItemGroup>

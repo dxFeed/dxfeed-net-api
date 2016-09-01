@@ -2,8 +2,7 @@
 using com.dxfeed.api.orderview;
 using com.dxfeed.api.events;
 
-namespace dxf_order_view_sample
-{
+namespace dxf_order_view_sample {
     class OrderViewEventListener : IDxOrderViewListener {
         private const int recordsPrintlimit = 7;
 

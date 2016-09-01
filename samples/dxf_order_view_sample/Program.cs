@@ -31,6 +31,9 @@ namespace dxf_order_view_sample {
                     using (var sub = con.CreateOrderViewSubscription(new OrderViewEventListener())) {
                         sub.SetSource("NTV", "ISE", "DEA", "DEX");
                         sub.SetSymbols("AAPL", "GOOG", "IBM", "F");
+
+                        Console.WriteLine("Press enter to stop");
+                        Console.ReadLine();
                     }
                 }
             } catch (DxException dxException) {

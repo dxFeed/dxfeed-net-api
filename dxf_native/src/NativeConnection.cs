@@ -4,10 +4,10 @@ using com.dxfeed.api.events;
 using com.dxfeed.native.api;
 
 namespace com.dxfeed.native {
-    /// <summary>
-    /// Class provides operations with event subscription
-    /// </summary>
-    public class NativeConnection : IDxConnection {
+	/// <summary>
+	/// Class provides operations with event subscription
+	/// </summary>
+	public class NativeConnection : IDxConnection {
 		private IntPtr handler = IntPtr.Zero;
 		private readonly C.dxf_conn_termination_notifier_t callback;
 		private readonly Action<IDxConnection> disconnectListener;
@@ -104,17 +104,17 @@ namespace com.dxfeed.native {
 			return new NativeSnapshotSubscription(this, unixTime, listener);
 		}
 
-        /// <summary>
-        /// Creates Order View subscription
-        /// </summary>
-        /// <param name="listener"></param>
-        /// <returns>subscription object</returns>
-        /// <exception cref="DxEception"></exception>
-        public IDxSubscription CreateOrderViewSubscription(IDxOrderViewListener listener) {
+		/// <summary>
+		/// Creates Order View subscription
+		/// </summary>
+		/// <param name="listener"></param>
+		/// <returns>subscription object</returns>
+		/// <exception cref="DxEception"></exception>
+		public IDxSubscription CreateOrderViewSubscription(IDxOrderViewListener listener) {
 			if (handler == IntPtr.Zero)
 				throw new NativeDxException("not connected");
 
-            throw new NotImplementedException();
+			return new OrderViewSubscription(this, listener);
 		}
 
 		#endregion

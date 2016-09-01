@@ -91,6 +91,7 @@
     <Compile Include="src\NativeSnapshotSubscription.cs" />
     <Compile Include="src\NativeSubscription.cs" />
     <Compile Include="src\NativeTools.cs" />
+    <Compile Include="src\OrderViewSubscription.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

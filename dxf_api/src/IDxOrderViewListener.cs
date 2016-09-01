@@ -1,6 +1,6 @@
 ﻿using com.dxfeed.api.events;
 
-namespace com.dxfeed.api.orderview {
+namespace com.dxfeed.api {
 
     /// <summary>
     /// Interface provides receiving Order View events

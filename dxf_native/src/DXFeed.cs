@@ -6,17 +6,20 @@ using System.Threading.Tasks;
 using com.dxfeed.api;
 
 namespace com.dxfeed.native {
-    public class DXFeed {
+    public class DXFeed : IDisposable {
 
-        private string DEFAULT_ADDRESS = "demo.dxfeed.com:7300";
-        private string DEFAULT_USER = "demo";
-        private string DEFAULT_PASSWORD = "demo";
+        private static readonly string DEFAULT_ADDRESS = "demo.dxfeed.com:7300";
+        private static readonly string DEFAULT_USER = "demo";
+        private static readonly string DEFAULT_PASSWORD = "demo";
 
-        //TODO: remains open
-        private IDxConnection connection = null;
+        private static DXFeed dxFeedInstance = null;
 
-        private DXFeed() {
-            connection = new NativeConnection(DEFAULT_ADDRESS, OnDisconnect);
+        private IDxConnection connectionInstance = null;
+        private string address = string.Empty;
+
+        private DXFeed(string address) {
+            this.address = address;
+            connectionInstance = new NativeConnection(address, OnDisconnect);
         }
 
         /// <summary>
@@ -25,7 +28,9 @@ namespace com.dxfeed.native {
         /// </summary>
         /// <returns>Singleton instance of feed.</returns>
         public static DXFeed GetInstance() {
-            return new DXFeed();
+            if (dxFeedInstance == null)
+                dxFeedInstance = new DXFeed(DEFAULT_ADDRESS);
+            return dxFeedInstance;
         }
 
         /// <summary>
@@ -41,8 +46,9 @@ namespace com.dxfeed.native {
         /// <param name="eventType">The class of event types.</param>
         /// <returns>New DXFeedSubscription for a single event type.</returns>
         public DXFeedSubscription<E> CreateSubscription<E>() {
-            DXFeedSubscription<E> subscription = new DXFeedSubscription<E>();
+            DXFeedSubscription<E> subscription = new DXFeedSubscription<E>(connectionInstance);
             AttachSubscription(subscription);
+
             return subscription;
         }
 
@@ -54,5 +60,9 @@ namespace com.dxfeed.native {
             //TODO: todo
         }
 
+        public void Dispose() {
+            if (connectionInstance != null)
+                connectionInstance.Dispose();
+        }
     }
 }

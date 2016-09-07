@@ -1,26 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using com.dxfeed.api.events;
 using com.dxfeed.native;
-using com.dxfeed.api.events;
+using System;
+using System.Collections.Generic;
+using System.Threading;
 
-namespace com.dxfeed.samples.simple {
+namespace com.dxfeed.samples.simple
+{
     class PrintQuoteEvents {
+
+        class EventListener<E> : DXFeedEventListener<E> {
+            public void EventsReceived(IList<E> events) {
+                foreach (E quote in events)
+                    Console.WriteLine(quote);
+            }
+        }
+
         static void Main(string[] args) {
             string symbol = args[0];
-            // Use default DXFeed instance for that data feed address is defined by dxfeed.properties file
+            // Use default DXFeed instance
             DXFeedSubscription<IDxQuote> sub = DXFeed.GetInstance().CreateSubscription<IDxQuote>();
-            sub.addEventListener(new DXFeedEventListener<Quote>() {
-                public void eventsReceived(List<Quote> events)
-                {
-                    for (Quote quote : events)
-                        System.out.println(quote);
-                }
-            });
-            sub.addSymbols(symbol);
-            Thread.sleep(Long.MAX_VALUE);
+            sub.AddEventListener(new EventListener<IDxQuote>());
+            sub.AddSymbols(symbol);
+            Thread.Sleep(int.MaxValue);
         }
     }
 }

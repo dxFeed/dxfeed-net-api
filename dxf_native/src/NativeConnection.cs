@@ -39,7 +39,7 @@ namespace com.dxfeed.native {
 		/// <summary>
 		/// Disconnect from the server
 		/// </summary>
-		/// <exception cref="DxEception"></exception>
+		/// <exception cref="DxException"></exception>
 		public void Disconnect() {
 			if (handler == IntPtr.Zero)
 				return;

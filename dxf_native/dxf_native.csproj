@@ -76,6 +76,7 @@
     <Compile Include="src\api\C32.cs" />
     <Compile Include="src\api\CDataTypes.cs" />
     <Compile Include="src\api\C64.cs" />
+    <Compile Include="src\EventBuffer.cs" />
     <Compile Include="src\events\DxMarshal.cs" />
     <Compile Include="src\events\NativeCandle.cs" />
     <Compile Include="src\events\NativeEventBuffer.cs" />

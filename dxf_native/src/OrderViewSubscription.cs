@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using com.dxfeed.api;
 using com.dxfeed.api.candle;
 using com.dxfeed.api.events;
+using com.dxfeed.native.events;
 
 namespace com.dxfeed.native {
     public class OrderViewSubscription : IDxSubscription, IDxFeedListener {
@@ -10,6 +11,9 @@ namespace com.dxfeed.native {
         private IDxOrderViewListener listener = null;
         private IDxConnection connection = null;
         private IDxSubscription subscription = null;
+
+        private IDictionary<ulong, EventBuffer<NativeOrder>> snapshots;
+
 
         public OrderViewSubscription(IDxConnection connection, IDxOrderViewListener listener) {
             this.connection = connection;
@@ -137,9 +141,8 @@ namespace com.dxfeed.native {
         public void OnOrder<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
             where TE : IDxOrder {
-            //listener.OnUpdate<TB, TE>(buf);
-            //listener.OnUpdate<NativeEventBuffer<NativeOrder>, NativeOrder>(buf);
-            throw new NotImplementedException();
+            listener.OnUpdate<TB, TE>(buf);
+            //throw new NotImplementedException();
         }
 
         public void OnProfile<TB, TE>(TB buf)

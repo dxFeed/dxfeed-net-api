@@ -71,7 +71,7 @@ namespace com.dxfeed.native.api
                                                   const dxf_event_params_t* event_params, void* user_data);
         */
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        internal delegate void dxf_event_listener_v2_t(EventType event_type, IntPtr symbol, IntPtr data, int data_count, DxEventParams event_params, IntPtr user_data);
+        internal delegate void dxf_event_listener_v2_t(EventType event_type, IntPtr symbol, IntPtr data, int data_count, IntPtr eventParamsPtr, IntPtr user_data);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate void dxf_conn_termination_notifier_t(IntPtr connection, IntPtr user_data);

@@ -24,9 +24,7 @@ namespace com.dxfeed.api {
         /// <typeparam name="TE">event type</typeparam>
         /// <param name="buf">event buffer object</param>
         void OnUpdate<TB, TE>(TB buf)
-            where TB : IDxEventBuf<TB>
+            where TB : IDxEventBuf<TE>
             where TE : IDxOrder;
-
     }
-
 }

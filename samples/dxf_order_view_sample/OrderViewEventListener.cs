@@ -1,5 +1,5 @@
 ﻿using System;
-using com.dxfeed.api.orderview;
+using com.dxfeed.api;
 using com.dxfeed.api.events;
 
 namespace dxf_order_view_sample {
@@ -28,9 +28,9 @@ namespace dxf_order_view_sample {
         }
 
         public void OnUpdate<TB, TE>(TB buf)
-            where TB : IDxEventBuf<TB>
+            where TB : IDxEventBuf<TE>
             where TE : IDxOrder {
-
+            Console.Write("Flags:{0} SK:{1} ", buf.EventParams.Flags, buf.EventParams.SnapshotKey);
             foreach (var t in buf)
                 Console.WriteLine(string.Format("{0} {1}", buf.Symbol, t));
         }

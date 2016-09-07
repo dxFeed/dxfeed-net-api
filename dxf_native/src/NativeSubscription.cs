@@ -80,7 +80,10 @@ namespace com.dxfeed.native {
 			}
 		}
 
-		private void OnEvent(EventType eventType, IntPtr symbol, IntPtr data, int dataCount, DxEventParams event_params, IntPtr userData) {
+		private void OnEvent(EventType eventType, IntPtr symbol, IntPtr data, int dataCount, IntPtr eventParamsPtr, IntPtr userData) {
+			object obj = Marshal.PtrToStructure(eventParamsPtr, typeof(DxEventParams));
+			DxEventParams event_params = (DxEventParams)obj;
+
 			EventParams nativeEventParams = new EventParams(event_params.flags, event_params.time_int_field, event_params.snapshot_key);
 			switch (eventType) {
 				case EventType.Order:

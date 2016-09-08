@@ -18,7 +18,9 @@ namespace com.dxfeed.api {
 		/// </summary>
 		/// <param name="type">event type</param>
 		/// <param name="listener">event listener callback</param>
-		/// <returns></returns>
+		/// <returns> subscription object</returns>
+		/// <exception cref="ArgumentNullException">If listener is null.</exception>
+		/// <exception cref="DxException"></exception>
 		IDxSubscription CreateSubscription(EventType type, IDxFeedListener listener);
 
 		/// <summary>

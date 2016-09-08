@@ -29,7 +29,7 @@ namespace com.dxfeed.native {
 		/// <param name="connection">native connection pointer</param>
 		/// <param name="eventType">type of event to create</param>
 		/// <param name="listener">event listener</param>
-		/// <exception cref="ArgumentNullException"></exception>
+		/// <exception cref="ArgumentNullException">If listener is null.</exception>
 		/// <exception cref="DxException"></exception>
 		public NativeSubscription(NativeConnection connection, EventType eventType, IDxFeedListener listener) {
 			if (listener == null)

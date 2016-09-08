@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dxf_native", "dxf_native\dxf_native.csproj", "{D56EED21-EE2C-441C-B0D5-E85F10436CEA}"
 EndProject
@@ -29,6 +29,10 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "simple", "simple", "{DDFECF7B-B6B9-463D-8AF5-B4BE9E2623B7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrintQuoteEvents", "samples\simple\PrintQuoteEvents\PrintQuoteEvents.csproj", "{903539CC-7B47-4D18-986B-DB3BD332D10F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "api", "api", "{0F50A097-DE2C-40FD-82AC-A1928F03018B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DXFeedConnect", "samples\api\DXFeedConnect\DXFeedConnect.csproj", "{1F32F9E9-C2F9-47B2-8ED8-17957BDB9473}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -71,6 +75,10 @@ Global
 		{903539CC-7B47-4D18-986B-DB3BD332D10F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{903539CC-7B47-4D18-986B-DB3BD332D10F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{903539CC-7B47-4D18-986B-DB3BD332D10F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1F32F9E9-C2F9-47B2-8ED8-17957BDB9473}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F32F9E9-C2F9-47B2-8ED8-17957BDB9473}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F32F9E9-C2F9-47B2-8ED8-17957BDB9473}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F32F9E9-C2F9-47B2-8ED8-17957BDB9473}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -82,5 +90,7 @@ Global
 		{7ABE7433-BD9A-4455-89D1-6CF46853C40C} = {4C3AA050-1D5F-43C7-90B1-95D04B6763C8}
 		{DDFECF7B-B6B9-463D-8AF5-B4BE9E2623B7} = {4C3AA050-1D5F-43C7-90B1-95D04B6763C8}
 		{903539CC-7B47-4D18-986B-DB3BD332D10F} = {DDFECF7B-B6B9-463D-8AF5-B4BE9E2623B7}
+		{0F50A097-DE2C-40FD-82AC-A1928F03018B} = {4C3AA050-1D5F-43C7-90B1-95D04B6763C8}
+		{1F32F9E9-C2F9-47B2-8ED8-17957BDB9473} = {0F50A097-DE2C-40FD-82AC-A1928F03018B}
 	EndGlobalSection
 EndGlobal

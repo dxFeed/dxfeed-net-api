@@ -72,8 +72,31 @@ namespace com.dxfeed.native {
             #endregion
         }
 
+        /// <summary>
+        /// Creates detached subscription for a single event type.
+        /// </summary>
+        /// <param name="connection">The native connection to server.</param>
+        /// <exception cref="ArgumentNullException">If connection is null.</exception>
+        /// <exception cref="ArgumentException">If type E is not event class.</exception>
+        /// <exception cref="DxException">Internal error.</exception>
         public DXFeedSubscription(IDxConnection connection) {
+            if (connection == null)
+                throw new ArgumentNullException("connection");
             subscriptionInstance = connection.CreateSubscription(GetEventsType(typeof(E)), new DXFeedEventHandler());
+        }
+
+        /// <summary>
+        /// Creates detached subscription for the given list of event types.
+        /// </summary>
+        /// <param name="connection">The native connection to server.</param>
+        /// <param name="eventTypes">The list of event types.</param>
+        /// <exception cref="ArgumentNullException">If connection or eventTypes is null.</exception>
+        /// <exception cref="ArgumentException">If eventTypes are empty or any type of eventTypes is not event class.</exception>
+        /// <exception cref="DxException">Internal error.</exception>
+        public DXFeedSubscription(IDxConnection connection, params Type[] eventTypes) {
+            if (connection == null)
+                throw new ArgumentNullException("connection");
+            subscriptionInstance = connection.CreateSubscription(GetEventsType(eventTypes), new DXFeedEventHandler());
         }
 
         public void Dispose() {
@@ -210,8 +233,15 @@ namespace com.dxfeed.native {
             }
         }
 
-
+        /// <summary>
+        /// Gets enum values of events type by generic class.
+        /// </summary>
+        /// <param name="types">The list of generic class represents events.</param>
+        /// <returns>Enum values of events type by generic class.</returns>
+        /// <exception cref="ArgumentException">If types element is not event class.</exception>
         private EventType GetEventsType(params Type[] types) {
+            if (types == null)
+                throw new ArgumentNullException("types");
             EventType events = EventType.None;
             foreach (Type t in types) {
                 if (t == typeof(IDxTrade))

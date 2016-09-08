@@ -48,12 +48,25 @@ namespace com.dxfeed.native {
         public DXFeedSubscription<E> CreateSubscription<E>() {
             DXFeedSubscription<E> subscription = new DXFeedSubscription<E>(connectionInstance);
             AttachSubscription(subscription);
+            return subscription;
+        }
 
+        /// <summary>
+        /// Creates new subscription for multiple event types that is <i>attached</i> to this feed.
+        /// For a single event type use CreateSubscription<E>().
+        /// This method creates new DXFeedSubscription and invokes AttachSubscription.
+        /// </summary>
+        /// <typeparam name="E">The type of events.</typeparam>
+        /// <param name="eventTypes">The classes of event types.</param>
+        /// <returns>The new DXFeedSubscription.</returns>
+        public DXFeedSubscription<E> CreateSubscription<E>(params Type[] eventTypes) {
+            DXFeedSubscription<E> subscription = new DXFeedSubscription<E>(eventTypes);
+            AttachSubscription(subscription);
             return subscription;
         }
 
         public void AttachSubscription<E>(DXFeedSubscription<E> subscription) {
-
+            //TODO:
         }
 
         private static void OnDisconnect(IDxConnection con) {

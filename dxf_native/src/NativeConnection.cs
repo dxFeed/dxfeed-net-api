@@ -54,7 +54,8 @@ namespace com.dxfeed.native {
 		/// <param name="type">event type</param>
 		/// <param name="listener">event listener callback</param>
 		/// <returns> subscription object</returns>
-		/// <exception cref="DxEception"></exception>
+		/// <exception cref="ArgumentNullException">If listener is null.</exception>
+		/// <exception cref="DxException"></exception>
 		public IDxSubscription CreateSubscription(EventType type, IDxFeedListener listener) {
 			if (handler == IntPtr.Zero)
 				throw new NativeDxException("not connected");

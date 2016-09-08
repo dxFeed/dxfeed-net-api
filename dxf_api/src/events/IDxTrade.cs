@@ -1,7 +1,7 @@
 using System;
 
 namespace com.dxfeed.api.events {
-	public interface IDxTrade {
+	public interface IDxTrade : IDxMarketEvent {
 		DateTime Time { get; }
 		char ExchangeCode { get; }
 		double Price { get; }

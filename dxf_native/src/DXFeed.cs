@@ -16,6 +16,7 @@ namespace com.dxfeed.native {
 
         private IDxConnection connectionInstance = null;
         private string address = string.Empty;
+        private HashSet<object> attachedSubscriptions = new HashSet<object>();
 
         private DXFeed(string address) {
             this.address = address;
@@ -65,8 +66,30 @@ namespace com.dxfeed.native {
             return subscription;
         }
 
+        /// <summary>
+        /// Attaches the given subscription to this feed. This method does nothing if the
+        /// corresponding subscription is already attached to this feed.
+        /// This feed publishes data to the attached subscription.
+        /// 
+        /// Application can attach DXFeedEventListener via DXFeedSubscription.AddEventListener 
+        /// to get notified about data changes and can change its data subscription via 
+        /// DXFeedSubscription methods.
+        /// </summary>
+        /// <typeparam name="E">The type of events.</typeparam>
+        /// <param name="subscription">The subscription.</param>
         public void AttachSubscription<E>(DXFeedSubscription<E> subscription) {
-            //TODO:
+            if (attachedSubscriptions.Contains(subscription))
+                return;
+            attachedSubscriptions.Add(subscription);
+        }
+
+        /// <summary>
+        /// Detaches the given subscription from this feed. This method does nothing if the
+        /// corresponding subscription is not attached to this feed.
+        /// </summary>
+        /// <param name="subscription">The subscription.</param>
+        public void DetachSubscription<E>(DXFeedSubscription<E> subscription) {
+            attachedSubscriptions.Remove(subscription);
         }
 
         private static void OnDisconnect(IDxConnection con) {

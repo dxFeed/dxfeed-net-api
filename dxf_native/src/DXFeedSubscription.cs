@@ -37,73 +37,67 @@ namespace com.dxfeed.native {
             public void OnQuote<TB, TE>(TB buf)
                 where TB : IDxEventBuf<TE>
                 where TE : IDxQuote {
-                Type eventType = typeof(IDxQuote);
-                if (eventType != subscriptionType && !eventType.IsSubclassOf(subscriptionType))
+                if (!subscriptionType.IsAssignableFrom(typeof(IDxQuote)))
                     return;
-                List<IDxQuote> events = new List<IDxQuote>();
+                List<E> events = new List<E>();
                 foreach (var item in buf)
-                    events.Add(item);
-                CallListeners((IList<E>)events);
+                    events.Add((E)(object)item);
+                CallListeners(events);
             }
 
             public void OnTrade<TB, TE>(TB buf)
                 where TB : IDxEventBuf<TE>
                 where TE : IDxTrade {
-                Type eventType = typeof(IDxTrade);
-                if (eventType != subscriptionType && !eventType.IsSubclassOf(subscriptionType))
+                if (!subscriptionType.IsAssignableFrom(typeof(IDxTrade)))
                     return;
-                List<IDxTrade> events = new List<IDxTrade>();
+                List<E> events = new List<E>();
                 foreach (var item in buf)
-                    events.Add(item);
-                CallListeners((IList<E>)events);
+                    events.Add((E)(object)item);
+                CallListeners(events);
             }
 
             public void OnOrder<TB, TE>(TB buf)
                 where TB : IDxEventBuf<TE>
                 where TE : IDxOrder {
-                Type eventType = typeof(IDxOrder);
-                if (eventType != subscriptionType && !eventType.IsSubclassOf(subscriptionType))
+                if (!subscriptionType.IsAssignableFrom(typeof(IDxOrder)))
                     return;
-                List<IDxOrder> events = new List<IDxOrder>();
+                List<E> events = new List<E>();
                 foreach (var item in buf)
-                    events.Add(item);
-                CallListeners((IList<E>)events);
+                    events.Add((E)(object)item);
+                CallListeners(events);
             }
 
             public void OnProfile<TB, TE>(TB buf)
                 where TB : IDxEventBuf<TE>
                 where TE : IDxProfile {
-                Type eventType = typeof(IDxProfile);
-                if (eventType != subscriptionType && !eventType.IsSubclassOf(subscriptionType))
+                if (!subscriptionType.IsAssignableFrom(typeof(IDxProfile)))
                     return;
-                List<IDxProfile> events = new List<IDxProfile>();
+                List<E> events = new List<E>();
                 foreach (var item in buf)
-                    events.Add(item);
-                CallListeners((IList<E>)events);
+                    events.Add((E)(object)item);
+                CallListeners(events);
             }
 
             public void OnFundamental<TB, TE>(TB buf)
                 where TB : IDxEventBuf<TE>
                 where TE : IDxSummary {
-                Type eventType = typeof(IDxSummary);
-                if (eventType != subscriptionType && !eventType.IsSubclassOf(subscriptionType))
+                if (!subscriptionType.IsAssignableFrom(typeof(IDxSummary)))
                     return;
-                List<IDxSummary> events = new List<IDxSummary>();
+                List<E> events = new List<E>();
                 foreach (var item in buf)
-                    events.Add(item);
-                CallListeners((IList<E>)events);
+                    events.Add((E)(object)item);
+                CallListeners(events);
             }
 
             public void OnTimeAndSale<TB, TE>(TB buf)
                 where TB : IDxEventBuf<TE>
                 where TE : IDxTimeAndSale {
-                Type eventType = typeof(IDxTimeAndSale);
-                if (eventType != subscriptionType && !eventType.IsSubclassOf(subscriptionType))
+                if (!subscriptionType.IsAssignableFrom(typeof(IDxTimeAndSale)))
                     return;
-                List<IDxTimeAndSale> events = new List<IDxTimeAndSale>();
+                List<E> events = new List<E>();
                 foreach (var item in buf)
-                    events.Add(item);
-                CallListeners((IList<E>)events);
+                    events.Add((E)(object)item);
+                CallListeners(events);
             }
 
             #endregion
@@ -113,13 +107,12 @@ namespace com.dxfeed.native {
             public void OnCandle<TB, TE>(TB buf)
                 where TB : IDxEventBuf<TE>
                 where TE : IDxCandle {
-                Type eventType = typeof(IDxCandle);
-                if (eventType != subscriptionType && !eventType.IsSubclassOf(subscriptionType))
+                if (!subscriptionType.IsAssignableFrom(typeof(IDxCandle)))
                     return;
-                List<IDxCandle> events = new List<IDxCandle>();
+                List<E> events = new List<E>();
                 foreach (var item in buf)
-                    events.Add(item);
-                CallListeners((IList<E>)events);
+                    events.Add((E)(object)item);
+                CallListeners(events);
             }
 
             #endregion

@@ -14,48 +14,96 @@ namespace com.dxfeed.native {
         private IDxSubscription subscriptionInstance;
 
         private class DXFeedEventHandler : IDxFeedListener, IDxCandleListener {
+
+            private IList<DXFeedEventListener<E>> eventListeners = null;
+            private object eventListenerLocker = null;
+            private Type subscriptionType;
+
+            public DXFeedEventHandler(IList<DXFeedEventListener<E>> eventListeners, object eventListenerLocker) {
+                this.eventListeners = eventListeners;
+                this.eventListenerLocker= eventListenerLocker;
+                subscriptionType = typeof(E);
+            }
+
+            private void CallListeners(IList<E> events) {
+                lock (eventListenerLocker) {
+                    foreach (DXFeedEventListener<E> listener in eventListeners)
+                        listener.EventsReceived(events);
+                }
+            }
+
             #region Implementation of IDxFeedListener
 
             public void OnQuote<TB, TE>(TB buf)
                 where TB : IDxEventBuf<TE>
                 where TE : IDxQuote {
-                foreach (var q in buf)
-                    Console.WriteLine(string.Format("{0} {1}", buf.Symbol, q));
+                Type eventType = typeof(IDxQuote);
+                if (eventType != subscriptionType && !eventType.IsSubclassOf(subscriptionType))
+                    return;
+                List<IDxQuote> events = new List<IDxQuote>();
+                foreach (var item in buf)
+                    events.Add(item);
+                CallListeners((IList<E>)events);
             }
 
             public void OnTrade<TB, TE>(TB buf)
                 where TB : IDxEventBuf<TE>
                 where TE : IDxTrade {
-                foreach (var t in buf)
-                    Console.WriteLine(string.Format("{0} {1}", buf.Symbol, t));
+                Type eventType = typeof(IDxTrade);
+                if (eventType != subscriptionType && !eventType.IsSubclassOf(subscriptionType))
+                    return;
+                List<IDxTrade> events = new List<IDxTrade>();
+                foreach (var item in buf)
+                    events.Add(item);
+                CallListeners((IList<E>)events);
             }
 
             public void OnOrder<TB, TE>(TB buf)
                 where TB : IDxEventBuf<TE>
                 where TE : IDxOrder {
-                foreach (var o in buf)
-                    Console.WriteLine(string.Format("{0} {1}", buf.Symbol, o));
+                Type eventType = typeof(IDxOrder);
+                if (eventType != subscriptionType && !eventType.IsSubclassOf(subscriptionType))
+                    return;
+                List<IDxOrder> events = new List<IDxOrder>();
+                foreach (var item in buf)
+                    events.Add(item);
+                CallListeners((IList<E>)events);
             }
 
             public void OnProfile<TB, TE>(TB buf)
                 where TB : IDxEventBuf<TE>
                 where TE : IDxProfile {
-                foreach (var p in buf)
-                    Console.WriteLine(string.Format("{0} {1}", buf.Symbol, p));
+                Type eventType = typeof(IDxProfile);
+                if (eventType != subscriptionType && !eventType.IsSubclassOf(subscriptionType))
+                    return;
+                List<IDxProfile> events = new List<IDxProfile>();
+                foreach (var item in buf)
+                    events.Add(item);
+                CallListeners((IList<E>)events);
             }
 
             public void OnFundamental<TB, TE>(TB buf)
                 where TB : IDxEventBuf<TE>
                 where TE : IDxSummary {
-                foreach (var f in buf)
-                    Console.WriteLine(string.Format("{0} {1}", buf.Symbol, f));
+                Type eventType = typeof(IDxSummary);
+                if (eventType != subscriptionType && !eventType.IsSubclassOf(subscriptionType))
+                    return;
+                List<IDxSummary> events = new List<IDxSummary>();
+                foreach (var item in buf)
+                    events.Add(item);
+                CallListeners((IList<E>)events);
             }
 
             public void OnTimeAndSale<TB, TE>(TB buf)
                 where TB : IDxEventBuf<TE>
                 where TE : IDxTimeAndSale {
-                foreach (var ts in buf)
-                    Console.WriteLine(string.Format("{0} {1}", buf.Symbol, ts));
+                Type eventType = typeof(IDxTimeAndSale);
+                if (eventType != subscriptionType && !eventType.IsSubclassOf(subscriptionType))
+                    return;
+                List<IDxTimeAndSale> events = new List<IDxTimeAndSale>();
+                foreach (var item in buf)
+                    events.Add(item);
+                CallListeners((IList<E>)events);
             }
 
             #endregion
@@ -65,8 +113,13 @@ namespace com.dxfeed.native {
             public void OnCandle<TB, TE>(TB buf)
                 where TB : IDxEventBuf<TE>
                 where TE : IDxCandle {
-                foreach (var c in buf)
-                    Console.WriteLine(string.Format("{0} {1}", buf.Symbol, c));
+                Type eventType = typeof(IDxCandle);
+                if (eventType != subscriptionType && !eventType.IsSubclassOf(subscriptionType))
+                    return;
+                List<IDxCandle> events = new List<IDxCandle>();
+                foreach (var item in buf)
+                    events.Add(item);
+                CallListeners((IList<E>)events);
             }
 
             #endregion
@@ -82,7 +135,7 @@ namespace com.dxfeed.native {
         public DXFeedSubscription(IDxConnection connection) {
             if (connection == null)
                 throw new ArgumentNullException("connection");
-            subscriptionInstance = connection.CreateSubscription(GetEventsType(typeof(E)), new DXFeedEventHandler());
+            subscriptionInstance = connection.CreateSubscription(GetEventsType(typeof(E)), new DXFeedEventHandler(eventListeners, eventListenerLocker));
         }
 
         /// <summary>
@@ -96,7 +149,7 @@ namespace com.dxfeed.native {
         public DXFeedSubscription(IDxConnection connection, params Type[] eventTypes) {
             if (connection == null)
                 throw new ArgumentNullException("connection");
-            subscriptionInstance = connection.CreateSubscription(GetEventsType(eventTypes), new DXFeedEventHandler());
+            subscriptionInstance = connection.CreateSubscription(GetEventsType(eventTypes), new DXFeedEventHandler(eventListeners, eventListenerLocker));
         }
 
         public void Dispose() {

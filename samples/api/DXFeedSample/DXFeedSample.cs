@@ -33,7 +33,9 @@ namespace com.dxfeed.samples.api {
             string symbol = args[0];
             TestQuoteListener(symbol);
             TestQuoteAndTradeListener(symbol);
-            TestTradeSnapshots(symbol);
+
+            //TODO: lasting event
+            //TestTradeSnapshots(symbol);
         }
 
         private static void TestQuoteListener(string symbol) {
@@ -48,14 +50,16 @@ namespace com.dxfeed.samples.api {
             sub.AddSymbols(symbol);
         }
 
-        private static void TestTradeSnapshots(string symbol) {
-            DXFeed feed = DXFeed.GetInstance();
-            DXFeedSubscription<IDxTrade> sub = feed.CreateSubscription<IDxTrade>();
-            sub.AddSymbols(symbol);
-            while (true) {
-                Console.WriteLine(feed.getLastEvent(new Trade(symbol)));
-                Thread.Sleep(1000);
-            }
-        }
+        //TODO: lasting event
+
+        //private static void TestTradeSnapshots(string symbol) {
+        //    DXFeed feed = DXFeed.GetInstance();
+        //    DXFeedSubscription<IDxTrade> sub = feed.CreateSubscription<IDxTrade>();
+        //    sub.AddSymbols(symbol);
+        //    while (true) {
+        //        Console.WriteLine(feed.getLastEvent(new Trade(symbol)));
+        //        Thread.Sleep(1000);
+        //    }
+        //}
     }
 }

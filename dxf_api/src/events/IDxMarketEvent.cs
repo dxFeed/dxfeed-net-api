@@ -5,6 +5,11 @@
     /// properties and minimal business logic.
     /// </summary>
     public interface IDxMarketEvent {
-        //Note: no any methods or properties are required now.
+
+        /// <summary>
+        /// Returns symbol of this event.
+        /// </summary>
+        string Symbol { get; }
+
     }
 }

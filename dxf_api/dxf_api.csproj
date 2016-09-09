@@ -88,6 +88,7 @@
     <Compile Include="src\events\EventFlag.cs" />
     <Compile Include="src\events\EventParams.cs" />
     <Compile Include="src\events\IDxCandle.cs" />
+    <Compile Include="src\events\IDxMarketEvent.cs" />
     <Compile Include="src\extras\EventPrinter.cs" />
     <Compile Include="src\extras\TimeConverter.cs" />
     <Compile Include="src\IDxCandleListener.cs" />

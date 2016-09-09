@@ -4,8 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 
-namespace com.dxfeed.samples.simple
-{
+namespace com.dxfeed.samples.simple {
     class PrintQuoteEvents {
 
         class EventListener<E> : DXFeedEventListener<E> {

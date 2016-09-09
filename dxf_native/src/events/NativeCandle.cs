@@ -1,25 +1,25 @@
 ﻿using System;
 using System.Globalization;
-using com.dxfeed.api;
 using com.dxfeed.api.data;
 using com.dxfeed.api.events;
-using com.dxfeed.api.extras;
 using com.dxfeed.native.api;
 
 namespace com.dxfeed.native.events {
     public struct NativeCandle : IDxCandle {
         private readonly DxCandle candle;
+        private string symbol;
 
-        internal unsafe NativeCandle(DxCandle* c) {
-            this.candle = *c;
+        internal unsafe NativeCandle(DxCandle* c, string symbol) {
+            candle = *c;
+            this.symbol = symbol;
         }
 
         public override string ToString() {
-            return string.Format(CultureInfo.InvariantCulture, "Candle: {{DateTime: {0:o}, " +
+            return string.Format(CultureInfo.InvariantCulture, "Candle: {{{11}, DateTime: {0:o}, " +
             "Sequence: {1}, Count: {2:0.00}, Open: {3:0.000000}, High: {4:0.000000}, " +
             "Low: {5:0.000000}, Close: {6:0.000000}, Volume: {7:0.0}, VWAP: {8:0.0}, " +
-            "BidVolume: {9:0.0}, AskVolume: {9:0.0} }}",
-                DateTime, Sequence, Count, Open, High, Low, Close, Volume, VWAP, BidVolume, AskVolume);
+            "BidVolume: {9:0.0}, AskVolume: {10:0.0} }}",
+                DateTime, Sequence, Count, Open, High, Low, Close, Volume, VWAP, BidVolume, AskVolume, Symbol);
         }
 
         #region Implementation of IDxCandle
@@ -90,6 +90,12 @@ namespace com.dxfeed.native.events {
             get {
                 return candle.ask_volume;
             } 
+        }
+
+        public string Symbol {
+            get {
+                return symbol;
+            }
         }
 
         #endregion

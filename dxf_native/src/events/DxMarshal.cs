@@ -30,36 +30,36 @@ namespace com.dxfeed.native.events {
 			return Marshal.PtrToStringUni(ptr);
 		}
 
-		public static NativeQuote ReadQuote(IntPtr head, int offset) {
-			return new NativeQuote((DxQuote*) IntPtr.Add(head, offset*QUOTE_SIZE));
+		public static NativeQuote ReadQuote(IntPtr head, int offset, string symbol) {
+			return new NativeQuote((DxQuote*) IntPtr.Add(head, offset*QUOTE_SIZE), symbol);
 		}
 
-		public static NativeOrder ReadOrder(IntPtr head, int offset) {
-			return new NativeOrder((DxOrder*) IntPtr.Add(head, offset*ORDER_SIZE));
+		public static NativeOrder ReadOrder(IntPtr head, int offset, string symbol) {
+			return new NativeOrder((DxOrder*) IntPtr.Add(head, offset*ORDER_SIZE), symbol);
 		}
 
-		public static NativeTrade ReadTrade(IntPtr head, int offset) {
-			return new NativeTrade((DxTrade*) IntPtr.Add(head, offset*TRADE_SIZE));
+		public static NativeTrade ReadTrade(IntPtr head, int offset, string symbol) {
+			return new NativeTrade((DxTrade*) IntPtr.Add(head, offset*TRADE_SIZE), symbol);
 		}
 
-		public static NativeSummary ReadSummary(IntPtr head, int offset) {
-			return new NativeSummary((DxSummary*)IntPtr.Add(head, offset * SUMMARY_SIZE));
+		public static NativeSummary ReadSummary(IntPtr head, int offset, string symbol) {
+			return new NativeSummary((DxSummary*)IntPtr.Add(head, offset * SUMMARY_SIZE), symbol);
 		}
 
-		public static NativeProfile ReadProfile(IntPtr head, int offset) {
-			return new NativeProfile((DxProfile*) IntPtr.Add(head, offset*PROFILE_SIZE));
+		public static NativeProfile ReadProfile(IntPtr head, int offset, string symbol) {
+			return new NativeProfile((DxProfile*) IntPtr.Add(head, offset*PROFILE_SIZE), symbol);
 		}
 
-		public static NativeMarketMaker ReadMarketMaker(IntPtr head, int offset) {
-			return new NativeMarketMaker((DxMarketMaker*) IntPtr.Add(head, offset*MM_SIZE));
+		public static NativeMarketMaker ReadMarketMaker(IntPtr head, int offset, string symbol) {
+			return new NativeMarketMaker((DxMarketMaker*) IntPtr.Add(head, offset*MM_SIZE), symbol);
 		}
 
-		public static NativeTimeAndSale ReadTimeAndSale(IntPtr head, int offset) {
-			return new NativeTimeAndSale((DxTimeAndSale*) IntPtr.Add(head, offset*TS_SIZE));
+		public static NativeTimeAndSale ReadTimeAndSale(IntPtr head, int offset, string symbol) {
+			return new NativeTimeAndSale((DxTimeAndSale*) IntPtr.Add(head, offset*TS_SIZE), symbol);
 		}
 
-		public static NativeCandle ReadCandle(IntPtr head, int offset) {
-			return new NativeCandle((DxCandle*)IntPtr.Add(head, offset * CANDLE_SIZE));
+		public static NativeCandle ReadCandle(IntPtr head, int offset, string symbol) {
+			return new NativeCandle((DxCandle*)IntPtr.Add(head, offset * CANDLE_SIZE), symbol);
 		}
 
 		public static DxString ReadDxString(IntPtr ptr) {

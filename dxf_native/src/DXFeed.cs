@@ -60,7 +60,7 @@ namespace com.dxfeed.native {
         /// <param name="eventTypes">The classes of event types.</param>
         /// <returns>The new DXFeedSubscription.</returns>
         public DXFeedSubscription<E> CreateSubscription<E>(params Type[] eventTypes) {
-            DXFeedSubscription<E> subscription = new DXFeedSubscription<E>(eventTypes);
+            DXFeedSubscription<E> subscription = new DXFeedSubscription<E>(connectionInstance, eventTypes);
             AttachSubscription(subscription);
             return subscription;
         }

@@ -1,6 +1,7 @@
 using System;
 
 namespace com.dxfeed.api.events {
+	[EventTypeAttribute("Quote")]
 	public interface IDxQuote : IDxMarketEvent {
 		DateTime BidTime { get; }
 		char BidExchangeCode { get; }

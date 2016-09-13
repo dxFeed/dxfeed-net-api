@@ -70,15 +70,13 @@ namespace com.dxfeed.io {
         }
 
         /// <summary>
-        /// Checks connection response code and throws {@link IOException} if it is not Ok.
+        /// Checks connection response code and throws IOException if it is not Ok.
         /// </summary>
-        /// <param name="webResponse"></param>
-        /// <exception cref="System.IO.IOException">if an I/O error occurs</exception>
+        /// <param name="webResponse">Response from the server.</param>
+        /// <exception cref="IOException">If an I/O error occurs.</exception>
         public static void CheckConnectionResponseCode(WebResponse webResponse) {
-            if (webResponse.GetType() == typeof(HttpWebResponse) && (((HttpWebResponse)webResponse).StatusCode == HttpStatusCode.OK) ||
-                webResponse.GetType() == typeof(FtpWebResponse) && (((FtpWebResponse)webResponse).StatusCode == FtpStatusCode.FileActionOK))
-                return;
-            throw new IOException("Unexpected response: " + webResponse.Headers.Get(0));
+            if (webResponse.GetType() == typeof(HttpWebResponse) && (((HttpWebResponse)webResponse).StatusCode != HttpStatusCode.OK))
+                throw new IOException("Unexpected response: " + webResponse.Headers.Get(0));
         }
 
     }

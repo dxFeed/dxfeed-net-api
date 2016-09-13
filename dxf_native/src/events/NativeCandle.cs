@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Globalization;
-using com.dxfeed.api.data;
 using com.dxfeed.api.events;
 using com.dxfeed.native.api;
 

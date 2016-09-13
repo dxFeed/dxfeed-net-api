@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using com.dxfeed.api.events;
 using com.dxfeed.native;
-using com.dxfeed.api.events;
+using com.dxfeed.native.events;
+using System;
+using System.Collections.Generic;
 using System.Threading;
 
-namespace com.dxfeed.samples.api {
+namespace com.dxfeed.samples.api
+{
     class DXFeedSample {
 
         class MidPriceEventListener<E> : DXFeedEventListener<E> {

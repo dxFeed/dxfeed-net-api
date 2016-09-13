@@ -90,12 +90,25 @@ namespace com.dxfeed.ipf {
             try {
                 WebRequest webRequest = URLInputStream.OpenConnection(URLInputStream.ResolveURL(url), user, password);
                 webRequest.Headers.Add(LIVE_PROP_KEY, LIVE_PROP_REQUEST_NO);
-                using (HttpWebResponse response = (HttpWebResponse)webRequest.GetResponse()) {
-                    using (Stream dataStream = response.GetResponseStream()) {
+                using (WebResponse response = webRequest.GetResponse()) {
+                    DateTime modificationTime;
+                    if (response.GetType() == typeof(FileWebResponse)) {
+                        Uri fileUri = new Uri(address);
+                        modificationTime = File.GetLastWriteTime(fileUri.AbsolutePath);
+                    } else {
                         URLInputStream.CheckConnectionResponseCode(response);
-                        lastModified = response.LastModified;
-                        return Read(dataStream, url);
+                        if (response.GetType() == typeof(FtpWebResponse))
+                            modificationTime = ((FtpWebResponse)response).LastModified;
+                        else
+                            modificationTime = ((HttpWebResponse)response).LastModified;
                     }
+                    
+                    IList<InstrumentProfile> list = null;
+                    using (Stream dataStream = response.GetResponseStream()) {
+                        list = Read(dataStream, url);
+                    }
+                    lastModified = modificationTime;
+                    return list;
                 }
             } catch (InstrumentProfileFormatException) {
                 throw;

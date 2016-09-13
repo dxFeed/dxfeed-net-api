@@ -76,6 +76,7 @@
     <Compile Include="src\api\C32.cs" />
     <Compile Include="src\api\CDataTypes.cs" />
     <Compile Include="src\api\C64.cs" />
+    <Compile Include="src\DXEndpoint.cs" />
     <Compile Include="src\DXFeed.cs" />
     <Compile Include="src\DXFeedEventListener.cs" />
     <Compile Include="src\DXFeedSubscription.cs" />

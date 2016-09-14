@@ -7,7 +7,7 @@ namespace com.dxfeed.native {
     class EventBuffer<T> : IDxEventBuf<T> {
         private readonly EventType type;
         private readonly DxString symbol;
-        private readonly EventParams eventParams;
+        private EventParams eventParams;
         private List<T> events = new List<T>();
 
         internal EventBuffer(EventType type, DxString symbol, EventParams eventParams) {
@@ -19,6 +19,31 @@ namespace com.dxfeed.native {
         internal void AddEvent(T _event) {
             events.Add(_event);
         }
+
+        internal void Clear() {
+            events.Clear();
+        }
+
+        internal void ReplaceOrAdd(T _event) {
+            if (_event is IDxOrder) {
+                int index = events.FindIndex(x => (x as IDxOrder).Index == (_event as IDxOrder).Index);
+                if (index == -1) {
+                    events.Add(_event);
+                } else {
+                    events[index] = _event;
+                }
+            }
+        }
+
+        internal void Remove(T _event) {
+            if (_event is IDxOrder) {
+                int index = events.FindIndex(x => (x as IDxOrder).Index == (_event as IDxOrder).Index);
+                if (index != -1) {
+                    events.RemoveAt(index);
+                }
+            }
+        }
+
 
         #region Implementation of IDxEventBuf<out T>
 
@@ -36,6 +61,7 @@ namespace com.dxfeed.native {
 
         public EventParams EventParams {
             get { return eventParams; }
+            internal set { eventParams = value; }
         }
 
         #endregion

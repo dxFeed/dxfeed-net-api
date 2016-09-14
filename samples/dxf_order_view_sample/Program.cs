@@ -29,7 +29,7 @@ namespace dxf_order_view_sample {
                 NativeTools.InitializeLogging("log.log", true, true);
                 using (var con = new NativeConnection(address, OnDisconnect)) {
                     using (var sub = con.CreateOrderViewSubscription(new OrderViewEventListener())) {
-                        sub.SetSource("NTV", "ISE", "DEA", "DEX");
+                        sub.SetSource("NTV", "DEA", "DEX");
                         sub.SetSymbols("AAPL", "GOOG", "IBM", "F");
 
                         Console.WriteLine("Press enter to stop");

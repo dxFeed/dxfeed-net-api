@@ -3,13 +3,18 @@ using System.Collections.Generic;
 using System.IO;
 using com.dxfeed.ipf;
 
-namespace dxf_instrument_profile_sample {
-    class Program {
-
-        static bool IsFilePath(string path) {
-            try {
+namespace dxf_instrument_profile_sample
+{
+    class Program
+    {
+        static bool IsFilePath(string path)
+        {
+            try
+            {
                 return new Uri(path).IsFile;
-            } catch (UriFormatException) {
+            }
+            catch (UriFormatException)
+            {
                 //This exception used for determine that path is not valid uri.
                 return true;
             }
@@ -17,9 +22,11 @@ namespace dxf_instrument_profile_sample {
 
         static int MAX_PRINT_COUNT = 7;
 
-        static void Main(string[] args) {
+        static void Main(string[] args)
+        {
 
-            if (args.Length == 0) {
+            if (args.Length == 0)
+            {
                 Console.WriteLine(
                     "Usage: dxf_instrument_profile_sample <host> <user> <password>\n" +
                     "or:    dxf_instrument_profile_sample <file>\n" +
@@ -28,7 +35,7 @@ namespace dxf_instrument_profile_sample {
                     "    user      - user name to host access\n" +
                     "    password  - user password to host access\n" +
                     "    file      - name of file or archive (.gz or .zip) contains instrument profiles\n" +
-                    "example: dxf_instrument_profile_sample https://tools.dxfeed.com/ipf demo demo\n" + 
+                    "example: dxf_instrument_profile_sample https://tools.dxfeed.com/ipf demo demo\n" +
                     "or:      dxf_instrument_profile_sample profiles.zip\n"
                 );
                 return;
@@ -39,14 +46,19 @@ namespace dxf_instrument_profile_sample {
             string password = string.Empty;
             IList<InstrumentProfile> profiles = null;
             const string ZIP_FILE_PATH = "profiles.zip";
-            try {
+            try
+            {
                 InstrumentProfileReader reader = new InstrumentProfileReader();
-                if (IsFilePath(path)) {
+                if (IsFilePath(path))
+                {
                     //Read profiles from local file system
-                    using (FileStream inputStream = new FileStream(path, FileMode.Open)) {
+                    using (FileStream inputStream = new FileStream(path, FileMode.Open))
+                    {
                         profiles = reader.Read(inputStream, path);
                     }
-                } else {
+                }
+                else
+                {
                     if (args.Length >= 2)
                         user = args[1];
                     if (args.Length >= 3)
@@ -66,11 +78,11 @@ namespace dxf_instrument_profile_sample {
                 //Write profiles to local file system
                 InstrumentProfileWriter writer = new InstrumentProfileWriter();
                 writer.WriteToFile(ZIP_FILE_PATH, profiles);
-            } catch (Exception exc) {
+            }
+            catch (Exception exc)
+            {
                 Console.WriteLine("Exception occured: " + exc.ToString());
             }
-
         }
-
     }
 }

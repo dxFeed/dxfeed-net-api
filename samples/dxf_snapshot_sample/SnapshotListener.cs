@@ -3,16 +3,19 @@ using com.dxfeed.api;
 using com.dxfeed.api.candle;
 using com.dxfeed.api.events;
 
-namespace dxf_snapshot_sample {
+namespace dxf_snapshot_sample
+{
     /// <summary>
     /// Snapshots listener
     /// </summary>
-    public class SnapshotListener : IDxSnapshotListener {
+    public class SnapshotListener : IDxSnapshotListener
+    {
         #region Implementation of IDxSnapshotListener
 
         private const int recordsPrintlimit = 7;
 
-        private void PrintSnapshot<TE>(IDxEventBuf<TE> buf) {
+        private void PrintSnapshot<TE>(IDxEventBuf<TE> buf)
+        {
             string symbolStr = buf.Symbol.ToString();
             CandleSymbol candleSymbol = CandleSymbol.ValueOf(symbolStr);
             if (candleSymbol.IsDefault())
@@ -20,9 +23,11 @@ namespace dxf_snapshot_sample {
             Console.WriteLine(string.Format("Snapshot {0} {{Symbol: '{1}', RecordsCount: {2}}}",
                 buf.EventType, symbolStr, buf.Size));
             int count = 0;
-            foreach (var o in buf) {
+            foreach (var o in buf)
+            {
                 Console.WriteLine(string.Format("   {{ {0} }}", o));
-                if (++count >= recordsPrintlimit) {
+                if (++count >= recordsPrintlimit)
+                {
                     Console.WriteLine(string.Format("   {{ ... {0} records left ...}}", buf.Size - count));
                     break;
                 }
@@ -37,7 +42,8 @@ namespace dxf_snapshot_sample {
         /// <param name="buf">event buffer object</param>
         public void OnOrderSnapshot<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
-            where TE : IDxOrder {
+            where TE : IDxOrder
+        {
 
             PrintSnapshot(buf);
         }
@@ -50,7 +56,8 @@ namespace dxf_snapshot_sample {
         /// <param name="buf">event buffer object</param>
         public void OnCandleSnapshot<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
-            where TE : IDxCandle {
+            where TE : IDxCandle
+        {
 
             PrintSnapshot(buf);
         }

@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace com.dxfeed.api.candle {
+namespace com.dxfeed.api.candle
+{
     /// <summary>
     /// Symbol that should be used with {@link DXFeedSubscription} class
     /// to subscribe for {@link Candle} events. {@code DXFeedSubscription} also accepts a string
@@ -54,8 +55,8 @@ namespace com.dxfeed.api.candle {
     /// and are abbreviated to their shortest possible form.
     /// </summary>
     [Serializable()]
-    public class CandleSymbol {
-
+    public class CandleSymbol
+    {
         private readonly string symbol;
 
         [NonSerialized()]
@@ -72,18 +73,21 @@ namespace com.dxfeed.api.candle {
         [NonSerialized()]
         internal CandleAlignment alignment;
 
-        private CandleSymbol(string symbol) {
+        private CandleSymbol(string symbol)
+        {
             this.symbol = Normalize(symbol);
             InitTransientFields();
         }
 
-        private CandleSymbol(string symbol, ICandleSymbolAttribute attribute) {
+        private CandleSymbol(string symbol, ICandleSymbolAttribute attribute)
+        {
             this.symbol = Normalize(ChangeAttribute(symbol, attribute));
             attribute.CheckInAttributeImpl(this);
             InitTransientFields();
         }
 
-        private CandleSymbol(string symbol, ICandleSymbolAttribute attribute, params ICandleSymbolAttribute[] attributes) {
+        private CandleSymbol(string symbol, ICandleSymbolAttribute attribute, params ICandleSymbolAttribute[] attributes)
+        {
             this.symbol = Normalize(ChangeAttributes(symbol, attribute, attributes));
             attribute.CheckInAttributeImpl(this);
             foreach (ICandleSymbolAttribute a in attributes)
@@ -94,8 +98,10 @@ namespace com.dxfeed.api.candle {
         /// <summary>
         /// Returns base market symbol without attributes.
         /// </summary>
-        public string BaseSymbol {
-            get {
+        public string BaseSymbol
+        {
+            get
+            {
                 return baseSymbol;
             }
         }
@@ -103,8 +109,10 @@ namespace com.dxfeed.api.candle {
         /// <summary>
         /// Returns exchange attribute of this symbol.
         /// </summary>
-        public char ExchangeCode {
-            get {
+        public char ExchangeCode
+        {
+            get
+            {
                 return exchange.GetExchangeCode();
             }
         }
@@ -112,8 +120,10 @@ namespace com.dxfeed.api.candle {
         /// <summary>
         /// Returns price type attribute of this symbol.
         /// </summary>
-        public int PriceId {
-            get {
+        public int PriceId
+        {
+            get
+            {
                 return price.GetId();
             }
         }
@@ -121,8 +131,10 @@ namespace com.dxfeed.api.candle {
         /// <summary>
         /// Returns session attribute of this symbol.
         /// </summary>
-        public int SessionId {
-            get {
+        public int SessionId
+        {
+            get
+            {
                 return session.GetId();
             }
         }
@@ -130,8 +142,10 @@ namespace com.dxfeed.api.candle {
         /// <summary>
         /// Returns aggregation period of this symbol.
         /// </summary>
-        public int PeriodId {
-            get {
+        public int PeriodId
+        {
+            get
+            {
                 return period.GetCandleType().Id;
             }
         }
@@ -139,8 +153,10 @@ namespace com.dxfeed.api.candle {
         /// <summary>
         /// Returns aggregation period value of this symbol.
         /// </summary>
-        public double PeriodValue {
-            get {
+        public double PeriodValue
+        {
+            get
+            {
                 return period.GetValue();
             }
         }
@@ -148,8 +164,10 @@ namespace com.dxfeed.api.candle {
         /// <summary>
         /// Returns alignment attribute of this symbol.
         /// </summary>
-        public int AlignmentId {
-            get {
+        public int AlignmentId
+        {
+            get
+            {
                 return alignment.GetId();
             }
         }
@@ -160,7 +178,8 @@ namespace com.dxfeed.api.candle {
         /// using {@link #valueOf(String) valueOf(String)} method.
         /// </summary>
         /// <returns>string representation of this symbol.</returns>
-        public override string ToString() {
+        public override string ToString()
+        {
             return symbol;
         }
 
@@ -169,7 +188,8 @@ namespace com.dxfeed.api.candle {
         /// </summary>
         /// <param name="obj"></param>
         /// <returns>{@code true} if this symbol is the same as another one.</returns>
-        public override bool Equals(object obj) {
+        public override bool Equals(object obj)
+        {
             return this == obj || obj.GetType() == typeof(CandleSymbol) && symbol.Equals(((CandleSymbol)obj).symbol);
         }
 
@@ -177,7 +197,8 @@ namespace com.dxfeed.api.candle {
         /// Returns hash code of this symbol.
         /// </summary>
         /// <returns>hash code of this symbol.</returns>
-        public override int GetHashCode() {
+        public override int GetHashCode()
+        {
             return symbol.GetHashCode();
         }
 
@@ -186,7 +207,8 @@ namespace com.dxfeed.api.candle {
         /// </summary>
         /// <param name="symbol">the string symbol.</param>
         /// <returns>the candle symbol object.</returns>
-        public static CandleSymbol ValueOf(string symbol) {
+        public static CandleSymbol ValueOf(string symbol)
+        {
             return new CandleSymbol(symbol);
         }
 
@@ -196,7 +218,8 @@ namespace com.dxfeed.api.candle {
         /// <param name="symbol">the string symbol.</param>
         /// <param name="attribute">the attribute to set.</param>
         /// <returns>the candle symbol object.</returns>
-        public static CandleSymbol ValueOf(string symbol, ICandleSymbolAttribute attribute) {
+        public static CandleSymbol ValueOf(string symbol, ICandleSymbolAttribute attribute)
+        {
             return new CandleSymbol(symbol, attribute);
         }
 
@@ -207,8 +230,9 @@ namespace com.dxfeed.api.candle {
         /// <param name="attribute">the attribute to set.</param>
         /// <param name="attributes">more attributes to set.</param>
         /// <returns>the candle symbol object.</returns>
-        public static CandleSymbol ValueOf(string symbol, ICandleSymbolAttribute attribute, 
-                                           params ICandleSymbolAttribute[] attributes) {
+        public static CandleSymbol ValueOf(string symbol, ICandleSymbolAttribute attribute,
+                                           params ICandleSymbolAttribute[] attributes)
+        {
             return new CandleSymbol(symbol, attribute, attributes);
         }
 
@@ -217,9 +241,10 @@ namespace com.dxfeed.api.candle {
         /// default attributes are not ignored.
         /// </summary>
         /// <returns>String representation of this symbol.</returns>
-        public string ToFullString() {
+        public string ToFullString()
+        {
             string exchangeString = (exchange == CandleExchange.DEFAULT ? string.Empty : "&" + exchange.ToString());
-            return string.Format("{0}{1}{{={2},{3},{4},{5}}}", baseSymbol, exchangeString, period.ToString(), 
+            return string.Format("{0}{1}{{={2},{3},{4},{5}}}", baseSymbol, exchangeString, period.ToString(),
                 alignment.ToFullString(), price.ToFullString(), session.ToFullString());
         }
 
@@ -227,7 +252,8 @@ namespace com.dxfeed.api.candle {
         /// Checks this candle symbol have all default attributes.
         /// </summary>
         /// <returns>"true" if all attributes is default, otherwise returns false.</returns>
-        public bool IsDefault() {
+        public bool IsDefault()
+        {
             return (
                 exchange.Equals(CandleExchange.DEFAULT) &&
                 period.Equals(CandlePeriod.DEFAULT) &&
@@ -238,19 +264,22 @@ namespace com.dxfeed.api.candle {
 
         //----------------------- private implementation details -----------------------
 
-        private static string ChangeAttributes(string symbol, ICandleSymbolAttribute attribute, 
-                                               params ICandleSymbolAttribute[] attributes) {
+        private static string ChangeAttributes(string symbol, ICandleSymbolAttribute attribute,
+                                               params ICandleSymbolAttribute[] attributes)
+        {
             symbol = ChangeAttribute(symbol, attribute);
             foreach (ICandleSymbolAttribute a in attributes)
                 symbol = ChangeAttribute(symbol, a);
             return symbol;
         }
 
-        private static string ChangeAttribute(string symbol, ICandleSymbolAttribute attribute) {
+        private static string ChangeAttribute(string symbol, ICandleSymbolAttribute attribute)
+        {
             return attribute.ChangeAttributeForSymbol(symbol);
         }
 
-        private static string Normalize(string symbol) {
+        private static string Normalize(string symbol)
+        {
             symbol = CandlePrice.NormalizeAttributeForSymbol(symbol);
             symbol = CandleSession.NormalizeAttributeForSymbol(symbol);
             symbol = CandlePeriod.NormalizeAttributeForSymbol(symbol);
@@ -258,7 +287,8 @@ namespace com.dxfeed.api.candle {
             return symbol;
         }
 
-        private void InitTransientFields() {
+        private void InitTransientFields()
+        {
             baseSymbol = MarketEventSymbols.GetBaseSymbol(symbol);
             if (exchange == null)
                 exchange = CandleExchange.GetAttributeForSymbol(symbol);
@@ -273,7 +303,8 @@ namespace com.dxfeed.api.candle {
         }
 
         [OnDeserialized()]
-        private void ReadObject(StreamingContext context) {
+        private void ReadObject(StreamingContext context)
+        {
             InitTransientFields();
         }
     }

@@ -1,11 +1,12 @@
 ﻿using com.dxfeed.api.events;
 
-namespace com.dxfeed.api {
-
+namespace com.dxfeed.api
+{
     /// <summary>
     /// Interface provides receiving candle events
     /// </summary>
-    public interface IDxCandleListener {
+    public interface IDxCandleListener
+    {
 
         /// <summary>
         /// On Candle events received

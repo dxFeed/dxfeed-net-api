@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace com.dxfeed.api.candle {
+namespace com.dxfeed.api.candle
+{
     /// <summary>
     /// Session attribute of {@link CandleSymbol} defines trading that is used to build the candles.
     ///
@@ -18,8 +19,8 @@ namespace com.dxfeed.api.candle {
     /// The value that this key shall be set to is equal to
     /// the corresponding {@link #toString() CandleSession.ToString()}
     /// </summary>
-    class CandleSession : ICandleSymbolAttribute {
-
+    class CandleSession : ICandleSymbolAttribute
+    {
         /// <summary>
         /// The attribute key that is used to store the value of {@code CandleSession} in
         /// a symbol string using methods of {@link MarketEventSymbols} class.
@@ -49,7 +50,8 @@ namespace com.dxfeed.api.candle {
         private readonly CandleSessionType sessionFilter;
         private readonly string value;
 
-        CandleSession(CandleSessionType sessionFilter, string value) {
+        CandleSession(CandleSessionType sessionFilter, string value)
+        {
             this.sessionFilter = sessionFilter;
             this.value = value;
             objCash.Add(value, this);
@@ -59,7 +61,8 @@ namespace com.dxfeed.api.candle {
         /// Returns candle session struct id
         /// </summary>
         /// <returns>candle session struct id</returns>
-        public int GetId() {
+        public int GetId()
+        {
             return (int)sessionFilter;
         }
 
@@ -68,7 +71,8 @@ namespace com.dxfeed.api.candle {
         /// </summary>
         /// <param name="symbol">original candle event symbol.</param>
         /// <returns>candle event symbol string with this session attribute set.</returns>
-        public string ChangeAttributeForSymbol(string symbol) {
+        public string ChangeAttributeForSymbol(string symbol)
+        {
             return this == DEFAULT ?
                 MarketEventSymbols.RemoveAttributeStringByKey(symbol, ATTRIBUTE_KEY) :
                 MarketEventSymbols.ChangeAttributeStringByKey(symbol, ATTRIBUTE_KEY, ToString());
@@ -79,7 +83,8 @@ namespace com.dxfeed.api.candle {
         /// </summary>
         /// <param name="candleSymbol">candle symbol.</param>
         /// <exception cref="InvalidOperationException">if used outside of internal initialization logic.</exception>
-        public void CheckInAttributeImpl(CandleSymbol candleSymbol) {
+        public void CheckInAttributeImpl(CandleSymbol candleSymbol)
+        {
             if (candleSymbol.session != null)
                 throw new InvalidOperationException("Already initialized");
             candleSymbol.session = this;
@@ -92,7 +97,8 @@ namespace com.dxfeed.api.candle {
         /// {@link #ANY} is represented as "any".
         /// </summary>
         /// <returns>string representation of this candle session attribute.</returns>
-        public override string ToString() {
+        public override string ToString()
+        {
             return value;
         }
 
@@ -102,7 +108,8 @@ namespace com.dxfeed.api.candle {
         /// The full string representation of {@link #ANY} is "tho=any"
         /// </summary>
         /// <returns></returns>
-        public string ToFullString() {
+        public string ToFullString()
+        {
             return string.Format("{0}={1}", ATTRIBUTE_KEY, value);
         }
 
@@ -114,11 +121,13 @@ namespace com.dxfeed.api.candle {
         /// <param name="s">string representation of candle candle session attribute.</param>
         /// <returns>candle session attribute.</returns>
         /// <exception cref="InvalidOperationException">if the string representation is invalid.</exception>
-        public static CandleSession Parse(string s) {
+        public static CandleSession Parse(string s)
+        {
             int n = s.Length;
             if (n == 0)
                 throw new InvalidOperationException("Missing candle session");
-            foreach (CandleSession session in objCash.Values) {
+            foreach (CandleSession session in objCash.Values)
+            {
                 string ss = session.ToString();
                 if (ss.Length >= n && ss.Substring(0, n).Equals(s, StringComparison.InvariantCultureIgnoreCase))
                     return session;
@@ -132,7 +141,8 @@ namespace com.dxfeed.api.candle {
         /// </summary>
         /// <param name="symbol">candle symbol string.</param>
         /// <returns>candle session attribute of the given candle symbol string.</returns>
-        public static CandleSession GetAttributeForSymbol(string symbol) {
+        public static CandleSession GetAttributeForSymbol(string symbol)
+        {
             string a = MarketEventSymbols.GetAttributeStringByKey(symbol, ATTRIBUTE_KEY);
             return a != null && bool.Parse(a) ? REGULAR : DEFAULT;
         }
@@ -142,21 +152,24 @@ namespace com.dxfeed.api.candle {
         /// </summary>
         /// <param name="symbol">candle symbol string.</param>
         /// <returns>candle symbol string with the normalized representation of the the candle session attribute.</returns>
-        public static string NormalizeAttributeForSymbol(string symbol) {
+        public static string NormalizeAttributeForSymbol(string symbol)
+        {
             string a = MarketEventSymbols.GetAttributeStringByKey(symbol, ATTRIBUTE_KEY);
             if (a == null)
                 return symbol;
-            try {
+            try
+            {
                 bool b = bool.Parse(a);
                 if (!b)
                     MarketEventSymbols.RemoveAttributeStringByKey(symbol, ATTRIBUTE_KEY);
                 if (b && !a.Equals(REGULAR.ToString()))
                     return MarketEventSymbols.ChangeAttributeStringByKey(symbol, ATTRIBUTE_KEY, REGULAR.ToString());
                 return symbol;
-            } catch (ArgumentNullException) {
+            }
+            catch (ArgumentNullException)
+            {
                 return symbol;
             }
         }
-
     }
 }

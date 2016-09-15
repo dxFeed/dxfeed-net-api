@@ -8,15 +8,15 @@
  */
 using System.Collections.Generic;
 
-namespace com.dxfeed.ipf {
-
+namespace com.dxfeed.ipf
+{
     /// <summary>
     /// Defines standard types of {@link InstrumentProfile}. Note that other (unknown) types
     /// can be used without listing in this class - use it for convenience only.
     /// Please see <b>Instrument Profile Format</b> documentation for complete description.
     /// </summary>
-    class InstrumentProfileType {
-
+    class InstrumentProfileType
+    {
         private const string T_CURRENCY = "CURRENCY";
         private const string T_FOREX = "FOREX";
         private const string T_BOND = "BOND";
@@ -33,7 +33,7 @@ namespace com.dxfeed.ipf {
         private const string T_REMOVED = "REMOVED";
 
         private static Dictionary<string, InstrumentProfileType> typesMap = new Dictionary<string, InstrumentProfileType>();
-        
+
         public static readonly InstrumentProfileType CURRENCY = new InstrumentProfileType(T_CURRENCY);
         public static readonly InstrumentProfileType FOREX = new InstrumentProfileType(T_FOREX);
         public static readonly InstrumentProfileType BOND = new InstrumentProfileType(T_BOND);
@@ -49,7 +49,8 @@ namespace com.dxfeed.ipf {
         public static readonly InstrumentProfileType OTHER = new InstrumentProfileType(T_OTHER);
         public static readonly InstrumentProfileType REMOVED = new InstrumentProfileType(T_REMOVED);
 
-        private InstrumentProfileType(string name) {
+        private InstrumentProfileType(string name)
+        {
             Name = name;
             typesMap[name] = this;
         }
@@ -65,7 +66,8 @@ namespace com.dxfeed.ipf {
         /// <param name="name">Name of type.</param>
         /// <returns>Field for specified name or <b>null</b> if field is not found.</returns>
         /// <exception cref="System.ArgumentNullException"></exception>
-        public static InstrumentProfileType Find(string name) {
+        public static InstrumentProfileType Find(string name)
+        {
             if (typesMap.ContainsKey(name))
                 return typesMap[name];
             return null;
@@ -85,7 +87,8 @@ namespace com.dxfeed.ipf {
         /// <param name="type2">Second type to compare.</param>
         /// <returns></returns>
         /// <exception cref="System.ArgumentNullException"></exception>
-        public static int CompareTypes(string type1, string type2) {
+        public static int CompareTypes(string type1, string type2)
+        {
             InstrumentProfileType t1 = Find(type1);
             InstrumentProfileType t2 = Find(type2);
             if (t1 == null)
@@ -100,7 +103,8 @@ namespace com.dxfeed.ipf {
         /// </summary>
         /// <param name="other">Other type to compare.</param>
         /// <returns></returns>
-        public int CompareTo(InstrumentProfileType other) {
+        public int CompareTo(InstrumentProfileType other)
+        {
             return Name.CompareTo(other.Name);
         }
     }

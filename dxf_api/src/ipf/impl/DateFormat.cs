@@ -1,19 +1,24 @@
 ﻿using System;
 
-namespace com.dxfeed.ipf {
-    class DateFormat {
+namespace com.dxfeed.ipf
+{
+    class DateFormat
+    {
         private string format = string.Empty;
         private TimeZoneInfo timeZone;
 
-        public DateFormat(string format) {
+        public DateFormat(string format)
+        {
             this.format = format;
         }
 
-        public void SetTimeZone(TimeZoneInfo timeZone) {
+        public void SetTimeZone(TimeZoneInfo timeZone)
+        {
             this.timeZone = timeZone;
         }
 
-        public string Format(DateTime dateTime) {
+        public string Format(DateTime dateTime)
+        {
             return dateTime.ToString(format);
         }
 
@@ -24,7 +29,8 @@ namespace com.dxfeed.ipf {
         /// <returns>Parsed value.</returns>
         /// <exception cref="System.ArgumentNullException"></exception>
         /// <exception cref="System.FormatException"></exception>
-        public DateTime Parse(string s) {
+        public DateTime Parse(string s)
+        {
             return DateTime.ParseExact(s, format, System.Globalization.CultureInfo.InvariantCulture);
         }
     }

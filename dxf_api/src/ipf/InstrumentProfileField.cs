@@ -13,14 +13,14 @@ using System.Globalization;
 using System.Threading;
 using com.dxfeed.api;
 
-namespace com.dxfeed.ipf {
-
+namespace com.dxfeed.ipf
+{
     /// <summary>
     /// Defines standard fields of {@link InstrumentProfile} and provides data access methods.
     /// Please see <b>Instrument Profile Format</b> documentation for complete description.
     /// </summary>
-    class InstrumentProfileField {
-
+    class InstrumentProfileField
+    {
         private const string F_TYPE = "TYPE";
         private const string F_SYMBOL = "SYMBOL";
         private const string F_DESCRIPTION = "DESCRIPTION";
@@ -87,7 +87,8 @@ namespace com.dxfeed.ipf {
         public static readonly InstrumentProfileField PRICE_INCREMENTS = new InstrumentProfileField(F_PRICE_INCREMENTS);
         public static readonly InstrumentProfileField TRADING_HOURS = new InstrumentProfileField(F_TRADING_HOURS);
 
-        private InstrumentProfileField(string name) {
+        private InstrumentProfileField(string name)
+        {
             Name = name;
             fieldsMap.Add(name, this);
         }
@@ -95,7 +96,8 @@ namespace com.dxfeed.ipf {
         /// <summary>
         /// Get name of instrument profile field.
         /// </summary>
-        public string Name {
+        public string Name
+        {
             get;
             private set;
         }
@@ -103,8 +105,10 @@ namespace com.dxfeed.ipf {
         /// <summary>
         /// Get all default instrument profile fields.
         /// </summary>
-        public static InstrumentProfileField[] Values {
-            get {
+        public static InstrumentProfileField[] Values
+        {
+            get
+            {
                 return (new List<InstrumentProfileField>(fieldsMap.Values)).ToArray();
             }
         }
@@ -113,7 +117,8 @@ namespace com.dxfeed.ipf {
         /// Returns string representation of field.
         /// </summary>
         /// <returns>String representation of field.</returns>
-        public override string ToString() {
+        public override string ToString()
+        {
             return Name;
         }
 
@@ -123,7 +128,8 @@ namespace com.dxfeed.ipf {
         /// <param name="name">Name of field to find.</param>
         /// <returns>Field for specified name or <b>null</b> if field is not found.</returns>
         /// <exception cref="System.ArgumentNullException">If name is null.</exception>
-        public static InstrumentProfileField Find(string name)  {
+        public static InstrumentProfileField Find(string name)
+        {
             InstrumentProfileField value;
             if (!fieldsMap.TryGetValue(name, out value))
                 return null;
@@ -136,9 +142,12 @@ namespace com.dxfeed.ipf {
         /// <param name="ip">Profile fot which get field.</param>
         /// <returns>Value of this field for specified profile in textual representation.</returns>
         /// <exception cref="System.InvalidOperationException">Can't format certain field.</exception>
-        public string GetField(InstrumentProfile ip) {
-            try {
-                switch (Name) {
+        public string GetField(InstrumentProfile ip)
+        {
+            try
+            {
+                switch (Name)
+                {
                     case F_TYPE: return ip.GetTypeName();
                     case F_SYMBOL: return ip.GetSymbol();
                     case F_DESCRIPTION: return ip.GetDescription();
@@ -172,7 +181,9 @@ namespace com.dxfeed.ipf {
                     case F_TRADING_HOURS: return ip.GetTradingHours();
                     default: throw new InvalidOperationException("cannot process field " + this);
                 }
-            } catch (Exception exc) {
+            }
+            catch (Exception exc)
+            {
                 throw new InvalidOperationException(String.Format("Can't get field '{0}': {1}", this, exc));
             }
         }
@@ -183,9 +194,12 @@ namespace com.dxfeed.ipf {
         /// <param name="ip">Profile to set field.</param>
         /// <param name="value">Value that set into field.</param>
         /// <exception cref="System.InvalidOperationException">If text uses wrong format or contains invalid values.</exception>
-        public void SetField(InstrumentProfile ip, string value) {
-            try {
-                switch (Name) {
+        public void SetField(InstrumentProfile ip, string value)
+        {
+            try
+            {
+                switch (Name)
+                {
                     case F_TYPE: ip.SetType(value); return;
                     case F_SYMBOL: ip.SetSymbol(value); return;
                     case F_DESCRIPTION: ip.SetDescription(value); return;
@@ -219,7 +233,9 @@ namespace com.dxfeed.ipf {
                     case F_TRADING_HOURS: ip.SetTradingHours(value); return;
                     default: throw new InvalidOperationException("cannot process field " + this);
                 }
-            } catch (Exception exc) {
+            }
+            catch (Exception exc)
+            {
                 throw new InvalidOperationException(String.Format("Can't set field '{0}': {1}", this, exc));
             }
         }
@@ -228,8 +244,10 @@ namespace com.dxfeed.ipf {
         /// Returns type of this field.
         /// </summary>
         /// <returns>Type of this field.</returns>
-        public Type GetFieldType() {
-            switch (Name) {
+        public Type GetFieldType()
+        {
+            switch (Name)
+            {
                 case F_ICB: return typeof(double);
                 case F_SIC: return typeof(double);
                 case F_MULTIPLIER: return typeof(double);
@@ -245,8 +263,10 @@ namespace com.dxfeed.ipf {
         /// Returns "true" if this field supports numeric representation of a value.
         /// </summary>
         /// <returns>"true" if this field supports numeric representation of a value.</returns>
-        public bool IsNumericField() {
-            switch (Name) {
+        public bool IsNumericField()
+        {
+            switch (Name)
+            {
                 case F_ICB: return true;
                 case F_SIC: return true;
                 case F_MULTIPLIER: return true;
@@ -264,8 +284,10 @@ namespace com.dxfeed.ipf {
         /// <param name="ip">Profile from get field.</param>
         /// <returns>Value of this field for specified profile in numeric representation.</returns>
         /// <exception cref="System.ArgumentException">If this field has no numeric representation.</exception>
-        public double GetNumericField(InstrumentProfile ip) {
-            switch (Name) {
+        public double GetNumericField(InstrumentProfile ip)
+        {
+            switch (Name)
+            {
                 case F_ICB: return ip.GetICB();
                 case F_SIC: return ip.GetSIC();
                 case F_MULTIPLIER: return ip.GetMultiplier();
@@ -283,8 +305,10 @@ namespace com.dxfeed.ipf {
         /// <param name="ip">Profile tos set value.</param>
         /// <param name="value">Value ehich set to field.</param>
         /// <exception cref="System.ArgumentException">If this field has no numeric representation</exception>
-        public void SetNumericField(InstrumentProfile ip, double value) {
-            switch (Name) {
+        public void SetNumericField(InstrumentProfile ip, double value)
+        {
+            switch (Name)
+            {
                 case F_ICB: ip.SetICB((int)value); return;
                 case F_SIC: ip.SetSIC((int)value); return;
                 case F_MULTIPLIER: ip.SetMultiplier(value); return;
@@ -315,11 +339,13 @@ namespace com.dxfeed.ipf {
         /// <param name="d">The number to format.</param>
         /// <returns>Strig representation of number in specified format.</returns>
         /// <exception cref="System.InvalidOperationException">Can't format number.</exception>
-        public static string FormatNumber(double d) {
+        public static string FormatNumber(double d)
+        {
             if (d == 0)
                 return "";
             int n4 = (int)(d * 4) + 4000;
-            if (n4 == d * 4 + 4000 && n4 >= 0 && n4 < formattedNumbers.Length) {
+            if (n4 == d * 4 + 4000 && n4 >= 0 && n4 < formattedNumbers.Length)
+            {
                 string cached = formattedNumbers[n4];
                 if (cached == null)
                     formattedNumbers[n4] = cached = FormatNumberImpl(d);
@@ -334,24 +360,32 @@ namespace com.dxfeed.ipf {
         /// <param name="d">Number to format.</param>
         /// <returns>String representation of number.</returns>
         /// <exception cref="System.InvalidOperationException">If number formatter error occurs.</exception>
-        private static string FormatNumberImpl(double d) {
+        private static string FormatNumberImpl(double d)
+        {
             if (d == (double)(int)d)
                 return Convert.ToString((int)d);
             if (d == (double)(long)d)
                 return Convert.ToString((long)d);
             double ad = Math.Abs(d);
-            if (ad > 1e-9 && ad < 1e12) {
+            if (ad > 1e-9 && ad < 1e12)
+            {
                 NumberFormatInfo nf;
-                try {
+                try
+                {
                     nf = numberFormatter.Value;
-                    if (nf == null) {
+                    if (nf == null)
+                    {
                         nf = NumberFormatInfo.GetInstance(new CultureInfo("en-US"));
                         nf.NumberDecimalDigits = 20;
                         numberFormatter.Value = nf;
                     }
-                } catch (InvalidOperationException) {
+                }
+                catch (InvalidOperationException)
+                {
                     throw;
-                } catch (Exception exc) {
+                }
+                catch (Exception exc)
+                {
                     throw new InvalidOperationException("FormatNumber failed: " + exc);
                 }
                 return Convert.ToString(d, nf);
@@ -366,24 +400,35 @@ namespace com.dxfeed.ipf {
         /// <returns>Double number.</returns>
         /// <exception cref="System.ArgumentNullException"></exception>
         /// <exception cref="System.FormatException"></exception>
-        public static double ParseNumber(string s) {
+        public static double ParseNumber(string s)
+        {
             if (s == null || string.IsNullOrEmpty(s))
                 return 0;
-            try {
-                if (parsedNumbers.ContainsKey(s)) {
+            try
+            {
+                if (parsedNumbers.ContainsKey(s))
+                {
                     return parsedNumbers[s];
-                } else {
+                }
+                else
+                {
                     if (parsedNumbers.Count > 10000)
                         parsedNumbers.Clear();
                     double cached = double.Parse(s, CultureInfo.GetCultureInfo("en-US"));
                     parsedNumbers[s] = cached;
                     return cached;
                 }
-            } catch (FormatException) {
+            }
+            catch (FormatException)
+            {
                 throw;
-            } catch (ArgumentNullException) {
+            }
+            catch (ArgumentNullException)
+            {
                 throw;
-            } catch (Exception exc) {
+            }
+            catch (Exception exc)
+            {
                 throw new FormatException("ParseNumber failed: " + exc);
             }
         }
@@ -395,10 +440,12 @@ namespace com.dxfeed.ipf {
         /// <returns>String representation of date tinme.</returns>
         /// <exception cref="System.FormatException"></exception>
         /// <exception cref="System.InvalidOperationException">If number formatter error occurs.</exception>
-        public static string FormatDate(int d) {
+        public static string FormatDate(int d)
+        {
             if (d == 0)
                 return "";
-            if (d >= 0 && d < formattedDates.Length) {
+            if (d >= 0 && d < formattedDates.Length)
+            {
                 string cached = formattedDates[d];
                 if (cached == null)
                     formattedDates[d] = cached = GetDateFormat().Format(Tools.UnixTimeToDate(d * DAY));
@@ -415,13 +462,17 @@ namespace com.dxfeed.ipf {
         /// <exception cref="System.ArgumentNullException"></exception>
         /// <exception cref="System.InvalidOperationException">If number formatter error occurs.</exception>
         /// <exception cref="System.FormatException"></exception>
-        public static int ParseDate(string s) {
+        public static int ParseDate(string s)
+        {
             if (s == null || string.IsNullOrEmpty(s))
                 return 0;
 
-            if (parsedDates.ContainsKey(s)) {
+            if (parsedDates.ContainsKey(s))
+            {
                 return parsedDates[s];
-            } else {
+            }
+            else
+            {
                 if (parsedDates.Count > 10000)
                     parsedDates.Clear();
                 int cached = (int)(Tools.DateToUnixTime(GetDateFormat().Parse(s)) / DAY);
@@ -435,15 +486,20 @@ namespace com.dxfeed.ipf {
         /// </summary>
         /// <returns>Date formatter instance.</returns>
         /// <exception cref="System.InvalidOperationException">If number formatter error occurs.</exception>
-        private static DateFormat GetDateFormat() {
-            try {
+        private static DateFormat GetDateFormat()
+        {
+            try
+            {
                 DateFormat df = dateFormatter.Value;
-                if (df == null) {
+                if (df == null)
+                {
                     df = new DateFormat("yyyy-MM-dd");
                     dateFormatter.Value = df;
                 }
                 return df;
-            } catch (Exception exc) {
+            }
+            catch (Exception exc)
+            {
                 throw new InvalidOperationException("GetDateFormat failed: " + exc);
             }
         }

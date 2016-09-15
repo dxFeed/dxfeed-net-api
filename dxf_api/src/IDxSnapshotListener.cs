@@ -1,12 +1,12 @@
 ﻿using com.dxfeed.api.events;
 
-namespace com.dxfeed.api {
-
+namespace com.dxfeed.api
+{
     /// <summary>
     /// Interface provides receiving snapshot events
     /// </summary>
-    public interface IDxSnapshotListener {
-
+    public interface IDxSnapshotListener
+    {
         /// <summary>
         /// On Order snapshot event received
         /// </summary>

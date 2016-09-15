@@ -7,8 +7,10 @@
  * http://mozilla.org/MPL/2.0/.
  */
 
-namespace com.dxfeed.ipf.impl {
-    class Constants {
+namespace com.dxfeed.ipf.impl
+{
+    class Constants
+    {
         public const string METADATA_PREFIX = "#";
         public const string METADATA_SUFFIX = "::=TYPE";
         public const string FLUSH_COMMAND = "##";

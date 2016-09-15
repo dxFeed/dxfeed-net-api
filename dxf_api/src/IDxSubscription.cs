@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using com.dxfeed.api.candle;
 
-namespace com.dxfeed.api {
-
+namespace com.dxfeed.api
+{
     /// <summary>
     /// Interface provides operation with subscription parameters
     /// </summary>
-    public interface IDxSubscription : IDisposable {
-
+    public interface IDxSubscription : IDisposable
+    {
         /// <summary>
         /// Add symbol to subscription
         /// It's not applicable to Candle subscription.

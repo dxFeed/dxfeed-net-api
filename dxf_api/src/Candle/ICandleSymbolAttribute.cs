@@ -1,10 +1,10 @@
-﻿namespace com.dxfeed.api.candle {
-
+﻿namespace com.dxfeed.api.candle
+{
     /// <summary>
     /// Attribute of the {@link CandleSymbol}
     /// </summary>
-    public interface ICandleSymbolAttribute {
-
+    public interface ICandleSymbolAttribute
+    {
         /// <summary>
         /// Returns candle event symbol string with this attribute set.
         /// </summary>
@@ -17,6 +17,5 @@
         /// </summary>
         /// <param name="candleSymbol">candleSymbol candle symbol.</param>
         void CheckInAttributeImpl(CandleSymbol candleSymbol);
-
     }
 }

@@ -8,14 +8,14 @@
  */
 using System.IO;
 
-namespace com.dxfeed.io {
-
+namespace com.dxfeed.io
+{
     /// <summary>
     /// Signals that input stream does not conform to the CSV format.
     /// See <a href="http://www.rfc-editor.org/rfc/rfc4180.txt">RFC 4180</a> for CSV format specification.
     /// </summary>
-    public class CSVFormatException : IOException {
-
+    public class CSVFormatException : IOException
+    {
         /// <summary>
         /// Constructs a CSVFormatException without detail message.
         /// </summary>

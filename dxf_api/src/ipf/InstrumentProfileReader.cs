@@ -14,15 +14,16 @@ using System.Net;
 using com.dxfeed.io;
 using com.dxfeed.ipf.impl;
 
-namespace com.dxfeed.ipf {
-
+namespace com.dxfeed.ipf
+{
     /// <summary>
     /// Reads instrument profiles from the stream using Simple File Format.
     /// Please see Instrument Profile Format documentation for complete description.
     /// This reader automatically uses data formats as specified in the stream.
     /// Use {@link InstrumentProfileConnection} if support for streaming updates of instrument profiles is needed.
     /// </summary>
-    public class InstrumentProfileReader {
+    public class InstrumentProfileReader
+    {
         private static readonly string LIVE_PROP_KEY = "X-Live";
         private static readonly string LIVE_PROP_REQUEST_NO = "no";
 
@@ -31,14 +32,15 @@ namespace com.dxfeed.ipf {
         /// <summary>
         /// Creates instrument profile reader.
         /// </summary>
-        public InstrumentProfileReader() {}
+        public InstrumentProfileReader() { }
 
         /// <summary>
         /// Returns last modification time (in milliseconds) from last {@link #readFromFile} operation
         /// or zero if it is unknown.
         /// </summary>
         /// <returns>Last modification time (in milliseconds)</returns>
-        public DateTime GetLastModified() {
+        public DateTime GetLastModified()
+        {
             return lastModified;
         }
 
@@ -62,7 +64,8 @@ namespace com.dxfeed.ipf {
         /// <returns>List of instrument profiles.</returns>
         /// <exception cref="System.IO.IOException">If an I/O error occurs.</exception>
         /// <exception cref="com.dxfeed.ipf.InstrumentProfileFormatException">If input stream does not conform to the Simple File Format.</exception>
-        public IList<InstrumentProfile> ReadFromFile(string address) {
+        public IList<InstrumentProfile> ReadFromFile(string address)
+        {
             return ReadFromFile(address, null, null);
         }
 
@@ -85,23 +88,33 @@ namespace com.dxfeed.ipf {
         /// <returns>List of instrument profiles.</returns>
         /// <exception cref="System.IO.IOException">If an I/O error occurs.</exception>
         /// <exception cref="com.dxfeed.ipf.InstrumentProfileFormatException">If input stream does not conform to the Simple File Format.</exception>
-        public IList<InstrumentProfile> ReadFromFile(string address, string user, string password)  {
+        public IList<InstrumentProfile> ReadFromFile(string address, string user, string password)
+        {
             string url = ResolveSourceURL(address);
-            try {
+            try
+            {
                 WebRequest webRequest = URLInputStream.OpenConnection(URLInputStream.ResolveURL(url), user, password);
                 webRequest.Headers.Add(LIVE_PROP_KEY, LIVE_PROP_REQUEST_NO);
-                using (HttpWebResponse response = (HttpWebResponse)webRequest.GetResponse()) {
-                    using (Stream dataStream = response.GetResponseStream()) {
+                using (HttpWebResponse response = (HttpWebResponse)webRequest.GetResponse())
+                {
+                    using (Stream dataStream = response.GetResponseStream())
+                    {
                         URLInputStream.CheckConnectionResponseCode(response);
                         lastModified = response.LastModified;
                         return Read(dataStream, url);
                     }
                 }
-            } catch (InstrumentProfileFormatException) {
+            }
+            catch (InstrumentProfileFormatException)
+            {
                 throw;
-            } catch (IOException) {
+            }
+            catch (IOException)
+            {
                 throw;
-            } catch (Exception exc) {
+            }
+            catch (Exception exc)
+            {
                 throw new IOException("Read profiles from file failed: " + exc);
             }
         }
@@ -112,20 +125,25 @@ namespace com.dxfeed.ipf {
         /// </summary>
         /// <param name="address">Address to convert.</param>
         /// <returns>A new resolved URL.</returns>
-        public static string ResolveSourceURL(string address) {
+        public static string ResolveSourceURL(string address)
+        {
             // Detect simple "host:port" source and convert it to full HTTP URL
             if (address.IndexOf(':') > 0 && address.IndexOf('/') < 0)
-                try {
+                try
+                {
                     int j = address.IndexOf('?');
                     string query = "";
-                    if (j >= 0) {
+                    if (j >= 0)
+                    {
                         query = address.Substring(j);
                         address = address.Substring(0, j);
                     }
                     int port = int.Parse(address.Substring(address.IndexOf(':') + 1));
                     if (port > 0 && port < 65536)
                         address = "http://" + address + "/ipf/all.ipf.gz" + query;
-                } catch (FormatException) {
+                }
+                catch (FormatException)
+                {
                     // source does not end with valid port number, so just use it as is
                 }
             return address;
@@ -146,32 +164,49 @@ namespace com.dxfeed.ipf {
         /// <exception cref="System.ArgumentNullException">Stream is null.</exception>
         /// <exception cref="System.IO.IOException">If an I/O error occurs.</exception>
         /// <exception cref="com.dxfeed.ipf.InstrumentProfileFormatException">If input stream does not conform to the Simple File Format.</exception>
-        public IList<InstrumentProfile> Read(Stream inputStream, string name) {
-            try { 
-                if (name.ToLower().EndsWith(".zip")) {
-                    using (ZipArchive zip = new ZipArchive(inputStream)) {
+        public IList<InstrumentProfile> Read(Stream inputStream, string name)
+        {
+            try
+            {
+                if (name.ToLower().EndsWith(".zip"))
+                {
+                    using (ZipArchive zip = new ZipArchive(inputStream))
+                    {
                         List<InstrumentProfile> profiles = new List<InstrumentProfile>();
-                        foreach (ZipArchiveEntry entry in zip.Entries) {
+                        foreach (ZipArchiveEntry entry in zip.Entries)
+                        {
                             profiles.AddRange(Read(entry.Open(), entry.Name));
                         }
                         return profiles;
                     }
                 }
-                if (name.ToLower().EndsWith(".gz")) {
-                    using (GZipStream gzip = new GZipStream(inputStream, CompressionMode.Decompress)) {
+                if (name.ToLower().EndsWith(".gz"))
+                {
+                    using (GZipStream gzip = new GZipStream(inputStream, CompressionMode.Decompress))
+                    {
                         return Read(gzip);
                     }
                 }
                 return Read(inputStream);
-            } catch (ArgumentNullException) {
+            }
+            catch (ArgumentNullException)
+            {
                 throw;
-            } catch (ArgumentException) {
+            }
+            catch (ArgumentException)
+            {
                 throw;
-            } catch (InstrumentProfileFormatException) {
+            }
+            catch (InstrumentProfileFormatException)
+            {
                 throw;
-            } catch (IOException) {
+            }
+            catch (IOException)
+            {
                 throw;
-            } catch (Exception exc) {
+            }
+            catch (Exception exc)
+            {
                 throw new IOException("Read profiles from stream failed: " + exc);
             }
         }
@@ -185,19 +220,23 @@ namespace com.dxfeed.ipf {
         /// <exception cref="System.ArgumentNullException">Stream is null.</exception>
         /// <exception cref="System.IO.IOException">If an I/O error occurs.</exception>
         /// <exception cref="com.dxfeed.ipf.InstrumentProfileFormatException">If input stream does not conform to the Simple File Format.</exception>
-        public IList<InstrumentProfile> Read(Stream inputStream) {
+        public IList<InstrumentProfile> Read(Stream inputStream)
+        {
             IList<InstrumentProfile> profiles = new List<InstrumentProfile>();
             InstrumentProfileParser parser = new InstrumentProfileParser(inputStream);
             InstrumentProfile ip;
-            while ((ip = parser.Next()) != null) {
-                try {
+            while ((ip = parser.Next()) != null)
+            {
+                try
+                {
                     profiles.Add(ip);
-                } catch (Exception exc) {
+                }
+                catch (Exception exc)
+                {
                     throw new IOException("Read failed: " + exc);
                 }
             }
             return profiles;
         }
-
     }
 }

@@ -1,7 +1,9 @@
 ﻿using System;
 
-namespace com.dxfeed.api.events {
-    public interface IDxCandle {
+namespace com.dxfeed.api.events
+{
+    public interface IDxCandle
+    {
         DateTime DateTime { get; }
         int Sequence { get; }
         double Count { get; }

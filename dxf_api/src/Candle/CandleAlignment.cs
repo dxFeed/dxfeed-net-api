@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace com.dxfeed.api.candle {
-
+namespace com.dxfeed.api.candle
+{
     /// <summary>
     /// Candle alignment attribute of {@link CandleSymbol} defines how candle are aligned with respect to time.
     ///
@@ -17,8 +17,8 @@ namespace com.dxfeed.api.candle {
     /// The value that this key shall be set to is equal to
     /// the corresponding {@link #toString() CandleAlignment.toString()}
     /// </summary>
-    class CandleAlignment : ICandleSymbolAttribute {
-
+    class CandleAlignment : ICandleSymbolAttribute
+    {
         /// <summary>
         /// The attribute key that is used to store the value of {@code CandleAlignment} in
         /// a symbol string using methods of {@link MarketEventSymbols} class.
@@ -48,7 +48,8 @@ namespace com.dxfeed.api.candle {
         private readonly CandleAlignmentType type;
         private readonly string value;
 
-        CandleAlignment(CandleAlignmentType type, string value) {
+        CandleAlignment(CandleAlignmentType type, string value)
+        {
             this.type = type;
             this.value = value;
             objCash.Add(value, this);
@@ -60,7 +61,8 @@ namespace com.dxfeed.api.candle {
         ///  and "s" for {@link #SESSION}.
         /// </summary>
         /// <returns>string representation of this candle alignment.</returns>
-        public override string ToString() {
+        public override string ToString()
+        {
             return value;
         }
 
@@ -70,7 +72,8 @@ namespace com.dxfeed.api.candle {
         /// The full string representation of {@link #MIDNIGHT} is "a=m"
         /// </summary>
         /// <returns></returns>
-        public string ToFullString() {
+        public string ToFullString()
+        {
             return string.Format("{0}={1}", ATTRIBUTE_KEY, value);
         }
 
@@ -79,7 +82,8 @@ namespace com.dxfeed.api.candle {
         /// </summary>
         /// <param name="symbol">original candle event symbol</param>
         /// <returns>candle event symbol string with this candle alignment set.</returns>
-        public string ChangeAttributeForSymbol(string symbol) {
+        public string ChangeAttributeForSymbol(string symbol)
+        {
             return this == DEFAULT ?
                 MarketEventSymbols.RemoveAttributeStringByKey(symbol, ATTRIBUTE_KEY) :
                 MarketEventSymbols.ChangeAttributeStringByKey(symbol, ATTRIBUTE_KEY, ToString());
@@ -90,7 +94,8 @@ namespace com.dxfeed.api.candle {
         /// </summary>
         /// <param name="candleSymbol">candle symbol.</param>
         /// <exception cref="InvalidOperationException">Object is already initialized</exception>
-        public void CheckInAttributeImpl(CandleSymbol candleSymbol) {
+        public void CheckInAttributeImpl(CandleSymbol candleSymbol)
+        {
             if (candleSymbol.alignment != null)
                 throw new InvalidOperationException("Already initialized");
             candleSymbol.alignment = this;
@@ -100,7 +105,8 @@ namespace com.dxfeed.api.candle {
         /// Get id of attribute value
         /// </summary>
         /// <returns>id of attribute value</returns>
-        public int GetId() {
+        public int GetId()
+        {
             return (int)type;
         }
 
@@ -114,12 +120,14 @@ namespace com.dxfeed.api.candle {
         /// <param name="s">string representation of candle alignment.</param>
         /// <returns>candle alignment</returns>
         /// <exception cref="ArgumentNullException">Canlde alignment in string is unknown</exception>
-        public static CandleAlignment Parse(string s) {
+        public static CandleAlignment Parse(string s)
+        {
             // fast path to reverse toString result
             if (objCash.ContainsKey(s))
                 return objCash[s];
             // slow path for different case
-            foreach (CandleAlignment align in objCash.Values) {
+            foreach (CandleAlignment align in objCash.Values)
+            {
                 if (align.ToString().Equals(s, StringComparison.InvariantCultureIgnoreCase))
                     return align;
             }
@@ -132,7 +140,8 @@ namespace com.dxfeed.api.candle {
         /// </summary>
         /// <param name="symbol">candle symbol string</param>
         /// <returns>candle alignment of the given candle symbol string.</returns>
-        public static CandleAlignment GetAttributeForSymbol(string symbol) {
+        public static CandleAlignment GetAttributeForSymbol(string symbol)
+        {
             string s = MarketEventSymbols.GetAttributeStringByKey(symbol, ATTRIBUTE_KEY);
             return s == null ? DEFAULT : Parse(s);
         }
@@ -142,18 +151,22 @@ namespace com.dxfeed.api.candle {
         /// </summary>
         /// <param name="symbol">candle symbol string.</param>
         /// <returns>candle symbol string with the normalized representation of the the candle alignment attribute.</returns>
-        public static string NormalizeAttributeForSymbol(string symbol) {
+        public static string NormalizeAttributeForSymbol(string symbol)
+        {
             string a = MarketEventSymbols.GetAttributeStringByKey(symbol, ATTRIBUTE_KEY);
             if (a == null)
                 return symbol;
-            try {
+            try
+            {
                 CandleAlignment other = Parse(a);
                 if (other == DEFAULT)
                     MarketEventSymbols.RemoveAttributeStringByKey(symbol, ATTRIBUTE_KEY);
                 if (!a.Equals(other.ToString()))
                     return MarketEventSymbols.ChangeAttributeStringByKey(symbol, ATTRIBUTE_KEY, other.ToString());
                 return symbol;
-            } catch (ArgumentNullException) {
+            }
+            catch (ArgumentNullException)
+            {
                 return symbol;
             }
         }

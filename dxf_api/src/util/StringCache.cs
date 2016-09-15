@@ -9,8 +9,8 @@
 using System;
 using System.Linq;
 
-namespace com.dxfeed.util {
-
+namespace com.dxfeed.util
+{
     /// <summary>
     /// Caches strings and provides lookup methods by raw character data to avoid string construction.
     /// It is intended to be used in various parsers to reduce memory footprint and garbage.
@@ -19,8 +19,8 @@ namespace com.dxfeed.util {
     /// into buckets based on hash function and then uses LRU algorithm within each bucket.
     /// The <tt>StringCache</tt> is a thread-safe, asynchronous, wait-free data structure.
     /// </summary>
-    public class StringCache {
-
+    public class StringCache
+    {
         private int bucketNumber;
         private int bucketSize;
         private string[] cache;
@@ -48,7 +48,8 @@ namespace com.dxfeed.util {
         /// <param name="bucketNumber">The number of buckets.</param>
         /// <param name="bucketSize">The size of each bucket.</param>
         /// <exception cref="System.ArgumentException">If parameters are not positive or result in too large cache.</exception>
-        public StringCache(int bucketNumber, int bucketSize) {
+        public StringCache(int bucketNumber, int bucketSize)
+        {
             if (bucketNumber <= 0 || bucketSize <= 0 || bucketSize >= int.MaxValue / 2 / bucketNumber)
                 throw new ArgumentException();
             this.bucketNumber = bucketNumber;
@@ -61,7 +62,8 @@ namespace com.dxfeed.util {
         /// </summary>
         /// <param name="s"></param>
         /// <returns></returns>
-        public string Get(string s) {
+        public string Get(string s)
+        {
             return Get(s, false);
         }
 
@@ -72,7 +74,8 @@ namespace com.dxfeed.util {
         /// <param name="s"></param>
         /// <param name="copy"></param>
         /// <returns></returns>
-        public string Get(string s, bool copy) {
+        public string Get(string s, bool copy)
+        {
             if (s == null)
                 return null;
             if (string.IsNullOrEmpty(s))
@@ -98,7 +101,8 @@ namespace com.dxfeed.util {
         /// <param name="offset"></param>
         /// <param name="length"></param>
         /// <returns></returns>
-        public string Get(string s, int offset, int length) {
+        public string Get(string s, int offset, int length)
+        {
             if (length == 0)
                 return "";
             if (offset == 0 && length == s.Length)
@@ -123,7 +127,8 @@ namespace com.dxfeed.util {
         /// </summary>
         /// <param name="charSequence"></param>
         /// <returns></returns>
-        public string Get(object charSequence) {
+        public string Get(object charSequence)
+        {
             if (charSequence.GetType() == typeof(string))
                 return Get((string)charSequence, false);
             if (charSequence == null)
@@ -152,7 +157,8 @@ namespace com.dxfeed.util {
         /// </summary>
         /// <param name="c"></param>
         /// <returns></returns>
-        public string Get(char[] c) {
+        public string Get(char[] c)
+        {
             if (c == null)
                 return null;
             return Get(c, 0, c.Length);
@@ -165,7 +171,8 @@ namespace com.dxfeed.util {
         /// <param name="offset"></param>
         /// <param name="length"></param>
         /// <returns></returns>
-        public string Get(char[] c, int offset, int length) {
+        public string Get(char[] c, int offset, int length)
+        {
             if (length == 0)
                 return "";
             requestCount++;
@@ -183,39 +190,45 @@ namespace com.dxfeed.util {
             return Finish(new string(c, offset, length), n, bucketSize - 1);
         }
 
-        public override string ToString() {
+        public override string ToString()
+        {
             long rc = requestCount;
             return "StringCache(" + bucketNumber + "x" + bucketSize + ", " + rc + " requests, " +
                 Math.Max(rc - missCount, 0) * 10000 / Math.Max(rc, 1) / 100.0 + "% hits, " +
                 (rc + compareCount) * 100 / Math.Max(rc, 1) + "% compares)";
         }
 
-        private string Finish(string cached, int n, int k) {
+        private string Finish(string cached, int n, int k)
+        {
             compareCount += k;
             while (k > 0)
                 cache[n + k] = cache[n + --k];
             return cache[n] = cached;
         }
 
-        private static bool Eq(string cached, string s, int hash) {
+        private static bool Eq(string cached, string s, int hash)
+        {
             if (cached == null || cached.GetHashCode() != hash)
                 return false;
             return cached.Equals(s);
         }
 
-        private static bool Eq(string cached, string s, int offset, int length, int hash) {
+        private static bool Eq(string cached, string s, int offset, int length, int hash)
+        {
             if (cached == null || cached.GetHashCode() != hash || cached.Length != length)
                 return false;
             return cached.Substring(0, length).Equals(s.Substring(offset, length));
         }
 
-        private static bool Eq(string cached, char[] cs, int hash) {
+        private static bool Eq(string cached, char[] cs, int hash)
+        {
             if (cached == null || cached.GetHashCode() != hash)
                 return false;
             return cached.SequenceEqual(cs);
         }
 
-        private static bool Eq(string cached, char[] c, int offset, int length, int hash) {
+        private static bool Eq(string cached, char[] c, int offset, int length, int hash)
+        {
             if (cached == null || cached.GetHashCode() != hash || cached.Length != length)
                 return false;
             for (int i = 0; i < length; i++)
@@ -223,6 +236,5 @@ namespace com.dxfeed.util {
                     return false;
             return true;
         }
-
     }
 }

@@ -10,8 +10,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace com.dxfeed.io {
-
+namespace com.dxfeed.io
+{
     /// <summary>
     /// Writes data to the stream using Comma-Separated Values (CSV) format.
     /// See <a href="http://www.rfc-editor.org/rfc/rfc4180.txt">RFC 4180</a> for CSV format specification.
@@ -28,11 +28,11 @@ namespace com.dxfeed.io {
     /// writer.close();
     /// </pre>
     /// </summary>
-    class CSVWriter : IDisposable {
-
+    class CSVWriter : IDisposable
+    {
         private static readonly char CR = '\r';
         private static readonly char LF = '\n';
-        private static readonly char[] CRLF = {CR, LF};
+        private static readonly char[] CRLF = { CR, LF };
 
         private readonly StreamWriter writer;
         private readonly char separator;
@@ -60,7 +60,8 @@ namespace com.dxfeed.io {
         /// <param name="quote"></param>
         /// <exception cref="System.NullReferenceException">If writer is null.</exception>
         /// <exception cref="System.ArgumentException">If separator or quote characters are invalid.</exception>
-        public CSVWriter(StreamWriter writer, char separator, char quote) {
+        public CSVWriter(StreamWriter writer, char separator, char quote)
+        {
             if (writer == null)
                 throw new NullReferenceException("writer is null");
             if (separator == CR || separator == LF)
@@ -79,7 +80,8 @@ namespace com.dxfeed.io {
         /// Line number points to new line after completion of the current record.
         /// </summary>
         /// <returns>Current line number.</returns>
-        public int GetLineNumber() {
+        public int GetLineNumber()
+        {
             return lineNumber;
         }
 
@@ -89,7 +91,8 @@ namespace com.dxfeed.io {
         /// Record number points to new record after completion of the current record.
         /// </summary>
         /// <returns>Current record number.</returns>
-        public int GetRecordNumber() {
+        public int GetRecordNumber()
+        {
             return recordNumber;
         }
 
@@ -100,9 +103,12 @@ namespace com.dxfeed.io {
         /// </summary>
         /// <param name="field"></param>
         /// <exception cref="System.IO.IOException">If an I/O error occurs.</exception>
-        public void WriteField(string field) {
-            try {
-                if (needCRLF) {
+        public void WriteField(string field)
+        {
+            try
+            {
+                if (needCRLF)
+                {
                     writer.Write(CRLF);
                     needCRLF = false;
                     lineNumber++;
@@ -112,7 +118,8 @@ namespace com.dxfeed.io {
                 insideRecord = true;
                 if (field == null || string.IsNullOrEmpty(field))
                     return;
-                if (field.IndexOf(separator) < 0 && field.IndexOf(quote) < 0 && field.IndexOf(CR) < 0 && field.IndexOf(LF) < 0) {
+                if (field.IndexOf(separator) < 0 && field.IndexOf(quote) < 0 && field.IndexOf(CR) < 0 && field.IndexOf(LF) < 0)
+                {
                     writer.Write(field);
                     return;
                 }
@@ -120,7 +127,8 @@ namespace com.dxfeed.io {
                 char[] buf = capacity > 512 ? new char[capacity] : quoteBuf != null ? quoteBuf : (quoteBuf = new char[512]);
                 int n = 0;
                 buf[n++] = quote;
-                for (int i = 0; i < field.Length; i++) {
+                for (int i = 0; i < field.Length; i++)
+                {
                     char c = field[i];
                     // below: buf[n-1] exists as buf holds at least quote char
                     if (c == CR || c == LF && buf[n - 1] != CR) // count CRLF only once
@@ -131,7 +139,9 @@ namespace com.dxfeed.io {
                 }
                 buf[n++] = quote;
                 writer.Write(buf, 0, n);
-            } catch (Exception exc) {
+            }
+            catch (Exception exc)
+            {
                 throw new IOException("WriteField failed: " + exc);
             }
         }
@@ -147,7 +157,8 @@ namespace com.dxfeed.io {
         /// <param name="record"></param>
         /// <exception cref="System.ArgumentException">If attempt to write record without fields was made.</exception>
         /// <exception cref="System.IO.IOException">If an I/O error occurs.</exception>
-        public void WriteRecord(string[] record) {
+        public void WriteRecord(string[] record)
+        {
             if (record != null)
                 foreach (string field in record)
                     WriteField(field);
@@ -169,7 +180,8 @@ namespace com.dxfeed.io {
         /// <param name="records"></param>
         /// <exception cref="System.ArgumentException">If attempt to write record without fields was made.</exception>
         /// <exception cref="System.IO.IOException">If an I/O error occurs.</exception>
-        public void WriteAll(IList<string[]> records) {
+        public void WriteAll(IList<string[]> records)
+        {
             foreach (string[] record in records)
                 WriteRecord(record);
         }
@@ -178,10 +190,14 @@ namespace com.dxfeed.io {
         /// Flushes the stream.
         /// </summary>
         /// <exception cref="System.IO.IOException">If an I/O error occurs.</exception>
-        public void Flush() {
-            try { 
+        public void Flush()
+        {
+            try
+            {
                 writer.Flush();
-            } catch (Exception exc) {
+            }
+            catch (Exception exc)
+            {
                 throw new IOException("Flush failed: " + exc);
             }
         }
@@ -190,13 +206,16 @@ namespace com.dxfeed.io {
         /// Closes the stream.
         /// </summary>
         /// <exception cref="System.IO.IOException">If an I/O error occurs.</exception>
-        public void Dispose() {
-            try {
+        public void Dispose()
+        {
+            try
+            {
                 writer.Close();
-            } catch (Exception exc) {
+            }
+            catch (Exception exc)
+            {
                 throw new IOException("Dispose failed: " + exc);
             }
         }
-
     }
 }

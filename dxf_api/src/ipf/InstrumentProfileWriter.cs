@@ -11,21 +11,21 @@ using System.IO;
 using System.IO.Compression;
 using com.dxfeed.ipf.impl;
 
-namespace com.dxfeed.ipf {
-
+namespace com.dxfeed.ipf
+{
     /// <summary>
     /// Writes instrument profiles to the stream using Simple File Format.
     /// Please see <b>Instrument Profile Format</b> documentation for complete description.
     /// This writer automatically derives data formats needed to write all meaningful fields.
     /// </summary>
-    public class InstrumentProfileWriter {
-
+    public class InstrumentProfileWriter
+    {
         private const string FILE_EXTENSION = ".ipf";
-        
+
         /// <summary>
         /// Creates instrument profile writer.
         /// </summary>
-        public InstrumentProfileWriter() {}
+        public InstrumentProfileWriter() { }
 
         /// <summary>
         /// Writes specified instrument profiles into specified file.
@@ -39,8 +39,10 @@ namespace com.dxfeed.ipf {
         /// <exception cref="System.ArgumentException">If attempt to write record without fields was made.</exception>
         /// <exception cref="System.IO.IOException">If an I/O error occurs.</exception>
         /// <exception cref="System.InvalidOperationException">Can't format certain profile.</exception>
-        public void WriteToFile(string file, IList<InstrumentProfile> profiles) {
-            using (FileStream outStream = new FileStream(file, FileMode.Create)) {
+        public void WriteToFile(string file, IList<InstrumentProfile> profiles)
+        {
+            using (FileStream outStream = new FileStream(file, FileMode.Create))
+            {
                 Write(outStream, file, profiles);
             }
         }
@@ -58,17 +60,22 @@ namespace com.dxfeed.ipf {
         /// <exception cref="System.ArgumentException">If attempt to write record without fields was made.</exception>
         /// <exception cref="System.IO.IOException">If an I/O error occurs.</exception>
         /// <exception cref="System.InvalidOperationException">Can't format certain profile.</exception>
-        public void Write(Stream outStream, string name, IList<InstrumentProfile> profiles) {
-            if (name.ToLower().EndsWith(".zip")) {
+        public void Write(Stream outStream, string name, IList<InstrumentProfile> profiles)
+        {
+            if (name.ToLower().EndsWith(".zip"))
+            {
                 name = Path.GetFileNameWithoutExtension(name);
-                using (ZipArchive zip = new ZipArchive(outStream, ZipArchiveMode.Update)) {
+                using (ZipArchive zip = new ZipArchive(outStream, ZipArchiveMode.Update))
+                {
                     ZipArchiveEntry entry = zip.CreateEntry(Path.GetFileNameWithoutExtension(name) + FILE_EXTENSION);
                     Write(entry.Open(), name, profiles);
                 }
                 return;
             }
-            if (name.ToLower().EndsWith(".gz")) {
-                using (GZipStream gzip = new GZipStream(outStream, CompressionMode.Compress)) {
+            if (name.ToLower().EndsWith(".gz"))
+            {
+                using (GZipStream gzip = new GZipStream(outStream, CompressionMode.Compress))
+                {
                     Write(gzip, profiles);
                 }
                 return;
@@ -84,7 +91,8 @@ namespace com.dxfeed.ipf {
         /// <exception cref="System.ArgumentException">If attempt to write record without fields was made.</exception>
         /// <exception cref="System.IO.IOException">If an I/O error occurs.</exception>
         /// <exception cref="System.InvalidOperationException">Can't format certain profile.</exception>
-        public void Write(Stream outStream, IList<InstrumentProfile> profiles) {
+        public void Write(Stream outStream, IList<InstrumentProfile> profiles)
+        {
             InstrumentProfileComposer composer = new InstrumentProfileComposer(outStream);
             composer.Compose(profiles, false);
             composer.ComposeNewLine();

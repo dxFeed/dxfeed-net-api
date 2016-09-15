@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace com.dxfeed.api.candle {
+namespace com.dxfeed.api.candle
+{
     /// <summary>
     /// Type of the candle aggregation period constitutes {@link CandlePeriod} type together
     /// its actual {@link CandlePeriod#getValue() value}.
     /// </summary>
-    public class CandleType {
-
+    public class CandleType
+    {
         private static Dictionary<string, CandleType> objCash = new Dictionary<string, CandleType>();
 
         /// <summary>
@@ -99,7 +100,8 @@ namespace com.dxfeed.api.candle {
         private readonly string typeStr;
         private readonly long periodIntervalMillis;
 
-        CandleType(int typeId, string typeStr, long periodIntervalMillis) {
+        CandleType(int typeId, string typeStr, long periodIntervalMillis)
+        {
             this.typeId = typeId;
             this.typeStr = typeStr;
             this.periodIntervalMillis = periodIntervalMillis;
@@ -110,8 +112,10 @@ namespace com.dxfeed.api.candle {
         /// <summary>
         /// Get id of candle period type
         /// </summary>
-        public int Id {
-            get {
+        public int Id
+        {
+            get
+            {
                 return typeId;
             }
         }
@@ -127,7 +131,8 @@ namespace com.dxfeed.api.candle {
         /// is not defined and this method returns {@code 0}.
         /// </summary>
         /// <returns>aggregation period in milliseconds.</returns>
-        public long GetPeriodIntervalMillis() {
+        public long GetPeriodIntervalMillis()
+        {
             return periodIntervalMillis;
         }
 
@@ -140,7 +145,8 @@ namespace com.dxfeed.api.candle {
         /// @return string representation of this candle price type.
         /// </summary>
         /// <returns></returns>
-        public override string ToString() {
+        public override string ToString()
+        {
             return typeStr;
         }
 
@@ -153,7 +159,8 @@ namespace com.dxfeed.api.candle {
         /// <param name="s">string representation of candle type.</param>
         /// <returns>candle type.</returns>
         /// <exception cref="ArgumentException">if the string representation is invalid.</exception>
-        public static CandleType Parse(string s) {
+        public static CandleType Parse(string s)
+        {
             int n = s.Length;
             if (n == 0)
                 throw new ArgumentException("Missing candle type");
@@ -161,7 +168,8 @@ namespace com.dxfeed.api.candle {
             if (objCash.ContainsKey(s))
                 return objCash[s];
             // slow path for everything else
-            foreach (CandleType type in objCash.Values) {
+            foreach (CandleType type in objCash.Values)
+            {
                 string name = type.ToString();
                 if (name.Length >= n && name.Substring(0, n).Equals(s, StringComparison.InvariantCultureIgnoreCase))
                     return type;
@@ -171,6 +179,5 @@ namespace com.dxfeed.api.candle {
             }
             throw new ArgumentException("Unknown candle type: " + s);
         }
-
     }
 }

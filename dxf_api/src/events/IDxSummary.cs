@@ -1,5 +1,7 @@
-namespace com.dxfeed.api.events {
-    public interface IDxSummary {
+namespace com.dxfeed.api.events
+{
+    public interface IDxSummary
+    {
         int DayId { get; }
         double DayOpenPrice { get; }
         double DayHighPrice { get; }

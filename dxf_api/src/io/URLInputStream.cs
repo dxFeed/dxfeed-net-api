@@ -3,10 +3,10 @@ using System.IO;
 using System.Net;
 using System.Text;
 
-namespace com.dxfeed.io {
-
-    class URLInputStream {
-
+namespace com.dxfeed.io
+{
+    class URLInputStream
+    {
         private static readonly int READ_TIMEOUT = 60000;
 
         /// <summary>
@@ -16,7 +16,8 @@ namespace com.dxfeed.io {
         /// <returns>Resolved url.</returns>
         /// <exception cref="System.ArgumentNullException"></exception>
         /// <exception cref="System.UriFormatException"></exception>
-        public static Uri ResolveURL(string url) {
+        public static Uri ResolveURL(string url)
+        {
             if (url.Length > 2 && url[1] == ':' && Path.PathSeparator == '\\')
                 url = "/" + url; // special case for full file path with drive letter on windows
             return new Uri(url);
@@ -36,7 +37,8 @@ namespace com.dxfeed.io {
         /// <exception cref="System.ArgumentNullException">RequestUri is null.</exception>
         /// <exception cref="System.Security.SecurityException">The caller does not have permission to connect
         /// to the requested URI or a URI that the request is redirected to.</exception>
-        public static WebRequest OpenConnection(String url) {
+        public static WebRequest OpenConnection(String url)
+        {
             return OpenConnection(ResolveURL(url), null, null);
         }
 
@@ -55,7 +57,8 @@ namespace com.dxfeed.io {
         /// <exception cref="System.NotSupportedException">The request scheme specified in requestUri is not registered.</exception>
         /// <exception cref="System.ArgumentNullException">RequestUri is null.</exception>
         /// <exception cref="System.Security.SecurityException">The caller does not have permission to connect to the requested URI or a URI that the request is redirected to.</exception>
-        public static WebRequest OpenConnection(Uri url, string user, string password) {
+        public static WebRequest OpenConnection(Uri url, string user, string password)
+        {
             WebRequest webRequest = WebRequest.Create(url);
             webRequest.Timeout = READ_TIMEOUT;
             string auth;
@@ -74,12 +77,12 @@ namespace com.dxfeed.io {
         /// </summary>
         /// <param name="webResponse"></param>
         /// <exception cref="System.IO.IOException">if an I/O error occurs</exception>
-        public static void CheckConnectionResponseCode(WebResponse webResponse) {
+        public static void CheckConnectionResponseCode(WebResponse webResponse)
+        {
             if (webResponse.GetType() == typeof(HttpWebResponse) && (((HttpWebResponse)webResponse).StatusCode == HttpStatusCode.OK) ||
                 webResponse.GetType() == typeof(FtpWebResponse) && (((FtpWebResponse)webResponse).StatusCode == FtpStatusCode.FileActionOK))
                 return;
             throw new IOException("Unexpected response: " + webResponse.Headers.Get(0));
         }
-
     }
 }

@@ -1,17 +1,18 @@
 ﻿using System;
 
-namespace com.dxfeed.api.candle {
-
+namespace com.dxfeed.api.candle
+{
     /// <summary>
     /// Class stores all candle symbol attributes
     /// </summary>
-    public static class CandleSymbolAttributes {
-
+    public static class CandleSymbolAttributes
+    {
         /// <summary>
         /// Exchange attribute of {@link CandleSymbol} defines exchange identifier where data is
         /// taken from to build the candles.
         /// </summary>
-        public static class Exchange {
+        public static class Exchange
+        {
             /// <summary>
             /// Composite exchange where data is taken from all exchanges.
             /// </summary>
@@ -27,7 +28,8 @@ namespace com.dxfeed.api.candle {
             /// </summary>
             /// <param name="code">exchange code</param>
             /// <returns>new candle exchange</returns>
-            public static ICandleSymbolAttribute NewExchange(char code) {
+            public static ICandleSymbolAttribute NewExchange(char code)
+            {
                 return CandleExchange.ValueOf(code);
             }
         }
@@ -35,8 +37,8 @@ namespace com.dxfeed.api.candle {
         /// <summary>
         /// Period attribute of {@link CandleSymbol} defines aggregation period of the candles.
         /// </summary>
-        public static class Period {
-
+        public static class Period
+        {
             /// <summary>
             /// Tick aggregation where each candle represents an individual tick.
             /// </summary>
@@ -58,7 +60,8 @@ namespace com.dxfeed.api.candle {
             /// <param name="period">value of candle period</param>
             /// <param name="type">type of candle period</param>
             /// <returns>new candle period</returns>
-            public static ICandleSymbolAttribute NewPeriod(double period, CandleType type) {
+            public static ICandleSymbolAttribute NewPeriod(double period, CandleType type)
+            {
                 return CandlePeriod.ValueOf(period, type);
             }
         }
@@ -66,8 +69,8 @@ namespace com.dxfeed.api.candle {
         /// <summary>
         /// Price type attribute of {@link CandleSymbol} defines price that is used to build the candles.
         /// </summary>
-        public static class Price {
-
+        public static class Price
+        {
             /// <summary>
             /// Last trading price.
             /// </summary>
@@ -108,7 +111,8 @@ namespace com.dxfeed.api.candle {
             /// <param name="s">string representation of candle price type.</param>
             /// <returns>candle price type.</returns>
             /// <exception cref="InvalidOperationException">if the string representation is invalid.</exception>
-            public static ICandleSymbolAttribute Parse(string s) {
+            public static ICandleSymbolAttribute Parse(string s)
+            {
                 return CandlePrice.Parse(s);
             }
         }
@@ -116,8 +120,8 @@ namespace com.dxfeed.api.candle {
         /// <summary>
         /// Session attribute of {@link CandleSymbol} defines trading that is used to build the candles.
         /// </summary>
-        public static class Session {
-
+        public static class Session
+        {
             /// <summary>
             /// All trading sessions are used to build candles.
             /// </summary>
@@ -141,7 +145,8 @@ namespace com.dxfeed.api.candle {
             /// <param name="s">string representation of candle candle session attribute.</param>
             /// <returns>candle session attribute.</returns>
             /// <exception cref="InvalidOperationException">if the string representation is invalid.</exception>
-            public static ICandleSymbolAttribute Parse(string s) {
+            public static ICandleSymbolAttribute Parse(string s)
+            {
                 return CandleSession.Parse(s);
             }
         }
@@ -149,8 +154,8 @@ namespace com.dxfeed.api.candle {
         /// <summary>
         /// Candle alignment attribute of {@link CandleSymbol} defines how candle are aligned with respect to time.
         /// </summary>
-        public static class Alignment {
-
+        public static class Alignment
+        {
             /// <summary>
             /// Align candles on midnight.
             /// </summary>
@@ -175,7 +180,8 @@ namespace com.dxfeed.api.candle {
             /// <param name="s">string representation of candle alignment.</param>
             /// <returns>candle alignment</returns>
             /// <exception cref="ArgumentNullException">Canlde alignment in string is unknown</exception>
-            public static ICandleSymbolAttribute Parse(string s) {
+            public static ICandleSymbolAttribute Parse(string s)
+            {
                 return CandleAlignment.Parse(s);
             }
         }

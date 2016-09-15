@@ -8,14 +8,14 @@
  */
 using System.IO;
 
-namespace com.dxfeed.ipf {
-
+namespace com.dxfeed.ipf
+{
     /// <summary>
     /// Signals that input stream does not conform to the Simple File Format.
     /// Please see <b>Instrument Profile Format</b> documentation for complete description.
     /// </summary>
-    public class InstrumentProfileFormatException : IOException {
-
+    public class InstrumentProfileFormatException : IOException
+    {
         /// <summary>
         /// Constructs a InstrumentProfileFormatException without detail message.
         /// </summary>

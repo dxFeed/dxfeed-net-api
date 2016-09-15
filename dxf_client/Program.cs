@@ -8,7 +8,6 @@ using com.dxfeed.native;
 
 namespace dxf_client
 {
-
     public class SnapshotPrinter : IDxSnapshotListener
     {
         #region Implementation of IDxSnapshotListener

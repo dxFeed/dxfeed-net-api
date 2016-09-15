@@ -9,7 +9,7 @@ namespace com.dxfeed.native.api
 #if DEBUG
         private const string DXFEED_DLL = "DXFeedd_64.dll";
 #else
-		private const string DXFEED_DLL = "DXFeed_64.dll";
+        private const string DXFEED_DLL = "DXFeed_64.dll";
 #endif
 
         [DllImport(DXFEED_DLL, CallingConvention = CallingConvention.Cdecl, EntryPoint = "dxf_initialize_logger")]

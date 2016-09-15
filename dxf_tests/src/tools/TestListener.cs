@@ -1,26 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using NUnit.Framework;
 using com.dxfeed.api;
-using com.dxfeed.api.candle;
 using com.dxfeed.api.events;
 using com.dxfeed.api.data;
-using com.dxfeed.native;
 
-namespace com.dxfeed.tests.tools {
+namespace com.dxfeed.tests.tools
+{
     /// <summary>
     /// Event listener class for tests.
     /// Allow to get any parameters from received events and transfer to test method.
     /// </summary>
-    public class TestListener : IDxFeedListener, IDxCandleListener {
-
-        public class ReceivedEvent<TE> {
+    public class TestListener : IDxFeedListener, IDxCandleListener
+    {
+        public class ReceivedEvent<TE>
+        {
             public string Symbol { get; private set; }
             public EventParams EventParams { get; private set; }
             public TE Event { get; private set; }
-            public ReceivedEvent(DxString symbol, EventParams eventParams, TE eventObj) {
+            public ReceivedEvent(DxString symbol, EventParams eventParams, TE eventObj)
+            {
                 this.Symbol = symbol.ToString();
                 this.EventParams = new EventParams(eventParams.Flags, eventParams.TimeIntField, eventParams.SnapshotKey);
                 this.Event = eventObj;
@@ -42,13 +42,15 @@ namespace com.dxfeed.tests.tools {
         int eventsSleepTime = 100;
         Func<bool> IsConnected = null;
 
-        public TestListener(int eventsTimeout, int eventsSleepTime, Func<bool> IsConnected) {
+        public TestListener(int eventsTimeout, int eventsSleepTime, Func<bool> IsConnected)
+        {
             this.eventsTimeout = eventsTimeout;
             this.eventsSleepTime = eventsSleepTime;
             this.IsConnected = IsConnected;
         }
 
-        private List<ReceivedEvent<TE>> GetList<TE>() {
+        private List<ReceivedEvent<TE>> GetList<TE>()
+        {
             if (typeof(TE) == typeof(IDxQuote))
                 return quotes as List<ReceivedEvent<TE>>;
             else if (typeof(TE) == typeof(IDxTrade))
@@ -67,51 +69,69 @@ namespace com.dxfeed.tests.tools {
                 return null;
         }
 
-        public ReceivedEvent<TE> GetLastEvent<TE>() {
+        public ReceivedEvent<TE> GetLastEvent<TE>()
+        {
             rwl.AcquireReaderLock(lockTimeout);
-            try {
+            try
+            {
                 List<ReceivedEvent<TE>> list = GetList<TE>();
                 if (list.Count == 0)
                     return null;
                 return list[list.Count - 1];
-            } finally {
+            }
+            finally
+            {
                 rwl.ReleaseReaderLock();
             }
         }
 
-        private void AddEvent<TE>(ReceivedEvent<TE> newEvent) {
+        private void AddEvent<TE>(ReceivedEvent<TE> newEvent)
+        {
             rwl.AcquireWriterLock(lockTimeout);
-            try {
+            try
+            {
                 List<ReceivedEvent<TE>> list = GetList<TE>();
                 list.Add(newEvent);
-            } finally {
+            }
+            finally
+            {
                 rwl.ReleaseWriterLock();
             }
         }
 
-        public void ClearEvents<TE>() {
+        public void ClearEvents<TE>()
+        {
             rwl.AcquireWriterLock(lockTimeout);
-            try {
+            try
+            {
                 List<ReceivedEvent<TE>> list = GetList<TE>();
                 list.Clear();
-            } finally {
+            }
+            finally
+            {
                 rwl.ReleaseWriterLock();
             }
         }
 
-        public int GetEventCount<TE>() {
+        public int GetEventCount<TE>()
+        {
             rwl.AcquireReaderLock(lockTimeout);
-            try {
+            try
+            {
                 List<ReceivedEvent<TE>> list = GetList<TE>();
                 return list.Count;
-            } finally {
+            }
+            finally
+            {
                 rwl.ReleaseReaderLock();
             }
         }
 
-        public int GetEventCount<TE>(params string[] symbols) {
+        public int GetEventCount<TE>(params string[] symbols)
+        {
             rwl.AcquireReaderLock(lockTimeout);
-            try {
+            try
+            {
                 List<ReceivedEvent<TE>> list = GetList<TE>();
                 List<string> symbolList = new List<string>(symbols);
                 int count = 0;
@@ -119,14 +139,18 @@ namespace com.dxfeed.tests.tools {
                     if (symbolList.Contains(ev.Symbol))
                         count++;
                 return count;
-            } finally {
+            }
+            finally
+            {
                 rwl.ReleaseReaderLock();
             }
         }
 
-        public void WaitEvents<TE>() {
+        public void WaitEvents<TE>()
+        {
             DateTime time = DateTime.Now;
-            while(true) {
+            while (true)
+            {
                 if (IsConnected != null)
                     Assert.IsTrue(IsConnected(), "Connection was lost");
                 if (DateTime.Now.Subtract(time).TotalMilliseconds >= eventsTimeout)
@@ -137,11 +161,13 @@ namespace com.dxfeed.tests.tools {
             }
         }
 
-        public void WaitEvents<TE>(params string[] symbols) {
+        public void WaitEvents<TE>(params string[] symbols)
+        {
             List<string> symbolList = new List<string>(symbols);
             DateTime time = DateTime.Now;
             int lastIndex = 0;
-            while(true) {
+            while (true)
+            {
                 if (IsConnected != null)
                     Assert.IsTrue(IsConnected(), "Connection was lost");
                 if (DateTime.Now.Subtract(time).TotalMilliseconds >= eventsTimeout)
@@ -150,7 +176,8 @@ namespace com.dxfeed.tests.tools {
                 List<ReceivedEvent<TE>> list = GetList<TE>();
                 rwl.AcquireReaderLock(lockTimeout);
                 int size = GetEventCount<TE>();
-                for (int i = lastIndex; i < size; i++) {
+                for (int i = lastIndex; i < size; i++)
+                {
                     if (symbolList.Contains(list[i].Symbol))
                         symbolList.Remove(list[i].Symbol);
                 }
@@ -164,11 +191,13 @@ namespace com.dxfeed.tests.tools {
             }
         }
 
-        public void WaitOrders(params string[] sources) {
+        public void WaitOrders(params string[] sources)
+        {
             List<string> sourceList = new List<string>(sources);
             DateTime time = DateTime.Now;
             int lastIndex = 0;
-            while(true) {
+            while (true)
+            {
                 if (IsConnected != null)
                     Assert.IsTrue(IsConnected(), "Connection was lost");
                 if (DateTime.Now.Subtract(time).TotalMilliseconds >= eventsTimeout)
@@ -177,7 +206,8 @@ namespace com.dxfeed.tests.tools {
                 List<ReceivedEvent<IDxOrder>> list = GetList<IDxOrder>();
                 rwl.AcquireReaderLock(lockTimeout);
                 int size = GetEventCount<IDxOrder>();
-                for (int i = lastIndex; i < size; i++) {
+                for (int i = lastIndex; i < size; i++)
+                {
                     IDxOrder order = list[i].Event;
                     if (sourceList.Contains(order.Source))
                         sourceList.Remove(order.Source);
@@ -192,9 +222,11 @@ namespace com.dxfeed.tests.tools {
             }
         }
 
-        public int GetOrderCount(params string[] sources) {
+        public int GetOrderCount(params string[] sources)
+        {
             rwl.AcquireReaderLock(lockTimeout);
-            try {
+            try
+            {
                 List<ReceivedEvent<IDxOrder>> list = GetList<IDxOrder>();
                 List<string> sourceList = new List<string>(sources);
                 int count = 0;
@@ -202,7 +234,9 @@ namespace com.dxfeed.tests.tools {
                     if (sourceList.Contains(ev.Event.Source))
                         count++;
                 return count;
-            } finally {
+            }
+            finally
+            {
                 rwl.ReleaseReaderLock();
             }
         }
@@ -211,44 +245,50 @@ namespace com.dxfeed.tests.tools {
 
         public void OnQuote<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
-            where TE : IDxQuote {
-                foreach (var q in buf)
-                    AddEvent<IDxQuote>(new ReceivedEvent<IDxQuote>(buf.Symbol, buf.EventParams, q));
+            where TE : IDxQuote
+        {
+            foreach (var q in buf)
+                AddEvent<IDxQuote>(new ReceivedEvent<IDxQuote>(buf.Symbol, buf.EventParams, q));
         }
 
         public void OnTrade<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
-            where TE : IDxTrade {
-                foreach (var t in buf)
-                    AddEvent<IDxTrade>(new ReceivedEvent<IDxTrade>(buf.Symbol, buf.EventParams, t));
+            where TE : IDxTrade
+        {
+            foreach (var t in buf)
+                AddEvent<IDxTrade>(new ReceivedEvent<IDxTrade>(buf.Symbol, buf.EventParams, t));
         }
 
         public void OnOrder<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
-            where TE : IDxOrder {
-                foreach (var o in buf)
-                    AddEvent<IDxOrder>(new ReceivedEvent<IDxOrder>(buf.Symbol, buf.EventParams, o));
+            where TE : IDxOrder
+        {
+            foreach (var o in buf)
+                AddEvent<IDxOrder>(new ReceivedEvent<IDxOrder>(buf.Symbol, buf.EventParams, o));
         }
 
         public void OnProfile<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
-            where TE : IDxProfile {
-                foreach (var p in buf)
-                    AddEvent<IDxProfile>(new ReceivedEvent<IDxProfile>(buf.Symbol, buf.EventParams, p));
+            where TE : IDxProfile
+        {
+            foreach (var p in buf)
+                AddEvent<IDxProfile>(new ReceivedEvent<IDxProfile>(buf.Symbol, buf.EventParams, p));
         }
 
         public void OnFundamental<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
-            where TE : IDxSummary {
-                foreach (var f in buf)
-                    AddEvent<IDxSummary>(new ReceivedEvent<IDxSummary>(buf.Symbol, buf.EventParams, f));
+            where TE : IDxSummary
+        {
+            foreach (var f in buf)
+                AddEvent<IDxSummary>(new ReceivedEvent<IDxSummary>(buf.Symbol, buf.EventParams, f));
         }
 
         public void OnTimeAndSale<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
-            where TE : IDxTimeAndSale {
-                foreach (var ts in buf)
-                    AddEvent<IDxTimeAndSale>(new ReceivedEvent<IDxTimeAndSale>(buf.Symbol, buf.EventParams, ts));
+            where TE : IDxTimeAndSale
+        {
+            foreach (var ts in buf)
+                AddEvent<IDxTimeAndSale>(new ReceivedEvent<IDxTimeAndSale>(buf.Symbol, buf.EventParams, ts));
         }
 
         #endregion
@@ -257,10 +297,11 @@ namespace com.dxfeed.tests.tools {
 
         public void OnCandle<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
-            where TE : IDxCandle {
-                foreach (var c in buf)
-                    AddEvent<IDxCandle>(new ReceivedEvent<IDxCandle>(buf.Symbol, buf.EventParams, c));
-            }
+            where TE : IDxCandle
+        {
+            foreach (var c in buf)
+                AddEvent<IDxCandle>(new ReceivedEvent<IDxCandle>(buf.Symbol, buf.EventParams, c));
+        }
 
         #endregion
     }

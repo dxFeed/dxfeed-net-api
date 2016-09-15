@@ -1,24 +1,26 @@
 ﻿using System;
-using System.Collections;
 using NUnit.Framework;
 using com.dxfeed.api.candle;
 
-namespace com.dxfeed.api {
-
+namespace com.dxfeed.api
+{
     [TestFixture]
-    public class CandleSymbolTest {
-
-        public class CandleSymbolTestCase {
+    public class CandleSymbolTest
+    {
+        public class CandleSymbolTestCase
+        {
             public string baseSymbol;
             public ICandleSymbolAttribute[] attrs;
             public string expected;
 
-            public CandleSymbolTestCase(string baseSymbol, string expected) {
+            public CandleSymbolTestCase(string baseSymbol, string expected)
+            {
                 this.baseSymbol = baseSymbol;
                 this.expected = expected;
             }
 
-            public CandleSymbolTestCase(string baseSymbol, ICandleSymbolAttribute[] attrs, string expected) {
+            public CandleSymbolTestCase(string baseSymbol, ICandleSymbolAttribute[] attrs, string expected)
+            {
                 this.baseSymbol = baseSymbol;
                 this.attrs = attrs;
                 this.expected = expected;
@@ -29,13 +31,13 @@ namespace com.dxfeed.api {
         static double userPeriodValue = 2d;
 
         static CandleSymbolTestCase[] candleSymbolParamsTestCases = {
-            new CandleSymbolTestCase("AAPL", "AAPL"), 
-            new CandleSymbolTestCase("AAPL", new ICandleSymbolAttribute[] { CandleSymbolAttributes.Exchange.NewExchange('A') }, "AAPL&A"), 
+            new CandleSymbolTestCase("AAPL", "AAPL"),
+            new CandleSymbolTestCase("AAPL", new ICandleSymbolAttribute[] { CandleSymbolAttributes.Exchange.NewExchange('A') }, "AAPL&A"),
 
-            new CandleSymbolTestCase("AAPL", new ICandleSymbolAttribute[] { CandleSymbolAttributes.Period.NewPeriod(defaultPeriodValue, CandleType.TICK) }, "AAPL{=t}"), 
-            new CandleSymbolTestCase("AAPL", new ICandleSymbolAttribute[] { CandleSymbolAttributes.Period.NewPeriod(defaultPeriodValue, CandleType.SECOND) }, "AAPL{=s}"), 
-            new CandleSymbolTestCase("AAPL", new ICandleSymbolAttribute[] { CandleSymbolAttributes.Period.NewPeriod(defaultPeriodValue, CandleType.MINUTE) }, "AAPL{=m}"), 
-            new CandleSymbolTestCase("AAPL", new ICandleSymbolAttribute[] { CandleSymbolAttributes.Period.NewPeriod(defaultPeriodValue, CandleType.HOUR) }, "AAPL{=h}"), 
+            new CandleSymbolTestCase("AAPL", new ICandleSymbolAttribute[] { CandleSymbolAttributes.Period.NewPeriod(defaultPeriodValue, CandleType.TICK) }, "AAPL{=t}"),
+            new CandleSymbolTestCase("AAPL", new ICandleSymbolAttribute[] { CandleSymbolAttributes.Period.NewPeriod(defaultPeriodValue, CandleType.SECOND) }, "AAPL{=s}"),
+            new CandleSymbolTestCase("AAPL", new ICandleSymbolAttribute[] { CandleSymbolAttributes.Period.NewPeriod(defaultPeriodValue, CandleType.MINUTE) }, "AAPL{=m}"),
+            new CandleSymbolTestCase("AAPL", new ICandleSymbolAttribute[] { CandleSymbolAttributes.Period.NewPeriod(defaultPeriodValue, CandleType.HOUR) }, "AAPL{=h}"),
             new CandleSymbolTestCase("AAPL", new ICandleSymbolAttribute[] { CandleSymbolAttributes.Period.NewPeriod(defaultPeriodValue, CandleType.DAY) }, "AAPL{=d}"),
             new CandleSymbolTestCase("AAPL", new ICandleSymbolAttribute[] { CandleSymbolAttributes.Period.NewPeriod(defaultPeriodValue, CandleType.WEEK) }, "AAPL{=w}"),
             new CandleSymbolTestCase("AAPL", new ICandleSymbolAttribute[] { CandleSymbolAttributes.Period.NewPeriod(defaultPeriodValue, CandleType.MONTH) }, "AAPL{=mo}"),
@@ -46,10 +48,10 @@ namespace com.dxfeed.api {
             new CandleSymbolTestCase("AAPL", new ICandleSymbolAttribute[] { CandleSymbolAttributes.Period.NewPeriod(defaultPeriodValue, CandleType.PRICE_MOMENTUM) }, "AAPL{=pm}"),
             new CandleSymbolTestCase("AAPL", new ICandleSymbolAttribute[] { CandleSymbolAttributes.Period.NewPeriod(defaultPeriodValue, CandleType.PRICE_RENKO) }, "AAPL{=pr}"),
 
-            new CandleSymbolTestCase("AAPL", new ICandleSymbolAttribute[] { CandleSymbolAttributes.Period.NewPeriod(userPeriodValue, CandleType.TICK) }, "AAPL{=2t}"), 
-            new CandleSymbolTestCase("AAPL", new ICandleSymbolAttribute[] { CandleSymbolAttributes.Period.NewPeriod(userPeriodValue, CandleType.SECOND) }, "AAPL{=2s}"), 
-            new CandleSymbolTestCase("AAPL", new ICandleSymbolAttribute[] { CandleSymbolAttributes.Period.NewPeriod(userPeriodValue, CandleType.MINUTE) }, "AAPL{=2m}"), 
-            new CandleSymbolTestCase("AAPL", new ICandleSymbolAttribute[] { CandleSymbolAttributes.Period.NewPeriod(userPeriodValue, CandleType.HOUR) }, "AAPL{=2h}"), 
+            new CandleSymbolTestCase("AAPL", new ICandleSymbolAttribute[] { CandleSymbolAttributes.Period.NewPeriod(userPeriodValue, CandleType.TICK) }, "AAPL{=2t}"),
+            new CandleSymbolTestCase("AAPL", new ICandleSymbolAttribute[] { CandleSymbolAttributes.Period.NewPeriod(userPeriodValue, CandleType.SECOND) }, "AAPL{=2s}"),
+            new CandleSymbolTestCase("AAPL", new ICandleSymbolAttribute[] { CandleSymbolAttributes.Period.NewPeriod(userPeriodValue, CandleType.MINUTE) }, "AAPL{=2m}"),
+            new CandleSymbolTestCase("AAPL", new ICandleSymbolAttribute[] { CandleSymbolAttributes.Period.NewPeriod(userPeriodValue, CandleType.HOUR) }, "AAPL{=2h}"),
             new CandleSymbolTestCase("AAPL", new ICandleSymbolAttribute[] { CandleSymbolAttributes.Period.NewPeriod(userPeriodValue, CandleType.DAY) }, "AAPL{=2d}"),
             new CandleSymbolTestCase("AAPL", new ICandleSymbolAttribute[] { CandleSymbolAttributes.Period.NewPeriod(userPeriodValue, CandleType.WEEK) }, "AAPL{=2w}"),
             new CandleSymbolTestCase("AAPL", new ICandleSymbolAttribute[] { CandleSymbolAttributes.Period.NewPeriod(userPeriodValue, CandleType.MONTH) }, "AAPL{=2mo}"),
@@ -72,35 +74,35 @@ namespace com.dxfeed.api {
             new CandleSymbolTestCase("AAPL", new ICandleSymbolAttribute[] { CandleSymbolAttributes.Session.ANY }, "AAPL"),
             new CandleSymbolTestCase("AAPL", new ICandleSymbolAttribute[] { CandleSymbolAttributes.Session.REGULAR }, "AAPL{tho=true}"),
 
-            new CandleSymbolTestCase("AAPL", new ICandleSymbolAttribute[] { 
-                CandleSymbolAttributes.Exchange.NewExchange('A'), 
-                CandleSymbolAttributes.Period.NewPeriod(userPeriodValue, CandleType.DAY), 
+            new CandleSymbolTestCase("AAPL", new ICandleSymbolAttribute[] {
+                CandleSymbolAttributes.Exchange.NewExchange('A'),
+                CandleSymbolAttributes.Period.NewPeriod(userPeriodValue, CandleType.DAY),
                 CandleSymbolAttributes.Alignment.SESSION,
                 CandleSymbolAttributes.Price.MARK,
                 CandleSymbolAttributes.Session.REGULAR
             }, "AAPL&A{=2d,a=s,price=mark,tho=true}"),
 
-            new CandleSymbolTestCase("AAPL&A", new ICandleSymbolAttribute[] { 
-                CandleSymbolAttributes.Period.NewPeriod(userPeriodValue, CandleType.DAY), 
+            new CandleSymbolTestCase("AAPL&A", new ICandleSymbolAttribute[] {
+                CandleSymbolAttributes.Period.NewPeriod(userPeriodValue, CandleType.DAY),
                 CandleSymbolAttributes.Alignment.SESSION,
                 CandleSymbolAttributes.Price.MARK,
                 CandleSymbolAttributes.Session.REGULAR
             }, "AAPL&A{=2d,a=s,price=mark,tho=true}"),
-            new CandleSymbolTestCase("AAPL&A{=d}", new ICandleSymbolAttribute[] { 
+            new CandleSymbolTestCase("AAPL&A{=d}", new ICandleSymbolAttribute[] {
                 CandleSymbolAttributes.Alignment.SESSION,
                 CandleSymbolAttributes.Price.MARK,
                 CandleSymbolAttributes.Session.REGULAR
             }, "AAPL&A{=d,a=s,price=mark,tho=true}"),
-            new CandleSymbolTestCase("AAPL&A{=2d}", new ICandleSymbolAttribute[] { 
+            new CandleSymbolTestCase("AAPL&A{=2d}", new ICandleSymbolAttribute[] {
                 CandleSymbolAttributes.Alignment.SESSION,
                 CandleSymbolAttributes.Price.MARK,
                 CandleSymbolAttributes.Session.REGULAR
             }, "AAPL&A{=2d,a=s,price=mark,tho=true}"),
-            new CandleSymbolTestCase("AAPL&A{=2d,a=s}", new ICandleSymbolAttribute[] { 
+            new CandleSymbolTestCase("AAPL&A{=2d,a=s}", new ICandleSymbolAttribute[] {
                 CandleSymbolAttributes.Price.MARK,
                 CandleSymbolAttributes.Session.REGULAR
             }, "AAPL&A{=2d,a=s,price=mark,tho=true}"),
-            new CandleSymbolTestCase("AAPL&A{=2d,a=s,price=mark}", new ICandleSymbolAttribute[] { 
+            new CandleSymbolTestCase("AAPL&A{=2d,a=s,price=mark}", new ICandleSymbolAttribute[] {
                 CandleSymbolAttributes.Session.REGULAR
             }, "AAPL&A{=2d,a=s,price=mark,tho=true}")
         };
@@ -108,45 +110,55 @@ namespace com.dxfeed.api {
         [Test, TestCaseSource("candleSymbolParamsTestCases")]
         public void CandleSymbolParamsTest(CandleSymbolTestCase testCase)
         {
-            if (testCase.attrs == null) {
+            if (testCase.attrs == null)
+            {
                 Assert.AreEqual(testCase.expected, CandleSymbol.ValueOf(testCase.baseSymbol).ToString());
-            } else if (testCase.attrs.Length == 1) {
+            }
+            else if (testCase.attrs.Length == 1)
+            {
                 Assert.AreEqual(testCase.expected, CandleSymbol.ValueOf(testCase.baseSymbol, testCase.attrs[0]).ToString());
-            } else {
+            }
+            else
+            {
                 ICandleSymbolAttribute[] nextAttrs = new ICandleSymbolAttribute[testCase.attrs.Length - 1];
                 Array.Copy(testCase.attrs, 1, nextAttrs, 0, testCase.attrs.Length - 1);
                 Assert.AreEqual(testCase.expected, CandleSymbol.ValueOf(testCase.baseSymbol, testCase.attrs[0], nextAttrs).ToString());
             }
         }
 
-        public void CandleSymbolPeriodTest(string symbolString, double expectedValue, 
-                                           CandleType expectedType) {
+        public void CandleSymbolPeriodTest(string symbolString, double expectedValue,
+                                           CandleType expectedType)
+        {
             CandleSymbol symbol = CandleSymbol.ValueOf(symbolString);
             Assert.AreEqual(symbolString, symbol.ToString());
             Assert.AreEqual(expectedValue, symbol.PeriodValue, 0.0001);
             Assert.AreEqual(expectedType.Id, symbol.PeriodId);
         }
 
-        public void CandleSymbolAlignmentTest(string symbolString, int expectedId) {
+        public void CandleSymbolAlignmentTest(string symbolString, int expectedId)
+        {
             CandleSymbol symbol = CandleSymbol.ValueOf(symbolString);
             Assert.AreEqual(symbolString, symbol.ToString());
             Assert.AreEqual(expectedId, symbol.AlignmentId);
         }
 
-        public void CandleSymbolPriceTest(string symbolString, int expectedId) {
+        public void CandleSymbolPriceTest(string symbolString, int expectedId)
+        {
             CandleSymbol symbol = CandleSymbol.ValueOf(symbolString);
             Assert.AreEqual(symbolString, symbol.ToString());
             Assert.AreEqual(expectedId, symbol.PriceId);
         }
 
-        public void CandleSymbolSessionTest(string symbolString, int expectedId) {
+        public void CandleSymbolSessionTest(string symbolString, int expectedId)
+        {
             CandleSymbol symbol = CandleSymbol.ValueOf(symbolString);
             Assert.AreEqual(symbolString, symbol.ToString());
             Assert.AreEqual(expectedId, symbol.SessionId);
         }
 
         [Test]
-        public void CandleSymbolStringTest() {
+        public void CandleSymbolStringTest()
+        {
             CandleSymbol symbol;
 
             symbol = CandleSymbol.ValueOf("AAPL");
@@ -205,6 +217,5 @@ namespace com.dxfeed.api {
             Assert.AreEqual(4, symbol.PeriodId);
             Assert.AreEqual(userPeriodValue, symbol.PeriodValue, 0.00001);
         }
-
     }
 }

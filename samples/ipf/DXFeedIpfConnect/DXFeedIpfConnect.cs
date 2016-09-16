@@ -1,6 +1,6 @@
-﻿using com.dxfeed.api.events;
+﻿using com.dxfeed.api;
+using com.dxfeed.api.events;
 using com.dxfeed.ipf;
-using com.dxfeed.native;
 using com.dxfeed.samples.api;
 using System;
 using System.Collections.Generic;

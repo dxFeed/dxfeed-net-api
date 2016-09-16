@@ -1,11 +1,8 @@
-﻿using System;
+﻿using com.dxfeed.native;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using com.dxfeed.api;
 
-namespace com.dxfeed.native {
+namespace com.dxfeed.api {
     public class DXFeed : IDisposable {
 
         private static readonly string DEFAULT_ADDRESS = "demo.dxfeed.com:7300";
@@ -29,6 +26,7 @@ namespace com.dxfeed.native {
         /// </summary>
         /// <returns>Singleton instance of feed.</returns>
         public static DXFeed GetInstance() {
+            //TODO: connection to non-default address
             if (dxFeedInstance == null)
                 dxFeedInstance = new DXFeed(DEFAULT_ADDRESS);
             return dxFeedInstance;

@@ -1,6 +1,5 @@
-﻿using com.dxfeed.api.events;
-using com.dxfeed.native;
-using com.dxfeed.native.events;
+﻿using com.dxfeed.api;
+using com.dxfeed.api.events;
 using System;
 using System.Collections.Generic;
 using System.Threading;

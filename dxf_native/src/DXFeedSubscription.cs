@@ -1,10 +1,9 @@
-﻿using com.dxfeed.api;
-using com.dxfeed.api.events;
+﻿using com.dxfeed.api.events;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace com.dxfeed.native {
+namespace com.dxfeed.api {
     public class DXFeedSubscription<E> : IDisposable {
 
         private bool isClosedNotSync = false;

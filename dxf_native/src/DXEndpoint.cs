@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace com.dxfeed.native {
+namespace com.dxfeed.api {
 
     /// <summary>
     /// Manages network connections to DXFeed.

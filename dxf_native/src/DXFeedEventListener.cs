@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace com.dxfeed.native {
+namespace com.dxfeed.api {
 
     /// <summary>
     /// The listener interface for receiving events of the specified type E.

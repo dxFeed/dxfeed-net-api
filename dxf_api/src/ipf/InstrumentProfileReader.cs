@@ -23,9 +23,7 @@ namespace com.dxfeed.ipf {
     /// Use {@link InstrumentProfileConnection} if support for streaming updates of instrument profiles is needed.
     /// </summary>
     public class InstrumentProfileReader {
-        private static readonly string LIVE_PROP_KEY = "X-Live";
-        private static readonly string LIVE_PROP_REQUEST_NO = "no";
-
+        
         private DateTime lastModified;
 
         /// <summary>
@@ -89,7 +87,7 @@ namespace com.dxfeed.ipf {
             string url = ResolveSourceURL(address);
             try {
                 WebRequest webRequest = URLInputStream.OpenConnection(URLInputStream.ResolveURL(url), user, password);
-                webRequest.Headers.Add(LIVE_PROP_KEY, LIVE_PROP_REQUEST_NO);
+                webRequest.Headers.Add(Constants.LIVE_PROP_KEY, Constants.LIVE_PROP_REQUEST_NO);
                 using (HttpWebResponse response = (HttpWebResponse)webRequest.GetResponse()) {
                     using (Stream dataStream = response.GetResponseStream()) {
                         URLInputStream.CheckConnectionResponseCode(response);

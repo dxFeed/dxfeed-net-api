@@ -36,7 +36,7 @@ namespace com.dxfeed.io {
         /// <exception cref="System.ArgumentNullException">RequestUri is null.</exception>
         /// <exception cref="System.Security.SecurityException">The caller does not have permission to connect
         /// to the requested URI or a URI that the request is redirected to.</exception>
-        public static WebRequest OpenConnection(String url) {
+        public static WebRequest OpenConnection(string url) {
             return OpenConnection(ResolveURL(url), null, null);
         }
 

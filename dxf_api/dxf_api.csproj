@@ -107,6 +107,7 @@
     <Compile Include="src\io\CSVFormatException.cs" />
     <Compile Include="src\io\CSVReader.cs" />
     <Compile Include="src\io\CSVWriter.cs" />
+    <Compile Include="src\io\StreamCompression.cs" />
     <Compile Include="src\io\URLInputStream.cs" />
     <Compile Include="src\ipf\impl\Constants.cs" />
     <Compile Include="src\ipf\impl\DateFormat.cs" />
@@ -118,9 +119,13 @@
     <Compile Include="src\ipf\InstrumentProfileReader.cs" />
     <Compile Include="src\ipf\InstrumentProfileType.cs" />
     <Compile Include="src\ipf\InstrumentProfileWriter.cs" />
+    <Compile Include="src\ipf\live\InstrumentProfileConnection.cs" />
+    <Compile Include="src\ipf\live\InstrumentProfileUpdateListener .cs" />
+    <Compile Include="src\ipf\live\InstrumentProfileUpdater.cs" />
     <Compile Include="src\IDxOrderViewListener.cs" />
     <Compile Include="src\Tools.cs" />
     <Compile Include="src\util\StringCache.cs" />
+    <Compile Include="src\util\TimePeriod.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

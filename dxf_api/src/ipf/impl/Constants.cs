@@ -13,5 +13,10 @@ namespace com.dxfeed.ipf.impl {
         public const string METADATA_SUFFIX = "::=TYPE";
         public const string FLUSH_COMMAND = "##";
         public const string COMPLETE_COMMAND = "##COMPLETE";
+
+        public static readonly string LIVE_PROP_KEY = "X-Live";
+        public static readonly string LIVE_PROP_REQUEST_NO = "no";
+        public static readonly string LIVE_PROP_REQUEST_YES = "yes";
+        public static readonly string LIVE_PROP_RESPONSE = "provided";
     }
 }

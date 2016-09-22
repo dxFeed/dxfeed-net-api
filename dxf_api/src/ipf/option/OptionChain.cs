@@ -6,9 +6,9 @@ namespace com.dxfeed.ipf.option {
     /// Set of option series for a single product or underlying symbol.
     /// </summary>
     /// <typeparam name="T">The type of option instrument instances.</typeparam>
-    public sealed class OptionChain<T> : ICloneable {
+    public sealed class OptionChain : ICloneable {
 
-        private readonly SortedDictionary<OptionSeries<T>, OptionSeries<T>> seriesMap = new SortedDictionary<OptionSeries<T>, OptionSeries<T>>();
+        private readonly SortedDictionary<OptionSeries, OptionSeries> seriesMap = new SortedDictionary<OptionSeries, OptionSeries>();
 
         internal OptionChain(string symbol) {
             Symbol = symbol;
@@ -30,9 +30,9 @@ namespace com.dxfeed.ipf.option {
         /// <returns>Returns a shall copy of this option chain.</returns>
         public object Clone()
         {
-            OptionChain<T> clone = new OptionChain<T>(Symbol);
+            OptionChain clone = new OptionChain(Symbol);
             foreach (var series in seriesMap.Values) {
-                OptionSeries<T> seriesClone = (OptionSeries<T>)series.Clone();
+                OptionSeries seriesClone = (OptionSeries)series.Clone();
                 clone.seriesMap.Add(seriesClone, seriesClone);
             }
             return clone;
@@ -42,14 +42,14 @@ namespace com.dxfeed.ipf.option {
         /// Returns a sorted set of option series of this option chain.
         /// </summary>
         /// <returns>sorted set of option series of this option chain.</returns>
-        public SortedDictionary<OptionSeries<T>, OptionSeries<T>>.KeyCollection GetSeries() {
+        public SortedDictionary<OptionSeries, OptionSeries>.KeyCollection GetSeries() {
             return seriesMap.Keys;
         }
 
-        internal void AddOption(OptionSeries<T> series, bool isCall, double strike, T option) {
-            OptionSeries<T> os;
+        internal void AddOption(OptionSeries series, bool isCall, double strike, InstrumentProfile option) {
+            OptionSeries os;
             if (!seriesMap.TryGetValue(series, out os)) {
-                os = new OptionSeries<T>(series);
+                os = new OptionSeries(series);
                 seriesMap.Add(os, os);
             }
             os.AddOption(isCall, strike, option);

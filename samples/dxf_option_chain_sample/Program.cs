@@ -24,7 +24,7 @@ namespace dxf_option_chain_sample {
             }
 
             IList<InstrumentProfile> profiles = null;
-            IDictionary<string, OptionChain<InstrumentProfile>> chains = null;
+            IDictionary<string, OptionChain> chains = null;
 
             string path = args[0];
             string user = args[1];
@@ -34,7 +34,7 @@ namespace dxf_option_chain_sample {
             try {
                 int nStrikes = int.Parse(args[4]);
                 int nMonths = int.Parse(args[5]);
-                double price = double.Parse(args[6], new CultureInfo("en-US"));
+                double price = double.Parse(args[6], CultureInfo.InvariantCulture);
 
                 InstrumentProfileReader reader = new InstrumentProfileReader();
                 //Read profiles from server
@@ -43,15 +43,15 @@ namespace dxf_option_chain_sample {
                 Console.WriteLine(string.Format("Profiles from '{0}' count: {1}", path, profiles.Count));
 
                 Console.WriteLine("Building option chains ...");
-                chains = OptionChainsBuilder<InstrumentProfile>.Build(profiles).Chains;
-                OptionChain<InstrumentProfile> chain = chains[symbol];
+                chains = OptionChainsBuilder.Build(profiles).Chains;
+                OptionChain chain = chains[symbol];
                 nMonths = Math.Min(nMonths, chain.GetSeries().Count);
-                List<OptionSeries<InstrumentProfile>> seriesList 
-                    = new List<OptionSeries<InstrumentProfile>>(chain.GetSeries()).GetRange(0, nMonths);
+                List<OptionSeries> seriesList 
+                    = new List<OptionSeries>(chain.GetSeries()).GetRange(0, nMonths);
 
 
                 Console.WriteLine("Printing option series ...");
-                foreach (OptionSeries<InstrumentProfile> series in seriesList) {
+                foreach (OptionSeries series in seriesList) {
                     Console.WriteLine("Option series {0}", series);
                     List<double> strikes = series.GetNStrikesAround(nStrikes, price);
                     Console.WriteLine("Strikes:");

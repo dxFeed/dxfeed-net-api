@@ -5,17 +5,16 @@ namespace com.dxfeed.ipf.option {
     /// Builder class for a set of option chains grouped by product or underlying symbol.
     /// <h3>Threads and clocks</h3>
     /// This class is <b>NOT</b> thread-safe and cannot be used from multiple threads without external synchronization.
-    /// @param <T> The type of option instrument instances.
     /// </summary>
-    public class OptionChainsBuilder<T> {
+    public class OptionChainsBuilder {
 
         /// <summary>
         /// Builds options chains for all options from the given collections of {@link InstrumentProfile instrument profiles}.
         /// </summary>
         /// <param name="instruments">collection of instrument profiles.</param>
         /// <returns>builder with all the options from instruments collection.</returns>
-        public static OptionChainsBuilder<InstrumentProfile> Build(ICollection<InstrumentProfile> instruments) {
-            OptionChainsBuilder<InstrumentProfile> ocb = new OptionChainsBuilder<InstrumentProfile>();
+        public static OptionChainsBuilder Build(ICollection<InstrumentProfile> instruments) {
+            OptionChainsBuilder ocb = new OptionChainsBuilder();
             foreach(var ip in instruments) {
                 if (!"OPTION".Equals(ip.GetTypeName())) {
                     continue;
@@ -27,19 +26,19 @@ namespace com.dxfeed.ipf.option {
                 ocb.SetMultiplier(ip.GetMultiplier());
                 ocb.SetSPC(ip.GetSPC());
                 ocb.SetAdditionalUnderlyings(ip.GetAdditionalUnderlyings());
-                ocb.SetMmy((ip.GetMmy()));
+                ocb.SetMMY((ip.GetMMY()));
                 ocb.SetOptionType(ip.GetOptionType());
                 ocb.SetExpirationStyle(ip.GetExpirationStyle());
                 ocb.SetSettlementStyle(ip.GetSettlementStyle());
-                ocb.Cfi = ip.GetCfi();
+                ocb.CFI = ip.GetCFI();
                 ocb.Strike = ip.GetStrike();
                 ocb.AddOption(ip);
             }
             return ocb;
         }
 
-        private readonly Dictionary<string, OptionChain<T>> chains = new Dictionary<string, OptionChain<T>>();
-        OptionSeries<T> series = new OptionSeries<T>();
+        private readonly Dictionary<string, OptionChain> chains = new Dictionary<string, OptionChain>();
+        OptionSeries series = new OptionSeries();
 
         string product = string.Empty;
         string underlying = string.Empty;
@@ -79,11 +78,11 @@ namespace com.dxfeed.ipf.option {
         /// See<a href="http://en.wikipedia.org/wiki/ISO_10962"> ISO 10962 on Wikipedia</a>.
         /// Example: "OC" for generic call, "OP" for generic put.
         /// </summary>
-        public string Cfi {
+        public string CFI {
             internal get { return cfi; }
             set {
                 cfi = value == null || value.Length == 0 ? "" : value;
-                series.Cfi = cfi.Length < 2 ? cfi : cfi[0] + "X" + cfi.Substring(2);
+                series.CFI = cfi.Length < 2 ? cfi : cfi[0] + "X" + cfi.Substring(2);
             }
         }
 
@@ -101,7 +100,7 @@ namespace com.dxfeed.ipf.option {
         /// It updates as new options are added with {@link #addOption(Object) addOption} method.
         /// @return view of chains created by this builder.
         /// </summary>
-        public Dictionary<string, OptionChain<T>> Chains {
+        public Dictionary<string, OptionChain> Chains {
             get {
                 return chains;
             }
@@ -140,7 +139,7 @@ namespace com.dxfeed.ipf.option {
         /// </summary>
         /// <param name="spc">shares per contract for options.</param>
         public void SetSPC(double spc) {
-            series.Spc = spc;
+            series.SPC = spc;
         }
 
         /// <summary>
@@ -168,8 +167,8 @@ namespace com.dxfeed.ipf.option {
         /// </ul>
         /// </summary>
         /// <param name="mmy">maturity month-year as provided for corresponding FIX tag (200).</param>
-        public void SetMmy(string mmy) {
-            series.Mmy = mmy == null || mmy.Length == 0 ? "" : mmy;
+        public void SetMMY(string mmy) {
+            series.MMY = mmy == null || mmy.Length == 0 ? "" : mmy;
         }
 
 
@@ -223,9 +222,9 @@ namespace com.dxfeed.ipf.option {
         /// {@link #getChains() chains} are updated correspondingly.
         /// </summary>
         /// <param name="option">option to add.</param>
-        public void AddOption(T option) {
-            bool isCall = Cfi.StartsWith("OC");
-            if (!isCall && !Cfi.StartsWith("OP"))
+        public void AddOption(InstrumentProfile option) {
+            bool isCall = CFI.StartsWith("OC");
+            if (!isCall && !CFI.StartsWith("OP"))
                 return;
             if (series.Expiration == 0)
                 return;
@@ -237,14 +236,13 @@ namespace com.dxfeed.ipf.option {
                 GetOrCreateChain(Underlying).AddOption(series, isCall, Strike, option);
         }
 
-        private OptionChain<T> GetOrCreateChain(string symbol) {
-            OptionChain<T> chain;
+        private OptionChain GetOrCreateChain(string symbol) {
+            OptionChain chain;
             if (!Chains.TryGetValue(symbol, out chain)) {
-                chain = new OptionChain<T>(symbol);
+                chain = new OptionChain(symbol);
                 Chains[symbol] = chain;
             }
             return chain;
         }
-
     }
 }

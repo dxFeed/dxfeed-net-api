@@ -8,34 +8,33 @@ namespace com.dxfeed.ipf.option {
     /// Series of call and put options with different strike sharing the same attributes of
     /// expiration, last trading day, spc, multiplies, etc.
     /// </summary>
-    /// <typeparam name="T">The type of option instrument instances.</typeparam>
-    public sealed class OptionSeries<T> : ICloneable, IComparable<OptionSeries<T>> {
+    public sealed class OptionSeries : ICloneable, IComparable<OptionSeries> {
 
-        private readonly SortedDictionary<double, T> calls = new SortedDictionary<double, T>();
-        private readonly SortedDictionary<double, T> puts = new SortedDictionary<double, T>();
+        private readonly SortedDictionary<double, InstrumentProfile> calls = new SortedDictionary<double, InstrumentProfile>();
+        private readonly SortedDictionary<double, InstrumentProfile> puts = new SortedDictionary<double, InstrumentProfile>();
         private List<double> strikes;
 
         internal OptionSeries() {
             AdditionalUnderlyings = "";
-            Mmy = "";
+            MMY = "";
             OptionType = "";
             ExpirationStyle = "";
             SettlementStyle = "";
-            Cfi = "";
+            CFI = "";
             Strikes = null;
         }
 
-        internal OptionSeries(OptionSeries<T> series) {
+        internal OptionSeries(OptionSeries series) {
             Expiration = series.Expiration;
             LastTrade = series.LastTrade;
             Multiplier = series.Multiplier;
-            Spc = series.Spc;
+            SPC = series.SPC;
             AdditionalUnderlyings = series.AdditionalUnderlyings;
-            Mmy = series.Mmy;
+            MMY = series.MMY;
             OptionType = series.OptionType;
             ExpirationStyle = series.ExpirationStyle;
             SettlementStyle = series.SettlementStyle;
-            Cfi = series.Cfi;
+            CFI = series.CFI;
             Strikes = null;
         }
 
@@ -45,7 +44,7 @@ namespace com.dxfeed.ipf.option {
         /// </summary>
         /// <returns>a shall copy of this option series.</returns>
         public object Clone() {
-            OptionSeries<T> clone = new OptionSeries<T>(this);
+            OptionSeries clone = new OptionSeries(this);
             foreach (var call in Calls) {
                 clone.Calls.Add(call.Key, call.Value);
             }
@@ -90,7 +89,7 @@ namespace com.dxfeed.ipf.option {
         /// Example: 1, 100.
         /// </summary>
         /// <value>Gets shares per contract for options.</value>
-        public double Spc {
+        public double SPC {
             get;
             internal set;
         }
@@ -121,7 +120,7 @@ namespace com.dxfeed.ipf.option {
         /// </ul>
         /// </summary>
         /// <value>Gets maturity month-year as provided for corresponding FIX tag(200).</value>
-        public string Mmy {
+        public string MMY {
             get;
             internal set;
         }
@@ -171,7 +170,7 @@ namespace com.dxfeed.ipf.option {
         /// It starts with "OX" as both {@link #getCalls() calls} and {@link #getPuts()} puts} are stored in a series.
         /// </summary>
         /// <value>Gets CFI code.</value>
-        public string Cfi {
+        public string CFI {
             get;
             internal set;
         }
@@ -179,7 +178,7 @@ namespace com.dxfeed.ipf.option {
         /// <summary>
         /// A sorted map of all calls from strike to a corresponding option instrument.
         /// </summary>
-        public SortedDictionary<double, T> Calls {
+        public SortedDictionary<double, InstrumentProfile> Calls {
             get {
                 return calls;
             }
@@ -188,7 +187,7 @@ namespace com.dxfeed.ipf.option {
         /// <summary>
         /// A sorted map of all puts from strike to a corresponding option instrument.
         /// </summary>
-        public SortedDictionary<double, T> Puts {
+        public SortedDictionary<double, InstrumentProfile> Puts {
             get {
                 return puts;
             }
@@ -236,7 +235,7 @@ namespace com.dxfeed.ipf.option {
         /// </summary>
         /// <param name="other">another option series to compare with.</param>
         /// <returns>result of comparison.</returns>
-        public int CompareTo(OptionSeries<T> other) {
+        public int CompareTo(OptionSeries other) {
             if (Expiration < other.Expiration)
                 return -1;
             if (Expiration > other.Expiration)
@@ -248,13 +247,13 @@ namespace com.dxfeed.ipf.option {
             int i = Multiplier.CompareTo(other.Multiplier);
             if (i != 0)
                 return i;
-            i = Spc.CompareTo(other.Spc);
+            i = SPC.CompareTo(other.SPC);
             if (i != 0)
                 return i;
             i = AdditionalUnderlyings.CompareTo(other.AdditionalUnderlyings);
             if (i != 0)
                 return i;
-            i = Mmy.CompareTo(other.Mmy);
+            i = MMY.CompareTo(other.MMY);
             if (i != 0)
                 return i;
             i = OptionType.CompareTo(other.OptionType);
@@ -266,7 +265,7 @@ namespace com.dxfeed.ipf.option {
             i = SettlementStyle.CompareTo(other.SettlementStyle);
             if (i != 0)
                 return i;
-            return Cfi.CompareTo(other.Cfi);
+            return CFI.CompareTo(other.CFI);
         }
 
         /// <summary>
@@ -277,18 +276,18 @@ namespace com.dxfeed.ipf.option {
         public override bool Equals(object o) {
             if (this == o)
                 return true;
-            if (!(o is OptionSeries<T>))
+            if (!(o is OptionSeries))
                 return false;
-            OptionSeries<T> that = (OptionSeries <T>)o;
+            OptionSeries that = (OptionSeries)o;
             return Expiration == that.Expiration &&
                 LastTrade == that.LastTrade &&
                 Multiplier.CompareTo(that.Multiplier) == 0 &&
-                Spc.CompareTo(that.Spc) == 0 &&
+                SPC.CompareTo(that.SPC) == 0 &&
                 AdditionalUnderlyings.Equals(that.AdditionalUnderlyings) &&
                 ExpirationStyle.Equals(that.ExpirationStyle) &&
-                Mmy.Equals(that.Mmy) &&
+                MMY.Equals(that.MMY) &&
                 OptionType.Equals(that.OptionType) &&
-                Cfi.Equals(that.Cfi) &&
+                CFI.Equals(that.CFI) &&
                 SettlementStyle.Equals(that.SettlementStyle);
         }
 
@@ -303,20 +302,20 @@ namespace com.dxfeed.ipf.option {
             result = 31 * result + LastTrade;
             temp = Multiplier != +0.0d ? BitConverter.DoubleToInt64Bits(Multiplier) : 0L;
             result = 31 * result + (int)((ulong)temp ^ ((ulong)temp >> 32));
-            temp = Spc != +0.0d ? BitConverter.DoubleToInt64Bits(Spc) : 0L;
+            temp = SPC != +0.0d ? BitConverter.DoubleToInt64Bits(SPC) : 0L;
             result = 31 * result + (int)((ulong)temp ^ ((ulong)temp >> 32));
             result = 31 * result + AdditionalUnderlyings.GetHashCode();
-            result = 31 * result + Mmy.GetHashCode();
+            result = 31 * result + MMY.GetHashCode();
             result = 31 * result + OptionType.GetHashCode();
             result = 31 * result + ExpirationStyle.GetHashCode();
             result = 31 * result + SettlementStyle.GetHashCode();
-            result = 31 * result + Cfi.GetHashCode();
+            result = 31 * result + CFI.GetHashCode();
             return result;
         }
 
 
-        internal void AddOption(bool isCall, double strike, T option) {
-            SortedDictionary<double, T> map = isCall ? Calls : Puts;
+        internal void AddOption(bool isCall, double strike, InstrumentProfile option) {
+            SortedDictionary<double, InstrumentProfile> map = isCall ? Calls : Puts;
             if (Put(map, strike, option) == null) {
                 Strikes = null;
             }
@@ -330,13 +329,14 @@ namespace com.dxfeed.ipf.option {
         /// <param name="map">map</param>
         /// <param name="key">key with which the specified value is to be associated</param>
         /// <param name="value">key with which the specified value is to be associated</param>
-        /// <returns>the previous value associated with key, or default(T) if there was no mapping for key</returns>
-        private T Put(SortedDictionary<double, T> map, double key, T value) {
+        /// <returns>the previous value associated with key, or null if there was no mapping for key.
+        /// A null return can also indicate that the map previously associated null with key</returns>
+        private InstrumentProfile Put(SortedDictionary<double, InstrumentProfile> map, double key, InstrumentProfile value) {
             if (!map.ContainsKey(key)) {
                 map.Add(key, value);
-                return default(T);
+                return null;
             }
-            T oldValue = map[key];
+            InstrumentProfile oldValue = map[key];
             map[key] = value;
             return oldValue;
         }
@@ -353,19 +353,19 @@ namespace com.dxfeed.ipf.option {
                 sb.Append(", lastTrade=").Append(DayUtil.GetYearMonthDayByDayId(LastTrade));
             if (Multiplier != 0)
                 sb.Append(", multiplier=").Append(Multiplier);
-            if (Spc != 0)
-                sb.Append(", spc=").Append(Spc);
+            if (SPC != 0)
+                sb.Append(", spc=").Append(SPC);
             if (AdditionalUnderlyings.Length > 0)
                 sb.Append(", additionalUnderlyings=").Append(AdditionalUnderlyings);
-            if (Mmy.Length > 0)
-                sb.Append(", mmy=").Append(Mmy);
+            if (MMY.Length > 0)
+                sb.Append(", mmy=").Append(MMY);
             if (OptionType.Length > 0)
                 sb.Append(", optionType=").Append(OptionType);
             if (ExpirationStyle.Length > 0)
                 sb.Append(", expirationStyle=").Append(ExpirationStyle);
             if (SettlementStyle.Length > 0)
                 sb.Append(", settlementStyle=").Append(SettlementStyle);
-            sb.Append(", cfi=").Append(Cfi);
+            sb.Append(", cfi=").Append(CFI);
             return sb.ToString();
         }
     }

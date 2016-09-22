@@ -150,7 +150,7 @@ namespace com.dxfeed.ipf {
                     case F_EXCHANGES: return ip.GetExchanges();
                     case F_CURRENCY: return ip.GetCurrency();
                     case F_BASE_CURRENCY: return ip.GetBaseCurrency();
-                    case F_CFI: return ip.GetCfi();
+                    case F_CFI: return ip.GetCFI();
                     case F_ISIN: return ip.GetISIN();
                     case F_SEDOL: return ip.GetSEDOL();
                     case F_CUSIP: return ip.GetCUSIP();
@@ -161,7 +161,7 @@ namespace com.dxfeed.ipf {
                     case F_UNDERLYING: return ip.GetUnderlying();
                     case F_SPC: return FormatNumber(ip.GetSPC());
                     case F_ADDITIONAL_UNDERLYINGS: return ip.GetAdditionalUnderlyings();
-                    case F_MMY: return ip.GetMmy();
+                    case F_MMY: return ip.GetMMY();
                     case F_EXPIRATION: return FormatDate(ip.GetExpiration());
                     case F_LAST_TRADE: return FormatDate(ip.GetLastTrade());
                     case F_STRIKE: return FormatNumber(ip.GetStrike());

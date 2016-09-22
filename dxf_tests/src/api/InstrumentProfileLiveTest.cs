@@ -1,15 +1,21 @@
-﻿using System;
+﻿/// Copyright (C) 2010-2016 Devexperts LLC
+///
+/// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+/// If a copy of the MPL was not distributed with this file, You can obtain one at
+/// http://mozilla.org/MPL/2.0/.
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using NUnit.Framework;
 using com.dxfeed.ipf;
 using com.dxfeed.ipf.live;
 
-namespace com.dxfeed.api {
-
+namespace com.dxfeed.api
+{
     [TestFixture]
-    class InstrumentProfileLiveTest {
-
+    class InstrumentProfileLiveTest
+    {
         const string DATA_PATH = "src\\data\\instrument_profile_data";
         const string ZIP_FILE_NAME = "profiles.zip";
         const string TEST_FILE_NAME = "instrument_profile_live_data.zip";
@@ -17,52 +23,63 @@ namespace com.dxfeed.api {
         const string UPDATE_PERIOD_STR = "[update=P3S]";
         const int IPF_COUNT = 25380;
 
-        class UpdateListener : InstrumentProfileUpdateListener {
-
+        class UpdateListener : InstrumentProfileUpdateListener
+        {
             List<InstrumentProfile> buffer = new List<InstrumentProfile>();
             bool isUpdatedNonSync = false;
             object isUpdatedLocker = new object();
 
-            public UpdateListener() {
+            public UpdateListener()
+            {
                 IsUpdated = false;
             }
 
-            public void InstrumentProfilesUpdated(ICollection<InstrumentProfile> instruments) {
+            public void InstrumentProfilesUpdated(ICollection<InstrumentProfile> instruments)
+            {
                 if (IsUpdated)
                     return;
                 buffer.AddRange(instruments);
                 IsUpdated = true;
             }
 
-            public ICollection<InstrumentProfile> LastUpdate {
-                get {
+            public ICollection<InstrumentProfile> LastUpdate
+            {
+                get
+                {
                     return buffer;
                 }
             }
 
-            public bool IsUpdated {
-                get {
+            public bool IsUpdated
+            {
+                get
+                {
                     bool value = false;
-                    lock(isUpdatedLocker) {
+                    lock (isUpdatedLocker)
+                    {
                         value = isUpdatedNonSync;
                     }
                     return value;
                 }
-                private set {
-                    lock (isUpdatedLocker) {
+                private set
+                {
+                    lock (isUpdatedLocker)
+                    {
                         isUpdatedNonSync = value;
                     }
                 }
             }
 
-            public void DropState() {
+            public void DropState()
+            {
                 buffer.Clear();
                 IsUpdated = false;
             }
         }
 
         [Test]
-        public void UpdateChangeTest() {
+        public void UpdateChangeTest()
+        {
             const int UPDATE_CHANGE_1_COUNT = 1;
             const int UPDATE_CHANGE_2_COUNT = 3;
             const string UPDATE_CHANGE_1_FILE_NAME = "update_change_field_profiles.zip";
@@ -95,8 +112,10 @@ namespace com.dxfeed.api {
             File.SetLastWriteTime(targetFile, DateTime.Now);
             while (!updateListener.IsUpdated) { }
             Assert.AreEqual(UPDATE_CHANGE_1_COUNT, updateListener.LastUpdate.Count);
-            foreach (InstrumentProfile ip in updateListener.LastUpdate) {
-                if (ip.GetTypeName().Equals(InstrumentProfileType.PRODUCT.Name) && ip.GetSymbol().Equals(PRODUCT_SYMBOL)) {
+            foreach (InstrumentProfile ip in updateListener.LastUpdate)
+            {
+                if (ip.GetTypeName().Equals(InstrumentProfileType.PRODUCT.Name) && ip.GetSymbol().Equals(PRODUCT_SYMBOL))
+                {
                     Assert.AreEqual(ip.GetField(UPDATED_FIELD_NAME), UPDATED_FIELD_VALUE);
                     continue;
                 }
@@ -109,8 +128,10 @@ namespace com.dxfeed.api {
             File.SetLastWriteTime(targetFile, DateTime.Now);
             while (!updateListener.IsUpdated) { }
             Assert.AreEqual(UPDATE_CHANGE_2_COUNT, updateListener.LastUpdate.Count);
-            foreach (InstrumentProfile ip in updateListener.LastUpdate) {
-                if (ip.GetTypeName().Equals(InstrumentProfileType.PRODUCT.Name) && ip.GetSymbol().Equals(PRODUCT_SYMBOL)) {
+            foreach (InstrumentProfile ip in updateListener.LastUpdate)
+            {
+                if (ip.GetTypeName().Equals(InstrumentProfileType.PRODUCT.Name) && ip.GetSymbol().Equals(PRODUCT_SYMBOL))
+                {
                     Assert.AreEqual(ip.GetField(CUSTOM_FIELD_ONE_NAME), CUSTOM_FIELD_ONE_VALUE);
                     Assert.AreEqual(ip.GetField(CUSTOM_FIELD_TWO_NAME), CUSTOM_FIELD_TWO_VALUE);
                     continue;
@@ -121,7 +142,8 @@ namespace com.dxfeed.api {
         }
 
         [Test]
-        public void UpdateAddTest() {
+        public void UpdateAddTest()
+        {
             const int UPDATE_ADD_COUNT = 2;
             const string UPDATE_ADD_FILE_NAME = "update_add_profiles.zip";
             const string PRODUCT_SYMBOL_1 = "/EX";
@@ -146,9 +168,11 @@ namespace com.dxfeed.api {
             File.SetLastWriteTime(targetFile, DateTime.Now);
             while (!updateListener.IsUpdated) { }
             Assert.AreEqual(UPDATE_ADD_COUNT, updateListener.LastUpdate.Count);
-            foreach (InstrumentProfile ip in updateListener.LastUpdate) {
-                if (ip.GetTypeName().Equals(InstrumentProfileType.PRODUCT.Name) && 
-                    (ip.GetSymbol().Equals(PRODUCT_SYMBOL_1) || ip.GetSymbol().Equals(PRODUCT_SYMBOL_2))) {
+            foreach (InstrumentProfile ip in updateListener.LastUpdate)
+            {
+                if (ip.GetTypeName().Equals(InstrumentProfileType.PRODUCT.Name) &&
+                    (ip.GetSymbol().Equals(PRODUCT_SYMBOL_1) || ip.GetSymbol().Equals(PRODUCT_SYMBOL_2)))
+                {
 
                     continue;
                 }
@@ -159,7 +183,8 @@ namespace com.dxfeed.api {
         }
 
         [Test]
-        public void UpdateRemoveTest() {
+        public void UpdateRemoveTest()
+        {
             const int UPDATE_ADD_COUNT = 2;
             const string UPDATE_REMOVE_FILE_NAME = "update_remove_profiles.zip";
             const string PRODUCT_SYMBOL_1 = "/CL";
@@ -184,10 +209,11 @@ namespace com.dxfeed.api {
             File.SetLastWriteTime(targetFile, DateTime.Now);
             while (!updateListener.IsUpdated) { }
             Assert.AreEqual(UPDATE_ADD_COUNT, updateListener.LastUpdate.Count);
-            foreach (InstrumentProfile ip in updateListener.LastUpdate) {
-                if (ip.GetTypeName().Equals(InstrumentProfileType.REMOVED.Name) && 
-                    (ip.GetSymbol().Equals(PRODUCT_SYMBOL_1) || ip.GetSymbol().Equals(PRODUCT_SYMBOL_2))) {
-
+            foreach (InstrumentProfile ip in updateListener.LastUpdate)
+            {
+                if (ip.GetTypeName().Equals(InstrumentProfileType.REMOVED.Name) &&
+                    (ip.GetSymbol().Equals(PRODUCT_SYMBOL_1) || ip.GetSymbol().Equals(PRODUCT_SYMBOL_2)))
+                {
                     continue;
                 }
                 Assert.Fail("Unexpected instrument profiles here!");
@@ -197,7 +223,8 @@ namespace com.dxfeed.api {
         }
 
         [Test]
-        public void SetPeriodTest() {
+        public void SetPeriodTest()
+        {
             const int TEST_TIMES = 3;
             const long PERIOD_NEW = 5000;
             const double PERIOD_DELTA = 1000;
@@ -216,8 +243,10 @@ namespace com.dxfeed.api {
 
             while (!updateListener.IsUpdated) { }
             DateTime time = DateTime.Now;
-            for (int i = 0; i < TEST_TIMES * 2; i++) {
-                if (i == TEST_TIMES) {
+            for (int i = 0; i < TEST_TIMES * 2; i++)
+            {
+                if (i == TEST_TIMES)
+                {
                     connection.UpdatePeriod = PERIOD_NEW;
                 }
                 updateListener.DropState();
@@ -236,7 +265,8 @@ namespace com.dxfeed.api {
         }
 
         [Test]
-        public void AddListenerTest() {
+        public void AddListenerTest()
+        {
             const string UPDATE_CHANGE_FILE_NAME = "update_change_field_profiles.zip";
             string sourceFile = Path.GetFullPath(Path.Combine(DATA_PATH, ZIP_FILE_NAME));
             string updateFile = Path.GetFullPath(Path.Combine(DATA_PATH, UPDATE_CHANGE_FILE_NAME));
@@ -265,6 +295,5 @@ namespace com.dxfeed.api {
 
             connection.Close();
         }
-
     }
 }

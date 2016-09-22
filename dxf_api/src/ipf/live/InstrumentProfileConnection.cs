@@ -1,4 +1,10 @@
-﻿using com.dxfeed.io;
+﻿/// Copyright (C) 2010-2016 Devexperts LLC
+///
+/// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+/// If a copy of the MPL was not distributed with this file, You can obtain one at
+/// http://mozilla.org/MPL/2.0/.
+
+using com.dxfeed.io;
 using com.dxfeed.ipf.impl;
 using com.dxfeed.util;
 using System;
@@ -8,8 +14,8 @@ using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading;
 
-namespace com.dxfeed.ipf.live {
-
+namespace com.dxfeed.ipf.live
+{
     /// <summary>
     /// Connects to an instrument profile URL and reads instrument profiles using Simple File Format with support of
     /// streaming live updates.
@@ -48,15 +54,16 @@ namespace com.dxfeed.ipf.live {
     ///
     //// This class is thread-safe.
     /// </summary>
-    public class InstrumentProfileConnection {
-
+    public class InstrumentProfileConnection
+    {
         public delegate void OnErrorEventHandler(object sender, ErrorEventArgs e);
         public event OnErrorEventHandler OnError;
-        
+
         /// <summary>
         /// Instrument profile connection state.
         /// </summary>
-        public enum State {
+        public enum State
+        {
             /// <summary>
             /// Instrument profile connection is not started yet.
             /// InstrumentProfileConnection.Start() was not invoked yet.
@@ -112,11 +119,13 @@ namespace com.dxfeed.ipf.live {
         /// Connection needs to be started to begin an actual operation.
         /// </summary>
         /// <param name="address">Address of server</param>
-        public InstrumentProfileConnection(string address) {
+        public InstrumentProfileConnection(string address)
+        {
             this.address = address;
             Regex regex = new Regex(UPDATE_PATTERN, RegexOptions.IgnoreCase);
             Match match = regex.Match(address);
-            if (match.Success) {
+            if (match.Success)
+            {
                 this.address = match.Groups[1].ToString();
                 updatePeriod = TimePeriod.ValueOf(match.Groups[2].ToString()).GetTime();
             }
@@ -128,11 +137,14 @@ namespace com.dxfeed.ipf.live {
         /// and/or when connection is dropped.
         /// Default update period is 1 minute.
         /// </summary>
-        public long UpdatePeriod {
-            get {
+        public long UpdatePeriod
+        {
+            get
+            {
                 return Thread.VolatileRead(ref updatePeriod);
             }
-            set {
+            set
+            {
                 Interlocked.Exchange(ref updatePeriod, value);
             }
         }
@@ -140,29 +152,37 @@ namespace com.dxfeed.ipf.live {
         /// <summary>
         /// Returns state of this instrument profile connections.
         /// </summary>
-        private State CurrentState {
-            get {
+        private State CurrentState
+        {
+            get
+            {
                 State currentState = State.Closed;
-                lock (stateLocker) {
+                lock (stateLocker)
+                {
                     currentState = state;
                 }
                 return currentState;
             }
         }
-        
+
         /// <summary>
         /// Get or set modification time of instrument profiles or DateTime.MinValue if it is unknown.
         /// </summary>
-        private DateTime LastModified {
-            get {
+        private DateTime LastModified
+        {
+            get
+            {
                 DateTime value;
-                lock (lastModifiedLocker) {
+                lock (lastModifiedLocker)
+                {
                     value = lastModified;
                 }
                 return value;
             }
-            set {
-                lock (lastModifiedLocker) {
+            set
+            {
+                lock (lastModifiedLocker)
+                {
                     lastModified = value;
                 }
             }
@@ -172,8 +192,10 @@ namespace com.dxfeed.ipf.live {
         /// Starts this instrument profile connection. This connection's state immediately changes to
         /// State.Connecting and the actual connection establishment proceeds in the background.
         /// </summary>
-        public void Start() {
-            lock(stateLocker) {
+        public void Start()
+        {
+            lock (stateLocker)
+            {
                 if (state != State.NotConnected)
                     throw new InvalidOperationException("Invalid state " + state);
                 handlerThread = new Thread(Handler);
@@ -187,8 +209,10 @@ namespace com.dxfeed.ipf.live {
         /// Closes this instrument profile connection. This connection's state immediately changes to
         /// State.Closed and the background update procedures are terminated.
         /// </summary>
-        public void Close() {
-            lock (stateLocker) {
+        public void Close()
+        {
+            lock (stateLocker)
+            {
                 if (state == State.Closed)
                     return;
                 state = State.Closed;
@@ -202,10 +226,12 @@ namespace com.dxfeed.ipf.live {
         /// </summary>
         /// <param name="listener">Profile update listener.</param>
         /// <exception cref="ArgumentNullException">If listener is null.</exception>
-        public void AddUpdateListener(InstrumentProfileUpdateListener listener) {
+        public void AddUpdateListener(InstrumentProfileUpdateListener listener)
+        {
             if (listener == null)
                 throw new ArgumentNullException("null listener");
-            lock(listenersLocker) {
+            lock (listenersLocker)
+            {
                 if (!listeners.Contains(listener))
                     listeners.Add(listener);
                 CheckAndCallListener(listener, updater.InstrumentProfiles);
@@ -217,10 +243,12 @@ namespace com.dxfeed.ipf.live {
         /// </summary>
         /// <param name="listener">Profile update listener.</param>
         /// <exception cref="ArgumentNullException">If listener is null.</exception>
-        public void RemoveUpdateListener(InstrumentProfileUpdateListener listener) {
+        public void RemoveUpdateListener(InstrumentProfileUpdateListener listener)
+        {
             if (listener == null)
                 throw new ArgumentNullException("null listener");
-            lock (listenersLocker) {
+            lock (listenersLocker)
+            {
                 listeners.Remove(listener);
             }
         }
@@ -229,7 +257,8 @@ namespace com.dxfeed.ipf.live {
         /// Returns a string representation of the object.
         /// </summary>
         /// <returns>String representation of the object.</returns>
-        public override string ToString() {
+        public override string ToString()
+        {
             // Note: it is also used as a thread name.
             return "IPC:" + address;
         }
@@ -237,14 +266,20 @@ namespace com.dxfeed.ipf.live {
         /// <summary>
         /// Method of worker thread. Runs downloading process by specified update period.
         /// </summary>
-        private void Handler() {
+        private void Handler()
+        {
             DateTime downloadStart = DateTime.MinValue;
-            while (CurrentState != State.Closed) {
+            while (CurrentState != State.Closed)
+            {
                 // wait before retrying
-                if (DateTime.Now.Subtract(downloadStart).TotalMilliseconds > UpdatePeriod) {
-                    try {
+                if (DateTime.Now.Subtract(downloadStart).TotalMilliseconds > UpdatePeriod)
+                {
+                    try
+                    {
                         Download();
-                    } catch (Exception e) {
+                    }
+                    catch (Exception e)
+                    {
                         CallOnError(e);
                     }
                     downloadStart = DateTime.Now;
@@ -255,8 +290,10 @@ namespace com.dxfeed.ipf.live {
         /// <summary>
         /// Change connection status to connected.
         /// </summary>
-        private void MakeConnected() {
-            lock (stateLocker) {
+        private void MakeConnected()
+        {
+            lock (stateLocker)
+            {
                 if (state == State.Connecting)
                     state = State.Connected;
             }
@@ -265,9 +302,12 @@ namespace com.dxfeed.ipf.live {
         /// <summary>
         /// Change connection status to completed.
         /// </summary>
-        private void MakeComplete() {
-            lock (stateLocker) {
-                if (state == State.Connected) {
+        private void MakeComplete()
+        {
+            lock (stateLocker)
+            {
+                if (state == State.Connected)
+                {
                     state = State.Completed;
                 }
             }
@@ -276,23 +316,30 @@ namespace com.dxfeed.ipf.live {
         /// <summary>
         /// Opens (or keeps) connection for receiving instrument profiles from server.
         /// </summary>
-        private void Download() {
+        private void Download()
+        {
             WebRequest webRequest = URLInputStream.OpenConnection(address);
             webRequest.Headers.Add(Constants.LIVE_PROP_KEY, Constants.LIVE_PROP_REQUEST_YES);
             if (LastModified != DateTime.MinValue && !supportsLive &&
-                webRequest.GetType() == typeof(HttpWebRequest)) {
+                webRequest.GetType() == typeof(HttpWebRequest))
+            {
 
                 ((HttpWebRequest)webRequest).IfModifiedSince = lastModified;
             }
 
-            try {
-                using (WebResponse webResponse = webRequest.GetResponse()) {
+            try
+            {
+                using (WebResponse webResponse = webRequest.GetResponse())
+                {
                     bool isFileStream = webResponse.GetType() == typeof(FileWebResponse);
                     DateTime time;
-                    if (isFileStream) {
+                    if (isFileStream)
+                    {
                         Uri fileUri = new Uri(address);
                         time = File.GetLastWriteTime(fileUri.AbsolutePath);
-                    } else {
+                    }
+                    else
+                    {
                         URLInputStream.CheckConnectionResponseCode(webResponse);
                         time = ((HttpWebResponse)webResponse).LastModified;
                         supportsLive = Constants.LIVE_PROP_RESPONSE.Equals(webResponse.Headers.Get(Constants.LIVE_PROP_KEY));
@@ -300,18 +347,23 @@ namespace com.dxfeed.ipf.live {
                     if (time == LastModified)
                         return; // nothing changed
                     MakeConnected();
-                    using (Stream inputStream = webResponse.GetResponseStream()) {
+                    using (Stream inputStream = webResponse.GetResponseStream())
+                    {
                         StreamCompression compress = (isFileStream ? StreamCompression.DetectCompressionByExtension(new Uri(address)) :
                             StreamCompression.DetectCompressionByMimeType(webResponse.ContentType));
-                        using (Stream decompressedIn = compress.Decompress(inputStream)) {
+                        using (Stream decompressedIn = compress.Decompress(inputStream))
+                        {
                             int count = process(decompressedIn);
                             // Update timestamp only after first successful processing
                             LastModified = time;
                         }
                     }
                 }
-            } catch (WebException we) {
-                using (WebResponse webResponse = we.Response) {
+            }
+            catch (WebException we)
+            {
+                using (WebResponse webResponse = we.Response)
+                {
                     if (webResponse != null && webResponse.GetType() == typeof(HttpWebResponse) &&
                         ((HttpWebResponse)webResponse).StatusCode == HttpStatusCode.NotModified)
                         return; // not modified
@@ -325,13 +377,15 @@ namespace com.dxfeed.ipf.live {
         /// </summary>
         /// <param name="inputStream">Decompressed input stream of instrument profiles.</param>
         /// <returns>Number of received instrument profiles.</returns>
-        private int process(Stream inputStream) {
+        private int process(Stream inputStream)
+        {
             int count = 0;
             InstrumentProfileParser parser = new InstrumentProfileParser(inputStream);
             parser.OnFlush += Flush;
             parser.OnComplete += Complete;
             InstrumentProfile ip;
-            while ((ip = parser.Next()) != null) {
+            while ((ip = parser.Next()) != null)
+            {
                 count++;
                 ipBuffer.Add(ip);
                 if (CurrentState == State.Closed)
@@ -350,7 +404,8 @@ namespace com.dxfeed.ipf.live {
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void Flush(object sender, EventArgs e) {
+        private void Flush(object sender, EventArgs e)
+        {
             if (ipBuffer.Count == 0)
                 return;
             ICollection<InstrumentProfile> updateList = updater.Update(ipBuffer);
@@ -363,7 +418,8 @@ namespace com.dxfeed.ipf.live {
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void Complete(object sender, EventArgs e) {
+        private void Complete(object sender, EventArgs e)
+        {
             MakeComplete();
             Flush(this, e);
         }
@@ -373,8 +429,9 @@ namespace com.dxfeed.ipf.live {
         /// </summary>
         /// <param name="listener">Listener to call.</param>
         /// <param name="instrumentProfiles">Instrument profiles updates.</param>
-        private void CheckAndCallListener(InstrumentProfileUpdateListener listener, 
-            ICollection<InstrumentProfile> instrumentProfiles) {
+        private void CheckAndCallListener(InstrumentProfileUpdateListener listener,
+            ICollection<InstrumentProfile> instrumentProfiles)
+        {
 
             if (instrumentProfiles == null || instrumentProfiles.Count == 0)
                 return;
@@ -385,9 +442,12 @@ namespace com.dxfeed.ipf.live {
         /// Iterate through listeners and call them.
         /// </summary>
         /// <param name="instrumentProfiles"></param>
-        private void CallListeners(ICollection<InstrumentProfile> instrumentProfiles) {
-            lock(listenersLocker) {
-                foreach (InstrumentProfileUpdateListener listener in listeners) {
+        private void CallListeners(ICollection<InstrumentProfile> instrumentProfiles)
+        {
+            lock (listenersLocker)
+            {
+                foreach (InstrumentProfileUpdateListener listener in listeners)
+                {
                     CheckAndCallListener(listener, instrumentProfiles);
                 }
             }
@@ -397,13 +457,12 @@ namespace com.dxfeed.ipf.live {
         /// Call error listener.
         /// </summary>
         /// <param name="e">Exception object.</param>
-        private void CallOnError(Exception e) {
-            lock (listenersLocker) {
-                if (OnError != null) {
-                    OnError(this, new ErrorEventArgs(e));
-                }
+        private void CallOnError(Exception e)
+        {
+            lock (listenersLocker)
+            {
+                OnError?.Invoke(this, new ErrorEventArgs(e));
             }
         }
-
     }
 }

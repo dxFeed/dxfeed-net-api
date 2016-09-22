@@ -1,23 +1,22 @@
-﻿/*
- * QDS - Quick Data Signalling Library
- * Copyright (C) 2002-2015 Devexperts LLC
- *
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- */
+﻿/// Copyright (C) 2010-2016 Devexperts LLC
+///
+/// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+/// If a copy of the MPL was not distributed with this file, You can obtain one at
+/// http://mozilla.org/MPL/2.0/.
+
 using System;
 using System.Collections.Generic;
 using System.IO;
 using com.dxfeed.io;
 
-namespace com.dxfeed.ipf.impl {
-
+namespace com.dxfeed.ipf.impl
+{
     /// <summary>
     /// Composer for Instrument Profile Simple File Format.
     /// Please see <b>Instrument Profile Format</b> documentation for complete description.
     /// </summary>
-    class InstrumentProfileComposer : IDisposable {
+    class InstrumentProfileComposer : IDisposable
+    {
         private static readonly InstrumentProfileField[] fields = InstrumentProfileField.Values;
         private static readonly string REMOVED_TYPE = InstrumentProfileType.REMOVED.Name;
 
@@ -32,7 +31,8 @@ namespace com.dxfeed.ipf.impl {
         /// <param name="outStream"></param>
         /// <exception cref="System.ArgumentNullException"></exception>
         /// <exception cref="System.ArgumentException"></exception>
-        public InstrumentProfileComposer(Stream outStream) {
+        public InstrumentProfileComposer(Stream outStream)
+        {
             writer = new CSVWriter(new StreamWriter(outStream, System.Text.Encoding.UTF8));
         }
 
@@ -40,7 +40,8 @@ namespace com.dxfeed.ipf.impl {
         /// Dispose object.
         /// </summary>
         /// <exception cref="System.IO.IOException">If an I/O error occurs.</exception>
-        public void Dispose() {
+        public void Dispose()
+        {
             writer.Dispose();
         }
 
@@ -53,7 +54,8 @@ namespace com.dxfeed.ipf.impl {
         /// <exception cref="System.ArgumentException">If attempt to write record without fields was made.</exception>
         /// <exception cref="System.IO.IOException">If an I/O error occurs.</exception>
         /// <exception cref="System.InvalidOperationException">Can't format certain profile.</exception>
-        public void Compose(IList<InstrumentProfile> profiles, bool skipRemoved)  {
+        public void Compose(IList<InstrumentProfile> profiles, bool skipRemoved)
+        {
             CaptureTypes(profiles);
             WriteFormats(profiles, skipRemoved);
             WriteProfiles(profiles, skipRemoved);
@@ -65,8 +67,9 @@ namespace com.dxfeed.ipf.impl {
         /// </summary>
         /// <exception cref="System.ArgumentException">If attempt to write record without fields was made.</exception>
         /// <exception cref="System.IO.IOException">If an I/O error occurs.</exception>
-        public void ComposeNewLine() {
-            writer.WriteRecord(new string[] {""}); // Force CRLF
+        public void ComposeNewLine()
+        {
+            writer.WriteRecord(new string[] { "" }); // Force CRLF
             writer.Flush();
         }
 
@@ -75,7 +78,8 @@ namespace com.dxfeed.ipf.impl {
         /// </summary>
         /// <exception cref="System.ArgumentException">If attempt to write record without fields was made.</exception>
         /// <exception cref="System.IO.IOException">If an I/O error occurs.</exception>
-        public void ComposeFlush()  {
+        public void ComposeFlush()
+        {
             writer.WriteRecord(new string[] { Constants.FLUSH_COMMAND });
             ComposeNewLine();
         }
@@ -85,12 +89,14 @@ namespace com.dxfeed.ipf.impl {
         /// </summary>
         /// <exception cref="System.ArgumentException">If attempt to write record without fields was made.</exception>
         /// <exception cref="System.IO.IOException">If an I/O error occurs.</exception>
-        public void ComposeComplete()  {
+        public void ComposeComplete()
+        {
             writer.WriteRecord(new string[] { Constants.COMPLETE_COMMAND });
             ComposeNewLine();
         }
 
-        private void CaptureTypes(IList<InstrumentProfile> profiles) {
+        private void CaptureTypes(IList<InstrumentProfile> profiles)
+        {
             types.Clear();
             foreach (InstrumentProfile ip in profiles)
                 types.Add(ip.GetTypeName());
@@ -104,9 +110,11 @@ namespace com.dxfeed.ipf.impl {
         /// <exception cref="System.ArgumentException">If attempt to write record without fields was made.</exception>
         /// <exception cref="System.IO.IOException">If an I/O error occurs.</exception>
         /// <exception cref="System.InvalidOperationException">Can't format profile field.</exception>
-        private void WriteFormats(IList<InstrumentProfile> profiles, bool skipRemoved) {
+        private void WriteFormats(IList<InstrumentProfile> profiles, bool skipRemoved)
+        {
             HashSet<string> updated = new HashSet<string>();
-            for (int i = 0; i < profiles.Count; i++) {
+            for (int i = 0; i < profiles.Count; i++)
+            {
                 string type = types[i]; // atomically captured
                 if (REMOVED_TYPE.Equals(type) && skipRemoved)
                     continue;
@@ -114,7 +122,8 @@ namespace com.dxfeed.ipf.impl {
                 HashSet<InstrumentProfileField> enumFormat;
                 HashSet<string> customFormat;
                 customFormats.TryGetValue(type, out customFormat);
-                if (!enumFormats.TryGetValue(type, out enumFormat)) {
+                if (!enumFormats.TryGetValue(type, out enumFormat))
+                {
                     updated.Add(type);
                     enumFormat = new HashSet<InstrumentProfileField>();
                     enumFormat.Add(InstrumentProfileField.SYMBOL);
@@ -123,7 +132,8 @@ namespace com.dxfeed.ipf.impl {
                     customFormat = new HashSet<string>();
                     customFormats[type] = customFormat;
                 }
-                if (!REMOVED_TYPE.Equals(type)) {
+                if (!REMOVED_TYPE.Equals(type))
+                {
                     // collect actual used fields for non-removed instrument profiles
                     foreach (InstrumentProfileField ipf in fields)
                         if (ipf != InstrumentProfileField.TYPE && ipf.GetField(ip).Length > 0)
@@ -143,7 +153,8 @@ namespace com.dxfeed.ipf.impl {
         /// <param name="type"></param>
         /// <exception cref="System.ArgumentException">If attempt to write record without fields was made.</exception>
         /// <exception cref="System.IO.IOException">If an I/O error occurs.</exception>
-        private void WriteFormat(string type) {
+        private void WriteFormat(string type)
+        {
             writer.WriteField(Constants.METADATA_PREFIX + type + Constants.METADATA_SUFFIX);
             foreach (InstrumentProfileField field in enumFormats[type])
                 writer.WriteField(field.Name);
@@ -159,8 +170,10 @@ namespace com.dxfeed.ipf.impl {
         /// <param name="skipRemoved"></param>
         /// <exception cref="System.InvalidOperationException">Can't format certain profile.</exception>
         /// <exception cref="System.IO.IOException">If an I/O error occurs.</exception>
-        private void WriteProfiles(IList<InstrumentProfile> profiles, bool skipRemoved) {
-            for (int i = 0; i < profiles.Count; i++) {
+        private void WriteProfiles(IList<InstrumentProfile> profiles, bool skipRemoved)
+        {
+            for (int i = 0; i < profiles.Count; i++)
+            {
                 string type = types[i]; // atomically captured
                 if (REMOVED_TYPE.Equals(type) && skipRemoved)
                     continue;
@@ -176,7 +189,8 @@ namespace com.dxfeed.ipf.impl {
         /// <param name="ip"></param>
         /// <exception cref="System.InvalidOperationException">Can't format certain profile.</exception>
         /// <exception cref="System.IO.IOException">If an I/O error occurs.</exception>
-        private void WriteProfile(string type, InstrumentProfile ip) {
+        private void WriteProfile(string type, InstrumentProfile ip)
+        {
             writer.WriteField(type);
             foreach (InstrumentProfileField field in enumFormats[type])
                 writer.WriteField(field.GetField(ip));
@@ -184,6 +198,5 @@ namespace com.dxfeed.ipf.impl {
                 writer.WriteField(ip.GetField(field));
             writer.WriteRecord(null);
         }
-
     }
 }

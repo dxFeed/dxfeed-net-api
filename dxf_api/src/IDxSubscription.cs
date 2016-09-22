@@ -1,14 +1,20 @@
-﻿using System;
+﻿/// Copyright (C) 2010-2016 Devexperts LLC
+///
+/// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+/// If a copy of the MPL was not distributed with this file, You can obtain one at
+/// http://mozilla.org/MPL/2.0/.
+
+using System;
 using System.Collections.Generic;
 using com.dxfeed.api.candle;
 
-namespace com.dxfeed.api {
-
+namespace com.dxfeed.api
+{
     /// <summary>
     /// Interface provides operation with subscription parameters
     /// </summary>
-    public interface IDxSubscription : IDisposable {
-
+    public interface IDxSubscription : IDisposable
+    {
         /// <summary>
         /// Add symbol to subscription
         /// It's not applicable to Candle subscription.

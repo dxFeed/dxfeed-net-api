@@ -1,13 +1,19 @@
-﻿using System;
+﻿/// Copyright (C) 2010-2016 Devexperts LLC
+///
+/// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+/// If a copy of the MPL was not distributed with this file, You can obtain one at
+/// http://mozilla.org/MPL/2.0/.
+
+using System;
 using System.Text;
 
-namespace com.dxfeed.util {
-
+namespace com.dxfeed.util
+{
     /// <summary>
     /// Value class for period of time with support for ISO8601 duration format.
     /// </summary>
-    public class TimePeriod {
-
+    public class TimePeriod
+    {
         /// <summary>
         /// Time-period of zero.
         /// </summary>
@@ -18,7 +24,8 @@ namespace com.dxfeed.util {
         /// </summary>
         /// <param name="value">Value in milliseconds.</param>
         /// <returns>TimePeriod with value milliseconds.</returns>
-        public static TimePeriod ValueOf(long value) {
+        public static TimePeriod ValueOf(long value)
+        {
             return value == 0 ? ZERO : new TimePeriod(value);
         }
 
@@ -35,95 +42,119 @@ namespace com.dxfeed.util {
         /// <param name="value">String representation.</param>
         /// <returns>TimePeriod represented with a given string.</returns>
         /// <exception cref="FormatException">if cannot parse value.</exception>
-        public static TimePeriod ValueOf(string value) {
+        public static TimePeriod ValueOf(string value)
+        {
             return ValueOf(Parse(value));
         }
 
         // value in milliseconds
         private long value;
 
-        protected TimePeriod(long value) {
+        protected TimePeriod(long value)
+        {
             this.value = value;
         }
 
-        protected static long Parse(string value) {
-            try {
+        protected static long Parse(string value)
+        {
+            try
+            {
                 bool metAnyPart = false;
                 value = value.ToUpper() + '#';
                 long res = 0;
                 int i = 0;
-                if (value[i] == 'P') {
+                if (value[i] == 'P')
+                {
                     i++;
                 }
                 int j = i;
-                while (Char.IsDigit(value[j])) {
+                while (Char.IsDigit(value[j]))
+                {
                     j++;
                 }
-                if (value[j] == 'D') {
+                if (value[j] == 'D')
+                {
                     res += Int32.Parse(value.Substring(i, j - i));
                     metAnyPart = true;
                     j++;
                     i = j;
-                    while (Char.IsDigit(value[j])) {
+                    while (Char.IsDigit(value[j]))
+                    {
                         j++;
                     }
                 }
                 res *= 24;
-                if (value[j] == 'T') {
-                    if (i != j) {
+                if (value[j] == 'T')
+                {
+                    if (i != j)
+                    {
                         throw new FormatException("Wrong time period format.");
                     }
                     j++;
                     i = j;
-                    while (Char.IsDigit(value[j])) {
+                    while (Char.IsDigit(value[j]))
+                    {
                         j++;
                     }
                 }
-                if (value[j] == 'H') {
+                if (value[j] == 'H')
+                {
                     res += Int32.Parse(value.Substring(i, j - i));
                     metAnyPart = true;
                     j++;
                     i = j;
-                    while (Char.IsDigit(value[j])) {
+                    while (Char.IsDigit(value[j]))
+                    {
                         j++;
                     }
                 }
                 res *= 60;
-                if (value[j] == 'M') {
+                if (value[j] == 'M')
+                {
                     res += Int32.Parse(value.Substring(i, j - i));
                     metAnyPart = true;
                     j++;
                     i = j;
-                    while (Char.IsDigit(value[j])) {
+                    while (Char.IsDigit(value[j]))
+                    {
                         j++;
                     }
                 }
                 res *= 60 * 1000;
-                if (value[j] == '.') {
+                if (value[j] == '.')
+                {
                     j++;
-                    while (Char.IsDigit(value[j])) {
+                    while (Char.IsDigit(value[j]))
+                    {
                         j++;
                     }
                 }
-                if (i != j) {
+                if (i != j)
+                {
                     res += (long)Math.Round(Double.Parse(value.Substring(i, j - i)) * 1000);
                     metAnyPart = true;
                 }
                 bool good = ((value[j] == 'S') && (j == value.Length - 2) && (i != j)) ||
                     ((value[j] == '#') && (j == value.Length - 1));
                 good &= metAnyPart;
-                if (!good) {
+                if (!good)
+                {
                     throw new FormatException("Wrong time period format.");
                 }
                 return res;
-            } catch (FormatException) {
+            }
+            catch (FormatException)
+            {
                 throw;
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 throw new FormatException("Wrong time period format:" + e);
             }
         }
 
-        public override string ToString() {
+        public override string ToString()
+        {
             long v = value;
             long millis = v % 1000;
             v = v / 1000;
@@ -136,19 +167,25 @@ namespace com.dxfeed.util {
             long days = v;
             StringBuilder result = new StringBuilder();
             result.Append('P');
-            if (days > 0) {
+            if (days > 0)
+            {
                 result.Append(days).Append("D");
             }
             result.Append('T');
-            if (hours > 0) {
+            if (hours > 0)
+            {
                 result.Append(hours).Append("H");
             }
-            if (mins > 0) {
+            if (mins > 0)
+            {
                 result.Append(mins).Append("M");
             }
-            if (millis > 0) {
+            if (millis > 0)
+            {
                 result.Append((secs * 1000 + millis) / 1000d);
-            } else {
+            }
+            else
+            {
                 result.Append(secs);
             }
             result.Append("S");
@@ -159,7 +196,8 @@ namespace com.dxfeed.util {
         /// Returns value in milliseconds.
         /// </summary>
         /// <returns>Value in milliseconds.</returns>
-        public long GetTime() {
+        public long GetTime()
+        {
             return value;
         }
 
@@ -167,11 +205,13 @@ namespace com.dxfeed.util {
         /// Returns value in nanoseconds.
         /// </summary>
         /// <returns>Value in nanoseconds.</returns>
-        public long GetNanos() {
+        public long GetNanos()
+        {
             return 1000000 * value;
         }
 
-        public override bool Equals(object o) {
+        public override bool Equals(object o)
+        {
             if (this == o)
                 return true;
             if (o == null || GetType() != o.GetType())
@@ -180,9 +220,9 @@ namespace com.dxfeed.util {
             return value == that.value;
         }
 
-        public override int GetHashCode() {
+        public override int GetHashCode()
+        {
             return (int)value;
         }
     }
-
 }

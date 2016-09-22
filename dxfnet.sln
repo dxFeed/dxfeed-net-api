@@ -28,6 +28,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dxf_instrument_profile_live
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dxf_option_chain_sample", "samples\dxf_option_chain_sample\dxf_option_chain_sample.csproj", "{27844D1F-5982-4761-B807-AAE549CF6448}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dxf_order_view_sample", "samples\dxf_order_view_sample\dxf_order_view_sample.csproj", "{632C4E8E-8697-4D38-BBB5-D79A3617A7A1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -73,6 +75,10 @@ Global
 		{27844D1F-5982-4761-B807-AAE549CF6448}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{27844D1F-5982-4761-B807-AAE549CF6448}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{27844D1F-5982-4761-B807-AAE549CF6448}.Release|Any CPU.Build.0 = Release|Any CPU
+		{632C4E8E-8697-4D38-BBB5-D79A3617A7A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{632C4E8E-8697-4D38-BBB5-D79A3617A7A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{632C4E8E-8697-4D38-BBB5-D79A3617A7A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{632C4E8E-8697-4D38-BBB5-D79A3617A7A1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -84,5 +90,6 @@ Global
 		{7ABE7433-BD9A-4455-89D1-6CF46853C40C} = {4C3AA050-1D5F-43C7-90B1-95D04B6763C8}
 		{93A06E32-50A6-4071-883B-34B5C3EDAE55} = {4C3AA050-1D5F-43C7-90B1-95D04B6763C8}
 		{27844D1F-5982-4761-B807-AAE549CF6448} = {4C3AA050-1D5F-43C7-90B1-95D04B6763C8}
+		{632C4E8E-8697-4D38-BBB5-D79A3617A7A1} = {4C3AA050-1D5F-43C7-90B1-95D04B6763C8}
 	EndGlobalSection
 EndGlobal

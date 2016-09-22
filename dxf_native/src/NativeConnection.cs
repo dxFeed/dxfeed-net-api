@@ -31,7 +31,7 @@ namespace com.dxfeed.native
         /// <param name="address">server address to connect</param>
         /// <param name="disconnectListener">listener will be called when the connection is interrupted</param>
         /// <exception cref="DxEception"></exception>
-        public NativeConnection(String address, Action<IDxConnection> disconnectListener)
+        public NativeConnection(string address, Action<IDxConnection> disconnectListener)
         {
             callback = OnDisconnect;
             this.disconnectListener = disconnectListener;
@@ -118,6 +118,20 @@ namespace com.dxfeed.native
 
             long unixTime = time == null ? 0 : Tools.DateToUnixTime((DateTime)time);
             return new NativeSnapshotSubscription(this, unixTime, listener);
+        }
+
+        /// <summary>
+        /// Creates Order View subscription
+        /// </summary>
+        /// <param name="listener"></param>
+        /// <returns>subscription object</returns>
+        /// <exception cref="DxEception"></exception>
+        public IDxSubscription CreateOrderViewSubscription(IDxOrderViewListener listener)
+        {
+            if (handler == IntPtr.Zero)
+                throw new NativeDxException("not connected");
+
+            return new OrderViewSubscription(this, listener);
         }
 
         #endregion

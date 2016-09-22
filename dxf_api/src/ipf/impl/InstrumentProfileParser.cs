@@ -21,6 +21,11 @@ namespace com.dxfeed.ipf.impl
         private Dictionary<string, object[]> formats = new Dictionary<string, object[]>();
         private CSVReader reader;
 
+        public delegate void OnFlushEventHandler(object sender, EventArgs e);
+        public event OnFlushEventHandler OnFlush;
+        public delegate void OnCompleteEventHandler(object sender, EventArgs e);
+        public event OnCompleteEventHandler OnComplete;
+
         /// <summary>
         /// Creates new instrument profile parser.
         /// </summary>
@@ -70,10 +75,10 @@ namespace com.dxfeed.ipf.impl
                     switch (record[0])
                     {
                         case Constants.FLUSH_COMMAND:
-                            OnFlush();
+                            RaiseOnFlush();
                             break;
                         case Constants.COMPLETE_COMMAND:
-                            OnComplete();
+                            RaiseOnComplete();
                             break;
                     }
                     if (!record[0].EndsWith(Constants.METADATA_SUFFIX)) // skip comments
@@ -118,8 +123,14 @@ namespace com.dxfeed.ipf.impl
             }
         }
 
-        protected void OnFlush() { }
+        protected void RaiseOnFlush()
+        {
+            OnFlush?.Invoke(this, new EventArgs());
+        }
 
-        protected void OnComplete() { }
+        protected void RaiseOnComplete()
+        {
+            OnComplete?.Invoke(this, new EventArgs());
+        }
     }
 }

@@ -13,7 +13,7 @@ namespace com.dxfeed.ipf
     /// can be used without listing in this class - use it for convenience only.
     /// Please see <b>Instrument Profile Format</b> documentation for complete description.
     /// </summary>
-    class InstrumentProfileType
+    public class InstrumentProfileType
     {
         private const string T_CURRENCY = "CURRENCY";
         private const string T_FOREX = "FOREX";

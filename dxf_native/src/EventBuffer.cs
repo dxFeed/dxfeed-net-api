@@ -1,44 +1,63 @@
-﻿using System.Collections;
+﻿/// Copyright (C) 2010-2016 Devexperts LLC
+///
+/// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+/// If a copy of the MPL was not distributed with this file, You can obtain one at
+/// http://mozilla.org/MPL/2.0/.
+
+using System.Collections;
 using System.Collections.Generic;
 using com.dxfeed.api.data;
 using com.dxfeed.api.events;
 
-namespace com.dxfeed.native {
-    class EventBuffer<T> : IDxEventBuf<T> {
+namespace com.dxfeed.native
+{
+    class EventBuffer<T> : IDxEventBuf<T>
+    {
         private readonly EventType type;
         private readonly DxString symbol;
         private EventParams eventParams;
         private List<T> events = new List<T>();
 
-        internal EventBuffer(EventType type, DxString symbol, EventParams eventParams) {
+        internal EventBuffer(EventType type, DxString symbol, EventParams eventParams)
+        {
             this.type = type;
             this.symbol = symbol;
             this.eventParams = eventParams;
         }
 
-        internal void AddEvent(T _event) {
+        internal void AddEvent(T _event)
+        {
             events.Add(_event);
         }
 
-        internal void Clear() {
+        internal void Clear()
+        {
             events.Clear();
         }
 
-        internal void ReplaceOrAdd(T _event) {
-            if (_event is IDxOrder) {
+        internal void ReplaceOrAdd(T _event)
+        {
+            if (_event is IDxOrder)
+            {
                 int index = events.FindIndex(x => (x as IDxOrder).Index == (_event as IDxOrder).Index);
-                if (index == -1) {
+                if (index == -1)
+                {
                     events.Add(_event);
-                } else {
+                }
+                else
+                {
                     events[index] = _event;
                 }
             }
         }
 
-        internal void Remove(T _event) {
-            if (_event is IDxOrder) {
+        internal void Remove(T _event)
+        {
+            if (_event is IDxOrder)
+            {
                 int index = events.FindIndex(x => (x as IDxOrder).Index == (_event as IDxOrder).Index);
-                if (index != -1) {
+                if (index != -1)
+                {
                     events.RemoveAt(index);
                 }
             }
@@ -47,19 +66,23 @@ namespace com.dxfeed.native {
 
         #region Implementation of IDxEventBuf<out T>
 
-        public EventType EventType {
+        public EventType EventType
+        {
             get { return type; }
         }
 
-        public DxString Symbol {
+        public DxString Symbol
+        {
             get { return symbol; }
         }
 
-        public int Size {
+        public int Size
+        {
             get { return events.Count; }
         }
 
-        public EventParams EventParams {
+        public EventParams EventParams
+        {
             get { return eventParams; }
             internal set { eventParams = value; }
         }
@@ -68,11 +91,13 @@ namespace com.dxfeed.native {
 
         #region Implementation of IEnumerable
 
-        public IEnumerator<T> GetEnumerator() {
+        public IEnumerator<T> GetEnumerator()
+        {
             return events.GetEnumerator();
         }
 
-        IEnumerator IEnumerable.GetEnumerator() {
+        IEnumerator IEnumerable.GetEnumerator()
+        {
             return events.GetEnumerator();
         }
         #endregion

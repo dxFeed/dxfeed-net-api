@@ -1,17 +1,28 @@
-﻿using com.dxfeed.api;
+﻿/// Copyright (C) 2010-2016 Devexperts LLC
+///
+/// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+/// If a copy of the MPL was not distributed with this file, You can obtain one at
+/// http://mozilla.org/MPL/2.0/.
+
+using com.dxfeed.api;
 using com.dxfeed.native;
 using System;
 
-namespace dxf_order_view_sample {
-    class Program {
+namespace dxf_order_view_sample
+{
+    class Program
+    {
         private const int hostIndex = 0;
 
-        private static void OnDisconnect(IDxConnection con) {
+        private static void OnDisconnect(IDxConnection con)
+        {
             Console.WriteLine("Disconnected");
         }
 
-        static void Main(string[] args) {
-            if (args.Length != 1) {
+        static void Main(string[] args)
+        {
+            if (args.Length != 1)
+            {
                 Console.WriteLine(
                     "Usage: dxf_events_sample <host:port>\n" +
                     "where\n" +
@@ -25,10 +36,13 @@ namespace dxf_order_view_sample {
 
             Console.WriteLine(string.Format("Connecting to {0} for Order View", address));
 
-            try {
+            try
+            {
                 NativeTools.InitializeLogging("log.log", true, true);
-                using (var con = new NativeConnection(address, OnDisconnect)) {
-                    using (var sub = con.CreateOrderViewSubscription(new OrderViewEventListener())) {
+                using (var con = new NativeConnection(address, OnDisconnect))
+                {
+                    using (var sub = con.CreateOrderViewSubscription(new OrderViewEventListener()))
+                    {
                         sub.SetSource("NTV", "DEA", "DEX");
                         sub.SetSymbols("AAPL", "GOOG", "IBM", "F");
 
@@ -36,9 +50,13 @@ namespace dxf_order_view_sample {
                         Console.ReadLine();
                     }
                 }
-            } catch (DxException dxException) {
+            }
+            catch (DxException dxException)
+            {
                 Console.WriteLine("Native exception occured: " + dxException.Message);
-            } catch (Exception exc) {
+            }
+            catch (Exception exc)
+            {
                 Console.WriteLine("Exception occured: " + exc.Message);
             }
         }

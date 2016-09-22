@@ -1,13 +1,23 @@
-﻿using System;
+﻿/// Copyright (C) 2010-2016 Devexperts LLC
+///
+/// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+/// If a copy of the MPL was not distributed with this file, You can obtain one at
+/// http://mozilla.org/MPL/2.0/.
+
+using System;
 using System.Collections.Generic;
 using com.dxfeed.ipf;
 using com.dxfeed.ipf.option;
 using System.Globalization;
 
-namespace dxf_option_chain_sample {
-    class Program {
-        static void Main(string[] args) {
-            if (args.Length < 7) {
+namespace dxf_option_chain_sample
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            if (args.Length < 7)
+            {
                 Console.WriteLine(
                     "Usage: dxf_option_chain_sample <host> <user> <password> <symbol> <nStrikes> <nMonths> <price>\n" +
                     "where\n" +
@@ -31,7 +41,8 @@ namespace dxf_option_chain_sample {
             string password = args[2];
             string symbol = args[3];
 
-            try {
+            try
+            {
                 int nStrikes = int.Parse(args[4]);
                 int nMonths = int.Parse(args[5]);
                 double price = double.Parse(args[6], CultureInfo.InvariantCulture);
@@ -46,22 +57,24 @@ namespace dxf_option_chain_sample {
                 chains = OptionChainsBuilder.Build(profiles).Chains;
                 OptionChain chain = chains[symbol];
                 nMonths = Math.Min(nMonths, chain.GetSeries().Count);
-                List<OptionSeries> seriesList 
+                List<OptionSeries> seriesList
                     = new List<OptionSeries>(chain.GetSeries()).GetRange(0, nMonths);
 
-
                 Console.WriteLine("Printing option series ...");
-                foreach (OptionSeries series in seriesList) {
+                foreach (OptionSeries series in seriesList)
+                {
                     Console.WriteLine("Option series {0}", series);
                     List<double> strikes = series.GetNStrikesAround(nStrikes, price);
                     Console.WriteLine("Strikes:");
-                    foreach (double strike in strikes) {
+                    foreach (double strike in strikes)
+                    {
                         Console.Write("{0} ", strike);
                     }
                     Console.WriteLine();
                 }
             }
-            catch (Exception exc) {
+            catch (Exception exc)
+            {
                 Console.WriteLine("Exception occured: " + exc.ToString());
             }
         }

@@ -1,22 +1,32 @@
-﻿using System.Collections.Generic;
+﻿/// Copyright (C) 2010-2016 Devexperts LLC
+///
+/// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+/// If a copy of the MPL was not distributed with this file, You can obtain one at
+/// http://mozilla.org/MPL/2.0/.
 
-namespace com.dxfeed.ipf.option {
+using System.Collections.Generic;
+
+namespace com.dxfeed.ipf.option
+{
     /// <summary>
     /// Builder class for a set of option chains grouped by product or underlying symbol.
     /// <h3>Threads and clocks</h3>
     /// This class is <b>NOT</b> thread-safe and cannot be used from multiple threads without external synchronization.
     /// </summary>
-    public class OptionChainsBuilder {
-
+    public class OptionChainsBuilder
+    {
         /// <summary>
         /// Builds options chains for all options from the given collections of {@link InstrumentProfile instrument profiles}.
         /// </summary>
         /// <param name="instruments">collection of instrument profiles.</param>
         /// <returns>builder with all the options from instruments collection.</returns>
-        public static OptionChainsBuilder Build(ICollection<InstrumentProfile> instruments) {
+        public static OptionChainsBuilder Build(ICollection<InstrumentProfile> instruments)
+        {
             OptionChainsBuilder ocb = new OptionChainsBuilder();
-            foreach(var ip in instruments) {
-                if (!"OPTION".Equals(ip.GetTypeName())) {
+            foreach (var ip in instruments)
+            {
+                if (!"OPTION".Equals(ip.GetTypeName()))
+                {
                     continue;
                 }
                 ocb.Product = ip.GetProduct();
@@ -48,14 +58,16 @@ namespace com.dxfeed.ipf.option {
         /// <summary>
         /// Creates new option chains builder.
         /// </summary>
-        public OptionChainsBuilder() {
+        public OptionChainsBuilder()
+        {
         }
 
         /// <summary>
         /// Product for futures and options on futures (underlying asset name).
         /// Example: "/YG".
         /// </summary>
-        public string Product {
+        public string Product
+        {
             internal get { return product; }
             set { product = value == null || value.Length == 0 ? "" : value; }
         }
@@ -64,7 +76,8 @@ namespace com.dxfeed.ipf.option {
         /// Primary underlying symbol for options.
         /// Example: "C", "/YGM9"
         /// </summary>
-        public string Underlying {
+        public string Underlying
+        {
             internal get { return underlying; }
             set { underlying = value == null || value.Length == 0 ? "" : value; }
         }
@@ -78,9 +91,11 @@ namespace com.dxfeed.ipf.option {
         /// See<a href="http://en.wikipedia.org/wiki/ISO_10962"> ISO 10962 on Wikipedia</a>.
         /// Example: "OC" for generic call, "OP" for generic put.
         /// </summary>
-        public string CFI {
+        public string CFI
+        {
             internal get { return cfi; }
-            set {
+            set
+            {
                 cfi = value == null || value.Length == 0 ? "" : value;
                 series.CFI = cfi.Length < 2 ? cfi : cfi[0] + "X" + cfi.Substring(2);
             }
@@ -90,7 +105,8 @@ namespace com.dxfeed.ipf.option {
         /// Strike price for options.
         /// Example: 80, 22.5.
         /// </summary>
-        public double Strike {
+        public double Strike
+        {
             internal get;
             set;
         }
@@ -100,8 +116,10 @@ namespace com.dxfeed.ipf.option {
         /// It updates as new options are added with {@link #addOption(Object) addOption} method.
         /// @return view of chains created by this builder.
         /// </summary>
-        public Dictionary<string, OptionChain> Chains {
-            get {
+        public Dictionary<string, OptionChain> Chains
+        {
+            get
+            {
                 return chains;
             }
         }
@@ -111,7 +129,8 @@ namespace com.dxfeed.ipf.option {
         /// Example: {@link DayUtil#getDayIdByYearMonthDay DayUtil.getDayIdByYearMonthDay}(20090117).
         /// </summary>
         /// <param name="expiration">day id of expiration</param>
-        public void SetExpiration(int expiration) {
+        public void SetExpiration(int expiration)
+        {
             series.Expiration = expiration;
         }
 
@@ -120,7 +139,8 @@ namespace com.dxfeed.ipf.option {
         /// Example: {@link DayUtil#getDayIdByYearMonthDay DayUtil.getDayIdByYearMonthDay}(20090116).
         /// </summary>
         /// <param name="lastTrade">day id of last trading day.</param>
-        public void SetLastTrade(int lastTrade) {
+        public void SetLastTrade(int lastTrade)
+        {
             series.LastTrade = lastTrade;
         }
 
@@ -129,7 +149,8 @@ namespace com.dxfeed.ipf.option {
         /// Example: 100, 33.2.
         /// </summary>
         /// <param name="multiplier">market value multiplier.</param>
-        public void SetMultiplier(double multiplier) {
+        public void SetMultiplier(double multiplier)
+        {
             series.Multiplier = multiplier;
         }
 
@@ -138,7 +159,8 @@ namespace com.dxfeed.ipf.option {
         /// Example: 1, 100.
         /// </summary>
         /// <param name="spc">shares per contract for options.</param>
-        public void SetSPC(double spc) {
+        public void SetSPC(double spc)
+        {
             series.SPC = spc;
         }
 
@@ -153,7 +175,8 @@ namespace com.dxfeed.ipf.option {
         /// Example: "SE 50", "FIS 53; US$ 45.46".
         /// </summary>
         /// <param name="additionalUnderlyings">additional underlyings for options, including additional cash.</param>
-        public void SetAdditionalUnderlyings(string additionalUnderlyings) {
+        public void SetAdditionalUnderlyings(string additionalUnderlyings)
+        {
             series.AdditionalUnderlyings = additionalUnderlyings == null || additionalUnderlyings.Length == 0 ? "" : additionalUnderlyings;
         }
 
@@ -167,7 +190,8 @@ namespace com.dxfeed.ipf.option {
         /// </ul>
         /// </summary>
         /// <param name="mmy">maturity month-year as provided for corresponding FIX tag (200).</param>
-        public void SetMMY(string mmy) {
+        public void SetMMY(string mmy)
+        {
             series.MMY = mmy == null || mmy.Length == 0 ? "" : mmy;
         }
 
@@ -186,7 +210,8 @@ namespace com.dxfeed.ipf.option {
         /// </ul>
         /// </summary>
         /// <param name="optionType">type of option.</param>
-        public void SetOptionType(string optionType) {
+        public void SetOptionType(string optionType)
+        {
             series.OptionType = optionType == null || optionType.Length == 0 ? "" : optionType;
         }
 
@@ -194,7 +219,8 @@ namespace com.dxfeed.ipf.option {
         /// Changes expiration cycle style, such as "Weeklys", "Quarterlys".
         /// </summary>
         /// <param name="expirationStyle">expiration cycle style.</param>
-        public void SetExpirationStyle(string expirationStyle) {
+        public void SetExpirationStyle(string expirationStyle)
+        {
             series.ExpirationStyle = expirationStyle == null || expirationStyle.Length == 0 ? "" : expirationStyle;
         }
 
@@ -202,7 +228,8 @@ namespace com.dxfeed.ipf.option {
         /// Changes settlement price determination style, such as "Open", "Close".
         /// </summary>
         /// <param name="settlementStyle">settlement price determination style.</param>
-        public void SetSettlementStyle(string settlementStyle) {
+        public void SetSettlementStyle(string settlementStyle)
+        {
             series.SettlementStyle = settlementStyle == null || settlementStyle.Length == 0 ? "" : settlementStyle;
         }
 
@@ -222,7 +249,8 @@ namespace com.dxfeed.ipf.option {
         /// {@link #getChains() chains} are updated correspondingly.
         /// </summary>
         /// <param name="option">option to add.</param>
-        public void AddOption(InstrumentProfile option) {
+        public void AddOption(InstrumentProfile option)
+        {
             bool isCall = CFI.StartsWith("OC");
             if (!isCall && !CFI.StartsWith("OP"))
                 return;
@@ -236,9 +264,11 @@ namespace com.dxfeed.ipf.option {
                 GetOrCreateChain(Underlying).AddOption(series, isCall, Strike, option);
         }
 
-        private OptionChain GetOrCreateChain(string symbol) {
+        private OptionChain GetOrCreateChain(string symbol)
+        {
             OptionChain chain;
-            if (!Chains.TryGetValue(symbol, out chain)) {
+            if (!Chains.TryGetValue(symbol, out chain))
+            {
                 chain = new OptionChain(symbol);
                 Chains[symbol] = chain;
             }

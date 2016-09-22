@@ -1,20 +1,28 @@
-﻿using com.dxfeed.util;
+﻿/// Copyright (C) 2010-2016 Devexperts LLC
+///
+/// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+/// If a copy of the MPL was not distributed with this file, You can obtain one at
+/// http://mozilla.org/MPL/2.0/.
+
+using com.dxfeed.util;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace com.dxfeed.ipf.option {
+namespace com.dxfeed.ipf.option
+{
     /// <summary>
     /// Series of call and put options with different strike sharing the same attributes of
     /// expiration, last trading day, spc, multiplies, etc.
     /// </summary>
-    public sealed class OptionSeries : ICloneable, IComparable<OptionSeries> {
-
+    public sealed class OptionSeries : ICloneable, IComparable<OptionSeries>
+    {
         private readonly SortedDictionary<double, InstrumentProfile> calls = new SortedDictionary<double, InstrumentProfile>();
         private readonly SortedDictionary<double, InstrumentProfile> puts = new SortedDictionary<double, InstrumentProfile>();
         private List<double> strikes;
 
-        internal OptionSeries() {
+        internal OptionSeries()
+        {
             AdditionalUnderlyings = "";
             MMY = "";
             OptionType = "";
@@ -24,7 +32,8 @@ namespace com.dxfeed.ipf.option {
             Strikes = null;
         }
 
-        internal OptionSeries(OptionSeries series) {
+        internal OptionSeries(OptionSeries series)
+        {
             Expiration = series.Expiration;
             LastTrade = series.LastTrade;
             Multiplier = series.Multiplier;
@@ -43,12 +52,15 @@ namespace com.dxfeed.ipf.option {
         /// Collections of calls and puts are copied, but option instrument instances are shared with original.
         /// </summary>
         /// <returns>a shall copy of this option series.</returns>
-        public object Clone() {
+        public object Clone()
+        {
             OptionSeries clone = new OptionSeries(this);
-            foreach (var call in Calls) {
+            foreach (var call in Calls)
+            {
                 clone.Calls.Add(call.Key, call.Value);
             }
-            foreach (var put in Puts) {
+            foreach (var put in Puts)
+            {
                 clone.Puts.Add(put.Key, put.Value);
             }
             return clone;
@@ -59,7 +71,8 @@ namespace com.dxfeed.ipf.option {
         /// Example: {@link DayUtil#getDayIdByYearMonthDay DayUtil.getDayIdByYearMonthDay}(20090117).
         /// </summary>
         /// <value>Gets day id of expiration.</value>
-        public int Expiration {
+        public int Expiration
+        {
             get;
             internal set;
         }
@@ -69,7 +82,8 @@ namespace com.dxfeed.ipf.option {
         /// Example: {@link DayUtil#getDayIdByYearMonthDay DayUtil.getDayIdByYearMonthDay}(20090116).
         /// </summary>
         /// <value>Gets day id of last trading day.</value>
-        public int LastTrade {
+        public int LastTrade
+        {
             get;
             internal set;
         }
@@ -79,7 +93,8 @@ namespace com.dxfeed.ipf.option {
         /// Example: 100, 33.2.
         /// </summary>
         /// <value>Gets market value multiplier.</value>
-        public double Multiplier {
+        public double Multiplier
+        {
             get;
             internal set;
         }
@@ -89,7 +104,8 @@ namespace com.dxfeed.ipf.option {
         /// Example: 1, 100.
         /// </summary>
         /// <value>Gets shares per contract for options.</value>
-        public double SPC {
+        public double SPC
+        {
             get;
             internal set;
         }
@@ -105,7 +121,8 @@ namespace com.dxfeed.ipf.option {
         /// Example: "SE 50", "FIS 53; US$ 45.46".
         /// </summary>
         /// <value>Gets additional underlyings for options, including additional cash.</value>
-        public string AdditionalUnderlyings {
+        public string AdditionalUnderlyings
+        {
             get;
             internal set;
         }
@@ -120,7 +137,8 @@ namespace com.dxfeed.ipf.option {
         /// </ul>
         /// </summary>
         /// <value>Gets maturity month-year as provided for corresponding FIX tag(200).</value>
-        public string MMY {
+        public string MMY
+        {
             get;
             internal set;
         }
@@ -139,7 +157,8 @@ namespace com.dxfeed.ipf.option {
         /// </ul>
         /// </summary>
         /// <value>Gets type of option.</value>
-        public string OptionType {
+        public string OptionType
+        {
             get;
             internal set;
         }
@@ -148,7 +167,8 @@ namespace com.dxfeed.ipf.option {
         /// Expiration cycle style, such as "Weeklys", "Quarterlys".
         /// </summary>
         /// <value>gets expiration cycle style.</value>
-        public string ExpirationStyle {
+        public string ExpirationStyle
+        {
             get;
             internal set;
         }
@@ -157,7 +177,8 @@ namespace com.dxfeed.ipf.option {
         /// Settlement price determination style, such as "Open", "Close".
         /// </summary>
         /// <value>Gets settlement price determination style.</value>
-        public string SettlementStyle {
+        public string SettlementStyle
+        {
             get;
             internal set;
         }
@@ -170,7 +191,8 @@ namespace com.dxfeed.ipf.option {
         /// It starts with "OX" as both {@link #getCalls() calls} and {@link #getPuts()} puts} are stored in a series.
         /// </summary>
         /// <value>Gets CFI code.</value>
-        public string CFI {
+        public string CFI
+        {
             get;
             internal set;
         }
@@ -178,8 +200,10 @@ namespace com.dxfeed.ipf.option {
         /// <summary>
         /// A sorted map of all calls from strike to a corresponding option instrument.
         /// </summary>
-        public SortedDictionary<double, InstrumentProfile> Calls {
-            get {
+        public SortedDictionary<double, InstrumentProfile> Calls
+        {
+            get
+            {
                 return calls;
             }
         }
@@ -187,8 +211,10 @@ namespace com.dxfeed.ipf.option {
         /// <summary>
         /// A sorted map of all puts from strike to a corresponding option instrument.
         /// </summary>
-        public SortedDictionary<double, InstrumentProfile> Puts {
-            get {
+        public SortedDictionary<double, InstrumentProfile> Puts
+        {
+            get
+            {
                 return puts;
             }
         }
@@ -196,16 +222,20 @@ namespace com.dxfeed.ipf.option {
         /// <summary>
         /// A list of all strikes in ascending order.
         /// </summary>
-        public List<double> Strikes {
-            get {
-                if (strikes == null) {
+        public List<double> Strikes
+        {
+            get
+            {
+                if (strikes == null)
+                {
                     SortedSet<double> strikesSet = new SortedSet<double>(calls.Keys);
                     strikesSet.UnionWith(puts.Keys);
                     strikes = new List<double>(strikesSet);
                 }
                 return strikes;
             }
-            private set {
+            private set
+            {
                 strikes = value;
             }
         }
@@ -217,7 +247,8 @@ namespace com.dxfeed.ipf.option {
         /// <param name="n">the maximal number of strikes to return.</param>
         /// <param name="strike">the center strike.</param>
         /// <returns>n strikes that are centered around a specified strike value.</returns>
-        public List<double> GetNStrikesAround(int n, double strike) {
+        public List<double> GetNStrikesAround(int n, double strike)
+        {
             if (n < 0)
                 throw new ArgumentOutOfRangeException("n", "is negative");
             List<double> strikes = Strikes;
@@ -235,7 +266,8 @@ namespace com.dxfeed.ipf.option {
         /// </summary>
         /// <param name="other">another option series to compare with.</param>
         /// <returns>result of comparison.</returns>
-        public int CompareTo(OptionSeries other) {
+        public int CompareTo(OptionSeries other)
+        {
             if (Expiration < other.Expiration)
                 return -1;
             if (Expiration > other.Expiration)
@@ -243,7 +275,7 @@ namespace com.dxfeed.ipf.option {
             if (LastTrade < other.LastTrade)
                 return -1;
             if (LastTrade > other.LastTrade)
-                return 1; 
+                return 1;
             int i = Multiplier.CompareTo(other.Multiplier);
             if (i != 0)
                 return i;
@@ -273,7 +305,8 @@ namespace com.dxfeed.ipf.option {
         /// </summary>
         /// <param name="o"></param>
         /// <returns>another object to compare with.</returns>
-        public override bool Equals(object o) {
+        public override bool Equals(object o)
+        {
             if (this == o)
                 return true;
             if (!(o is OptionSeries))
@@ -295,7 +328,8 @@ namespace com.dxfeed.ipf.option {
         /// Returns a hash code value for this option series.
         /// </summary>
         /// <returns>a hash code value.</returns>
-        public override int GetHashCode() {
+        public override int GetHashCode()
+        {
             int result;
             long temp;
             result = Expiration;
@@ -314,9 +348,11 @@ namespace com.dxfeed.ipf.option {
         }
 
 
-        internal void AddOption(bool isCall, double strike, InstrumentProfile option) {
+        internal void AddOption(bool isCall, double strike, InstrumentProfile option)
+        {
             SortedDictionary<double, InstrumentProfile> map = isCall ? Calls : Puts;
-            if (Put(map, strike, option) == null) {
+            if (Put(map, strike, option) == null)
+            {
                 Strikes = null;
             }
         }
@@ -331,8 +367,10 @@ namespace com.dxfeed.ipf.option {
         /// <param name="value">key with which the specified value is to be associated</param>
         /// <returns>the previous value associated with key, or null if there was no mapping for key.
         /// A null return can also indicate that the map previously associated null with key</returns>
-        private InstrumentProfile Put(SortedDictionary<double, InstrumentProfile> map, double key, InstrumentProfile value) {
-            if (!map.ContainsKey(key)) {
+        private InstrumentProfile Put(SortedDictionary<double, InstrumentProfile> map, double key, InstrumentProfile value)
+        {
+            if (!map.ContainsKey(key))
+            {
                 map.Add(key, value);
                 return null;
             }

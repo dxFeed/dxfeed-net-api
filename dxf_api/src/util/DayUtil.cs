@@ -1,15 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿/// Copyright (C) 2010-2016 Devexperts LLC
+///
+/// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+/// If a copy of the MPL was not distributed with this file, You can obtain one at
+/// http://mozilla.org/MPL/2.0/.
 
-namespace com.dxfeed.util {
+using System;
+
+namespace com.dxfeed.util
+{
     /// <summary>
     /// A collection of static utility methods for manipulation of int day id, that is the number
     /// of days since Unix epoch of January 1, 1970.
     /// </summary>
-    class DayUtil {
+    class DayUtil
+    {
         private static readonly int[] DAY_OF_YEAR = { 0, 0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365 };
 
         private DayUtil() { } // do not create
@@ -27,7 +31,8 @@ namespace com.dxfeed.util {
         /// <param name="month">month</param>
         /// <param name="day">day</param>
         /// <returns>Returns day identifier for specified year, month and day in Gregorian calendar.</returns>
-        public static int GetDayIdByYearMonthDay(int year, int month, int day) {
+        public static int GetDayIdByYearMonthDay(int year, int month, int day)
+        {
             if (month < 1 || month > 12)
                 throw new ArgumentOutOfRangeException("month", "invalid month " + month);
             int dayOfYear = DAY_OF_YEAR[month] + day - 1;
@@ -46,7 +51,8 @@ namespace com.dxfeed.util {
         /// </summary>
         /// <param name="yyyymmdd"></param>
         /// <returns></returns>
-        public static int GetDayIdByYearMonthDay(int yyyymmdd) {
+        public static int GetDayIdByYearMonthDay(int yyyymmdd)
+        {
             if (yyyymmdd >= 0)
                 return GetDayIdByYearMonthDay(yyyymmdd / 10000, yyyymmdd / 100 % 100, yyyymmdd % 100);
             return GetDayIdByYearMonthDay(-(-yyyymmdd / 10000), -yyyymmdd / 100 % 100, -yyyymmdd % 100);
@@ -60,7 +66,8 @@ namespace com.dxfeed.util {
         /// </summary>
         /// <param name="dayId"></param>
         /// <returns></returns>
-        public static int GetYearMonthDayByDayId(int dayId) {
+        public static int GetYearMonthDayByDayId(int dayId)
+        {
             int j = dayId + 2472632; // this shifts the epoch back to astronomical year -4800
             int g = MathUtil.Div(j, 146097);
             int dg = j - g * 146097;

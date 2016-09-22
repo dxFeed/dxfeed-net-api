@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using com.dxfeed.api;
 using com.dxfeed.api.candle;
 using com.dxfeed.api.events;
@@ -131,7 +130,7 @@ namespace com.dxfeed.native {
 
         public void SetSource(params string[] sources) {
             if (subscription != null) {
-                return;
+                throw new NativeDxException("Sources already set");
             }
             subscription = connection.CreateSubscription(EventType.Order, this);
             subscription.SetSource(sources);

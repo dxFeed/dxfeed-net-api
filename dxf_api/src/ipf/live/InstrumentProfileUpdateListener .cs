@@ -1,12 +1,18 @@
-﻿using System.Collections.Generic;
+﻿/// Copyright (C) 2010-2016 Devexperts LLC
+///
+/// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+/// If a copy of the MPL was not distributed with this file, You can obtain one at
+/// http://mozilla.org/MPL/2.0/.
 
-namespace com.dxfeed.ipf.live {
+using System.Collections.Generic;
 
+namespace com.dxfeed.ipf.live
+{
     /// <summary>
     /// Notifies about instrument profile changes.
     /// </summary>
-    public interface InstrumentProfileUpdateListener {
-
+    public interface InstrumentProfileUpdateListener
+    {
         /// <summary>
         /// This method is invoked when a set of instrument profiles in the underlying 
         /// InstrumentProfileCollector changes. Each instance of the listeners receive the same 
@@ -18,6 +24,5 @@ namespace com.dxfeed.ipf.live {
         /// </summary>
         /// <param name="instruments">Collection that represents pending instrument profile updates.</param>
         void InstrumentProfilesUpdated(ICollection<InstrumentProfile> instruments);
-
     }
 }

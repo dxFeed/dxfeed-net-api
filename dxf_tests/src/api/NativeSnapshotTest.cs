@@ -1,19 +1,23 @@
-﻿using System;
+﻿/// Copyright (C) 2010-2016 Devexperts LLC
+///
+/// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+/// If a copy of the MPL was not distributed with this file, You can obtain one at
+/// http://mozilla.org/MPL/2.0/.
+
+using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using NUnit.Framework;
-using com.dxfeed.api;
 using com.dxfeed.api.candle;
 using com.dxfeed.api.events;
-using com.dxfeed.api.data;
 using com.dxfeed.native;
 using com.dxfeed.tests.tools;
 
-namespace com.dxfeed.api {
-
+namespace com.dxfeed.api
+{
     [TestFixture]
-    public class NativeSnapshotTest {
+    public class NativeSnapshotTest
+    {
         static string address = "mddqa.in.devexperts.com:7400";
         static int isConnected = 0;
         /// <summary>
@@ -25,22 +29,27 @@ namespace com.dxfeed.api {
         /// </summary>
         static int eventsSleepTime = 100;
 
-        private static void OnDisconnect(IDxConnection con) {
+        private static void OnDisconnect(IDxConnection con)
+        {
             Interlocked.Exchange(ref isConnected, 0);
         }
 
-        private static bool IsConnected() {
+        private static bool IsConnected()
+        {
             return (Thread.VolatileRead(ref isConnected) == 1);
         }
 
         [Test]
-        public void TestAddSymbol() {
+        public void TestAddSymbol()
+        {
             SnapshotTestListener listener = new SnapshotTestListener(eventsTimeout, eventsSleepTime, IsConnected);
             string source = "NTV";
             string symbol = "AAPL";
-            using (var con = new NativeConnection(address, OnDisconnect)) {
+            using (var con = new NativeConnection(address, OnDisconnect))
+            {
                 Interlocked.Exchange(ref isConnected, 1);
-                using (IDxSubscription s = con.CreateSnapshotSubscription(0, listener)) {
+                using (IDxSubscription s = con.CreateSnapshotSubscription(0, listener))
+                {
                     Assert.Throws<ArgumentException>(delegate { s.AddSymbol((string)null); });
                     Assert.Throws<ArgumentException>(delegate { s.AddSymbol(string.Empty); });
                     s.AddSource(source);
@@ -55,12 +64,15 @@ namespace com.dxfeed.api {
         }
 
         [Test]
-        public void TestAddSymbolCandle() {
+        public void TestAddSymbolCandle()
+        {
             SnapshotTestListener listener = new SnapshotTestListener(eventsTimeout, eventsSleepTime, IsConnected);
             string candleString = "XBT/USD{=d}";
-            using (var con = new NativeConnection(address, OnDisconnect)) {
+            using (var con = new NativeConnection(address, OnDisconnect))
+            {
                 Interlocked.Exchange(ref isConnected, 1);
-                using (IDxSubscription s = con.CreateSnapshotSubscription(0, listener)) {
+                using (IDxSubscription s = con.CreateSnapshotSubscription(0, listener))
+                {
                     Assert.Throws<ArgumentException>(delegate { s.AddSymbol((CandleSymbol)null); });
                     s.AddSymbol(CandleSymbol.ValueOf(candleString));
 
@@ -73,13 +85,16 @@ namespace com.dxfeed.api {
         }
 
         [Test]
-        public void TestAddSymbols() {
+        public void TestAddSymbols()
+        {
             SnapshotTestListener listener = new SnapshotTestListener(eventsTimeout, eventsSleepTime, IsConnected);
             string source = "NTV";
             string symbol = "AAPL";
-            using (var con = new NativeConnection(address, OnDisconnect)) {
+            using (var con = new NativeConnection(address, OnDisconnect))
+            {
                 Interlocked.Exchange(ref isConnected, 1);
-                using (IDxSubscription s = con.CreateSnapshotSubscription(0, listener)) {
+                using (IDxSubscription s = con.CreateSnapshotSubscription(0, listener))
+                {
                     Assert.Throws<ArgumentException>(delegate { s.AddSymbols((string[])null); });
                     Assert.Throws<InvalidOperationException>(delegate { s.AddSymbols(new string[] { }); });
                     Assert.Throws<ArgumentException>(delegate { s.AddSymbols(new string[] { string.Empty }); });
@@ -97,20 +112,24 @@ namespace com.dxfeed.api {
         }
 
         [Test]
-        public void TestAddSymbolsCandle() {
+        public void TestAddSymbolsCandle()
+        {
             SnapshotTestListener listener = new SnapshotTestListener(eventsTimeout, eventsSleepTime, IsConnected);
             string candleString = "XBT/USD{=d}";
-            using (var con = new NativeConnection(address, OnDisconnect)) {
+            using (var con = new NativeConnection(address, OnDisconnect))
+            {
                 Interlocked.Exchange(ref isConnected, 1);
-                using (IDxSubscription s = con.CreateSnapshotSubscription(0, listener)) {
+                using (IDxSubscription s = con.CreateSnapshotSubscription(0, listener))
+                {
                     Assert.Throws<ArgumentException>(delegate { s.AddSymbols((CandleSymbol[])null); });
                     Assert.Throws<InvalidOperationException>(delegate { s.AddSymbols(new CandleSymbol[] { }); });
                     Assert.Throws<ArgumentException>(delegate { s.AddSymbols(new CandleSymbol[] { null }); });
-                    Assert.Throws<InvalidOperationException>(delegate { 
-                        s.AddSymbols(new CandleSymbol[] { 
-                            CandleSymbol.ValueOf("AAPL{=d,price=mark}"), 
-                            CandleSymbol.ValueOf("XBT/USD{=d,price=mark}") 
-                        }); 
+                    Assert.Throws<InvalidOperationException>(delegate
+                    {
+                        s.AddSymbols(new CandleSymbol[] {
+                            CandleSymbol.ValueOf("AAPL{=d,price=mark}"),
+                            CandleSymbol.ValueOf("XBT/USD{=d,price=mark}")
+                        });
                     });
 
                     s.AddSymbols(new CandleSymbol[] { CandleSymbol.ValueOf(candleString) });
@@ -124,15 +143,18 @@ namespace com.dxfeed.api {
         }
 
         [Test]
-        public void TestRemoveSymbols() {
+        public void TestRemoveSymbols()
+        {
             SnapshotTestListener listener = new SnapshotTestListener(eventsTimeout, eventsSleepTime, IsConnected);
             string source = "NTV";
             string symbol = "AAPL";
             string[] unusingSymbols = { "IBM", "XBT/USD" };
             string[] usingSymbols = { symbol, "IBM", "XBT/USD" };
-            using (var con = new NativeConnection(address, OnDisconnect)) {
+            using (var con = new NativeConnection(address, OnDisconnect))
+            {
                 Interlocked.Exchange(ref isConnected, 1);
-                using (IDxSubscription s = con.CreateSnapshotSubscription(0, listener)) {
+                using (IDxSubscription s = con.CreateSnapshotSubscription(0, listener))
+                {
                     s.AddSource(source);
                     s.AddSymbol(symbol);
 
@@ -142,8 +164,8 @@ namespace com.dxfeed.api {
                     Assert.Throws<ArgumentException>(delegate { s.RemoveSymbols((string[])null); });
                     s.RemoveSymbols(new string[] { string.Empty });
                     s.RemoveSymbols(new CandleSymbol[] {
-                        CandleSymbol.ValueOf("AAPL{=d,price=mark}"), 
-                        CandleSymbol.ValueOf("XBT/USD{=d,price=mark}") 
+                        CandleSymbol.ValueOf("AAPL{=d,price=mark}"),
+                        CandleSymbol.ValueOf("XBT/USD{=d,price=mark}")
                     });
                     s.RemoveSymbols(unusingSymbols);
                     Thread.Sleep(5000);
@@ -160,21 +182,24 @@ namespace com.dxfeed.api {
         }
 
         [Test]
-        public void TestRemoveSymbolsCandle() {
+        public void TestRemoveSymbolsCandle()
+        {
             SnapshotTestListener listener = new SnapshotTestListener(eventsTimeout, eventsSleepTime, IsConnected);
             string candleString = "XBT/USD{=d}";
             CandleSymbol[] unusingSymbols = new CandleSymbol[] {
-                CandleSymbol.ValueOf("AAPL{=d,price=mark}"), 
-                CandleSymbol.ValueOf("XBT/USD{=d,price=mark}") 
+                CandleSymbol.ValueOf("AAPL{=d,price=mark}"),
+                CandleSymbol.ValueOf("XBT/USD{=d,price=mark}")
             };
             CandleSymbol[] usingSymbols = new CandleSymbol[] {
                 CandleSymbol.ValueOf(candleString),
-                CandleSymbol.ValueOf("AAPL{=d,price=mark}"), 
+                CandleSymbol.ValueOf("AAPL{=d,price=mark}"),
                 CandleSymbol.ValueOf("XBT/USD{=d,price=mark}")
             };
-            using (var con = new NativeConnection(address, OnDisconnect)) {
+            using (var con = new NativeConnection(address, OnDisconnect))
+            {
                 Interlocked.Exchange(ref isConnected, 1);
-                using (IDxSubscription s = con.CreateSnapshotSubscription(0, listener)) {
+                using (IDxSubscription s = con.CreateSnapshotSubscription(0, listener))
+                {
                     s.AddSymbol(CandleSymbol.ValueOf(candleString));
 
                     Assert.AreEqual(1, s.GetSymbols().Count);
@@ -198,14 +223,17 @@ namespace com.dxfeed.api {
         }
 
         [Test]
-        public void TestSetSymbols() {
+        public void TestSetSymbols()
+        {
             SnapshotTestListener listener = new SnapshotTestListener(eventsTimeout, eventsSleepTime, IsConnected);
             string source = "NTV";
             string symbol = "AAPL";
             string otherSymbol = "IBM";
-            using (var con = new NativeConnection(address, OnDisconnect)) {
+            using (var con = new NativeConnection(address, OnDisconnect))
+            {
                 Interlocked.Exchange(ref isConnected, 1);
-                using (IDxSubscription s = con.CreateSnapshotSubscription(0, listener)) {
+                using (IDxSubscription s = con.CreateSnapshotSubscription(0, listener))
+                {
                     Assert.Throws<ArgumentException>(delegate { s.SetSymbols((string[])null); });
                     Assert.Throws<InvalidOperationException>(delegate { s.SetSymbols(new string[] { }); });
                     Assert.Throws<ArgumentException>(delegate { s.SetSymbols(new string[] { string.Empty }); });
@@ -230,20 +258,24 @@ namespace com.dxfeed.api {
         }
 
         [Test]
-        public void TestSetSymbolsCandle() {
+        public void TestSetSymbolsCandle()
+        {
             SnapshotTestListener listener = new SnapshotTestListener(eventsTimeout, eventsSleepTime, IsConnected);
             string candleString = "XBT/USD{=d}";
             string otherCandleString = "XBT/USD{=2d}";
-            using (var con = new NativeConnection(address, OnDisconnect)) {
+            using (var con = new NativeConnection(address, OnDisconnect))
+            {
                 Interlocked.Exchange(ref isConnected, 1);
-                using (IDxSubscription s = con.CreateSnapshotSubscription(0, listener)) {
+                using (IDxSubscription s = con.CreateSnapshotSubscription(0, listener))
+                {
                     Assert.Throws<ArgumentException>(delegate { s.AddSymbols((CandleSymbol[])null); });
                     Assert.Throws<InvalidOperationException>(delegate { s.AddSymbols(new CandleSymbol[] { }); });
                     Assert.Throws<ArgumentException>(delegate { s.AddSymbols(new CandleSymbol[] { null }); });
-                    Assert.Throws<InvalidOperationException>(delegate {
+                    Assert.Throws<InvalidOperationException>(delegate
+                    {
                         s.AddSymbols(new CandleSymbol[] {
-                            CandleSymbol.ValueOf("AAPL{=d,price=mark}"), 
-                            CandleSymbol.ValueOf("XBT/USD{=d,price=mark}") 
+                            CandleSymbol.ValueOf("AAPL{=d,price=mark}"),
+                            CandleSymbol.ValueOf("XBT/USD{=d,price=mark}")
                          });
                     });
 
@@ -265,14 +297,17 @@ namespace com.dxfeed.api {
         }
 
         [Test]
-        public void TestClearSymbols() {
+        public void TestClearSymbols()
+        {
             SnapshotTestListener listener = new SnapshotTestListener(eventsTimeout, eventsSleepTime, IsConnected);
             string source = "NTV";
             string symbol = "AAPL";
             string otherSymbol = "IBM";
-            using (var con = new NativeConnection(address, OnDisconnect)) {
+            using (var con = new NativeConnection(address, OnDisconnect))
+            {
                 Interlocked.Exchange(ref isConnected, 1);
-                using (IDxSubscription s = con.CreateSnapshotSubscription(0, listener)) {
+                using (IDxSubscription s = con.CreateSnapshotSubscription(0, listener))
+                {
                     s.AddSource(source);
                     s.AddSymbol(symbol);
                     listener.WaitSnapshot<IDxOrder>(symbol, source);
@@ -292,14 +327,17 @@ namespace com.dxfeed.api {
         }
 
         [Test]
-        public void TestClearSymbols2() {
+        public void TestClearSymbols2()
+        {
             SnapshotTestListener listener = new SnapshotTestListener(eventsTimeout, eventsSleepTime, IsConnected);
             string source = "NTV";
             string symbol = "AAPL";
             string candleString = "XBT/USD{=d}";
-            using (var con = new NativeConnection(address, OnDisconnect)) {
+            using (var con = new NativeConnection(address, OnDisconnect))
+            {
                 Interlocked.Exchange(ref isConnected, 1);
-                using (IDxSubscription s = con.CreateSnapshotSubscription(0, listener)) {
+                using (IDxSubscription s = con.CreateSnapshotSubscription(0, listener))
+                {
                     s.AddSource(source);
                     s.AddSymbol(symbol);
                     listener.WaitSnapshot<IDxOrder>(symbol, source);
@@ -319,13 +357,16 @@ namespace com.dxfeed.api {
         }
 
         [Test]
-        public void TestGetSymbols() {
+        public void TestGetSymbols()
+        {
             SnapshotTestListener listener = new SnapshotTestListener(eventsTimeout, eventsSleepTime, IsConnected);
             string source = "NTV";
             string symbol = "AAPL";
-            using (var con = new NativeConnection(address, OnDisconnect)) {
+            using (var con = new NativeConnection(address, OnDisconnect))
+            {
                 Interlocked.Exchange(ref isConnected, 1);
-                using (IDxSubscription s = con.CreateSnapshotSubscription(0, listener)) {
+                using (IDxSubscription s = con.CreateSnapshotSubscription(0, listener))
+                {
                     s.AddSource(source);
                     s.AddSymbol(symbol);
                     listener.WaitSnapshot<IDxOrder>(symbol, source);
@@ -342,12 +383,15 @@ namespace com.dxfeed.api {
         }
 
         [Test]
-        public void TestGetSymbolsCandle() {
+        public void TestGetSymbolsCandle()
+        {
             SnapshotTestListener listener = new SnapshotTestListener(eventsTimeout, eventsSleepTime, IsConnected);
             string candleString = "XBT/USD{=d}";
-            using (var con = new NativeConnection(address, OnDisconnect)) {
+            using (var con = new NativeConnection(address, OnDisconnect))
+            {
                 Interlocked.Exchange(ref isConnected, 1);
-                using (IDxSubscription s = con.CreateSnapshotSubscription(0, listener)) {
+                using (IDxSubscription s = con.CreateSnapshotSubscription(0, listener))
+                {
                     s.AddSymbol(CandleSymbol.ValueOf(candleString));
                     listener.WaitSnapshot<IDxCandle>(candleString);
 
@@ -363,14 +407,17 @@ namespace com.dxfeed.api {
         }
 
         [Test]
-        public void TestSetSource() {
+        public void TestSetSource()
+        {
             SnapshotTestListener listener = new SnapshotTestListener(eventsTimeout, eventsSleepTime, IsConnected);
             string initialSource = "NTV";
             string symbol = "AAPL";
             string otherSource = "DEX";
-            using (var con = new NativeConnection(address, OnDisconnect)) {
+            using (var con = new NativeConnection(address, OnDisconnect))
+            {
                 Interlocked.Exchange(ref isConnected, 1);
-                using (IDxSubscription s = con.CreateSnapshotSubscription(0, listener)) {
+                using (IDxSubscription s = con.CreateSnapshotSubscription(0, listener))
+                {
                     Assert.Throws<ArgumentException>(delegate { s.SetSource((string[])null); });
                     Assert.Throws<InvalidOperationException>(delegate { s.SetSource(new string[] { }); });
                     Assert.Throws<ArgumentException>(delegate { s.SetSource(new string[] { string.Empty }); });
@@ -391,13 +438,16 @@ namespace com.dxfeed.api {
         }
 
         [Test]
-        public void TestSetSource2() {
+        public void TestSetSource2()
+        {
             SnapshotTestListener listener = new SnapshotTestListener(eventsTimeout, eventsSleepTime, IsConnected);
             string initialSource = "NTV";
             string symbol = "AAPL";
-            using (var con = new NativeConnection(address, OnDisconnect)) {
+            using (var con = new NativeConnection(address, OnDisconnect))
+            {
                 Interlocked.Exchange(ref isConnected, 1);
-                using (IDxSubscription s = con.CreateSnapshotSubscription(0, listener)) {
+                using (IDxSubscription s = con.CreateSnapshotSubscription(0, listener))
+                {
                     Assert.Throws<ArgumentException>(delegate { s.SetSource((string[])null); });
                     Assert.Throws<InvalidOperationException>(delegate { s.SetSource(new string[] { }); });
                     Assert.Throws<ArgumentException>(delegate { s.SetSource(new string[] { string.Empty }); });
@@ -413,14 +463,17 @@ namespace com.dxfeed.api {
         }
 
         [Test]
-        public void TestAddSource() {
+        public void TestAddSource()
+        {
             SnapshotTestListener listener = new SnapshotTestListener(eventsTimeout, eventsSleepTime, IsConnected);
             string initialSource = "NTV";
             string symbol = "AAPL";
             string otherSource = "DEX";
-            using (var con = new NativeConnection(address, OnDisconnect)) {
+            using (var con = new NativeConnection(address, OnDisconnect))
+            {
                 Interlocked.Exchange(ref isConnected, 1);
-                using (IDxSubscription s = con.CreateSnapshotSubscription(0, listener)) {
+                using (IDxSubscription s = con.CreateSnapshotSubscription(0, listener))
+                {
                     Assert.Throws<ArgumentException>(delegate { s.SetSource((string[])null); });
                     Assert.Throws<InvalidOperationException>(delegate { s.SetSource(new string[] { }); });
                     Assert.Throws<ArgumentException>(delegate { s.SetSource(new string[] { string.Empty }); });
@@ -436,13 +489,16 @@ namespace com.dxfeed.api {
         }
 
         [Test]
-        public void TestAddSource2() {
+        public void TestAddSource2()
+        {
             SnapshotTestListener listener = new SnapshotTestListener(eventsTimeout, eventsSleepTime, IsConnected);
             string initialSource = "NTV";
             string symbol = "AAPL";
-            using (var con = new NativeConnection(address, OnDisconnect)) {
+            using (var con = new NativeConnection(address, OnDisconnect))
+            {
                 Interlocked.Exchange(ref isConnected, 1);
-                using (IDxSubscription s = con.CreateSnapshotSubscription(0, listener)) {
+                using (IDxSubscription s = con.CreateSnapshotSubscription(0, listener))
+                {
                     Assert.Throws<ArgumentException>(delegate { s.AddSource((string[])null); });
                     Assert.Throws<InvalidOperationException>(delegate { s.AddSource(new string[] { }); });
                     Assert.Throws<ArgumentException>(delegate { s.AddSource(new string[] { string.Empty }); });
@@ -458,13 +514,16 @@ namespace com.dxfeed.api {
         }
 
         [Test]
-        public void TestSetSourceCandle() {
+        public void TestSetSourceCandle()
+        {
             SnapshotTestListener listener = new SnapshotTestListener(eventsTimeout, eventsSleepTime, IsConnected);
             string initialSource = "NTV";
             string candleString = "XBT/USD{=d}";
-            using (var con = new NativeConnection(address, OnDisconnect)) {
+            using (var con = new NativeConnection(address, OnDisconnect))
+            {
                 Interlocked.Exchange(ref isConnected, 1);
-                using (IDxSubscription s = con.CreateSnapshotSubscription(0, listener)) {
+                using (IDxSubscription s = con.CreateSnapshotSubscription(0, listener))
+                {
                     s.SetSource(initialSource);
                     s.AddSymbol(CandleSymbol.ValueOf(candleString));
                     listener.WaitSnapshot<IDxCandle>(candleString);
@@ -474,13 +533,16 @@ namespace com.dxfeed.api {
         }
 
         [Test]
-        public void TestSetSourceCandle2() {
+        public void TestSetSourceCandle2()
+        {
             SnapshotTestListener listener = new SnapshotTestListener(eventsTimeout, eventsSleepTime, IsConnected);
             string initialSource = "NTV";
             string candleString = "XBT/USD{=d}";
-            using (var con = new NativeConnection(address, OnDisconnect)) {
+            using (var con = new NativeConnection(address, OnDisconnect))
+            {
                 Interlocked.Exchange(ref isConnected, 1);
-                using (IDxSubscription s = con.CreateSnapshotSubscription(0, listener)) {
+                using (IDxSubscription s = con.CreateSnapshotSubscription(0, listener))
+                {
                     s.AddSymbol(CandleSymbol.ValueOf(candleString));
                     s.SetSource(initialSource);
                     listener.WaitSnapshot<IDxCandle>(candleString);
@@ -490,13 +552,16 @@ namespace com.dxfeed.api {
         }
 
         [Test]
-        public void TestAddSourceCandle() {
+        public void TestAddSourceCandle()
+        {
             SnapshotTestListener listener = new SnapshotTestListener(eventsTimeout, eventsSleepTime, IsConnected);
             string initialSource = "NTV";
             string candleString = "XBT/USD{=d}";
-            using (var con = new NativeConnection(address, OnDisconnect)) {
+            using (var con = new NativeConnection(address, OnDisconnect))
+            {
                 Interlocked.Exchange(ref isConnected, 1);
-                using (IDxSubscription s = con.CreateSnapshotSubscription(0, listener)) {
+                using (IDxSubscription s = con.CreateSnapshotSubscription(0, listener))
+                {
                     s.AddSource(initialSource);
                     s.AddSymbol(CandleSymbol.ValueOf(candleString));
                     listener.WaitSnapshot<IDxCandle>(candleString);
@@ -506,13 +571,16 @@ namespace com.dxfeed.api {
         }
 
         [Test]
-        public void TestAddSourceCandle2() {
+        public void TestAddSourceCandle2()
+        {
             SnapshotTestListener listener = new SnapshotTestListener(eventsTimeout, eventsSleepTime, IsConnected);
             string initialSource = "NTV";
             string candleString = "XBT/USD{=d}";
-            using (var con = new NativeConnection(address, OnDisconnect)) {
+            using (var con = new NativeConnection(address, OnDisconnect))
+            {
                 Interlocked.Exchange(ref isConnected, 1);
-                using (IDxSubscription s = con.CreateSnapshotSubscription(0, listener)) {
+                using (IDxSubscription s = con.CreateSnapshotSubscription(0, listener))
+                {
                     s.AddSymbol(CandleSymbol.ValueOf(candleString));
                     s.AddSource(initialSource);
                     listener.WaitSnapshot<IDxCandle>(candleString);
@@ -520,6 +588,5 @@ namespace com.dxfeed.api {
                 }
             }
         }
-
     }
 }

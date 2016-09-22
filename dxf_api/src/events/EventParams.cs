@@ -1,19 +1,26 @@
-﻿using System;
+﻿/// Copyright (C) 2010-2016 Devexperts LLC
+///
+/// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+/// If a copy of the MPL was not distributed with this file, You can obtain one at
+/// http://mozilla.org/MPL/2.0/.
 
-namespace com.dxfeed.api.events {
+using System;
 
+namespace com.dxfeed.api.events
+{
     /// <summary>
     /// Received event parameters
     /// </summary>
-    public class EventParams {
-
+    public class EventParams
+    {
         /// <summary>
         /// Create new event parameters object
         /// </summary>
         /// <param name="flags">event flags</param>
         /// <param name="timeIntField">event time field</param>
         /// <param name="snapshotKey">Number represents snapshot key</param>
-        public EventParams(EventFlag flags, UInt64 timeIntField, UInt64 snapshotKey) {
+        public EventParams(EventFlag flags, UInt64 timeIntField, UInt64 snapshotKey)
+        {
             this.Flags = flags;
             this.TimeIntField = timeIntField;
             this.SnapshotKey = snapshotKey;

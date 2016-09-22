@@ -1,13 +1,19 @@
-﻿using System.Collections.Generic;
+﻿/// Copyright (C) 2010-2016 Devexperts LLC
+///
+/// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+/// If a copy of the MPL was not distributed with this file, You can obtain one at
+/// http://mozilla.org/MPL/2.0/.
+
+using System.Collections.Generic;
 using System.IO;
 using NUnit.Framework;
 using com.dxfeed.ipf;
 
-namespace com.dxfeed.api {
-
+namespace com.dxfeed.api
+{
     [TestFixture]
-    public class InstrumentProfileTest {
-
+    public class InstrumentProfileTest
+    {
         const string dxfToolsUser = "demo";
         const string dxfToolsPassword = "demo";
         const string dxfToolsHost = "https://tools.dxfeed.com/ipf";
@@ -20,51 +26,60 @@ namespace com.dxfeed.api {
         const int IPF_COUNT = 25380;
 
         [Test]
-        public void ReadFromHttpTest() {
+        public void ReadFromHttpTest()
+        {
             InstrumentProfileReader reader = new InstrumentProfileReader();
             IList<InstrumentProfile> profiles = reader.ReadFromFile(dxfToolsHost, dxfToolsUser, dxfToolsPassword);
             Assert.Greater(profiles.Count, 0);
         }
 
-        private void ReadFromFileHelper(string filePath, int profilesCountExpected) {
+        private void ReadFromFileHelper(string filePath, int profilesCountExpected)
+        {
             InstrumentProfileReader reader = new InstrumentProfileReader();
-            using (FileStream inputStream = new FileStream(filePath, FileMode.Open)) {
+            using (FileStream inputStream = new FileStream(filePath, FileMode.Open))
+            {
                 IList<InstrumentProfile> profiles = reader.Read(inputStream, Path.GetFileName(filePath));
                 Assert.AreEqual(profilesCountExpected, profiles.Count);
             }
         }
 
         [Test]
-        public void ReadFromTxtTest() {
+        public void ReadFromTxtTest()
+        {
             string filePath = Path.Combine(DATA_PATH, TXT_FILE_NAME);
             ReadFromFileHelper(filePath, IPF_COUNT);
         }
 
         [Test]
-        public void ReadFromZipTest() {
+        public void ReadFromZipTest()
+        {
             string filePath = Path.Combine(DATA_PATH, ZIP_FILE_NAME);
             ReadFromFileHelper(filePath, IPF_COUNT);
         }
 
         [Test]
-        public void ReadFromGzTest() {
+        public void ReadFromGzTest()
+        {
             string filePath = Path.Combine(DATA_PATH, GZ_FILE_NAME);
             ReadFromFileHelper(filePath, IPF_COUNT);
         }
 
         [Test]
-        public void ReadManyByDirFromZipTest() {
+        public void ReadManyByDirFromZipTest()
+        {
             string filePath = Path.Combine(DATA_PATH, MANY_ZIP_BY_DIR_FILE_NAME);
             ReadFromFileHelper(filePath, IPF_COUNT * 4);
         }
 
         [Test]
-        public void ReadManyProfilesFromZipTest() {
+        public void ReadManyProfilesFromZipTest()
+        {
             string filePath = Path.Combine(DATA_PATH, MANY_PROFILES_FILE_NAME);
             ReadFromFileHelper(filePath, IPF_COUNT * 4);
         }
 
-        private void WriteToFileHelper(string filePath) {
+        private void WriteToFileHelper(string filePath)
+        {
             InstrumentProfileReader reader = new InstrumentProfileReader();
             InstrumentProfileWriter writer = new InstrumentProfileWriter();
             IList<InstrumentProfile> profilesFromHttp = reader.ReadFromFile(dxfToolsHost, dxfToolsUser, dxfToolsPassword);
@@ -72,7 +87,8 @@ namespace com.dxfeed.api {
             writer.WriteToFile(filePath, profilesFromHttp);
 
             IList<InstrumentProfile> profilesFromFile;
-            using (FileStream inputStream = new FileStream(filePath, FileMode.Open)) {
+            using (FileStream inputStream = new FileStream(filePath, FileMode.Open))
+            {
                 profilesFromFile = reader.Read(inputStream, filePath);
             }
 
@@ -85,19 +101,21 @@ namespace com.dxfeed.api {
         }
 
         [Test]
-        public void WriteToTxtTest() {
+        public void WriteToTxtTest()
+        {
             WriteToFileHelper(TXT_FILE_NAME);
         }
 
         [Test]
-        public void WriteToZipTest() {
+        public void WriteToZipTest()
+        {
             WriteToFileHelper(ZIP_FILE_NAME);
         }
 
         [Test]
-        public void WriteToGzTest() {
+        public void WriteToGzTest()
+        {
             WriteToFileHelper(GZ_FILE_NAME);
         }
-
     }
 }

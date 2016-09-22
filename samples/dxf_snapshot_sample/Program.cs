@@ -1,16 +1,23 @@
-﻿using System;
+﻿/// Copyright (C) 2010-2016 Devexperts LLC
+///
+/// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+/// If a copy of the MPL was not distributed with this file, You can obtain one at
+/// http://mozilla.org/MPL/2.0/.
+
+using System;
 using com.dxfeed.api;
 using com.dxfeed.api.candle;
 using com.dxfeed.api.events;
 using com.dxfeed.native;
 
-namespace dxf_snapshot_sample {
+namespace dxf_snapshot_sample
+{
     /// <summary>
     /// This sample class demonstrates subscription to snapshots.
     /// The sample configures via command line, subscribes to snapshot and prints received data.
     /// </summary>
-    class Program {
-
+    class Program
+    {
         private const int hostIndex = 0;
         private const int eventIndex = 1;
         private const int symbolIndex = 2;
@@ -19,12 +26,15 @@ namespace dxf_snapshot_sample {
 
         private const string COMPOSITE_BID = "COMPOSITE_BID";
 
-        private static void OnDisconnect(IDxConnection con) {
+        private static void OnDisconnect(IDxConnection con)
+        {
             Console.WriteLine("Disconnected");
         }
 
-        static void Main(string[] args) {
-            if (args.Length < 3) {
+        static void Main(string[] args)
+        {
+            if (args.Length < 3)
+            {
                 Console.WriteLine(
                     "Usage: dxf_snapshot_sample <host:port> <event> <symbol> [<source>]\n" +
                     "where\n" +
@@ -58,7 +68,8 @@ namespace dxf_snapshot_sample {
 
             EventType eventType;
             if (!Enum.TryParse(args[eventIndex], true, out eventType) ||
-                eventType != EventType.Order && eventType != EventType.Candle) {
+                eventType != EventType.Order && eventType != EventType.Candle)
+            {
 
                 Console.WriteLine("Unsupported event type: " + args[eventIndex]);
                 return;
@@ -68,27 +79,39 @@ namespace dxf_snapshot_sample {
             if (args.Length == sourceIndex + 1)
                 source = args[sourceIndex];
 
-            if (eventType == EventType.Candle) {
-                Console.WriteLine(string.Format("Connecting to {0} for Candle snapshot on {1}...", 
+            if (eventType == EventType.Candle)
+            {
+                Console.WriteLine(string.Format("Connecting to {0} for Candle snapshot on {1}...",
                     address, symbol));
-            } else {
-                if (source.Equals(COMPOSITE_BID)) {
+            }
+            else
+            {
+                if (source.Equals(COMPOSITE_BID))
+                {
                     Console.WriteLine(string.Format("Connecting to {0} for MarketMaker snapshot on {1}...",
                         address, symbol));
-                } else {
+                }
+                else
+                {
                     Console.WriteLine(string.Format("Connecting to {0} for Order#{1} snapshot on {2}...",
                         address, source, symbol));
                 }
             }
 
-            try {
+            try
+            {
                 NativeTools.InitializeLogging("log.log", true, true);
-                using (var con = new NativeConnection(address, OnDisconnect)) {
-                    using (var s = con.CreateSnapshotSubscription(defaultTime, new SnapshotListener())) {
-                        if (eventType == EventType.Order) {
-                                s.AddSource(source);
+                using (var con = new NativeConnection(address, OnDisconnect))
+                {
+                    using (var s = con.CreateSnapshotSubscription(defaultTime, new SnapshotListener()))
+                    {
+                        if (eventType == EventType.Order)
+                        {
+                            s.AddSource(source);
                             s.AddSymbol(symbol);
-                        } else {
+                        }
+                        else
+                        {
                             s.AddSymbol(CandleSymbol.ValueOf(symbol));
                         }
 
@@ -96,9 +119,13 @@ namespace dxf_snapshot_sample {
                         Console.ReadLine();
                     }
                 }
-            } catch (DxException dxException) {
+            }
+            catch (DxException dxException)
+            {
                 Console.WriteLine("Native exception occured: " + dxException.Message);
-            } catch (Exception exc) {
+            }
+            catch (Exception exc)
+            {
                 Console.WriteLine("Exception occured: " + exc.Message);
             }
         }

@@ -1,4 +1,10 @@
-﻿using System;
+﻿/// Copyright (C) 2010-2016 Devexperts LLC
+///
+/// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+/// If a copy of the MPL was not distributed with this file, You can obtain one at
+/// http://mozilla.org/MPL/2.0/.
+
+using System;
 using System.Runtime.InteropServices;
 using com.dxfeed.api.events;
 
@@ -9,7 +15,7 @@ namespace com.dxfeed.native.api
         private static C instance;
         private static object syncRoot = new Object();
 
-        protected C() {}
+        protected C() { }
 
         internal static C Instance
         {
@@ -161,7 +167,7 @@ namespace com.dxfeed.native.api
          *  time - time in the past (unix time in milliseconds)
          *  OUT subscription - a handle of the created subscription
          */
-        internal abstract int dxf_create_subscription_timed(IntPtr connection, EventType event_types, 
+        internal abstract int dxf_create_subscription_timed(IntPtr connection, EventType event_types,
                                                             Int64 time, out IntPtr subscription);
 
         /*
@@ -415,7 +421,7 @@ namespace com.dxfeed.native.api
          *  time - time in the past (unix time in milliseconds)
          *  OUT snapshot - a handle of the created snapshot
          */
-        internal abstract int dxf_create_order_snapshot(IntPtr connection, string symbol, byte[] source, 
+        internal abstract int dxf_create_order_snapshot(IntPtr connection, string symbol, byte[] source,
                                                         Int64 time, out IntPtr snapshot);
 
         /*
@@ -426,7 +432,7 @@ namespace com.dxfeed.native.api
          *  time - time in the past (unix time in milliseconds)
          *  OUT snapshot - a handle of the created snapshot
          */
-        internal abstract int dxf_create_candle_snapshot(IntPtr connection, IntPtr candle_attributes, 
+        internal abstract int dxf_create_candle_snapshot(IntPtr connection, IntPtr candle_attributes,
                                                          Int64 time, out IntPtr snapshot);
 
         /*
@@ -465,6 +471,5 @@ namespace com.dxfeed.native.api
          *  OUT symbol - a pointer to the string object to which the symbol is to be stored
          */
         internal abstract int dxf_get_snapshot_symbol(IntPtr snapshot, out IntPtr symbol);
-
     }
 }

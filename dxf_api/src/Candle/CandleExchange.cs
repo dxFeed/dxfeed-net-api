@@ -1,7 +1,13 @@
-﻿using System;
+﻿/// Copyright (C) 2010-2016 Devexperts LLC
+///
+/// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+/// If a copy of the MPL was not distributed with this file, You can obtain one at
+/// http://mozilla.org/MPL/2.0/.
 
-namespace com.dxfeed.api.candle {
+using System;
 
+namespace com.dxfeed.api.candle
+{
     /// <summary>
     /// Exchange attribute of {@link CandleSymbol} defines exchange identifier where data is
     /// taken from to build the candles.
@@ -12,8 +18,8 @@ namespace com.dxfeed.api.candle {
     /// {@link MarketEventSymbols#getExchangeCode(string) MarketEventSymbols.getExchangeCode} and
     /// {@link MarketEventSymbols#changeExchangeCode(string, char) changeExchangeCode} methods.
     /// </summary>
-    class CandleExchange : ICandleSymbolAttribute {
-        
+    class CandleExchange : ICandleSymbolAttribute
+    {
         /// <summary>
         /// Composite exchange where data is taken from all exchanges.
         /// </summary>
@@ -26,7 +32,8 @@ namespace com.dxfeed.api.candle {
 
         private readonly char exchangeCode;
 
-        CandleExchange(char exchangeCode) {
+        CandleExchange(char exchangeCode)
+        {
             this.exchangeCode = exchangeCode;
         }
 
@@ -34,7 +41,8 @@ namespace com.dxfeed.api.candle {
         /// Returns exchange code. It is {@code '\0'} for {@link #COMPOSITE} exchange.
         /// </summary>
         /// <returns>exchange code.</returns>
-        public char GetExchangeCode() {
+        public char GetExchangeCode()
+        {
             return exchangeCode;
         }
 
@@ -44,7 +52,8 @@ namespace com.dxfeed.api.candle {
         /// exchange character otherwise.
         /// </summary>
         /// <returns>string representation of this exchange.</returns>
-        public override string ToString() {
+        public override string ToString()
+        {
             return exchangeCode == '\0' ? "COMPOSITE" : "" + exchangeCode;
         }
 
@@ -53,7 +62,8 @@ namespace com.dxfeed.api.candle {
         /// </summary>
         /// <param name="o"></param>
         /// <returns>{@code true} if this exchange attribute is the same as another one.</returns>
-        public override bool Equals(object o) {
+        public override bool Equals(object o)
+        {
             return this == o || o.GetType() == typeof(CandleExchange) && exchangeCode == ((CandleExchange)o).exchangeCode;
         }
 
@@ -61,7 +71,8 @@ namespace com.dxfeed.api.candle {
         /// Returns hash code of this exchange attribute.
         /// </summary>
         /// <returns>hash code of this exchange attribute.</returns>
-        public override int GetHashCode() {
+        public override int GetHashCode()
+        {
             return (int)exchangeCode;
         }
 
@@ -70,7 +81,8 @@ namespace com.dxfeed.api.candle {
         /// </summary>
         /// <param name="symbol">original candle event symbol.</param>
         /// <returns>candle event symbol string with this exchange set.</returns>
-        public string ChangeAttributeForSymbol(string symbol) {
+        public string ChangeAttributeForSymbol(string symbol)
+        {
             return MarketEventSymbols.ChangeExchangeCode(symbol, exchangeCode);
         }
 
@@ -79,7 +91,8 @@ namespace com.dxfeed.api.candle {
         /// </summary>
         /// <param name="candleSymbol">candle symbol.</param>
         /// <exception cref="InvalidOperationException">if used outside of internal initialization logic.</exception>
-        public void CheckInAttributeImpl(CandleSymbol candleSymbol) {
+        public void CheckInAttributeImpl(CandleSymbol candleSymbol)
+        {
             if (candleSymbol.exchange != null)
                 throw new InvalidOperationException("Already initialized");
             candleSymbol.exchange = this;
@@ -90,7 +103,8 @@ namespace com.dxfeed.api.candle {
         /// </summary>
         /// <param name="exchangeCode">exchange code character.</param>
         /// <returns>exchange attribute object.</returns>
-        public static CandleExchange ValueOf(char exchangeCode) {
+        public static CandleExchange ValueOf(char exchangeCode)
+        {
             return exchangeCode == '\0' ? COMPOSITE : new CandleExchange(exchangeCode);
         }
 
@@ -100,7 +114,8 @@ namespace com.dxfeed.api.candle {
         /// </summary>
         /// <param name="symbol">candle symbol string.</param>
         /// <returns>exchange attribute object of the given candle symbol string.</returns>
-        public static CandleExchange GetAttributeForSymbol(string symbol) {
+        public static CandleExchange GetAttributeForSymbol(string symbol)
+        {
             return ValueOf(MarketEventSymbols.GetExchangeCode(symbol));
         }
     }

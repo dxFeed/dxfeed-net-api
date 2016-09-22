@@ -15,7 +15,7 @@ namespace com.dxfeed.native.api
 #if DEBUG
         private const string DXFEED_DLL = "DXFeedd.dll";
 #else
-		private const string DXFEED_DLL = "DXFeed.dll";
+        private const string DXFEED_DLL = "DXFeed.dll";
 #endif
         [DllImport(DXFEED_DLL, CallingConvention = CallingConvention.Cdecl, EntryPoint = "dxf_initialize_logger")]
         private static extern int __dxf_initialize_logger(string file_name, bool rewrite_file, bool show_time_zone_info, bool verbose);

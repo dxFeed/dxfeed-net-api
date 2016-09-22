@@ -1,20 +1,23 @@
-﻿using System;
+﻿/// Copyright (C) 2010-2016 Devexperts LLC
+///
+/// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+/// If a copy of the MPL was not distributed with this file, You can obtain one at
+/// http://mozilla.org/MPL/2.0/.
+
+using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using NUnit.Framework;
-using com.dxfeed.api;
 using com.dxfeed.api.candle;
 using com.dxfeed.api.events;
-using com.dxfeed.api.data;
 using com.dxfeed.native;
 using com.dxfeed.tests.tools;
 
-namespace com.dxfeed.api {
-
+namespace com.dxfeed.api
+{
     [TestFixture]
-    public class NativeCandleSubscriptionTest {
-
+    public class NativeCandleSubscriptionTest
+    {
         static string address = "mddqa.in.devexperts.com:7400";
         static int isConnected = 0;
         /// <summary>
@@ -28,21 +31,26 @@ namespace com.dxfeed.api {
 
         DateTime? defaultDateTime = null;
 
-        private static void OnDisconnect(IDxConnection con) {
+        private static void OnDisconnect(IDxConnection con)
+        {
             Interlocked.Exchange(ref isConnected, 0);
         }
 
-        private static bool IsConnected() {
+        private static bool IsConnected()
+        {
             return (Thread.VolatileRead(ref isConnected) == 1);
         }
 
         [Test]
-        public void TestAddSymbol() {
+        public void TestAddSymbol()
+        {
             TestListener listener = new TestListener(eventsTimeout, eventsSleepTime, IsConnected);
             string candleSymbolString = "XBT/USD{=d}";
-            using (var con = new NativeConnection(address, OnDisconnect)) {
+            using (var con = new NativeConnection(address, OnDisconnect))
+            {
                 Interlocked.Exchange(ref isConnected, 1);
-                using (IDxSubscription s = con.CreateSubscription(defaultDateTime, listener)) {
+                using (IDxSubscription s = con.CreateSubscription(defaultDateTime, listener))
+                {
 
                     //try to add non-candle symbol
                     s.AddSymbol("AAPL");
@@ -59,14 +67,17 @@ namespace com.dxfeed.api {
         }
 
         [Test]
-        public void TestAddSymbolCandle() {
+        public void TestAddSymbolCandle()
+        {
             TestListener listener = new TestListener(eventsTimeout, eventsSleepTime, IsConnected);
             string candleSymbolString = "XBT/USD{=d}";
             string anotherCandleSymbolString = "AAPL{=d,price=mark}";
             CandleSymbol anotherCandleSymbol = CandleSymbol.ValueOf(anotherCandleSymbolString);
-            using (var con = new NativeConnection(address, OnDisconnect)) {
+            using (var con = new NativeConnection(address, OnDisconnect))
+            {
                 Interlocked.Exchange(ref isConnected, 1);
-                using (IDxSubscription s = con.CreateSubscription(defaultDateTime, listener)) {
+                using (IDxSubscription s = con.CreateSubscription(defaultDateTime, listener))
+                {
                     s.AddSymbol(CandleSymbol.ValueOf(candleSymbolString));
                     listener.WaitEvents<IDxCandle>(candleSymbolString);
 
@@ -78,15 +89,18 @@ namespace com.dxfeed.api {
         }
 
         [Test]
-        public void TestAddSymbols() {
+        public void TestAddSymbols()
+        {
             TestListener listener = new TestListener(eventsTimeout, eventsSleepTime, IsConnected);
             string candleSymbolString = "XBT/USD{=d}";
-            using (var con = new NativeConnection(address, OnDisconnect)) {
+            using (var con = new NativeConnection(address, OnDisconnect))
+            {
                 Interlocked.Exchange(ref isConnected, 1);
-                using (IDxSubscription s = con.CreateSubscription(defaultDateTime, listener)) {
+                using (IDxSubscription s = con.CreateSubscription(defaultDateTime, listener))
+                {
                     //add candle symbol
                     s.AddSymbol(CandleSymbol.ValueOf(candleSymbolString));
-                    IList<string>  returnedSymbolList = s.GetSymbols();
+                    IList<string> returnedSymbolList = s.GetSymbols();
                     Assert.AreEqual(1, returnedSymbolList.Count);
                     Assert.AreEqual(candleSymbolString, returnedSymbolList[0]);
 
@@ -102,17 +116,20 @@ namespace com.dxfeed.api {
         }
 
         [Test]
-        public void TestAddSymbolsCandle() {
+        public void TestAddSymbolsCandle()
+        {
             TestListener listener = new TestListener(eventsTimeout, eventsSleepTime, IsConnected);
             string candleSymbolString = "XBT/USD{=d}";
             string aaplSymbolString = "AAPL{=d,price=mark}";
             string ibmSymbolString = "IBM{=d,price=mark}";
-            using (var con = new NativeConnection(address, OnDisconnect)) {
+            using (var con = new NativeConnection(address, OnDisconnect))
+            {
                 Interlocked.Exchange(ref isConnected, 1);
-                using (IDxSubscription s = con.CreateSubscription(defaultDateTime, listener)) {
+                using (IDxSubscription s = con.CreateSubscription(defaultDateTime, listener))
+                {
                     //add candle symbol
                     s.AddSymbol(CandleSymbol.ValueOf(candleSymbolString));
-                    IList<string>  returnedSymbolList = s.GetSymbols();
+                    IList<string> returnedSymbolList = s.GetSymbols();
                     Assert.AreEqual(1, returnedSymbolList.Count);
                     Assert.AreEqual(candleSymbolString, returnedSymbolList[0]);
                     listener.WaitEvents<IDxCandle>(candleSymbolString);
@@ -120,15 +137,15 @@ namespace com.dxfeed.api {
                     listener.ClearEvents<IDxCandle>();
 
                     //try to add other candle symbols
-                    s.AddSymbols(new CandleSymbol[] { 
-                        CandleSymbol.ValueOf(aaplSymbolString), 
+                    s.AddSymbols(new CandleSymbol[] {
+                        CandleSymbol.ValueOf(aaplSymbolString),
                         CandleSymbol.ValueOf(ibmSymbolString)
                     });
                     returnedSymbolList = s.GetSymbols();
                     Assert.AreEqual(3, returnedSymbolList.Count);
                     listener.WaitEvents<IDxCandle>(new string[] {
-                        candleSymbolString, 
-                        aaplSymbolString, 
+                        candleSymbolString,
+                        aaplSymbolString,
                         ibmSymbolString
                     });
                 }
@@ -136,12 +153,15 @@ namespace com.dxfeed.api {
         }
 
         [Test]
-        public void TestRemoveSymbols() {
+        public void TestRemoveSymbols()
+        {
             TestListener listener = new TestListener(eventsTimeout, eventsSleepTime, IsConnected);
             string candleSymbolString = "XBT/USD{=d}";
-            using (var con = new NativeConnection(address, OnDisconnect)) {
+            using (var con = new NativeConnection(address, OnDisconnect))
+            {
                 Interlocked.Exchange(ref isConnected, 1);
-                using (IDxSubscription s = con.CreateSubscription(defaultDateTime, listener)) {
+                using (IDxSubscription s = con.CreateSubscription(defaultDateTime, listener))
+                {
                     //add candle symbol
                     s.AddSymbol(CandleSymbol.ValueOf(candleSymbolString));
                     listener.WaitEvents<IDxCandle>(candleSymbolString);
@@ -160,31 +180,34 @@ namespace com.dxfeed.api {
         }
 
         [Test]
-        public void TestRemoveSymbolsCandle() {
+        public void TestRemoveSymbolsCandle()
+        {
             TestListener listener = new TestListener(eventsTimeout, eventsSleepTime, IsConnected);
             string candleSymbolString = "XBT/USD{=d}";
             string aaplSymbolString = "AAPL{=d,price=mark}";
             string ibmSymbolString = "IBM{=d,price=mark}";
-            using (var con = new NativeConnection(address, OnDisconnect)) {
+            using (var con = new NativeConnection(address, OnDisconnect))
+            {
                 Interlocked.Exchange(ref isConnected, 1);
-                using (IDxSubscription s = con.CreateSubscription(defaultDateTime, listener)) {
+                using (IDxSubscription s = con.CreateSubscription(defaultDateTime, listener))
+                {
                     //add candle symbols
                     s.AddSymbols(new CandleSymbol[] {
-                        CandleSymbol.ValueOf(candleSymbolString), 
-                        CandleSymbol.ValueOf(aaplSymbolString), 
+                        CandleSymbol.ValueOf(candleSymbolString),
+                        CandleSymbol.ValueOf(aaplSymbolString),
                         CandleSymbol.ValueOf(ibmSymbolString)
                     });
                     IList<string> returnedSymbolList = s.GetSymbols();
                     Assert.AreEqual(3, returnedSymbolList.Count);
                     listener.WaitEvents<IDxCandle>(new string[] {
-                        candleSymbolString, 
-                        aaplSymbolString, 
+                        candleSymbolString,
+                        aaplSymbolString,
                         ibmSymbolString
                     });
 
                     //try to remove symbols
                     s.RemoveSymbols(new CandleSymbol[] {
-                        CandleSymbol.ValueOf(aaplSymbolString), 
+                        CandleSymbol.ValueOf(aaplSymbolString),
                         CandleSymbol.ValueOf(ibmSymbolString)
                     });
                     returnedSymbolList = s.GetSymbols();
@@ -196,12 +219,15 @@ namespace com.dxfeed.api {
         }
 
         [Test]
-        public void TestSetSymbols() {
+        public void TestSetSymbols()
+        {
             TestListener listener = new TestListener(eventsTimeout, eventsSleepTime, IsConnected);
             string candleSymbolString = "XBT/USD{=d}";
-            using (var con = new NativeConnection(address, OnDisconnect)) {
+            using (var con = new NativeConnection(address, OnDisconnect))
+            {
                 Interlocked.Exchange(ref isConnected, 1);
-                using (IDxSubscription s = con.CreateSubscription(defaultDateTime, listener)) {
+                using (IDxSubscription s = con.CreateSubscription(defaultDateTime, listener))
+                {
                     //add candle symbol
                     s.AddSymbol(CandleSymbol.ValueOf(candleSymbolString));
                     IList<string> returnedSymbolList = s.GetSymbols();
@@ -218,17 +244,20 @@ namespace com.dxfeed.api {
         }
 
         [Test]
-        public void TestSetSymbolsCandle() {
+        public void TestSetSymbolsCandle()
+        {
             TestListener listener = new TestListener(eventsTimeout, eventsSleepTime, IsConnected);
             string candleSymbolString = "XBT/USD{=d}";
             string aaplSymbolString = "AAPL{=d,price=mark}";
             string ibmSymbolString = "IBM{=d,price=mark}";
-            using (var con = new NativeConnection(address, OnDisconnect)) {
+            using (var con = new NativeConnection(address, OnDisconnect))
+            {
                 Interlocked.Exchange(ref isConnected, 1);
-                using (IDxSubscription s = con.CreateSubscription(defaultDateTime, listener)) {
+                using (IDxSubscription s = con.CreateSubscription(defaultDateTime, listener))
+                {
                     //add candle symbol
-                    s.AddSymbols(new CandleSymbol[] { 
-                        CandleSymbol.ValueOf(aaplSymbolString), 
+                    s.AddSymbols(new CandleSymbol[] {
+                        CandleSymbol.ValueOf(aaplSymbolString),
                         CandleSymbol.ValueOf(ibmSymbolString)
                     });
                     IList<string> returnedSymbolList = s.GetSymbols();
@@ -247,13 +276,16 @@ namespace com.dxfeed.api {
         }
 
         [Test]
-        public void TestClearSymbols() {
+        public void TestClearSymbols()
+        {
             TestListener listener = new TestListener(eventsTimeout, eventsSleepTime, IsConnected);
             string candleSymbolString = "XBT/USD{=d}";
             string aaplSymbolString = "AAPL{=d,price=mark}";
-            using (var con = new NativeConnection(address, OnDisconnect)) {
+            using (var con = new NativeConnection(address, OnDisconnect))
+            {
                 Interlocked.Exchange(ref isConnected, 1);
-                using (IDxSubscription s = con.CreateSubscription(defaultDateTime, listener)) {
+                using (IDxSubscription s = con.CreateSubscription(defaultDateTime, listener))
+                {
                     s.AddSymbol(CandleSymbol.ValueOf(candleSymbolString));
                     listener.WaitEvents<IDxCandle>(candleSymbolString);
 
@@ -277,13 +309,16 @@ namespace com.dxfeed.api {
         }
 
         [Test]
-        public void TestGetSymbols() {
+        public void TestGetSymbols()
+        {
             TestListener listener = new TestListener(eventsTimeout, eventsSleepTime, IsConnected);
             string candleSymbolString = "XBT/USD{=d}";
             CandleSymbol candleSymbol = CandleSymbol.ValueOf(candleSymbolString);
-            using (var con = new NativeConnection(address, OnDisconnect)) {
+            using (var con = new NativeConnection(address, OnDisconnect))
+            {
                 Interlocked.Exchange(ref isConnected, 1);
-                using (IDxSubscription s = con.CreateSubscription(defaultDateTime, listener)) {
+                using (IDxSubscription s = con.CreateSubscription(defaultDateTime, listener))
+                {
                     s.AddSymbol(candleSymbol);
                     IList<string> returnedSymbolList = s.GetSymbols();
                     Assert.AreEqual(1, returnedSymbolList.Count);
@@ -293,12 +328,15 @@ namespace com.dxfeed.api {
         }
 
         [Test]
-        public void TestAddSource() {
+        public void TestAddSource()
+        {
             TestListener listener = new TestListener(eventsTimeout, eventsSleepTime, IsConnected);
             string candleSymbolString = "XBT/USD{=d}";
-            using (var con = new NativeConnection(address, OnDisconnect)) {
+            using (var con = new NativeConnection(address, OnDisconnect))
+            {
                 Interlocked.Exchange(ref isConnected, 1);
-                using (IDxSubscription s = con.CreateSubscription(defaultDateTime, listener)) {
+                using (IDxSubscription s = con.CreateSubscription(defaultDateTime, listener))
+                {
                     s.AddSource("IST");
                     s.AddSymbol(CandleSymbol.ValueOf(candleSymbolString));
                     s.AddSource("NTV", "DEX");
@@ -308,12 +346,15 @@ namespace com.dxfeed.api {
         }
 
         [Test]
-        public void TestSetSource() {
+        public void TestSetSource()
+        {
             TestListener listener = new TestListener(eventsTimeout, eventsSleepTime, IsConnected);
             string candleSymbolString = "XBT/USD{=d}";
-            using (var con = new NativeConnection(address, OnDisconnect)) {
+            using (var con = new NativeConnection(address, OnDisconnect))
+            {
                 Interlocked.Exchange(ref isConnected, 1);
-                using (IDxSubscription s = con.CreateSubscription(defaultDateTime, listener)) {
+                using (IDxSubscription s = con.CreateSubscription(defaultDateTime, listener))
+                {
                     s.SetSource("IST");
                     s.AddSymbol(CandleSymbol.ValueOf(candleSymbolString));
                     s.SetSource("NTV", "DEX");
@@ -321,6 +362,5 @@ namespace com.dxfeed.api {
                 }
             }
         }
-
     }
 }

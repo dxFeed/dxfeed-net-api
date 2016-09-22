@@ -1,7 +1,14 @@
-﻿using System;
+﻿/// Copyright (C) 2010-2016 Devexperts LLC
+///
+/// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+/// If a copy of the MPL was not distributed with this file, You can obtain one at
+/// http://mozilla.org/MPL/2.0/.
+
+using System;
 using System.Collections.Generic;
 
-namespace com.dxfeed.api.candle {
+namespace com.dxfeed.api.candle
+{
     /// <summary>
     /// Price type attribute of {@link CandleSymbol} defines price that is used to build the candles.
     ///
@@ -16,7 +23,8 @@ namespace com.dxfeed.api.candle {
     /// The value that this key shall be set to is equal to
     /// the corresponding {@link #toString() CandlePrice.ToString()}
     /// </summary>
-    class CandlePrice : ICandleSymbolAttribute {
+    class CandlePrice : ICandleSymbolAttribute
+    {
 
         /// <summary>
         /// The attribute key that is used to store the value of {@code CandlePrice} in
@@ -64,7 +72,8 @@ namespace com.dxfeed.api.candle {
         private readonly string value;
         private readonly CandlePriceType priceType;
 
-        CandlePrice(CandlePriceType priceType, string value) {
+        CandlePrice(CandlePriceType priceType, string value)
+        {
             this.value = value;
             this.priceType = priceType;
             objCash.Add(value, this);
@@ -74,7 +83,8 @@ namespace com.dxfeed.api.candle {
         /// Get id of price type attribute
         /// </summary>
         /// <returns>id of price type attribute</returns>
-        public int GetId() {
+        public int GetId()
+        {
             return (int)priceType;
         }
 
@@ -83,7 +93,8 @@ namespace com.dxfeed.api.candle {
         /// </summary>
         /// <param name="symbol">original candle event symbol.</param>
         /// <returns>candle event symbol string with this candle price type set.</returns>
-        public string ChangeAttributeForSymbol(string symbol) {
+        public string ChangeAttributeForSymbol(string symbol)
+        {
             return this == DEFAULT ?
                 MarketEventSymbols.RemoveAttributeStringByKey(symbol, ATTRIBUTE_KEY) :
                 MarketEventSymbols.ChangeAttributeStringByKey(symbol, ATTRIBUTE_KEY, ToString());
@@ -94,7 +105,8 @@ namespace com.dxfeed.api.candle {
         /// </summary>
         /// <param name="candleSymbol">candle symbol.</param>
         /// <exception cref="InvalidOperationException">if used outside of internal initialization logic.</exception>
-        public void CheckInAttributeImpl(CandleSymbol candleSymbol) {
+        public void CheckInAttributeImpl(CandleSymbol candleSymbol)
+        {
             if (candleSymbol.price != null)
                 throw new InvalidOperationException("Already initialized");
             candleSymbol.price = this;
@@ -107,7 +119,8 @@ namespace com.dxfeed.api.candle {
         /// {@link #LAST} is represented as "last".
         /// </summary>
         /// <returns>string representation of this candle price type.</returns>
-        public override string ToString() {
+        public override string ToString()
+        {
             return value;
         }
 
@@ -117,7 +130,8 @@ namespace com.dxfeed.api.candle {
         /// The full string representation of {@link #LAST} is "price=last"
         /// </summary>
         /// <returns></returns>
-        public string ToFullString() {
+        public string ToFullString()
+        {
             return string.Format("{0}={1}", ATTRIBUTE_KEY, value);
         }
 
@@ -129,7 +143,8 @@ namespace com.dxfeed.api.candle {
         /// <param name="s">string representation of candle price type.</param>
         /// <returns>candle price type.</returns>
         /// <exception cref="InvalidOperationException">if the string representation is invalid.</exception>
-        public static CandlePrice Parse(string s) {
+        public static CandlePrice Parse(string s)
+        {
             int n = s.Length;
             if (n == 0)
                 throw new InvalidOperationException("Missing candle price");
@@ -137,7 +152,8 @@ namespace com.dxfeed.api.candle {
             if (objCash.ContainsKey(s))
                 return objCash[s];
             // slow path for everything else
-            foreach (CandlePrice price in objCash.Values) {
+            foreach (CandlePrice price in objCash.Values)
+            {
                 string ps = price.ToString();
                 if (ps.Length >= n && ps.Substring(0, n).Equals(s, StringComparison.InvariantCultureIgnoreCase))
                     return price;
@@ -151,7 +167,8 @@ namespace com.dxfeed.api.candle {
         /// </summary>
         /// <param name="symbol">candle symbol string.</param>
         /// <returns>candle price of the given candle symbol string.</returns>
-        public static CandlePrice GetAttributeForSymbol(string symbol) {
+        public static CandlePrice GetAttributeForSymbol(string symbol)
+        {
             string s = MarketEventSymbols.GetAttributeStringByKey(symbol, ATTRIBUTE_KEY);
             return s == null ? DEFAULT : Parse(s);
         }
@@ -161,21 +178,24 @@ namespace com.dxfeed.api.candle {
         /// </summary>
         /// <param name="symbol">candle symbol string.</param>
         /// <returns>candle symbol string with the normalized representation of the the candle price type attribute.</returns>
-        public static string NormalizeAttributeForSymbol(string symbol) {
+        public static string NormalizeAttributeForSymbol(string symbol)
+        {
             string a = MarketEventSymbols.GetAttributeStringByKey(symbol, ATTRIBUTE_KEY);
             if (a == null)
                 return symbol;
-            try {
+            try
+            {
                 CandlePrice other = Parse(a);
                 if (other == DEFAULT)
                     MarketEventSymbols.RemoveAttributeStringByKey(symbol, ATTRIBUTE_KEY);
                 if (!a.Equals(other.ToString()))
                     return MarketEventSymbols.ChangeAttributeStringByKey(symbol, ATTRIBUTE_KEY, other.ToString());
                 return symbol;
-            } catch (ArgumentNullException) {
+            }
+            catch (ArgumentNullException)
+            {
                 return symbol;
             }
         }
-
     }
 }

@@ -4,22 +4,15 @@
 /// If a copy of the MPL was not distributed with this file, You can obtain one at
 /// http://mozilla.org/MPL/2.0/.
 
-using System;
 using com.dxfeed.api;
-using com.dxfeed.api.events;
 using com.dxfeed.native;
+using System;
 
-namespace dxf_events_sample
+namespace dxf_order_view_sample
 {
-    /// <summary>
-    /// This sample class demonstrates subscription to events.
-    /// The sample configures via command line, subscribes to events and prints received data.
-    /// </summary>
     class Program
     {
         private const int hostIndex = 0;
-        private const int eventIndex = 1;
-        private const int symbolIndex = 2;
 
         private static void OnDisconnect(IDxConnection con)
         {
@@ -28,41 +21,30 @@ namespace dxf_events_sample
 
         static void Main(string[] args)
         {
-            if (args.Length != 3)
+            if (args.Length != 1)
             {
                 Console.WriteLine(
-                    "Usage: dxf_events_sample <host:port> <event> <symbol>\n" +
+                    "Usage: dxf_events_sample <host:port>\n" +
                     "where\n" +
                     "    host:port - address of dxfeed server (demo.dxfeed.com:7300)\n" +
-                    "    event     - any of the {Profile,Order,Quote,Trade,TimeAndSale,Summary}\n" +
-                    "    symbol    - IBM, MSFT, ...\n\n" +
-                    "example: dxf_events_sample demo.dxfeed.com:7300 quote,trade MSFT.TEST,IBM.TEST"
+                    "example: dxf_events_sample demo.dxfeed.com:7300"
                 );
                 return;
             }
 
             var address = args[hostIndex];
 
-            EventType events;
-            if (!Enum.TryParse(args[eventIndex], true, out events))
-            {
-                Console.WriteLine("Unsupported event type: " + args[1]);
-                return;
-            }
-
-            string[] symbols = args[symbolIndex].Split(',');
-
-            Console.WriteLine(string.Format("Connecting to {0} for [{1}] on [{2}] ...",
-                address, events, string.Join(", ", symbols)));
+            Console.WriteLine(string.Format("Connecting to {0} for Order View", address));
 
             try
             {
                 NativeTools.InitializeLogging("log.log", true, true);
                 using (var con = new NativeConnection(address, OnDisconnect))
                 {
-                    using (var s = con.CreateSubscription(events, new EventListener()))
+                    using (var sub = con.CreateOrderViewSubscription(new OrderViewEventListener()))
                     {
-                        s.AddSymbols(symbols);
+                        sub.SetSource("NTV", "DEA", "DEX");
+                        sub.SetSymbols("AAPL", "GOOG", "IBM", "F");
 
                         Console.WriteLine("Press enter to stop");
                         Console.ReadLine();

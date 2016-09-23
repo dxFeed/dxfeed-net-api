@@ -9,7 +9,8 @@ using com.dxfeed.api.data;
 
 namespace com.dxfeed.api.events
 {
-    public interface IDxOrder
+    [EventTypeAttribute("Order")]
+    public interface IDxOrder : IDxMarketEvent
     {
         long Index { get; }
         Side Side { get; }

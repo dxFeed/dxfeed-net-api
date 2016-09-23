@@ -8,7 +8,8 @@ using System;
 
 namespace com.dxfeed.api.events
 {
-    public interface IDxCandle
+    [EventTypeAttribute("Candle")]
+    public interface IDxCandle : IDxMarketEvent
     {
         DateTime DateTime { get; }
         int Sequence { get; }

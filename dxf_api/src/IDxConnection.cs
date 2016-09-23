@@ -9,11 +9,13 @@ using com.dxfeed.api.events;
 
 namespace com.dxfeed.api
 {
+
     /// <summary>
     /// Interface provides operations with event subscription
     /// </summary>
     public interface IDxConnection : IDisposable
     {
+
         /// <summary>
         /// Disconnect from the server
         /// </summary>
@@ -24,7 +26,9 @@ namespace com.dxfeed.api
         /// </summary>
         /// <param name="type">event type</param>
         /// <param name="listener">event listener callback</param>
-        /// <returns></returns>
+        /// <returns> subscription object</returns>
+        /// <exception cref="ArgumentNullException">If listener is null.</exception>
+        /// <exception cref="DxException"></exception>
         IDxSubscription CreateSubscription(EventType type, IDxFeedListener listener);
 
         /// <summary>
@@ -53,6 +57,7 @@ namespace com.dxfeed.api
 
         /// <summary>
         /// Creates Order View subscription
+        /// Add a comment to this line
         /// </summary>
         /// <param name="listener"></param>
         /// <returns></returns>

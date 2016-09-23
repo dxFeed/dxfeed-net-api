@@ -6,7 +6,8 @@
 
 namespace com.dxfeed.api.events
 {
-    public interface IDxMarketMaker
+    [EventTypeAttribute("MarketMaker")]
+    public interface IDxMarketMaker : IDxMarketEvent
     {
         char Exchange { get; }
         int Id { get; }

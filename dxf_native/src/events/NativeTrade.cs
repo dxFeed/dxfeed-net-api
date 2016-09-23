@@ -15,17 +15,20 @@ namespace com.dxfeed.native.events
     public struct NativeTrade : IDxTrade
     {
         private readonly DxTrade trade;
+        private readonly string symbol;
 
-        internal unsafe NativeTrade(DxTrade* trade)
+        internal unsafe NativeTrade(DxTrade* trade, string symbol)
         {
             this.trade = *trade;
+            this.symbol = symbol;
         }
 
         public override string ToString()
         {
-            return string.Format(CultureInfo.InvariantCulture, "Trade {{Time: {0:o}, ExchangeCode: '{1}', " +
-                "Price: {2}, Size: {3}, Tick: {4}, Change: {5}, DayVolume: {5}}}",
-                Time, ExchangeCode, Price, Size, Tick, Change, DayVolume);
+            return string.Format(CultureInfo.InvariantCulture, "Trade {{{7}, Time: {0:o}, " +
+                "ExchangeCode: '{1}', Price: {2}, Size: {3}, Tick: {4}, Change: {5}, " +
+                "DayVolume: {6}}}",
+                Time, ExchangeCode, Price, Size, Tick, Change, DayVolume, Symbol);
         }
 
         #region Implementation of IDxTrade
@@ -63,6 +66,11 @@ namespace com.dxfeed.native.events
         public double DayVolume
         {
             get { return trade.day_volume; }
+        }
+
+        public string Symbol
+        {
+            get { return symbol; }
         }
 
         #endregion

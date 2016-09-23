@@ -18,8 +18,9 @@ namespace com.dxfeed.native.events
         private readonly DxOrder order;
         private readonly DxString marketMaker;
         private readonly string source;
+        private readonly string symbol;
 
-        internal unsafe NativeOrder(DxOrder* order)
+        internal unsafe NativeOrder(DxOrder* order, string symbol)
         {
             this.order = *order;
             marketMaker = DxMarshal.ReadDxString(this.order.market_maker);
@@ -28,12 +29,16 @@ namespace com.dxfeed.native.events
             {
                 source = new string(charPtr);
             }
+
+            this.symbol = symbol;
         }
 
         public override string ToString()
         {
-            return string.Format(CultureInfo.InvariantCulture, "Order: {{{1} {7}@{6}, Index: {0:x4}, Level: {2}, Time: {3:o}, ExchangeCode: '{4}', MarketMaker: '{5}', Source: '{8}'}}",
-                Index, Side, Level, Time, ExchangeCode, MarketMaker, Price, Size, Source);
+            return string.Format(CultureInfo.InvariantCulture, "Order: {{{1} {9}, {7}@{6}, " +
+                "Index: {0:x4}, Level: {2}, Time: {3:o}, ExchangeCode: '{4}', " +
+                "MarketMaker: '{5}', Source: '{8}'}}",
+                Index, Side, Level, Time, ExchangeCode, MarketMaker, Price, Size, Source, Symbol);
         }
 
         #region Implementation of IDxOrder
@@ -86,6 +91,11 @@ namespace com.dxfeed.native.events
         public int Count
         {
             get { return order.count; }
+        }
+
+        public string Symbol
+        {
+            get { return symbol; }
         }
 
         #endregion

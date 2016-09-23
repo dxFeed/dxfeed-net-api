@@ -6,8 +6,7 @@
 
 namespace com.dxfeed.api.events
 {
-    [EventTypeAttribute("Summary")]
-    public interface IDxSummary : IDxMarketEvent
+    public interface IDxSummary
     {
         int DayId { get; }
         double DayOpenPrice { get; }

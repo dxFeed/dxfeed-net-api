@@ -14,8 +14,7 @@ namespace com.dxfeed.api.events
         New = 0, Correction = 1, Cancel = 2
     }
 
-    [EventTypeAttribute("TimeAndSale")]
-    public interface IDxTimeAndSale : IDxMarketEvent
+    public interface IDxTimeAndSale
     {
         long EventId { get; }
         DateTime Time { get; }

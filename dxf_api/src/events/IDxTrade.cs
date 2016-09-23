@@ -8,8 +8,7 @@ using System;
 
 namespace com.dxfeed.api.events
 {
-    [EventTypeAttribute("Trade")]
-    public interface IDxTrade : IDxMarketEvent
+    public interface IDxTrade
     {
         DateTime Time { get; }
         char ExchangeCode { get; }

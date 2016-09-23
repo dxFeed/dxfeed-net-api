@@ -17,11 +17,11 @@ namespace com.dxfeed.native.events
         private readonly EventType type;
         private readonly IntPtr head;
         private readonly int size;
-        private readonly Func<IntPtr, int, string, T> readEvent;
+        private readonly Func<IntPtr, int, T> readEvent;
         private readonly DxString symbol;
         private readonly EventParams eventParams;
 
-        internal unsafe NativeEventBuffer(EventType type, IntPtr symbol, IntPtr head, int size, EventParams eventParams, Func<IntPtr, int, string, T> readEvent)
+        internal unsafe NativeEventBuffer(EventType type, IntPtr symbol, IntPtr head, int size, EventParams eventParams, Func<IntPtr, int, T> readEvent)
         {
             this.type = type;
             this.head = head;
@@ -36,10 +36,9 @@ namespace com.dxfeed.native.events
         {
             private readonly IntPtr head;
             private readonly int size;
-            private readonly Func<IntPtr, int, string, T> readEvent;
+            private readonly Func<IntPtr, int, T> readEvent;
             private T current;
             private int nextRead;
-            private DxString symbol;
 
             internal Enumerator(NativeEventBuffer<T> buf)
             {
@@ -48,7 +47,6 @@ namespace com.dxfeed.native.events
                 readEvent = buf.readEvent;
                 nextRead = 0;
                 current = default(T);
-                symbol = buf.Symbol;
             }
 
             #region Implementation of IDisposable
@@ -68,7 +66,7 @@ namespace com.dxfeed.native.events
                     current = default(T);
                     return false;
                 }
-                current = readEvent(head, nextRead, symbol.ToString());
+                current = readEvent(head, nextRead);
                 nextRead++;
                 return true;
             }
@@ -141,13 +139,13 @@ namespace com.dxfeed.native.events
 
     public class NativeBufferFactory
     {
-        private static readonly Func<IntPtr, int, string, NativeQuote> QUOTE_READER = DxMarshal.ReadQuote;
-        private static readonly Func<IntPtr, int, string, NativeTrade> TRADE_READER = DxMarshal.ReadTrade;
-        private static readonly Func<IntPtr, int, string, NativeOrder> ORDER_READER = DxMarshal.ReadOrder;
-        private static readonly Func<IntPtr, int, string, NativeProfile> PROFILE_READER = DxMarshal.ReadProfile;
-        private static readonly Func<IntPtr, int, string, NativeTimeAndSale> TS_READER = DxMarshal.ReadTimeAndSale;
-        private static readonly Func<IntPtr, int, string, NativeSummary> SUMMARY_READER = DxMarshal.ReadSummary;
-        private static readonly Func<IntPtr, int, string, NativeCandle> CANDLE_READER = DxMarshal.ReadCandle;
+        private static readonly Func<IntPtr, int, NativeQuote> QUOTE_READER = DxMarshal.ReadQuote;
+        private static readonly Func<IntPtr, int, NativeTrade> TRADE_READER = DxMarshal.ReadTrade;
+        private static readonly Func<IntPtr, int, NativeOrder> ORDER_READER = DxMarshal.ReadOrder;
+        private static readonly Func<IntPtr, int, NativeProfile> PROFILE_READER = DxMarshal.ReadProfile;
+        private static readonly Func<IntPtr, int, NativeTimeAndSale> TS_READER = DxMarshal.ReadTimeAndSale;
+        private static readonly Func<IntPtr, int, NativeSummary> SUMMARY_READER = DxMarshal.ReadSummary;
+        private static readonly Func<IntPtr, int, NativeCandle> CANDLE_READER = DxMarshal.ReadCandle;
 
 
         public static NativeEventBuffer<NativeQuote> CreateQuoteBuf(IntPtr symbol, IntPtr head, int size, EventParams eventParams)

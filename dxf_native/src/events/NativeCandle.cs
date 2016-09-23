@@ -14,21 +14,19 @@ namespace com.dxfeed.native.events
     public struct NativeCandle : IDxCandle
     {
         private readonly DxCandle candle;
-        private string symbol;
 
-        internal unsafe NativeCandle(DxCandle* c, string symbol)
+        internal unsafe NativeCandle(DxCandle* c)
         {
             candle = *c;
-            this.symbol = symbol;
         }
 
         public override string ToString()
         {
-            return string.Format(CultureInfo.InvariantCulture, "Candle: {{{11}, DateTime: {0:o}, " +
+            return string.Format(CultureInfo.InvariantCulture, "Candle: {{DateTime: {0:o}, " +
             "Sequence: {1}, Count: {2:0.00}, Open: {3:0.000000}, High: {4:0.000000}, " +
             "Low: {5:0.000000}, Close: {6:0.000000}, Volume: {7:0.0}, VWAP: {8:0.0}, " +
-            "BidVolume: {9:0.0}, AskVolume: {10:0.0} }}",
-                DateTime, Sequence, Count, Open, High, Low, Close, Volume, VWAP, BidVolume, AskVolume, Symbol);
+            "BidVolume: {9:0.0}, AskVolume: {9:0.0} }}",
+                DateTime, Sequence, Count, Open, High, Low, Close, Volume, VWAP, BidVolume, AskVolume);
         }
         #region Implementation of IDxCandle
 
@@ -119,14 +117,6 @@ namespace com.dxfeed.native.events
             get
             {
                 return candle.ask_volume;
-            }
-        }
-
-        public string Symbol
-        {
-            get
-            {
-                return symbol;
             }
         }
 

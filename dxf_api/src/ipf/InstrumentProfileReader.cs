@@ -18,13 +18,10 @@ namespace com.dxfeed.ipf
     /// Reads instrument profiles from the stream using Simple File Format.
     /// Please see Instrument Profile Format documentation for complete description.
     /// This reader automatically uses data formats as specified in the stream.
-    /// Use InstrumentProfileConnection if support for streaming updates of instrument profiles is needed.
+    /// Use {@link InstrumentProfileConnection} if support for streaming updates of instrument profiles is needed.
     /// </summary>
     public class InstrumentProfileReader
     {
-        private static readonly string LIVE_PROP_KEY = "X-Live";
-        private static readonly string LIVE_PROP_REQUEST_NO = "no";
-
         private DateTime lastModified;
 
         /// <summary>
@@ -33,7 +30,7 @@ namespace com.dxfeed.ipf
         public InstrumentProfileReader() { }
 
         /// <summary>
-        /// Returns last modification time (in milliseconds) from last ReadFromFile operation
+        /// Returns last modification time (in milliseconds) from last {@link #readFromFile} operation
         /// or zero if it is unknown.
         /// </summary>
         /// <returns>Last modification time (in milliseconds)</returns>
@@ -51,16 +48,17 @@ namespace com.dxfeed.ipf
         /// In other cases file will be considered uncompressed and will be read as is.
         ///
         /// Authentication information can be supplied to this method as part of URL user info
-        /// like "http://user:password@host:port/path/file.ipf".
+        /// like {@code "http://user:password@host:port/path/file.ipf"}.
         ///
-        /// This is a shortcut for ReadFromFile(address, null, null).
+        /// This is a shortcut for
+        /// <code>{@link #readFromFile(string, string, string) readFromFile}(address, <b>null</b>, <b>null</b>)</code>.
         ///
-        /// This operation updates GetLastModified().
+        /// This operation updates {@link #getLastModified() lastModified}.
         /// </summary>
         /// <param name="address">URL of file to read from.</param>
         /// <returns>List of instrument profiles.</returns>
-        /// <exception cref="IOException">If an I/O error occurs.</exception>
-        /// <exception cref="InstrumentProfileFormatException">If input stream does not conform to the Simple File Format.</exception>
+        /// <exception cref="System.IO.IOException">If an I/O error occurs.</exception>
+        /// <exception cref="com.dxfeed.ipf.InstrumentProfileFormatException">If input stream does not conform to the Simple File Format.</exception>
         public IList<InstrumentProfile> ReadFromFile(string address)
         {
             return ReadFromFile(address, null, null);
@@ -75,47 +73,31 @@ namespace com.dxfeed.ipf
         /// In other cases file will be considered uncompressed and will be read as is.
         ///
         /// Specified user and password take precedence over authentication information that is supplied to this method
-        /// as part of URL user info like "http://user:password@host:port/path/file.ipf".
+        /// as part of URL user info like {@code "http://user:password@host:port/path/file.ipf"}.
         ///
-        /// This operation updates GetLastModified().
+        /// This operation updates {@link #getLastModified() lastModified}.
         /// </summary>
         /// <param name="address">URL of file to read from.</param>
         /// <param name="user">The user name (may be null).</param>
         /// <param name="password">The password (may be null).</param>
         /// <returns>List of instrument profiles.</returns>
-        /// <exception cref="IOException">If an I/O error occurs.</exception>
-        /// <exception cref="InstrumentProfileFormatException">If input stream does not conform to the Simple File Format.</exception>
+        /// <exception cref="System.IO.IOException">If an I/O error occurs.</exception>
+        /// <exception cref="com.dxfeed.ipf.InstrumentProfileFormatException">If input stream does not conform to the Simple File Format.</exception>
         public IList<InstrumentProfile> ReadFromFile(string address, string user, string password)
         {
             string url = ResolveSourceURL(address);
             try
             {
                 WebRequest webRequest = URLInputStream.OpenConnection(URLInputStream.ResolveURL(url), user, password);
-                webRequest.Headers.Add(LIVE_PROP_KEY, LIVE_PROP_REQUEST_NO);
-                using (WebResponse response = webRequest.GetResponse())
+                webRequest.Headers.Add(Constants.LIVE_PROP_KEY, Constants.LIVE_PROP_REQUEST_NO);
+                using (HttpWebResponse response = (HttpWebResponse)webRequest.GetResponse())
                 {
-                    DateTime modificationTime;
-                    if (response.GetType() == typeof(FileWebResponse))
-                    {
-                        Uri fileUri = new Uri(address);
-                        modificationTime = File.GetLastWriteTime(fileUri.AbsolutePath);
-                    }
-                    else
-                    {
-                        URLInputStream.CheckConnectionResponseCode(response);
-                        if (response.GetType() == typeof(FtpWebResponse))
-                            modificationTime = ((FtpWebResponse)response).LastModified;
-                        else
-                            modificationTime = ((HttpWebResponse)response).LastModified;
-                    }
-
-                    IList<InstrumentProfile> list = null;
                     using (Stream dataStream = response.GetResponseStream())
                     {
-                        list = Read(dataStream, url);
+                        URLInputStream.CheckConnectionResponseCode(response);
+                        lastModified = response.LastModified;
+                        return Read(dataStream, url);
                     }
-                    lastModified = modificationTime;
-                    return list;
                 }
             }
             catch (InstrumentProfileFormatException)
@@ -134,7 +116,7 @@ namespace com.dxfeed.ipf
 
         /// <summary>
         /// Converts a specified string address specification into an URL that will be read by
-        /// ReadFromFile method using URLInputStream.
+        /// {@link #readFromFile} method using {@link URLInputStream}.
         /// </summary>
         /// <param name="address">Address to convert.</param>
         /// <returns>A new resolved URL.</returns>
@@ -173,10 +155,10 @@ namespace com.dxfeed.ipf
         /// <param name="inputStream">Stream from which read profiles.</param>
         /// <param name="name">Profile name.</param>
         /// <returns>Instrument profile list.</returns>
-        /// <exception cref="ArgumentException">Stream does not support reading.</exception>
-        /// <exception cref="ArgumentNullException">Stream is null.</exception>
-        /// <exception cref="IOException">If an I/O error occurs.</exception>
-        /// <exception cref="InstrumentProfileFormatException">If input stream does not conform to the Simple File Format.</exception>
+        /// <exception cref="System.ArgumentException">Stream does not support reading.</exception>
+        /// <exception cref="System.ArgumentNullException">Stream is null.</exception>
+        /// <exception cref="System.IO.IOException">If an I/O error occurs.</exception>
+        /// <exception cref="com.dxfeed.ipf.InstrumentProfileFormatException">If input stream does not conform to the Simple File Format.</exception>
         public IList<InstrumentProfile> Read(Stream inputStream, string name)
         {
             try
@@ -229,10 +211,10 @@ namespace com.dxfeed.ipf
         /// </summary>
         /// <param name="inputStream">Stream from which read profiles.</param>
         /// <returns>Instrument profiles from specified stream.</returns>
-        /// <exception cref="ArgumentException">Stream does not support reading.</exception>
-        /// <exception cref="ArgumentNullException">Stream is null.</exception>
-        /// <exception cref="IOException">If an I/O error occurs.</exception>
-        /// <exception cref="InstrumentProfileFormatException">If input stream does not conform to the Simple File Format.</exception>
+        /// <exception cref="System.ArgumentException">Stream does not support reading.</exception>
+        /// <exception cref="System.ArgumentNullException">Stream is null.</exception>
+        /// <exception cref="System.IO.IOException">If an I/O error occurs.</exception>
+        /// <exception cref="com.dxfeed.ipf.InstrumentProfileFormatException">If input stream does not conform to the Simple File Format.</exception>
         public IList<InstrumentProfile> Read(Stream inputStream)
         {
             IList<InstrumentProfile> profiles = new List<InstrumentProfile>();

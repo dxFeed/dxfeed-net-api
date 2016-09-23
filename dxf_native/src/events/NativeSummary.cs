@@ -13,24 +13,22 @@ namespace com.dxfeed.native.events
     public struct NativeSummary : IDxSummary
     {
         private readonly DxSummary summary;
-        private readonly string symbol;
 
-        internal unsafe NativeSummary(DxSummary* summary, string symbol)
+        internal unsafe NativeSummary(DxSummary* summary)
         {
             this.summary = *summary;
-            this.symbol = symbol;
         }
 
         public override string ToString()
         {
             return string.Format(
                 CultureInfo.InvariantCulture,
-                "Summary: {{{10}, DayId: {0}, DayOpenPrice: {1}, DayHighPrice: {2}, DayLowPrice: {3}, " +
+                "Summary: {{DayId: {0}, DayOpenPrice: {1}, DayHighPrice: {2}, DayLowPrice: {3}, " +
                 "DayClosePrice: {4}, PrevDayId: {5}, PrevDayClosePrice: {6}, OpenInterest: {7}, " +
                 "Flags: {8}, ExchangeCode: {9} }}",
                 DayId, DayOpenPrice, DayHighPrice, DayLowPrice,
                 DayClosePrice, PrevDayId, PrevDayClosePrice, OpenInterest,
-                Flags, ExchangeCode, Symbol);
+                Flags, ExchangeCode);
         }
 
         #region Implementation of IDxSummary
@@ -83,11 +81,6 @@ namespace com.dxfeed.native.events
         public char ExchangeCode
         {
             get { return summary.exchange_code; }
-        }
-
-        public string Symbol
-        {
-            get { return symbol; }
         }
 
         #endregion

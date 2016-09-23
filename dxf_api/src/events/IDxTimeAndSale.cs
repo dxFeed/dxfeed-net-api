@@ -28,5 +28,4 @@ namespace com.dxfeed.api.events
         bool IsTrade { get; }
         TimeAndSaleType Type { get; }
     }
-
 }

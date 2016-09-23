@@ -1,9 +1,17 @@
-﻿using com.dxfeed.native;
+﻿/// Copyright (C) 2010-2016 Devexperts LLC
+///
+/// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+/// If a copy of the MPL was not distributed with this file, You can obtain one at
+/// http://mozilla.org/MPL/2.0/.
+
+using com.dxfeed.native;
 using System;
 using System.Collections.Generic;
 
-namespace com.dxfeed.api {
-    public class DXFeed : IDisposable {
+namespace com.dxfeed.api
+{
+    public class DXFeed : IDisposable
+    {
 
         private static readonly string DEFAULT_ADDRESS = "demo.dxfeed.com:7300";
         private static readonly string DEFAULT_USER = "demo";
@@ -15,7 +23,8 @@ namespace com.dxfeed.api {
         private string address = string.Empty;
         private HashSet<object> attachedSubscriptions = new HashSet<object>();
 
-        private DXFeed(string address) {
+        private DXFeed(string address)
+        {
             this.address = address;
             connectionInstance = new NativeConnection(address, OnDisconnect);
         }
@@ -25,7 +34,8 @@ namespace com.dxfeed.api {
         /// data-source and should rely on this method to get one.
         /// </summary>
         /// <returns>Singleton instance of feed.</returns>
-        public static DXFeed GetInstance() {
+        public static DXFeed GetInstance()
+        {
             //TODO: connection to non-default address
             if (dxFeedInstance == null)
                 dxFeedInstance = new DXFeed(DEFAULT_ADDRESS);
@@ -44,7 +54,8 @@ namespace com.dxfeed.api {
         /// <typeparam name="E">The type of events.</typeparam>
         /// <param name="eventType">The class of event types.</param>
         /// <returns>New DXFeedSubscription for a single event type.</returns>
-        public DXFeedSubscription<E> CreateSubscription<E>() {
+        public DXFeedSubscription<E> CreateSubscription<E>()
+        {
             DXFeedSubscription<E> subscription = new DXFeedSubscription<E>(connectionInstance);
             AttachSubscription(subscription);
             return subscription;
@@ -58,7 +69,8 @@ namespace com.dxfeed.api {
         /// <typeparam name="E">The type of events.</typeparam>
         /// <param name="eventTypes">The classes of event types.</param>
         /// <returns>The new DXFeedSubscription.</returns>
-        public DXFeedSubscription<E> CreateSubscription<E>(params Type[] eventTypes) {
+        public DXFeedSubscription<E> CreateSubscription<E>(params Type[] eventTypes)
+        {
             DXFeedSubscription<E> subscription = new DXFeedSubscription<E>(connectionInstance, eventTypes);
             AttachSubscription(subscription);
             return subscription;
@@ -75,7 +87,8 @@ namespace com.dxfeed.api {
         /// </summary>
         /// <typeparam name="E">The type of events.</typeparam>
         /// <param name="subscription">The subscription.</param>
-        public void AttachSubscription<E>(DXFeedSubscription<E> subscription) {
+        public void AttachSubscription<E>(DXFeedSubscription<E> subscription)
+        {
             if (attachedSubscriptions.Contains(subscription))
                 return;
             attachedSubscriptions.Add(subscription);
@@ -86,15 +99,18 @@ namespace com.dxfeed.api {
         /// corresponding subscription is not attached to this feed.
         /// </summary>
         /// <param name="subscription">The subscription.</param>
-        public void DetachSubscription<E>(DXFeedSubscription<E> subscription) {
+        public void DetachSubscription<E>(DXFeedSubscription<E> subscription)
+        {
             attachedSubscriptions.Remove(subscription);
         }
 
-        private static void OnDisconnect(IDxConnection con) {
+        private static void OnDisconnect(IDxConnection con)
+        {
             //TODO: todo
         }
 
-        public void Dispose() {
+        public void Dispose()
+        {
             if (connectionInstance != null)
                 connectionInstance.Dispose();
         }

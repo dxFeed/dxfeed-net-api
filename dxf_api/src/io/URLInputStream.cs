@@ -11,10 +11,8 @@ using System.Text;
 
 namespace com.dxfeed.io
 {
-
     class URLInputStream
     {
-
         private static readonly int READ_TIMEOUT = 60000;
 
         /// <summary>
@@ -22,8 +20,8 @@ namespace com.dxfeed.io
         /// </summary>
         /// <param name="url">Url, relative, or absolute file name.</param>
         /// <returns>Resolved url.</returns>
-        /// <exception cref="System.ArgumentNullException"></exception>
-        /// <exception cref="System.UriFormatException"></exception>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="UriFormatException"></exception>
         public static Uri ResolveURL(string url)
         {
             if (url.Length > 2 && url[1] == ':' && Path.PathSeparator == '\\')
@@ -32,38 +30,37 @@ namespace com.dxfeed.io
         }
 
         /// <summary>
-        /// Opens {@link WebRequest} for a specified URL. This method {@link #resolveURL(String) resolves}
+        /// Opens WebRequest for a specified URL. This method resolves
         /// specified URL first, for a proper support of file name.
-        /// Use {@link #checkConnectionResponseCode(URLConnection) checkConnectionResponseCode} after establishing
+        /// Use CheckConnectionResponseCode(WebResponse) after establishing
         /// connection to ensure that it was Ok.
-        /// This is a shortcut for
-        /// <code>{@link #openConnection(URL, String, String) openConnection}({@link #resolveURL(String) resolveURL}(url), <b>null</b>, <b>null</b>)</code>.
+        /// This is a shortcut for OpenConnection(ResolveURL(URL), null, null).
         /// </summary>
         /// <param name="url">Url the URL.</param>
         /// <returns>A new WebRequest object.</returns>
-        /// <exception cref="System.NotSupportedException">The request scheme specified in requestUri is not registered.</exception>
-        /// <exception cref="System.ArgumentNullException">RequestUri is null.</exception>
+        /// <exception cref="NotSupportedException">The request scheme specified in requestUri is not registered.</exception>
+        /// <exception cref="ArgumentNullException">RequestUri is null.</exception>
         /// <exception cref="System.Security.SecurityException">The caller does not have permission to connect
         /// to the requested URI or a URI that the request is redirected to.</exception>
-        public static WebRequest OpenConnection(String url)
+        public static WebRequest OpenConnection(string url)
         {
             return OpenConnection(ResolveURL(url), null, null);
         }
 
         /// <summary>
-        /// Opens {@link URLConnection} for a specified URL with a specified basic user and password credentials.
-        /// Use {@link #checkConnectionResponseCode(URLConnection) checkConnectionResponseCode} after establishing
+        /// Opens WebRequest for a specified URL with a specified basic user and password credentials.
+        /// Use CheckConnectionResponseCode(WebResponse) after establishing
         /// connection to ensure that it was Ok.
         /// Credentials are used only when both user and password are non-null and non-empty.
         /// Specified credentials take precedence over authentication information that is supplied to this method
-        /// as part of URL user info like {@code "http://user:password@host:port/path/file"}.
+        /// as part of URL user info like "http://user:password@host:port/path/file".
         /// </summary>
         /// <param name="url">Url the URL.</param>
         /// <param name="user">The user name (may be null).</param>
         /// <param name="password">The password (may be null).</param>
         /// <returns>A new WebRequest object.</returns>
-        /// <exception cref="System.NotSupportedException">The request scheme specified in requestUri is not registered.</exception>
-        /// <exception cref="System.ArgumentNullException">RequestUri is null.</exception>
+        /// <exception cref="NotSupportedException">The request scheme specified in requestUri is not registered.</exception>
+        /// <exception cref="ArgumentNullException">RequestUri is null.</exception>
         /// <exception cref="System.Security.SecurityException">The caller does not have permission to connect to the requested URI or a URI that the request is redirected to.</exception>
         public static WebRequest OpenConnection(Uri url, string user, string password)
         {

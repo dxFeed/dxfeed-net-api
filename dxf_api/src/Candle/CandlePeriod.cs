@@ -1,7 +1,14 @@
-﻿using System;
+﻿/// Copyright (C) 2010-2016 Devexperts LLC
+///
+/// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+/// If a copy of the MPL was not distributed with this file, You can obtain one at
+/// http://mozilla.org/MPL/2.0/.
+
+using System;
 using System.Globalization;
 
-namespace com.dxfeed.api.candle {
+namespace com.dxfeed.api.candle
+{
     /// <summary>
     /// Period attribute of {@link CandleSymbol} defines aggregation period of the candles.
     /// Aggregation period is defined as pair of a {@link #getValue()} and {@link #getType() type}.
@@ -17,8 +24,8 @@ namespace com.dxfeed.api.candle {
     /// The value that this key shall be set to is equal to
     /// the corresponding {@link #toString() CandlePeriod.ToString()}
     /// </summary>
-    class CandlePeriod : ICandleSymbolAttribute {
-
+    class CandlePeriod : ICandleSymbolAttribute
+    {
         /// <summary>
         /// The number represents default period value.
         /// </summary>
@@ -59,7 +66,8 @@ namespace com.dxfeed.api.candle {
         /// </summary>
         /// <param name="value"></param>
         /// <param name="type"></param>
-        CandlePeriod(double value, CandleType type) {
+        CandlePeriod(double value, CandleType type)
+        {
             this.value = value;
             this.type = type;
             if (value == PERIOD_VALUE_DEFAULT)
@@ -82,7 +90,8 @@ namespace com.dxfeed.api.candle {
         /// @see CandleType#getPeriodIntervalMillis()
         /// </summary>
         /// <returns>aggregation period in milliseconds.</returns>
-        public long GetPeriodIntervalMillis() {
+        public long GetPeriodIntervalMillis()
+        {
             return (long)(type.GetPeriodIntervalMillis() * value);
         }
 
@@ -91,7 +100,8 @@ namespace com.dxfeed.api.candle {
         /// </summary>
         /// <param name="symbol">original candle event symbol.</param>
         /// <returns>candle event symbol string with this aggregation period set.</returns>
-        public string ChangeAttributeForSymbol(string symbol) {
+        public string ChangeAttributeForSymbol(string symbol)
+        {
             return this == DEFAULT ?
                 MarketEventSymbols.RemoveAttributeStringByKey(symbol, ATTRIBUTE_KEY) :
                 MarketEventSymbols.ChangeAttributeStringByKey(symbol, ATTRIBUTE_KEY, ToString());
@@ -102,7 +112,8 @@ namespace com.dxfeed.api.candle {
         /// </summary>
         /// <param name="candleSymbol">candle symbol.</param>
         /// <exception cref="InvalidOperationException">if used outside of internal initialization logic.</exception>
-        public void CheckInAttributeImpl(CandleSymbol candleSymbol) {
+        public void CheckInAttributeImpl(CandleSymbol candleSymbol)
+        {
             if (candleSymbol.period != null)
                 throw new InvalidOperationException("Already initialized");
             candleSymbol.period = this;
@@ -114,7 +125,8 @@ namespace com.dxfeed.api.candle {
         /// aggregation period.
         /// </summary>
         /// <returns>aggregation period value.</returns>
-        public double GetValue() {
+        public double GetValue()
+        {
             return value;
         }
 
@@ -122,7 +134,8 @@ namespace com.dxfeed.api.candle {
         /// Returns aggregation period type.
         /// </summary>
         /// <returns>aggregation period type.</returns>
-        public CandleType GetCandleType() {
+        public CandleType GetCandleType()
+        {
             return type;
         }
 
@@ -133,7 +146,8 @@ namespace com.dxfeed.api.candle {
         /// </summary>
         /// <param name="o"></param>
         /// <returns>{@code true} if this aggregation period is the same as another one.</returns>
-        public override bool Equals(object o) {
+        public override bool Equals(object o)
+        {
             if (this == o)
                 return true;
             if (!(o.GetType() == typeof(CandlePeriod)))
@@ -146,7 +160,8 @@ namespace com.dxfeed.api.candle {
         /// Returns hash code of this aggregation period.
         /// </summary>
         /// <returns>hash code of this aggregation period.</returns>
-        public override int GetHashCode() {
+        public override int GetHashCode()
+        {
             ulong temp = value != +0.0d ? (ulong)BitConverter.DoubleToInt64Bits(value) : 0UL;
             return 31 * (int)(temp ^ (temp >> 32)) + type.GetHashCode();
         }
@@ -161,7 +176,8 @@ namespace com.dxfeed.api.candle {
         /// with {@link #parse(string)} method.
         /// </summary>
         /// <returns>string representation of this aggregation period.</returns>
-        public override string ToString() {
+        public override string ToString()
+        {
             return stringBuf;
         }
 
@@ -177,13 +193,15 @@ namespace com.dxfeed.api.candle {
         /// <exception cref="FormatException">s does not represent a number in a valid format.</exception>
         /// <exception cref="OverflowException">s represents a number that is less than System.Double.MinValue or greater 
         /// than System.Double.MaxValue.</exception>
-        public static CandlePeriod Parse(string s) {
+        public static CandlePeriod Parse(string s)
+        {
             if (s.Equals(CandleType.DAY.ToString()))
                 return DAY;
             if (s.Equals(CandleType.TICK.ToString()))
                 return TICK;
             int i = 0;
-            for (; i < s.Length; i++) {
+            for (; i < s.Length; i++)
+            {
                 char c = s[i];
                 if ((c < '0' || c > '9') && c != '.' && c != '-')
                     break;
@@ -199,7 +217,8 @@ namespace com.dxfeed.api.candle {
         /// <param name="value">value candle period value.</param>
         /// <param name="type">candle period type.</param>
         /// <returns>candle period with the given value and type.</returns>
-        public static CandlePeriod ValueOf(double value, CandleType type) {
+        public static CandlePeriod ValueOf(double value, CandleType type)
+        {
             if (value == PERIOD_VALUE_DEFAULT && type == CandleType.DAY)
                 return DAY;
             if (value == PERIOD_VALUE_DEFAULT && type == CandleType.TICK)
@@ -214,7 +233,8 @@ namespace com.dxfeed.api.candle {
         /// <param name="symbol">candle symbol string.</param>
         /// <returns>candle period of the given candle symbol string.</returns>
         /// <exception cref="ArgumentNullException">if string representation is invalid.</exception>
-        public static CandlePeriod GetAttributeForSymbol(string symbol) {
+        public static CandlePeriod GetAttributeForSymbol(string symbol)
+        {
             string s = MarketEventSymbols.GetAttributeStringByKey(symbol, ATTRIBUTE_KEY);
             return s == null ? DEFAULT : Parse(s);
         }
@@ -225,18 +245,22 @@ namespace com.dxfeed.api.candle {
         /// </summary>
         /// <param name="symbol">candle symbol string.</param>
         /// <returns>candle symbol string with the normalized representation of the the candle period attribute.</returns>
-        public static string NormalizeAttributeForSymbol(string symbol) {
+        public static string NormalizeAttributeForSymbol(string symbol)
+        {
             string a = MarketEventSymbols.GetAttributeStringByKey(symbol, ATTRIBUTE_KEY);
             if (a == null)
                 return symbol;
-            try {
+            try
+            {
                 CandlePeriod other = Parse(a);
                 if (other.Equals(DEFAULT))
                     MarketEventSymbols.RemoveAttributeStringByKey(symbol, ATTRIBUTE_KEY);
                 if (!a.Equals(other.ToString()))
                     return MarketEventSymbols.ChangeAttributeStringByKey(symbol, ATTRIBUTE_KEY, other.ToString());
                 return symbol;
-            } catch (ArgumentNullException) {
+            }
+            catch (ArgumentNullException)
+            {
                 return symbol;
             }
         }

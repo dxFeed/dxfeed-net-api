@@ -1,25 +1,35 @@
-﻿using System;
+﻿/// Copyright (C) 2010-2016 Devexperts LLC
+///
+/// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+/// If a copy of the MPL was not distributed with this file, You can obtain one at
+/// http://mozilla.org/MPL/2.0/.
+
+using System;
 using com.dxfeed.api;
 using com.dxfeed.api.events;
 using com.dxfeed.native;
 
-namespace dxf_events_sample {
+namespace dxf_events_sample
+{
     /// <summary>
     /// This sample class demonstrates subscription to events.
     /// The sample configures via command line, subscribes to events and prints received data.
     /// </summary>
-    class Program {
-
+    class Program
+    {
         private const int hostIndex = 0;
         private const int eventIndex = 1;
         private const int symbolIndex = 2;
 
-        private static void OnDisconnect(IDxConnection con) {
+        private static void OnDisconnect(IDxConnection con)
+        {
             Console.WriteLine("Disconnected");
         }
 
-        static void Main(string[] args) {
-            if (args.Length != 3) {
+        static void Main(string[] args)
+        {
+            if (args.Length != 3)
+            {
                 Console.WriteLine(
                     "Usage: dxf_events_sample <host:port> <event> <symbol>\n" +
                     "where\n" +
@@ -34,7 +44,8 @@ namespace dxf_events_sample {
             var address = args[hostIndex];
 
             EventType events;
-            if (!Enum.TryParse(args[eventIndex], true, out events)) {
+            if (!Enum.TryParse(args[eventIndex], true, out events))
+            {
                 Console.WriteLine("Unsupported event type: " + args[1]);
                 return;
             }
@@ -42,21 +53,28 @@ namespace dxf_events_sample {
             string[] symbols = args[symbolIndex].Split(',');
 
             Console.WriteLine(string.Format("Connecting to {0} for [{1}] on [{2}] ...",
-                address, events, String.Join(", ", symbols)));
+                address, events, string.Join(", ", symbols)));
 
-            try {
+            try
+            {
                 NativeTools.InitializeLogging("log.log", true, true);
-                using (var con = new NativeConnection(address, OnDisconnect)) {
-                    using (var s = con.CreateSubscription(events, new EventListener())) {
+                using (var con = new NativeConnection(address, OnDisconnect))
+                {
+                    using (var s = con.CreateSubscription(events, new EventListener()))
+                    {
                         s.AddSymbols(symbols);
 
                         Console.WriteLine("Press enter to stop");
                         Console.ReadLine();
                     }
                 }
-            } catch (DxException dxException) {
+            }
+            catch (DxException dxException)
+            {
                 Console.WriteLine("Native exception occured: " + dxException.Message);
-            } catch (Exception exc) {
+            }
+            catch (Exception exc)
+            {
                 Console.WriteLine("Exception occured: " + exc.Message);
             }
         }

@@ -1,4 +1,10 @@
-﻿using System;
+﻿/// Copyright (C) 2010-2016 Devexperts LLC
+///
+/// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+/// If a copy of the MPL was not distributed with this file, You can obtain one at
+/// http://mozilla.org/MPL/2.0/.
+
+using System;
 using System.IO;
 using System.Net;
 using System.Text;
@@ -84,6 +90,5 @@ namespace com.dxfeed.io
             if (webResponse.GetType() == typeof(HttpWebResponse) && (((HttpWebResponse)webResponse).StatusCode != HttpStatusCode.OK))
                 throw new IOException("Unexpected response: " + webResponse.Headers.Get(0));
         }
-
     }
 }

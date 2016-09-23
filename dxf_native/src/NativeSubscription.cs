@@ -1,4 +1,10 @@
-﻿using System;
+﻿/// Copyright (C) 2010-2016 Devexperts LLC
+///
+/// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+/// If a copy of the MPL was not distributed with this file, You can obtain one at
+/// http://mozilla.org/MPL/2.0/.
+
+using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -10,7 +16,6 @@ using com.dxfeed.native.events;
 
 namespace com.dxfeed.native
 {
-
     /// <summary>
     /// Class provides native event subscription
     /// </summary>
@@ -31,7 +36,7 @@ namespace com.dxfeed.native
         /// <param name="connection">native connection pointer</param>
         /// <param name="eventType">type of event to create</param>
         /// <param name="listener">event listener</param>
-        /// <exception cref="ArgumentNullException">If listener is null.</exception>
+        /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="DxException"></exception>
         public NativeSubscription(NativeConnection connection, EventType eventType, IDxFeedListener listener)
         {
@@ -97,6 +102,7 @@ namespace com.dxfeed.native
         {
             object obj = Marshal.PtrToStructure(eventParamsPtr, typeof(DxEventParams));
             DxEventParams event_params = (DxEventParams)obj;
+
             EventParams nativeEventParams = new EventParams(event_params.flags, event_params.time_int_field, event_params.snapshot_key);
             switch (eventType)
             {

@@ -1,6 +1,11 @@
-﻿using System;
+﻿/// Copyright (C) 2010-2016 Devexperts LLC
+///
+/// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+/// If a copy of the MPL was not distributed with this file, You can obtain one at
+/// http://mozilla.org/MPL/2.0/.
+
+using System;
 using com.dxfeed.api;
-using com.dxfeed.api.candle;
 using com.dxfeed.api.events;
 using com.dxfeed.native.api;
 
@@ -25,8 +30,8 @@ namespace com.dxfeed.native
         /// </summary>
         /// <param name="address">server address to connect</param>
         /// <param name="disconnectListener">listener will be called when the connection is interrupted</param>
-        /// <exception cref="DxEception"></exception>
-        public NativeConnection(String address, Action<IDxConnection> disconnectListener)
+        /// <exception cref="DxException"></exception>
+        public NativeConnection(string address, Action<IDxConnection> disconnectListener)
         {
             callback = OnDisconnect;
             this.disconnectListener = disconnectListener;
@@ -114,6 +119,20 @@ namespace com.dxfeed.native
 
             long unixTime = time == null ? 0 : Tools.DateToUnixTime((DateTime)time);
             return new NativeSnapshotSubscription(this, unixTime, listener);
+        }
+
+        /// <summary>
+        /// Creates Order View subscription
+        /// </summary>
+        /// <param name="listener"></param>
+        /// <returns>subscription object</returns>
+        /// <exception cref="DxEception"></exception>
+        public IDxSubscription CreateOrderViewSubscription(IDxOrderViewListener listener)
+        {
+            if (handler == IntPtr.Zero)
+                throw new NativeDxException("not connected");
+
+            return new OrderViewSubscription(this, listener);
         }
 
         #endregion

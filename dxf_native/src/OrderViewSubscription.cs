@@ -9,6 +9,7 @@ using com.dxfeed.api;
 using com.dxfeed.api.candle;
 using com.dxfeed.api.events;
 using System;
+using com.dxfeed.api.extras;
 
 namespace com.dxfeed.native
 {
@@ -274,6 +275,14 @@ namespace com.dxfeed.native
                         snapshots[buf.EventParams.SnapshotKey].Remove(order);
                     }
                 }
+                foreach (var order in buf)
+                {
+                    if (IsZeroOrder(order))
+                    {
+                        snapshots[buf.EventParams.SnapshotKey].Remove(order);
+                    }
+                }
+
                 if (buf.EventParams.Flags.HasFlag(EventFlag.SnapshotEnd) || buf.EventParams.Flags.HasFlag(EventFlag.SnapshotSnip))
                 {
                     SnapshotEndFlagReceived<TB, TE>(buf);
@@ -314,6 +323,17 @@ namespace com.dxfeed.native
             }
         }
 
+        private bool IsZeroOrder<TE>(TE order) where TE : IDxOrder
+        {
+            if (TimeConverter.ToUnixTime((order as IDxOrder).Time) == 0 &&
+                double.IsNaN((order as IDxOrder).Price) &&
+                (order as IDxOrder).Size == 0)
+            {
+                return true;
+            }
+            return false;
+        }
+
         private void SnapshotEndFlagReceived<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
             where TE : IDxOrder
@@ -327,7 +347,7 @@ namespace com.dxfeed.native
             var symbol = buf.Symbol.ToString().ToUpper();
             receivedSnapshots[symbol].Add(source);
 
-            if (receivedSnapshots[symbol].SetEquals(sources))
+            if (receivedSnapshots[symbol].IsSupersetOf(sources))
             {
                 ISet<ulong> sentSnapshots = new SortedSet<ulong>();
                 EventBuffer<IDxOrder> buffer = new EventBuffer<IDxOrder>(buf.EventType, buf.Symbol, buf.EventParams);
@@ -341,20 +361,10 @@ namespace com.dxfeed.native
                             buffer.AddEvent(order);
                         }
                         sentSnapshots.Add(snapshotKey);
+                        snapshots[snapshotKey] = null;
                     }
                 }
                 listener.OnSnapshot<IDxEventBuf<IDxOrder>, IDxOrder>(buffer);
-                foreach (var keyValuePair in snapshots)
-                {
-                    if (sentSnapshots.Contains(keyValuePair.Key))
-                    {
-                        continue;
-                    }
-                    if (keyValuePair.Value.EventParams.Flags.HasFlag(EventFlag.SnapshotEnd))
-                    {
-                        listener.OnSnapshot<IDxEventBuf<IDxOrder>, IDxOrder>(keyValuePair.Value);
-                    }
-                }
                 orderViewStates[symbol] = OrderViewState.Ready;
             }
         }

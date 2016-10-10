@@ -88,4 +88,17 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <ItemGroup>
+    <None Include="$(MSBuildProjectFile)" />
+  </ItemGroup>
+  <Target Name="CopySources">
+    <Copy SourceFiles="@(Compile)"
+          DestinationFiles="@(Compile->'$(OutputPath)$(MSBuildProjectName)\%(RelativeDir)%(Filename)%(Extension)')"
+          Retries="5"
+          SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(None)"
+          DestinationFiles="$(OutputPath)$(MSBuildProjectName)\%(RecursiveDir)%(Filename)%(Extension)"
+          Retries="5"
+          SkipUnchangedFiles="true" />
+  </Target>
 </Project>

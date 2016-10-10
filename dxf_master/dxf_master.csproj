@@ -11,13 +11,14 @@
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <OutputHomeDir>bin</OutputHomeDir>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>package\</OutputPath>
+    <OutputPath>$(OutputHomeDir)\dxfeed-net-api\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -26,18 +27,48 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>package\</OutputPath>
+    <OutputPath>$(OutputHomeDir)\dxfeed-net-api\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\dxf_api\dxf_api.csproj"/>
-    <ProjectReference Include="..\dxf_native\dxf_native.csproj"/>
-    <ProjectReference Include="..\dxf_client\dxf_client.csproj"/>
-    <ProjectReference Include="..\samples\dxf_candle_sample\dxf_candle_sample.csproj"/>
-    <ProjectReference Include="..\samples\dxf_events_sample\dxf_events_sample.csproj"/>
-    <ProjectReference Include="..\samples\dxf_snapshot_sample\dxf_snapshot_sample.csproj"/>
+    <ProjectReference Include="..\dxf_api\dxf_api.csproj">
+      <Label>BuildPublish</Label> 
+    </ProjectReference>
+    <ProjectReference Include="..\dxf_native\dxf_native.csproj">
+      <Label>BuildNoPublish</Label>
+    </ProjectReference>
+    <ProjectReference Include="..\dxf_client\dxf_client.csproj">
+      <Label>BuildPublish</Label>
+    </ProjectReference>
+    <ProjectReference Include="..\samples\dxf_candle_sample\dxf_candle_sample.csproj">
+      <Label>BuildPublish</Label>
+    </ProjectReference>
+    <ProjectReference Include="..\samples\dxf_events_sample\dxf_events_sample.csproj">
+      <Label>BuildPublish</Label>
+    </ProjectReference>
+    <ProjectReference Include="..\samples\dxf_snapshot_sample\dxf_snapshot_sample.csproj">
+      <Label>BuildPublish</Label>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\lib\DXFeedd.dll">
+      <Link>DXFeedd.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\lib\DXFeedd_64.dll">
+      <Link>DXFeedd_64.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\lib\DXFeed.dll">
+      <Link>DXFeed.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\lib\DXFeed_64.dll">
+      <Link>DXFeed_64.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="Build">
@@ -49,14 +80,32 @@
       <Output ItemName="OutputFiles" TaskParameter="TargetOutputs"/>
     </MSBuild>
     <RemoveDir Directories="$(OutputPath)" />
-    <Message Text="Copying output file to destination: @(OutputFiles)" Importance="high"/>
     <Copy SourceFiles="@(OutputFiles)"
-          DestinationFiles="@(OutputFiles->'$(OutputPath)bin\%(RecursiveDir)%(Filename)%(Extension)')" />
+          DestinationFiles="@(OutputFiles->'$(OutputPath)bin\%(RecursiveDir)%(Filename)%(Extension)')"
+          Retries="5"
+          SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(Content)"
+          DestinationFiles="@(Content->'$(OutputPath)bin\%(RecursiveDir)%(Filename)%(Extension)')"
+          Retries="5"
+          SkipUnchangedFiles="true" />
   </Target>
   <Target Name="Clean">
     <MSBuild Projects="@(ProjectReference)" BuildInParallel="true" Targets="Clean" Properties="Configuration=$(Configuration)" />
+    <RemoveDir Directories="$(OutputPath)" />
   </Target>
   <Target Name="Rebuild">
     <CallTarget Targets="Clean;Build"/>
+  </Target>
+  <Target Name="CopySources">
+    <ItemGroup>
+      <ToPublish Include="@(ProjectReference)" Condition="'%(Label)' == 'BuildPublish'" />
+    </ItemGroup>
+    <MSBuild Projects="@(ToPublish)" 
+             Targets="CopySources" 
+             Properties="OutputPath=$(MSBuildProjectDirectory)\$(OutputPath)" />
+    <Copy SourceFiles="@(Content)"
+          DestinationFiles="@(Content->'$(OutputPath)lib\%(RecursiveDir)%(Filename)%(Extension)')"
+          Retries="5"
+          SkipUnchangedFiles="true" />
   </Target>
 </Project>

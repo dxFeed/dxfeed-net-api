@@ -268,6 +268,13 @@ namespace com.dxfeed.native
                 {
                     return;
                 }
+                if (buf.EventParams.Flags.HasFlag(EventFlag.TxPending) && !buf.EventParams.Flags.HasFlag(EventFlag.RemoveEvent))
+                {
+                    foreach (var order in buf)
+                    {
+                        snapshots[buf.EventParams.SnapshotKey].ReplaceOrAdd(order);
+                    }
+                }
                 if (buf.EventParams.Flags.HasFlag(EventFlag.RemoveEvent))
                 {
                     foreach (var order in buf)

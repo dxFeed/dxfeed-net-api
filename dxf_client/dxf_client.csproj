@@ -101,4 +101,18 @@
           Retries="5"
           SkipUnchangedFiles="true" />
   </Target>
+  <!-- Update project version tools -->
+  <Import Project="$(MSBuildExtensionsPath)\ExtensionPack\4.0\MSBuild.ExtensionPack.tasks"
+          Condition="Exists('$(MSBuildExtensionsPath)\ExtensionPack\4.0\MSBuild.ExtensionPack.tasks')" />
+  <ItemGroup>
+    <AssemblyInfoFiles Include="$(MSBuildProjectDirectory)\Properties\AssemblyInfo.cs"/>
+  </ItemGroup>
+  <Target Name="UpdateVersion"
+          Inputs="@(AssemblyInfoFiles)"
+          Outputs="UpdatedAssemblyVersionFiles">
+    <AssemblyInfo
+        AssemblyInfoFiles="@(AssemblyInfoFiles)"
+        AssemblyVersion="$(AssemblyVersion)"
+        AssemblyFileVersion="$(AssemblyVersion)" />
+  </Target>
 </Project>

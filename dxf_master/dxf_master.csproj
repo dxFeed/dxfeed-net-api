@@ -108,4 +108,10 @@
           Retries="5"
           SkipUnchangedFiles="true" />
   </Target>
+  <Target Name="UpdateVersion">
+    <Message Text="Update assembly version to $(AssemblyVersion)"/>
+    <MSBuild Projects="@(ProjectReference)"
+             Targets="UpdateVersion"
+             Properties="AssemblyVersion=$(AssemblyVersion)" />
+  </Target>
 </Project>

@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{97200717-4918-472F-BB4C-24EDD6FE2260}</ProjectGuid>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>dxf_master</RootNamespace>
-    <AssemblyName>dxf_master</AssemblyName>
+    <RootNamespace>dxfeed-net-api</RootNamespace>
+    <AssemblyName>dxfeed-net-api</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -18,7 +18,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>$(OutputHomeDir)\dxfeed-net-api\</OutputPath>
+    <OutputPath>$(OutputHomeDir)\$(AssemblyName)-$(AssemblyVersion)\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -27,7 +27,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>$(OutputHomeDir)\dxfeed-net-api\</OutputPath>
+    <OutputPath>$(OutputHomeDir)\$(AssemblyName)-$(AssemblyVersion)\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -108,10 +108,18 @@
           Retries="5"
           SkipUnchangedFiles="true" />
   </Target>
+  <!-- Update version tools
+       Note: pass AssemblyVersion only in format: Major.Minor.Patch (i.e 1.2.6)-->
   <Target Name="UpdateVersion">
     <Message Text="Update assembly version to $(AssemblyVersion)"/>
     <MSBuild Projects="@(ProjectReference)"
              Targets="UpdateVersion"
-             Properties="AssemblyVersion=$(AssemblyVersion)" />
+             Properties="AssemblyVersion=$(AssemblyVersion).0" />
+  </Target>
+  <!-- Create zip archive tools -->
+  <Import Project="$(MSBuildExtensionsPath)\ExtensionPack\4.0\MSBuild.ExtensionPack.tasks"
+          Condition="Exists('$(MSBuildExtensionsPath)\ExtensionPack\4.0\MSBuild.ExtensionPack.tasks')"/>
+  <Target Name="CreatePackage">
+    <MSBuild.ExtensionPack.Compression.Zip TaskAction="Create" CompressPath="$(OutputPath)" ZipFileName="$(OutputHomeDir)\$(AssemblyName)-$(AssemblyVersion).zip"/>
   </Target>
 </Project>

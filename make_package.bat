@@ -44,15 +44,11 @@ if NOT EXIST %C_API_BUILD% (
     goto usage
 )
 
+rem === BUILD C API ===
+
 rem === BUILD PROJECTS ===
 msbuild %~dp0\dxf_master\dxf_master.csproj /m /t:Clean;UpdateVersion;Build;RunUnitTests;CopySources;CreatePackage /p:Configuration=Release;Platform=AnyCPU;AssemblyVersion=%VERSION%
 if %ERRORLEVEL% GEQ 1 goto exit_error
-
-rem === TEST BUILDS ===
-rem msbuild %~dp0\dxf_master\dxf_master.csproj /m /t:RunUnitTests /p:Configuration=Release;Platform=AnyCPU;AssemblyVersion=%VERSION%
-rem if %ERRORLEVEL% GEQ 1 goto exit_error
-
-rem === MAKE PACKAGE ===
 
 rem === FINISH ===
 goto exit_success

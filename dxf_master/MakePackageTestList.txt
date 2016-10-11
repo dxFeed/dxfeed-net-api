@@ -1,0 +1,2 @@
+com.dxfeed.api.DxStringTest
+#com.dxfeed.api.CandleSymbolTest

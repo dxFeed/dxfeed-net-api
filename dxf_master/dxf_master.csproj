@@ -42,6 +42,9 @@
     <ProjectReference Include="..\dxf_client\dxf_client.csproj">
       <Label>BuildPublish</Label>
     </ProjectReference>
+    <ProjectReference Include="..\dxf_tests\dxf_tests.csproj">
+      <Label>BuildNoPublish</Label>
+    </ProjectReference>
     <ProjectReference Include="..\samples\dxf_candle_sample\dxf_candle_sample.csproj">
       <Label>BuildPublish</Label>
     </ProjectReference>
@@ -121,5 +124,15 @@
           Condition="Exists('$(MSBuildExtensionsPath)\ExtensionPack\4.0\MSBuild.ExtensionPack.tasks')"/>
   <Target Name="CreatePackage">
     <MSBuild.ExtensionPack.Compression.Zip TaskAction="Create" CompressPath="$(OutputPath)" ZipFileName="$(OutputHomeDir)\$(AssemblyName)-$(AssemblyVersion).zip"/>
+  </Target>
+  <!-- Run tests tools -->
+  <Target Name="RunUnitTests">
+    <ItemGroup>
+      <TestAssemblies Include="..\dxf_tests\bin\$(Configuration)\dxf_tests.dll"/>
+    </ItemGroup>
+    <ItemGroup>
+      <TestList Include="$(MSBuildProjectDirectory)\MakePackageTestList.txt"/>
+    </ItemGroup>
+    <Exec Command="nunit-console.exe /noresult /runlist:@(TestList) @(TestAssemblies)" />
   </Target>
 </Project>

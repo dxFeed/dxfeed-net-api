@@ -240,11 +240,23 @@ namespace com.dxfeed.native
         {
             string symbol = buf.Symbol.ToString().ToUpper();
 
+            var enmrtr = buf.GetEnumerator();
+            enmrtr.MoveNext();
+            string source = enmrtr.Current.Source.ToUpper();
+
+            // in case if already have this snapshot
             if (snapshots.ContainsKey(buf.EventParams.SnapshotKey))
             {
+                // flag SnapshotBegin came again
                 if (buf.EventParams.Flags.HasFlag(EventFlag.SnapshotBegin))
                 {
-                    snapshots[buf.EventParams.SnapshotKey].Clear();
+                    // in case when events Sell/Buy came in pair and both have SnapshotBegin flag. To keep both events
+                    var snapshotEnmrtr = snapshots[buf.EventParams.SnapshotKey].GetEnumerator();
+                    snapshotEnmrtr.MoveNext();
+                    if (snapshots[buf.EventParams.SnapshotKey].Size != 1 || buf.Size != 1 || snapshotEnmrtr.Current.Side == enmrtr.Current.Side)
+                    {
+                        snapshots[buf.EventParams.SnapshotKey].Clear();
+                    }
                     foreach (var order in buf)
                     {
                         receivedSnapshots[symbol].Remove(order.Source);
@@ -252,8 +264,12 @@ namespace com.dxfeed.native
                     orderViewStates[symbol] = OrderViewState.Update;
                 }
 
-                // if order view is ready just call OnUpdate
-                if (orderViewStates.ContainsKey(symbol) && orderViewStates[symbol] == OrderViewState.Ready)
+                // if order view is ready just call OnUpdate.
+                // third condition for case when snapshots sent, but single event with SnapshotEnd flag appears
+                // it will be sent as separate snapshot
+                if (orderViewStates.ContainsKey(symbol) &&
+                    orderViewStates[symbol] == OrderViewState.Ready &&
+                    !buf.EventParams.Flags.HasFlag(EventFlag.SnapshotEnd)) 
                 {
                     listener.OnUpdate<TB, TE>(buf);
                     return;
@@ -262,31 +278,54 @@ namespace com.dxfeed.native
                 //...otherwise continue fill current snapshot
                 foreach (var order in buf)
                 {
+                    // order with zeros and NaN's, same as RemoveEvent flag
+                    if (IsZeroOrder(order))
+                    {
+                        snapshots[buf.EventParams.SnapshotKey].Remove(order);
+                        continue;
+                    }
+                    // if previos flag was TxPending we continue updating
+                    if (snapshots[buf.EventParams.SnapshotKey].EventParams.Flags.HasFlag(EventFlag.TxPending) &&
+                        !snapshots[buf.EventParams.SnapshotKey].EventParams.Flags.HasFlag(EventFlag.SnapshotEnd))
+                    {
+                        snapshots[buf.EventParams.SnapshotKey].ReplaceOrAdd(order);
+                        snapshots[buf.EventParams.SnapshotKey].EventParams = buf.EventParams;
+                        continue;
+                    }
+                    // if snapshot is consistent (fully received), it means that update transaction consist from
+                    // only one event without flags
+                    if (receivedSnapshots[symbol].Contains(source) && buf.EventParams.Flags == 0)
+                    {
+                        snapshots[buf.EventParams.SnapshotKey].ReplaceOrAdd(order);
+                        continue;
+                    }
+                    // removing
+                    if (buf.EventParams.Flags.HasFlag(EventFlag.RemoveEvent))
+                    {
+                        snapshots[buf.EventParams.SnapshotKey].Remove(order);
+                        continue;
+                    }
+                    // ...or just add events
                     snapshots[buf.EventParams.SnapshotKey].AddEvent(order);
                 }
+                // no flags no actions
                 if (buf.EventParams.Flags == 0)
                 {
                     return;
                 }
+                // begin updating
                 if (buf.EventParams.Flags.HasFlag(EventFlag.TxPending) && !buf.EventParams.Flags.HasFlag(EventFlag.RemoveEvent))
                 {
+                    // saving TxPending flag for future updating events
+                    snapshots[buf.EventParams.SnapshotKey].EventParams = buf.EventParams;
+                    if (receivedSnapshots[symbol].Contains(source))
+                    {
+                        // snapshot is no longer consistent (fully received) and should wait for SnapshotEnd flag again
+                        receivedSnapshots[symbol].Remove(source);
+                    }
                     foreach (var order in buf)
                     {
                         snapshots[buf.EventParams.SnapshotKey].ReplaceOrAdd(order);
-                    }
-                }
-                if (buf.EventParams.Flags.HasFlag(EventFlag.RemoveEvent))
-                {
-                    foreach (var order in buf)
-                    {
-                        snapshots[buf.EventParams.SnapshotKey].Remove(order);
-                    }
-                }
-                foreach (var order in buf)
-                {
-                    if (IsZeroOrder(order))
-                    {
-                        snapshots[buf.EventParams.SnapshotKey].Remove(order);
                     }
                 }
 
@@ -304,12 +343,13 @@ namespace com.dxfeed.native
                     EventBuffer<IDxOrder> outputBuffer = new EventBuffer<IDxOrder>(buf.EventType, buf.Symbol, buf.EventParams);
                     foreach (var order in buf)
                     {
-                        outputBuffer.AddEvent(order);
+                        if (!IsZeroOrder(order))
+                        {
+                            outputBuffer.AddEvent(order);
+                        }
                     }
                     snapshots.Add(buf.EventParams.SnapshotKey, outputBuffer);
-                    var enmrtr = buf.GetEnumerator();
-                    enmrtr.MoveNext();
-                    string symbolSource = symbol + enmrtr.Current.Source.ToUpper();
+                    string symbolSource = symbol + source;
                     if (symbolSourceToKey.ContainsKey(symbolSource))
                     {
                         var snapshotKeys = symbolSourceToKey[symbolSource];
@@ -356,7 +396,6 @@ namespace com.dxfeed.native
 
             if (receivedSnapshots[symbol].IsSupersetOf(sources))
             {
-                ISet<ulong> sentSnapshots = new SortedSet<ulong>();
                 EventBuffer<IDxOrder> buffer = new EventBuffer<IDxOrder>(buf.EventType, buf.Symbol, buf.EventParams);
                 foreach (var receivedSource in receivedSnapshots[symbol])
                 {
@@ -367,8 +406,7 @@ namespace com.dxfeed.native
                         {
                             buffer.AddEvent(order);
                         }
-                        sentSnapshots.Add(snapshotKey);
-                        snapshots[snapshotKey] = null;
+                        snapshots[snapshotKey].Clear();
                     }
                 }
                 listener.OnSnapshot<IDxEventBuf<IDxOrder>, IDxOrder>(buffer);

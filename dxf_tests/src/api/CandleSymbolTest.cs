@@ -40,7 +40,7 @@ namespace com.dxfeed.api
             new CandleSymbolTestCase("AAPL", "AAPL"),
             new CandleSymbolTestCase("AAPL", new ICandleSymbolAttribute[] { CandleSymbolAttributes.Exchange.NewExchange('A') }, "AAPL&A"),
 
-            new CandleSymbolTestCase("AAPL", new ICandleSymbolAttribute[] { CandleSymbolAttributes.Period.NewPeriod(defaultPeriodValue, CandleType.TICK) }, "AAPL{=t}"),
+            new CandleSymbolTestCase("AAPL", new ICandleSymbolAttribute[] { CandleSymbolAttributes.Period.NewPeriod(defaultPeriodValue, CandleType.TICK) }, "AAPL"),
             new CandleSymbolTestCase("AAPL", new ICandleSymbolAttribute[] { CandleSymbolAttributes.Period.NewPeriod(defaultPeriodValue, CandleType.SECOND) }, "AAPL{=s}"),
             new CandleSymbolTestCase("AAPL", new ICandleSymbolAttribute[] { CandleSymbolAttributes.Period.NewPeriod(defaultPeriodValue, CandleType.MINUTE) }, "AAPL{=m}"),
             new CandleSymbolTestCase("AAPL", new ICandleSymbolAttribute[] { CandleSymbolAttributes.Period.NewPeriod(defaultPeriodValue, CandleType.HOUR) }, "AAPL{=h}"),

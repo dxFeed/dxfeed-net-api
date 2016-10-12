@@ -251,13 +251,10 @@ namespace com.dxfeed.native
                 if (buf.EventParams.Flags.HasFlag(EventFlag.SnapshotBegin))
                 {
                     // in case when events Sell/Buy came in pair and both have SnapshotBegin flag. To keep both events
-                    if (snapshots[buf.EventParams.SnapshotKey].Size == 1 && buf.Size == 1)
-                    {
-                        var snapshotEnmrtr = snapshots[buf.EventParams.SnapshotKey].GetEnumerator();
-                        snapshotEnmrtr.MoveNext();
-                        if (snapshotEnmrtr.Current.Side != enmrtr.Current.Side)
-                        { }
-                    }
+                    var snapshotEnmrtr = snapshots[buf.EventParams.SnapshotKey].GetEnumerator();
+                    snapshotEnmrtr.MoveNext();
+                    if (snapshots[buf.EventParams.SnapshotKey].Size == 1 && buf.Size == 1 && snapshotEnmrtr.Current.Side != enmrtr.Current.Side)
+                    { }
                     else
                     {
                         snapshots[buf.EventParams.SnapshotKey].Clear();

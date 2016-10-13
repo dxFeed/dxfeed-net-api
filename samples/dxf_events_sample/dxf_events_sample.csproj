@@ -66,15 +66,16 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-  <ItemGroup>
-    <None Include="$(MSBuildProjectFile)" />
-  </ItemGroup>
+  <!-- Copy sources tools -->
   <Target Name="CopySources">
+    <ItemGroup>
+      <ProjectFile Include="$(MSBuildProjectFile)" />
+    </ItemGroup>
     <Copy SourceFiles="@(Compile)"
           DestinationFiles="@(Compile->'$(OutputPath)samples\$(MSBuildProjectName)\%(RelativeDir)%(Filename)%(Extension)')"
           Retries="5"
           SkipUnchangedFiles="true" />
-    <Copy SourceFiles="@(None)"
+    <Copy SourceFiles="@(ProjectFile)"
           DestinationFiles="$(OutputPath)samples\$(MSBuildProjectName)\%(RecursiveDir)%(Filename)%(Extension)"
           Retries="5"
           SkipUnchangedFiles="true" />
@@ -82,12 +83,10 @@
   <!-- Update project version tools -->
   <Import Project="$(MSBuildExtensionsPath)\ExtensionPack\4.0\MSBuild.ExtensionPack.tasks"
           Condition="Exists('$(MSBuildExtensionsPath)\ExtensionPack\4.0\MSBuild.ExtensionPack.tasks')" />
-  <ItemGroup>
-    <AssemblyInfoFiles Include="$(MSBuildProjectDirectory)\Properties\AssemblyInfo.cs"/>
-  </ItemGroup>
-  <Target Name="UpdateVersion"
-          Inputs="@(AssemblyInfoFiles)"
-          Outputs="UpdatedAssemblyVersionFiles">
+  <Target Name="UpdateVersion">
+    <ItemGroup>
+      <AssemblyInfoFiles Include="$(MSBuildProjectDirectory)\Properties\AssemblyInfo.cs"/>
+    </ItemGroup>
     <AssemblyInfo
         AssemblyInfoFiles="@(AssemblyInfoFiles)"
         AssemblyVersion="$(AssemblyVersion)"

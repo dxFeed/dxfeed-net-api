@@ -32,23 +32,40 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <!--Project reference format
+    <ProjectReference Include="relative-path-to-csproj-file">
+      <Name>project-name</Name>
+      <Label>BuildPublish|BuildNoPublish</Label> 
+    </ProjectReference>
+    
+    Label BuildPublish - perform building project and copy source files to outputpath
+    Label BuildNoPublish - perform building project but NOT copy source files to outputpath
+    
+    Note: reference project must support the next targets: Build, Clean, UpdateVersion, CopySources
+  -->
   <ItemGroup>
     <ProjectReference Include="..\dxf_api\dxf_api.csproj">
+      <Name>dxf_api</Name>
       <Label>BuildPublish</Label> 
     </ProjectReference>
     <ProjectReference Include="..\dxf_native\dxf_native.csproj">
-      <Label>BuildNoPublish</Label>
+      <Name>dxf_native</Name>
+      <Label>BuildPublish</Label>
     </ProjectReference>
     <ProjectReference Include="..\dxf_client\dxf_client.csproj">
+      <Name>dxf_client</Name>
       <Label>BuildPublish</Label>
     </ProjectReference>
     <ProjectReference Include="..\samples\dxf_candle_sample\dxf_candle_sample.csproj">
+      <Name>dxf_candle_sample</Name>
       <Label>BuildPublish</Label>
     </ProjectReference>
     <ProjectReference Include="..\samples\dxf_events_sample\dxf_events_sample.csproj">
+      <Name>dxf_events_sample</Name>
       <Label>BuildPublish</Label>
     </ProjectReference>
     <ProjectReference Include="..\samples\dxf_snapshot_sample\dxf_snapshot_sample.csproj">
+      <Name>dxf_snapshot_sample</Name>
       <Label>BuildPublish</Label>
     </ProjectReference>
   </ItemGroup>
@@ -96,6 +113,7 @@
   <Target Name="Rebuild">
     <CallTarget Targets="Clean;Build"/>
   </Target>
+  <!-- Copy sources of reference projects tools -->
   <Target Name="CopySources">
     <ItemGroup>
       <ToPublish Include="@(ProjectReference)" Condition="'%(Label)' == 'BuildPublish'" />
@@ -138,5 +156,19 @@
       <TestList Include="$(MSBuildProjectDirectory)\MakePackageTestList.txt"/>
     </ItemGroup>
     <Exec Command="nunit-console.exe /noresult /runlist:@(TestList) @(TestAssemblies)" />
+  </Target>
+  <!-- Generate solution file tools -->
+  <Target Name="GenerateSolution">
+    <ItemGroup>
+      <SolutionProjectList Include="%(ProjectReference.Name)" Condition="'%(Label)' == 'BuildPublish'"/>
+    </ItemGroup>
+    <ItemGroup>
+      <MasterToolsProjects Include="tools\dxf_solution_manager\dxf_solution_manager.csproj"/>
+    </ItemGroup>
+    <MSBuild Projects="@(MasterToolsProjects)"
+             Targets="Build"
+             ContinueOnError ="false"
+             Properties="Configuration=Release;Platform=AnyCPU"/>
+    <Exec Command="tools\bin\dxf_solution_manager.exe /source:..\dxfnet.sln /projects:@(SolutionProjectList) /exclude:.nuget /out:$(OutputPath)" />
   </Target>
 </Project>

@@ -13,23 +13,26 @@ rem     1. Build C API library
 rem     2. Copy %C_API_LIB_NAME%(d)(_64)%C_API_LIB_EXT% libraries to lib\* 
 rem     folder of current project
 rem     3. Build next targets from dxf_master: "Clean;UpdateVersion;Build;
-rem     RunUnitTests*;CopySources;CreatePackage"
+rem     RunUnitTests*;CopySources;GenerateSolution;CreatePackage"
 rem     where 
-rem         Clean           - cleanup all projects.
-rem         UpdateVersion   - update assembly version for each project; the 
+rem         Clean           - Cleanup all projects.
+rem         UpdateVersion   - Update assembly version for each project; the 
 rem                           version number passed through $(AssemblyVersion) 
 rem                           MSBuild parameter.
-rem         Build           - build all projects and copy binaries to 
+rem         Build           - Build all projects and copy binaries to 
 rem                           bin\dxfeed-net-api-<major.minor.patch>\bin of 
 rem                           dxf_master project.
 rem         RunUnitTests*   - Build and run unit tests from 
 rem                           dxf_tests\dxf_tests.csproj; the list of running 
 rem                           tests configured in dxf_master\MakePackageTestList.txt;
-rem                           * means that test target can be skipped if input
-rem                           scrip parameter 'no-test' will be specified.
-rem         CopySources     - copy reference project source files to output 
+rem                           * means that this target can be skipped if input
+rem                           script parameter 'no-test' will be specified.
+rem         CopySources     - Copy reference project source files to output 
 rem                           direcory of dxf_master project.
-rem         CreatePackage   - create zip archive containing sources and 
+rem         GenerateSolution- Filter projects, its dependencies and 
+rem                           configurations from original solution file and 
+rem                           generates new once.
+rem         CreatePackage   - Create zip archive containing sources and 
 rem                           binaries.
 rem
 rem Usage: 
@@ -104,7 +107,7 @@ xcopy /Y /I %C_API_PATH%\build\x64\Debug\%C_API_LIB_NAME%d_64%C_API_LIB_EXT% %~d
 if %ERRORLEVEL% GEQ 1 goto exit_error
 
 rem === BUILD PROJECTS ===
-msbuild %~dp0\dxf_master\dxf_master.csproj /m /t:Clean;UpdateVersion;Build;%TARGET_TEST%CopySources;CreatePackage /p:Configuration=Release;Platform=AnyCPU;AssemblyVersion=%VERSION%
+msbuild %~dp0\dxf_master\dxf_master.csproj /m /t:Clean;UpdateVersion;Build;%TARGET_TEST%CopySources;GenerateSolution;CreatePackage /p:Configuration=Release;Platform=AnyCPU;AssemblyVersion=%VERSION%
 if %ERRORLEVEL% GEQ 1 goto exit_error
 
 rem === FINISH ===

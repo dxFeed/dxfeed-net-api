@@ -37,7 +37,18 @@ namespace com.dxfeed.api.events
         public UInt64 TimeIntField { get; private set; }
 
         /// <summary>
-        /// Snapshot key
+        /// The 64 bit unsigned decimal representing unique id in subscription
+        /// for snapshot object. This value is generated in C API using 
+        /// record_info_id, symbol and source.
+        ///
+        /// Snapshot key format:
+        /// 64 - 56     55 - 24      23 - 0
+        /// rec_inf_id | symbol | order_source
+        ///
+        /// rec_inf_id - record type of snapshot subscription (record_info_id).
+        /// symbol - string symbol of snapshot subscription.
+        /// order_source - source for Order records or keyword for MarketMaker;
+        ///                can be NULL also.
         /// </summary>
         public UInt64 SnapshotKey { get; private set; }
     }

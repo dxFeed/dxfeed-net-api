@@ -24,10 +24,10 @@ namespace dxf_order_view_sample
             if (args.Length != 1)
             {
                 Console.WriteLine(
-                    "Usage: dxf_events_sample <host:port>\n" +
+                    "Usage: dxf_order_view_sample <host:port>\n" +
                     "where\n" +
                     "    host:port - address of dxfeed server (demo.dxfeed.com:7300)\n" +
-                    "example: dxf_events_sample demo.dxfeed.com:7300"
+                    "example: dxf_order_view_sample demo.dxfeed.com:7300\n"
                 );
                 return;
             }

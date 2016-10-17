@@ -74,11 +74,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="src\api\CandleSymbolTest.cs" />
     <Compile Include="src\api\DxStringTest.cs" />
+    <Compile Include="src\api\FullTest.cs" />
     <Compile Include="src\api\InstrumentProfileLiveTest.cs" />
     <Compile Include="src\api\InstrumentProfileTest.cs" />
     <Compile Include="src\api\NativeCandleSubscriptionTest.cs" />
     <Compile Include="src\api\NativeSnapshotTest.cs" />
     <Compile Include="src\api\NativeSubscriptionTest.cs" />
+    <Compile Include="src\tools\OrderViewTestListener.cs" />
     <Compile Include="src\tools\SnapshotTestListener.cs" />
     <Compile Include="src\tools\TestListener.cs" />
   </ItemGroup>
@@ -140,25 +142,15 @@
     <ItemGroup>
       <ProjectFile Include="$(MSBuildProjectFile)" />
     </ItemGroup>
-    <Copy SourceFiles="@(Compile)"
-          DestinationFiles="@(Compile->'$(OutputPath)$(MSBuildProjectName)\%(RelativeDir)%(Filename)%(Extension)')"
-          Retries="5"
-          SkipUnchangedFiles="true" />
-    <Copy SourceFiles="@(ProjectFile)"
-          DestinationFiles="$(OutputPath)$(MSBuildProjectName)\%(RecursiveDir)%(Filename)%(Extension)"
-          Retries="5"
-          SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(Compile)" DestinationFiles="@(Compile->'$(OutputPath)$(MSBuildProjectName)\%(RelativeDir)%(Filename)%(Extension)')" Retries="5" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(ProjectFile)" DestinationFiles="$(OutputPath)$(MSBuildProjectName)\%(RecursiveDir)%(Filename)%(Extension)" Retries="5" SkipUnchangedFiles="true" />
   </Target>
   <!-- Update project version tools -->
-  <Import Project="$(MSBuildExtensionsPath)\ExtensionPack\4.0\MSBuild.ExtensionPack.tasks"
-          Condition="Exists('$(MSBuildExtensionsPath)\ExtensionPack\4.0\MSBuild.ExtensionPack.tasks')" />
+  <Import Project="$(MSBuildExtensionsPath)\ExtensionPack\4.0\MSBuild.ExtensionPack.tasks" Condition="Exists('$(MSBuildExtensionsPath)\ExtensionPack\4.0\MSBuild.ExtensionPack.tasks')" />
   <Target Name="UpdateVersion">
     <ItemGroup>
-      <AssemblyInfoFiles Include="$(MSBuildProjectDirectory)\Properties\AssemblyInfo.cs"/>
+      <AssemblyInfoFiles Include="$(MSBuildProjectDirectory)\Properties\AssemblyInfo.cs" />
     </ItemGroup>
-    <AssemblyInfo
-        AssemblyInfoFiles="@(AssemblyInfoFiles)"
-        AssemblyVersion="$(AssemblyVersion)"
-        AssemblyFileVersion="$(AssemblyVersion)" />
+    <AssemblyInfo AssemblyInfoFiles="@(AssemblyInfoFiles)" AssemblyVersion="$(AssemblyVersion)" AssemblyFileVersion="$(AssemblyVersion)" />
   </Target>
 </Project>

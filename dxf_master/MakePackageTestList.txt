@@ -1,2 +1,5 @@
+com.dxfeed.api.CandleSymbolTest
 com.dxfeed.api.DxStringTest
-#com.dxfeed.api.CandleSymbolTest
+com.dxfeed.api.InstrumentProfileLiveTest
+com.dxfeed.api.InstrumentProfileTest
+com.dxfeed.api.FullTest

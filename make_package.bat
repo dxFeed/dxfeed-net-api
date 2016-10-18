@@ -61,15 +61,19 @@ if %ERRORLEVEL% GEQ 1 (
 )
 
 set VERSION=%1
-set C_API_PATH=%~dp0\%2
+set C_API_PATH=%2
 set C_API_SCRIPT_NAME=make_package.bat
 set C_API_BUILD=%C_API_PATH%\%C_API_SCRIPT_NAME%
 set C_API_LIB_NAME=DXFeed
 set C_API_LIB_EXT=.dll
 set TARGET_TEST=RunUnitTests;
+set C_API_NO_TEST=
 
 for %%A in (%*) do (
-    if [%%A] EQU [no-test] set TARGET_TEST=
+    if [%%A] EQU [no-test] (
+        set TARGET_TEST=
+        set C_API_NO_TEST=no-test
+    )
 )
 
 rem Check version parameter
@@ -90,7 +94,7 @@ if NOT EXIST %C_API_BUILD% (
 rem === BUILD C API ===
 set HOME_DIR=%cd%
 cd %C_API_PATH%
-call %C_API_SCRIPT_NAME% %VERSION% no-test
+call %C_API_SCRIPT_NAME% %VERSION% %C_API_NO_TEST%
 set C_API_ERRORLEVEL=%ERRORLEVEL%
 cd %HOME_DIR%
 if %C_API_ERRORLEVEL% GEQ 1 (

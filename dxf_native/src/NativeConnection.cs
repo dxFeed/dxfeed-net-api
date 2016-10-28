@@ -30,7 +30,7 @@ namespace com.dxfeed.native
         /// </summary>
         /// <param name="address">server address to connect</param>
         /// <param name="disconnectListener">listener will be called when the connection is interrupted</param>
-        /// <exception cref="DxEception"></exception>
+        /// <exception cref="DxException"></exception>
         public NativeConnection(string address, Action<IDxConnection> disconnectListener)
         {
             callback = OnDisconnect;
@@ -49,7 +49,7 @@ namespace com.dxfeed.native
         /// <summary>
         /// Disconnect from the server
         /// </summary>
-        /// <exception cref="DxEception"></exception>
+        /// <exception cref="DxException"></exception>
         public void Disconnect()
         {
             if (handler == IntPtr.Zero)
@@ -65,7 +65,8 @@ namespace com.dxfeed.native
         /// <param name="type">event type</param>
         /// <param name="listener">event listener callback</param>
         /// <returns> subscription object</returns>
-        /// <exception cref="DxEception"></exception>
+        /// <exception cref="ArgumentNullException">If listener is null.</exception>
+        /// <exception cref="DxException"></exception>
         public IDxSubscription CreateSubscription(EventType type, IDxFeedListener listener)
         {
             if (handler == IntPtr.Zero)
@@ -80,7 +81,7 @@ namespace com.dxfeed.native
         /// <param name="time">date time ini the past</param>
         /// <param name="listener">candle listener callback</param>
         /// <returns>subscription object</returns>
-        /// <exception cref="DxEception"></exception>
+        /// <exception cref="DxException"></exception>
         public IDxSubscription CreateSubscription(DateTime? time, IDxCandleListener listener)
         {
             if (handler == IntPtr.Zero)
@@ -95,7 +96,7 @@ namespace com.dxfeed.native
         /// <param name="time">Time in the past - number of milliseconds from 1.1.1970 (unix time)</param>
         /// <param name="listener">snapshot listener callback</param>
         /// <returns>subscription object</returns>
-        /// <exception cref="DxEception"></exception>
+        /// <exception cref="DxException"></exception>
         public IDxSubscription CreateSnapshotSubscription(Int64 time, IDxSnapshotListener listener)
         {
             if (handler == IntPtr.Zero)
@@ -110,7 +111,7 @@ namespace com.dxfeed.native
         /// <param name="time">Date time in the past</param>
         /// <param name="listener">snapshot listener callback</param>
         /// <returns>subscription object</returns>
-        /// <exception cref="DxEception"></exception>
+        /// <exception cref="DxException"></exception>
         public IDxSubscription CreateSnapshotSubscription(DateTime? time, IDxSnapshotListener listener)
         {
             if (handler == IntPtr.Zero)
@@ -125,7 +126,7 @@ namespace com.dxfeed.native
         /// </summary>
         /// <param name="listener"></param>
         /// <returns>subscription object</returns>
-        /// <exception cref="DxEception"></exception>
+        /// <exception cref="DxException"></exception>
         public IDxSubscription CreateOrderViewSubscription(IDxOrderViewListener listener)
         {
             if (handler == IntPtr.Zero)

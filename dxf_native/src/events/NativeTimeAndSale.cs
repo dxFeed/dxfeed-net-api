@@ -17,17 +17,22 @@ namespace com.dxfeed.native.events
     {
         private readonly DxTimeAndSale ts;
         private readonly DxString saleCond;
+        private readonly string symbol;
 
-        internal unsafe NativeTimeAndSale(DxTimeAndSale* ts)
+        internal unsafe NativeTimeAndSale(DxTimeAndSale* ts, string symbol)
         {
             this.ts = *ts;
             saleCond = DxMarshal.ReadDxString(this.ts.exchange_sale_conditions);
+            this.symbol = symbol;
         }
 
         public override string ToString()
         {
-            return string.Format(CultureInfo.InvariantCulture, "TimeAndSale: {{EventId: {0:x4}, Time: {1:o}, ExchangeCode: '{2}', Ask: {3}, Bid: {4}, ExchangeSaleConditions: '{5}', IsTrade: {6}, Price: {7}, Size: {8}, Type: {9}}}",
-                EventId, Time, ExchangeCode, AskPrice, BidPrice, ExchangeSaleConditions, IsTrade, Price, Size, Type);
+            return string.Format(CultureInfo.InvariantCulture, "TimeAndSale: {{{10}, " +
+                "EventId: {0:x4}, Time: {1:o}, ExchangeCode: '{2}', Ask: {3}, Bid: {4}, " +
+                "ExchangeSaleConditions: '{5}', IsTrade: {6}, Price: {7}, Size: {8}, Type: {9}}}",
+                EventId, Time, ExchangeCode, AskPrice, BidPrice, ExchangeSaleConditions, IsTrade,
+                Price, Size, Type, Symbol);
         }
 
         #region Implementation of IDxTimeAndSale
@@ -80,6 +85,11 @@ namespace com.dxfeed.native.events
         public TimeAndSaleType Type
         {
             get { return ts.type; }
+        }
+
+        public string Symbol
+        {
+            get { return symbol; }
         }
 
         #endregion

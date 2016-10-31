@@ -149,6 +149,7 @@ namespace com.dxfeed.native.events
         private static readonly Func<IntPtr, int, string, NativeSummary> SUMMARY_READER = DxMarshal.ReadSummary;
         private static readonly Func<IntPtr, int, string, NativeCandle> CANDLE_READER = DxMarshal.ReadCandle;
         private static readonly Func<IntPtr, int, string, NativeTradeETH> TRADE_ETH_READER = DxMarshal.ReadTradeEth;
+        private static readonly Func<IntPtr, int, string, NativeSpreadOrder> SPREAD_ORDER_READER = DxMarshal.ReadSpreadOrder;
 
 
         public static NativeEventBuffer<NativeQuote> CreateQuoteBuf(IntPtr symbol, IntPtr head, int size, EventParams eventParams)
@@ -189,6 +190,11 @@ namespace com.dxfeed.native.events
         public static NativeEventBuffer<NativeTradeETH> CreateTradeEthBuf(IntPtr symbol, IntPtr head, int size, EventParams eventParams)
         {
             return new NativeEventBuffer<NativeTradeETH>(EventType.TradeETH, symbol, head, size, eventParams, TRADE_ETH_READER);
+        }
+
+        public static NativeEventBuffer<NativeSpreadOrder> CreateSpreadOrderBuf(IntPtr symbol, IntPtr head, int size, EventParams eventParams)
+        {
+            return new NativeEventBuffer<NativeSpreadOrder>(EventType.SpreadOrder, symbol, head, size, eventParams, SPREAD_ORDER_READER);
         }
     }
 }

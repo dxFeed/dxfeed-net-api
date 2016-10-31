@@ -69,6 +69,14 @@ namespace com.dxfeed.api.extras
                 Console.WriteLine(string.Format("{0} {1}", buf.Symbol, te));
         }
 
+        public void OnSpreadOrder<TB, TE>(TB buf)
+            where TB : IDxEventBuf<TE>
+            where TE : IDxSpreadOrder
+        {
+            foreach (var so in buf)
+                Console.WriteLine(string.Format("{0} {1}", buf.Symbol, so));
+        }
+
         #endregion
 
         #region Implementation of IDxCandleListener

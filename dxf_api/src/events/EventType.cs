@@ -20,5 +20,6 @@ namespace com.dxfeed.api.events
         TimeAndSale = 32,
         Candle = 64, 
         TradeETH = 128,
+        SpreadOrder = 256
     }
 }

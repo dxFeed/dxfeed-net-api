@@ -85,10 +85,13 @@
     <Compile Include="src\data\DxString.cs" />
     <Compile Include="src\data\Side.cs" />
     <Compile Include="src\DxException.cs" />
+    <Compile Include="src\events\IDxSpreadOrder.cs" />
+    <Compile Include="src\events\Scope.cs" />
     <Compile Include="src\events\IDxMarketEvent.cs" />
     <Compile Include="src\events\EventFlag.cs" />
     <Compile Include="src\events\EventParams.cs" />
     <Compile Include="src\events\IDxCandle.cs" />
+    <Compile Include="src\events\IDxOrderBase.cs" />
     <Compile Include="src\events\IDxTradeETH.cs" />
     <Compile Include="src\events\IDxTradeBase.cs" />
     <Compile Include="src\extras\EventPrinter.cs" />

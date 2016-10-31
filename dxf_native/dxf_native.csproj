@@ -81,6 +81,8 @@
     <Compile Include="src\events\MarketEvent.cs" />
     <Compile Include="src\events\NativeCandle.cs" />
     <Compile Include="src\events\NativeEventBuffer.cs" />
+    <Compile Include="src\events\NativeSpreadOrder.cs" />
+    <Compile Include="src\events\NativeOrderBase.cs" />
     <Compile Include="src\events\NativeSummary.cs" />
     <Compile Include="src\events\NativeMarketMaker.cs" />
     <Compile Include="src\events\NativeOrder.cs" />

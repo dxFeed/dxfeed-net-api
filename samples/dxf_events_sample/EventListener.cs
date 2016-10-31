@@ -121,6 +121,20 @@ namespace dxf_events_sample
                 Console.WriteLine(string.Format("{0} {1}", buf.Symbol, te));
         }
 
+        /// <summary>
+        /// On SpreadOrder event received
+        /// </summary>
+        /// <typeparam name="TB">event buffer type</typeparam>
+        /// <typeparam name="TE">event type</typeparam>
+        /// <param name="buf">event buffer object</param>
+        public void OnSpreadOrder<TB, TE>(TB buf)
+            where TB : IDxEventBuf<TE>
+            where TE : IDxSpreadOrder
+        {
+            foreach (var so in buf)
+                Console.WriteLine(string.Format("{0} {1}", buf.Symbol, so));
+        }
+
         #endregion
     }
 }

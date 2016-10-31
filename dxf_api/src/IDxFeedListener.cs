@@ -82,5 +82,15 @@ namespace com.dxfeed.api
         void OnTradeEth<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
             where TE : IDxTradeEth;
+
+        /// <summary>
+        /// On SpreadOrder event received
+        /// </summary>
+        /// <typeparam name="TB">event buffer type</typeparam>
+        /// <typeparam name="TE">event type</typeparam>
+        /// <param name="buf">event buffer object</param>
+        void OnSpreadOrder<TB, TE>(TB buf)
+            where TB : IDxEventBuf<TE>
+            where TE : IDxSpreadOrder;
     }
 }

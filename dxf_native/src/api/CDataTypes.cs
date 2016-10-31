@@ -14,16 +14,39 @@ namespace com.dxfeed.native.api
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
     internal unsafe struct DxOrder
     {
-        internal long index;
-        internal Side side;
-        internal int level;
-        internal long time;
+        internal int count;
+        internal int event_flags;
         internal char exchange_code;
-        internal IntPtr market_maker; //string
+        internal long index;
+        internal int level;
+        internal Side side;
         internal double price;
+        internal int scope;
+        internal int sequence;
         internal long size;
         internal fixed char source[5]; //string
+        internal long time;
+        internal long time_sequence;
+        internal IntPtr market_maker; //string
+    }
+
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+    internal unsafe struct DxSpreadOrder
+    {
         internal int count;
+        internal int event_flags;
+        internal char exchange_code;
+        internal long index;
+        internal int level;
+        internal Side side;
+        internal double price;
+        internal int scope;
+        internal int sequence;
+        internal long size;
+        internal fixed char source[5]; //string
+        internal long time;
+        internal long time_sequence;
+        internal IntPtr spread_symbol; //string
     }
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]

@@ -75,7 +75,7 @@ namespace dxf_client
                     "where\n" +
                     "    host:port - address of dxfeed server (demo.dxfeed.com:7300)\n" +
                     "    event     - any of the {Profile,Order,Quote,Trade,TimeAndSale,Summary,\n" +
-                    "                TradeETH,Candle}\n" +
+                    "                TradeETH,SpreadOrder,Candle}\n" +
                     "    symbol    - a) IBM, MSFT, ...\n" +
                     "                b) if it is Candle event you can specify candle symbol\n" +
                     "                   attribute by string, for example: XBT/USD{=d}\n" +

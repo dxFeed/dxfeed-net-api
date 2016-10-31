@@ -138,6 +138,10 @@ namespace com.dxfeed.native
                     var teBuf = NativeBufferFactory.CreateTradeEthBuf(symbol, data, dataCount, nativeEventParams);
                     eventListener.OnTradeEth<NativeEventBuffer<NativeTradeETH>, NativeTradeETH>(teBuf);
                     break;
+                case EventType.SpreadOrder:
+                    var spreadOrderBuf = NativeBufferFactory.CreateSpreadOrderBuf(symbol, data, dataCount, nativeEventParams);
+                    eventListener.OnSpreadOrder<NativeEventBuffer<NativeSpreadOrder>, NativeSpreadOrder>(spreadOrderBuf);
+                    break;
             }
         }
 

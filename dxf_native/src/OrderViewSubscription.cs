@@ -433,6 +433,11 @@ namespace com.dxfeed.native
             where TB : IDxEventBuf<TE>
             where TE : IDxTradeEth
         { }
+
+        public void OnSpreadOrder<TB, TE>(TB buf)
+            where TB : IDxEventBuf<TE>
+            where TE : IDxSpreadOrder
+        { }
         #endregion
     }
 }

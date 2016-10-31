@@ -407,6 +407,33 @@ namespace com.dxfeed.native.api
         internal abstract int dxf_delete_candle_symbol_attributes(IntPtr candle_attributes);
 
         /*
+         *  Creates snapshot with the specified parameters.
+         *
+         *  For Order or Candle events (dx_eid_order or dx_eid_candle) please use 
+         *  short form of this function: dxf_create_order_snapshot or dxf_create_candle_snapshot
+         *  respectively.
+         *
+         *  For order events (event_id is 'dx_eid_order')
+         *  If source is NULL string subscription on Order event will be performed. You can specify order 
+         *  source for Order event by passing suffix: "BYX", "BZX", "DEA", "DEX", "ISE", "IST", "NTV".
+         *  If source is equal to "COMPOSITE_BID" or "COMPOSITE_ASK" subscription on MarketMaker event will 
+         *  be performed. For other events source parameter does not matter.
+         *
+         *  connection - a handle of a previously created connection which the subscription will be using
+         *  event_id - single event id. Next events is supported: dxf_eid_order, dxf_eid_candle, 
+                       dx_eid_spread_order, dx_eid_time_and_sale.
+         *  symbol - the symbol to add.
+         *  source - order source for Order, which can be one of following: "BYX", "BZX", "DEA", "DEX", 
+         *           "ISE", "IST", "NTV". For MarketMaker subscription use "COMPOSITE_BID" or 
+         *           "COMPOSITE_ASK" keyword.
+         *  time - time in the past (unix time in milliseconds).
+         *  OUT snapshot - a handle of the created snapshot
+         */
+        internal abstract int dxf_create_snapshot(IntPtr connection, EventType event_id,
+                                                 string symbol, byte[] source,
+                                                 Int64 time, out IntPtr snapshot);
+
+        /*
          *  Creates Order snapshot with the specified parameters.
          *
          *  If source is NULL string subscription on Order event will be performed. You can specify order 

@@ -4,18 +4,10 @@
 /// If a copy of the MPL was not distributed with this file, You can obtain one at
 /// http://mozilla.org/MPL/2.0/.
 
-using System;
-
 namespace com.dxfeed.api.events
 {
-    public interface IDxTrade : IDxMarketEvent
+    public interface IDxTrade : IDxTradeBase
     {
-        DateTime Time { get; }
-        char ExchangeCode { get; }
-        double Price { get; }
-        long Size { get; }
-        long Tick { get; }
-        double Change { get; }
-        double DayVolume { get; }
+        //Note: no extra fields in this interface.
     }
 }

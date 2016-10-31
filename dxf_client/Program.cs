@@ -74,12 +74,14 @@ namespace dxf_client
                     "Usage: dxf_client <host:port> <event> <symbol> [<source>] [snapshot]\n" +
                     "where\n" +
                     "    host:port - address of dxfeed server (demo.dxfeed.com:7300)\n" +
-                    "    event     - any of the {Profile,Order,Quote,Trade,TimeAndSale,Summary,Candle}\n" +
+                    "    event     - any of the {Profile,Order,Quote,Trade,TimeAndSale,Summary,\n" +
+                    "                TradeETH,Candle}\n" +
                     "    symbol    - a) IBM, MSFT, ...\n" +
-                    "                b) if it is Candle event you can specify candle symbol attribute by \n" +
-                    "                   string, for example: XBT/USD{=d}\n" +
-                    "    source    - order sources NTV, BYX, BZX, DEA, DEX, IST, ISE,... (can be empty)\n" +
-                    "    snapshot  - use keyword 'snapshot' for create snapshot subscription, otherwise leave empty\n\n" +
+                    "                b) if it is Candle event you can specify candle symbol\n" +
+                    "                   attribute by string, for example: XBT/USD{=d}\n" +
+                    "    source    - order sources NTV, BYX, BZX, DEA, DEX, IST, ISE,... (optional)\n" +
+                    "    snapshot  - use keyword 'snapshot' for create snapshot subscription,\n" +
+                    "                otherwise leave empty\n\n" +
                     "example: dxf_client demo.dxfeed.com:7300 quote,trade MSFT.TEST,IBM.TEST NTV,IST"
                 );
                 return;

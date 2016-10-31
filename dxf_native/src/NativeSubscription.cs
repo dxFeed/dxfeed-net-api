@@ -134,6 +134,10 @@ namespace com.dxfeed.native
                     var cBuf = NativeBufferFactory.CreateCandleBuf(symbol, data, dataCount, nativeEventParams);
                     candleListener.OnCandle<NativeEventBuffer<NativeCandle>, NativeCandle>(cBuf);
                     break;
+                case EventType.TradeETH:
+                    var teBuf = NativeBufferFactory.CreateTradeEthBuf(symbol, data, dataCount, nativeEventParams);
+                    eventListener.OnTradeEth<NativeEventBuffer<NativeTradeETH>, NativeTradeETH>(teBuf);
+                    break;
             }
         }
 

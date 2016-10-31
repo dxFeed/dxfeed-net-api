@@ -107,6 +107,20 @@ namespace dxf_events_sample
                 Console.WriteLine(string.Format("{0} {1}", buf.Symbol, ts));
         }
 
+        /// <summary>
+        /// On TradeETH event received
+        /// </summary>
+        /// <typeparam name="TB">event buffer type</typeparam>
+        /// <typeparam name="TE">event type</typeparam>
+        /// <param name="buf">event buffer object</param>
+        public void OnTradeEth<TB, TE>(TB buf)
+            where TB : IDxEventBuf<TE>
+            where TE : IDxTradeEth
+        {
+            foreach (var te in buf)
+                Console.WriteLine(string.Format("{0} {1}", buf.Symbol, te));
+        }
+
         #endregion
     }
 }

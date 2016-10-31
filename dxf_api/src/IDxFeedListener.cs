@@ -72,5 +72,15 @@ namespace com.dxfeed.api
         void OnTimeAndSale<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
             where TE : IDxTimeAndSale;
+
+        /// <summary>
+        /// On TradeETH event received.
+        /// </summary>
+        /// <typeparam name="TB">vent buffer type</typeparam>
+        /// <typeparam name="TE">event type</typeparam>
+        /// <param name="buf">event buffer object</param>
+        void OnTradeEth<TB, TE>(TB buf)
+            where TB : IDxEventBuf<TE>
+            where TE : IDxTradeEth;
     }
 }

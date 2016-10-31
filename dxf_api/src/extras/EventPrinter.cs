@@ -61,6 +61,14 @@ namespace com.dxfeed.api.extras
                 Console.WriteLine(string.Format("{0} {1}", buf.Symbol, ts));
         }
 
+        public void OnTradeEth<TB, TE>(TB buf)
+            where TB : IDxEventBuf<TE>
+            where TE : IDxTradeEth
+        {
+            foreach (var te in buf)
+                Console.WriteLine(string.Format("{0} {1}", buf.Symbol, te));
+        }
+
         #endregion
 
         #region Implementation of IDxCandleListener

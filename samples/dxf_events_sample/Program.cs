@@ -34,7 +34,8 @@ namespace dxf_events_sample
                     "Usage: dxf_events_sample <host:port> <event> <symbol>\n" +
                     "where\n" +
                     "    host:port - address of dxfeed server (demo.dxfeed.com:7300)\n" +
-                    "    event     - any of the {Profile,Order,Quote,Trade,TimeAndSale,Summary}\n" +
+                    "    event     - any of the {Profile,Order,Quote,Trade,TimeAndSale,Summary,\n" +
+                    "                TradeETH}\n" +
                     "    symbol    - IBM, MSFT, ...\n\n" +
                     "example: dxf_events_sample demo.dxfeed.com:7300 quote,trade MSFT.TEST,IBM.TEST"
                 );

@@ -148,6 +148,7 @@ namespace com.dxfeed.native.events
         private static readonly Func<IntPtr, int, string, NativeTimeAndSale> TS_READER = DxMarshal.ReadTimeAndSale;
         private static readonly Func<IntPtr, int, string, NativeSummary> SUMMARY_READER = DxMarshal.ReadSummary;
         private static readonly Func<IntPtr, int, string, NativeCandle> CANDLE_READER = DxMarshal.ReadCandle;
+        private static readonly Func<IntPtr, int, string, NativeTradeETH> TRADE_ETH_READER = DxMarshal.ReadTradeEth;
 
 
         public static NativeEventBuffer<NativeQuote> CreateQuoteBuf(IntPtr symbol, IntPtr head, int size, EventParams eventParams)
@@ -183,6 +184,11 @@ namespace com.dxfeed.native.events
         public static NativeEventBuffer<NativeCandle> CreateCandleBuf(IntPtr symbol, IntPtr head, int size, EventParams eventParams)
         {
             return new NativeEventBuffer<NativeCandle>(EventType.Candle, symbol, head, size, eventParams, CANDLE_READER);
+        }
+
+        public static NativeEventBuffer<NativeTradeETH> CreateTradeEthBuf(IntPtr symbol, IntPtr head, int size, EventParams eventParams)
+        {
+            return new NativeEventBuffer<NativeTradeETH>(EventType.TradeETH, symbol, head, size, eventParams, TRADE_ETH_READER);
         }
     }
 }

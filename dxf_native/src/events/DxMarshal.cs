@@ -21,6 +21,7 @@ namespace com.dxfeed.native.events
         private static readonly int MM_SIZE;
         private static readonly int TS_SIZE;
         private static readonly int CANDLE_SIZE;
+        private static readonly int TRADE_ETH_SIZE;
 
         static DxMarshal()
         {
@@ -32,6 +33,7 @@ namespace com.dxfeed.native.events
             MM_SIZE = sizeof(DxMarketMaker);
             TS_SIZE = sizeof(DxTimeAndSale);
             CANDLE_SIZE = sizeof(DxCandle);
+            TRADE_ETH_SIZE = sizeof(DxTradeEth);
         }
 
         public static string ReadString(IntPtr ptr)
@@ -77,6 +79,11 @@ namespace com.dxfeed.native.events
         public static NativeCandle ReadCandle(IntPtr head, int offset, string symbol)
         {
             return new NativeCandle((DxCandle*)IntPtr.Add(head, offset * CANDLE_SIZE), symbol);
+        }
+
+        public static NativeTradeETH ReadTradeEth(IntPtr head, int offset, string symbol)
+        {
+            return new NativeTradeETH((DxTradeEth*)IntPtr.Add(head, offset * TRADE_ETH_SIZE), symbol);
         }
 
         public static DxString ReadDxString(IntPtr ptr)

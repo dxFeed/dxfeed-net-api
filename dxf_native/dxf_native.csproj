@@ -78,6 +78,7 @@
     <Compile Include="src\api\C64.cs" />
     <Compile Include="src\EventBuffer.cs" />
     <Compile Include="src\events\DxMarshal.cs" />
+    <Compile Include="src\events\MarketEvent.cs" />
     <Compile Include="src\events\NativeCandle.cs" />
     <Compile Include="src\events\NativeEventBuffer.cs" />
     <Compile Include="src\events\NativeSummary.cs" />
@@ -86,6 +87,8 @@
     <Compile Include="src\events\NativeProfile.cs" />
     <Compile Include="src\events\NativeQuote.cs" />
     <Compile Include="src\events\NativeTimeAndSale.cs" />
+    <Compile Include="src\events\NativeTradeETH.cs" />
+    <Compile Include="src\events\NativeTradeBase.cs" />
     <Compile Include="src\events\NativeTrade.cs" />
     <Compile Include="src\NativeConnection.cs" />
     <Compile Include="src\NativeDxException.cs" />

@@ -40,6 +40,7 @@ namespace com.dxfeed.tests.tools
         List<ReceivedEvent<IDxSummary>> summaries = new List<ReceivedEvent<IDxSummary>>();
         List<ReceivedEvent<IDxTimeAndSale>> timesAndSales = new List<ReceivedEvent<IDxTimeAndSale>>();
         List<ReceivedEvent<IDxCandle>> candles = new List<ReceivedEvent<IDxCandle>>();
+        List<ReceivedEvent<IDxTradeEth>> tradesEth = new List<ReceivedEvent<IDxTradeEth>>();
 
         ReaderWriterLock rwl = new ReaderWriterLock();
 
@@ -71,6 +72,8 @@ namespace com.dxfeed.tests.tools
                 return timesAndSales as List<ReceivedEvent<TE>>;
             else if (typeof(TE) == typeof(IDxCandle))
                 return candles as List<ReceivedEvent<TE>>;
+            else if (typeof(TE) == typeof(IDxTradeEth))
+                return tradesEth as List<ReceivedEvent<TE>>;
             else
                 return null;
         }
@@ -295,6 +298,14 @@ namespace com.dxfeed.tests.tools
         {
             foreach (var ts in buf)
                 AddEvent<IDxTimeAndSale>(new ReceivedEvent<IDxTimeAndSale>(buf.Symbol, buf.EventParams, ts));
+        }
+
+        public void OnTradeEth<TB, TE>(TB buf)
+            where TB : IDxEventBuf<TE>
+            where TE : IDxTradeEth
+        {
+            foreach (var te in buf)
+                AddEvent<IDxTradeEth>(new ReceivedEvent<IDxTradeEth>(buf.Symbol, buf.EventParams, te));
         }
 
         #endregion

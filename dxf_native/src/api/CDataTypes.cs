@@ -134,6 +134,17 @@ namespace com.dxfeed.native.api
     }
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+    internal struct DxTradeEth
+    {
+        internal long time;
+        internal int flags;
+        internal char exchange_code;
+        internal double price;
+        internal long size;
+        internal double eth_volume;
+    }
+
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
     internal struct DxEventParams
     {
         internal EventFlag flags;

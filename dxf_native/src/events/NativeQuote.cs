@@ -27,7 +27,7 @@ namespace com.dxfeed.native.events
                 "AskExchangeCode: '{0}', Ask: {2}@{1}, AskTime: {3:o}, " +
                 "BidExchangeCode: '{4}', Bid: {6}@{5}, BidTime: {7:o} }}",
                 AskExchangeCode, AskPrice, AskSize, AskTime, BidExchangeCode, BidPrice,
-                BidSize, BidTime, Symbol);
+                BidSize, BidTime, EventSymbol);
         }
 
         #region Implementation of IDxQuote

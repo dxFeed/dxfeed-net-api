@@ -85,6 +85,7 @@
     <Compile Include="src\data\DxString.cs" />
     <Compile Include="src\data\Side.cs" />
     <Compile Include="src\DxException.cs" />
+    <Compile Include="src\events\IDxEventType.cs" />
     <Compile Include="src\events\IDxSpreadOrder.cs" />
     <Compile Include="src\events\Scope.cs" />
     <Compile Include="src\events\IDxMarketEvent.cs" />

@@ -38,7 +38,7 @@ namespace com.dxfeed.native.events
         public override string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture, "TradeETH {{{0}, {1}, eth: {2}}}",
-                Symbol, base.ToString(), IsETH);
+                EventSymbol, base.ToString(), IsETH);
         }
     }
 }

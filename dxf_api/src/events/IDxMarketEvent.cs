@@ -11,11 +11,8 @@ namespace com.dxfeed.api.events
     /// extend this class. Market event classes are simple beans with setter and getter methods for their
     /// properties and minimal business logic.
     /// </summary>
-    public interface IDxMarketEvent
+    public interface IDxMarketEvent : IDxEventType<string>
     {
-        /// <summary>
-        /// Returns symbol of this event.
-        /// </summary>
-        string Symbol { get; }
+        //Note: no extra fields
     }
 }

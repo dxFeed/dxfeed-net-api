@@ -36,7 +36,7 @@ namespace com.dxfeed.native.events
                 "EventId: {0:x4}, Time: {1:o}, ExchangeCode: '{2}', Ask: {3}, Bid: {4}, " +
                 "ExchangeSaleConditions: '{5}', IsTrade: {6}, Price: {7}, Size: {8}, Type: {9}}}",
                 EventId, Time, ExchangeCode, AskPrice, BidPrice, ExchangeSaleConditions, IsTrade,
-                Price, Size, Type, Symbol);
+                Price, Size, Type, EventSymbol);
         }
 
         #region Implementation of IDxTimeAndSale

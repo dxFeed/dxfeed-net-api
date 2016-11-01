@@ -12,19 +12,17 @@ using com.dxfeed.api.extras;
 
 namespace com.dxfeed.native.events
 {
-    public struct NativeProfile : IDxProfile
+    public class NativeProfile : MarketEvent, IDxProfile
     {
         private readonly DxProfile profile;
         private readonly string description;
         private readonly string statusReason;
-        private readonly string symbol;
 
-        internal unsafe NativeProfile(DxProfile* profile, string symbol)
+        internal unsafe NativeProfile(DxProfile* profile, string symbol) : base(symbol)
         {
             this.profile = *profile;
             description = new string((char*)this.profile.description.ToPointer());
             statusReason = new string((char*)this.profile.status_reason.ToPointer());
-            this.symbol = symbol;
         }
 
         public override string ToString()
@@ -34,7 +32,7 @@ namespace com.dxfeed.native.events
                 "Description: '{8}', Flags: {9}, StatusReason: '{10}', HaltStartTime: {11}, HaltEndTime: {12}, " +
                 "HighLimitPrice: {13}, LowLimitPrice: {14}}}",
                 Beta, Eps, DivFreq, ExdDivAmount, ExdDivDate, _52HighPrice, _52LowPrice, Shares, Description,
-                Flags, StatusReason, HaltStartTime, HaltEndTime, HighLimitPrice, LowLimitPrice, Symbol);
+                Flags, StatusReason, HaltStartTime, HaltEndTime, HighLimitPrice, LowLimitPrice, EventSymbol);
         }
 
         #region Implementation of IDxProfile
@@ -112,11 +110,6 @@ namespace com.dxfeed.native.events
         public double LowLimitPrice
         {
             get { return profile.low_limit_price; }
-        }
-
-        public string Symbol
-        {
-            get { return symbol; }
         }
 
         #endregion

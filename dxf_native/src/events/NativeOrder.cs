@@ -38,7 +38,7 @@ namespace com.dxfeed.native.events
         public override string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture, "Order: {{{0} {1}, MarketMaker: '{2}'}}",
-                Symbol, base.ToString(), MarketMaker);
+                EventSymbol, base.ToString(), MarketMaker);
         }
 
         #region Implementation of IDxOrder

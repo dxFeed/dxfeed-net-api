@@ -28,7 +28,7 @@ namespace com.dxfeed.native.events
         public override string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture, "Trade {{{0}, {1}}}",
-                Symbol, base.ToString());
+                EventSymbol, base.ToString());
         }
     }
 }

@@ -10,15 +10,13 @@ using com.dxfeed.native.api;
 
 namespace com.dxfeed.native.events
 {
-    public struct NativeSummary : IDxSummary
+    public class NativeSummary : MarketEvent, IDxSummary
     {
         private readonly DxSummary summary;
-        private readonly string symbol;
 
-        internal unsafe NativeSummary(DxSummary* summary, string symbol)
+        internal unsafe NativeSummary(DxSummary* summary, string symbol) : base(symbol)
         {
             this.summary = *summary;
-            this.symbol = symbol;
         }
 
         public override string ToString()
@@ -30,7 +28,7 @@ namespace com.dxfeed.native.events
                 "Flags: {8}, ExchangeCode: {9} }}",
                 DayId, DayOpenPrice, DayHighPrice, DayLowPrice,
                 DayClosePrice, PrevDayId, PrevDayClosePrice, OpenInterest,
-                Flags, ExchangeCode, Symbol);
+                Flags, ExchangeCode, EventSymbol);
         }
 
         #region Implementation of IDxSummary
@@ -83,11 +81,6 @@ namespace com.dxfeed.native.events
         public char ExchangeCode
         {
             get { return summary.exchange_code; }
-        }
-
-        public string Symbol
-        {
-            get { return symbol; }
         }
 
         #endregion

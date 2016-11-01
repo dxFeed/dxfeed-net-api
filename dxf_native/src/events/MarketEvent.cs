@@ -23,7 +23,7 @@ namespace com.dxfeed.native.events
         /// <param name="symbol">The event symbol.</param>
         protected MarketEvent(string symbol)
         {
-            Symbol = symbol;
+            EventSymbol = symbol;
         }
 
         #region Implementation of IDxMarketEvent
@@ -31,7 +31,7 @@ namespace com.dxfeed.native.events
         /// <summary>
         /// Returns symbol of this event.
         /// </summary>
-        public string Symbol
+        public string EventSymbol
         {
             get; private set;
         }

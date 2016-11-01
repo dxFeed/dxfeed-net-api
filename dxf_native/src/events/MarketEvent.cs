@@ -9,15 +9,15 @@ using com.dxfeed.api.events;
 namespace com.dxfeed.native.events
 {
     /// <summary>
-    /// Abstract base class for all market events. All market events are plain java objects that
-    /// extend this class. Market event classes are simple beans with setter and getter methods 
-    /// for their properties and minimal business logic. All market events have Symbol property 
-    /// that is defined by this class.
+    /// Abstract base class for all market events. All market events are objects that
+    /// extend this class. Market event classes are simple beans with setters and getters
+    /// for their properties and minimal business logic. All market events have EventSymbol 
+    /// property that is defined by this class.
     /// </summary>
     public abstract class MarketEvent : IDxMarketEvent
     {
         /// <summary>
-        /// Protected constructor for concrete implementation classes that initializes Symbol 
+        /// Protected constructor for concrete implementation classes that initializes EventSymbol
         /// property.
         /// </summary>
         /// <param name="symbol">The event symbol.</param>

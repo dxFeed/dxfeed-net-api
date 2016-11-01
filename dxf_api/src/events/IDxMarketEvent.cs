@@ -7,9 +7,10 @@
 namespace com.dxfeed.api.events
 {
     /// <summary>
-    /// Interface class for all market events. All market events are plain objects that
-    /// extend this class. Market event classes are simple beans with setter and getter methods for their
-    /// properties and minimal business logic.
+    /// Abstract base class for all market events. All market events are objects that
+    /// extend this class. Market event classes are simple beans with setters and getters
+    /// for their properties and minimal business logic. All market events have EventSymbol 
+    /// property that is defined by this class.
     /// </summary>
     public interface IDxMarketEvent : IDxEventType<string>
     {

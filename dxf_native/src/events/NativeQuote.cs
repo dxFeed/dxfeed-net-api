@@ -9,19 +9,16 @@ using System.Globalization;
 using com.dxfeed.api.events;
 using com.dxfeed.api.extras;
 using com.dxfeed.native.api;
-using com.dxfeed.api.data;
 
 namespace com.dxfeed.native.events
 {
-    public struct NativeQuote : IDxQuote
+    public class NativeQuote : MarketEvent, IDxQuote
     {
         private DxQuote quote;
-        private string symbol;
 
-        internal unsafe NativeQuote(DxQuote* quote, string symbol)
+        internal unsafe NativeQuote(DxQuote* quote, string symbol) : base(symbol)
         {
             this.quote = *quote;
-            this.symbol = symbol;
         }
 
         public override string ToString()
@@ -73,11 +70,6 @@ namespace com.dxfeed.native.events
         public long AskSize
         {
             get { return quote.ask_size; }
-        }
-
-        public string Symbol
-        {
-            get { return symbol; }
         }
 
         #endregion

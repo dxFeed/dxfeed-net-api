@@ -130,13 +130,23 @@ namespace com.dxfeed.native.api
     {
         internal long event_id;
         internal long time;
+        internal int sequence;
         internal char exchange_code;
         internal double price;
         internal long size;
         internal double bid_price;
         internal double ask_price;
         internal IntPtr exchange_sale_conditions;
+        internal int flags;
+        internal int event_flags;
+        internal long index;
+        internal Side side;
+        internal bool is_cancel;
+        internal bool is_correction;
         internal bool is_trade;
+        internal bool is_new;
+        internal bool is_spread_leg;
+        internal bool is_valid_tick;
         internal TimeAndSaleType type;
     }
 

@@ -6,9 +6,18 @@
 
 namespace com.dxfeed.api.data
 {
+    /// <summary>
+    /// Side of an order or a trade.
+    /// </summary>
     public enum Side : int
     {
-        Sell = 0,
-        Buy = 1
+        /// <summary>
+        /// Buy side (bid).
+        /// </summary>
+        Buy = 0,
+        /// <summary>
+        /// Sell side (ask or offer).
+        /// </summary>
+        Sell = 1
     }
 }

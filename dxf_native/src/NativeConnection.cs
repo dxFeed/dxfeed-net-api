@@ -122,6 +122,41 @@ namespace com.dxfeed.native
         }
 
         /// <summary>
+        /// Creates snapshot subscription
+        /// </summary>
+        /// <param name="eventType">Single event type.</param>
+        /// <param name="time">Time in the past - number of milliseconds from 1.1.1970 (unix time)</param>
+        /// <param name="listener">snapshot listener callback</param>
+        /// <returns>subscription object</returns>
+        /// <exception cref="DxException"></exception>
+        public IDxSubscription CreateSnapshotSubscription(EventType eventType, Int64 time, 
+            IDxSnapshotListener listener)
+        {
+            if (handler == IntPtr.Zero)
+                throw new NativeDxException("not connected");
+
+            return new NativeSnapshotSubscription(this, eventType, time, listener);
+        }
+
+        /// <summary>
+        /// Creates snapshot subscription
+        /// </summary>
+        /// <param name="eventType">Single event type.</param>
+        /// <param name="time">Date time in the past</param>
+        /// <param name="listener">snapshot listener callback</param>
+        /// <returns>subscription object</returns>
+        /// <exception cref="DxException"></exception>
+        public IDxSubscription CreateSnapshotSubscription(EventType eventType, DateTime? time, 
+            IDxSnapshotListener listener)
+        {
+            if (handler == IntPtr.Zero)
+                throw new NativeDxException("not connected");
+
+            long unixTime = time == null ? 0 : Tools.DateToUnixTime((DateTime)time);
+            return new NativeSnapshotSubscription(this, eventType, unixTime, listener);
+        }
+
+        /// <summary>
         /// Creates Order View subscription
         /// </summary>
         /// <param name="listener"></param>

@@ -14,9 +14,12 @@ using com.dxfeed.native;
 
 namespace dxf_client
 {
-    public class SnapshotPrinter : IDxSnapshotListener
+    public class SnapshotPrinter :
+        IDxOrderSnapshotListener,
+        IDxCandleSnapshotListener,
+        IDxTimeAndSaleSnapshotListener,
+        IDxSpreadOrderSnapshotListener
     {
-        #region Implementation of IDxSnapshotListener
 
         private const int RECORDS_PRINT_LIMIT = 7;
 
@@ -36,6 +39,14 @@ namespace dxf_client
             }
         }
 
+        #region Implementation of IDxOrderSnapshotListener
+
+        /// <summary>
+        /// On Order snapshot event received
+        /// </summary>
+        /// <typeparam name="TB">event buffer type</typeparam>
+        /// <typeparam name="TE">event type</typeparam>
+        /// <param name="buf">event buffer object</param>
         public void OnOrderSnapshot<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
             where TE : IDxOrder
@@ -43,9 +54,53 @@ namespace dxf_client
             PrintSnapshot(buf);
         }
 
+        #endregion //IDxOrderSnapshotListener
+
+        #region IDxCandleSnapshotListener
+
+        /// <summary>
+        /// On Candle shopshot event received
+        /// </summary>
+        /// <typeparam name="TB">event buffer type</typeparam>
+        /// <typeparam name="TE">event type</typeparam>
+        /// <param name="buf">event buffer object</param>
         public void OnCandleSnapshot<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
             where TE : IDxCandle
+        {
+            PrintSnapshot(buf);
+        }
+
+        #endregion //IDxCandleSnapshotListener
+
+        #region IDxTimeAndSaleSnapshotListener
+
+        /// <summary>
+        /// On TimeAndSale snapshot event received.
+        /// </summary>
+        /// <typeparam name="TB">Event buffer type.</typeparam>
+        /// <typeparam name="TE">Event type.</typeparam>
+        /// <param name="buf">Event buffer object.</param>
+        public void OnTimeAndSaleSnapshot<TB, TE>(TB buf)
+            where TB : IDxEventBuf<TE>
+            where TE : IDxTimeAndSale
+        {
+            PrintSnapshot(buf);
+        }
+
+        #endregion //IDxTimeAndSaleSnapshotListener
+
+        #region  IDxSpreadOrderSnapshotListener
+
+        /// <summary>
+        /// On SpreadOrder snapshot event received.
+        /// </summary>
+        /// <typeparam name="TB">Event buffer type.</typeparam>
+        /// <typeparam name="TE">Event type.</typeparam>
+        /// <param name="buf">Event buffer object.</param>
+        public void OnSpreadOrderSnapshot<TB, TE>(TB buf)
+            where TB : IDxEventBuf<TE>
+            where TE : IDxSpreadOrder
         {
             PrintSnapshot(buf);
         }
@@ -125,8 +180,9 @@ namespace dxf_client
                 {
                     if (isSnapshot)
                     {
-                        s = con.CreateSnapshotSubscription(0, new SnapshotPrinter());
+                        s = con.CreateSnapshotSubscription(events, 0, new SnapshotPrinter());
                     }
+                    //TODO: timed subscription
                     else if (events == EventType.Candle)
                     {
                         s = con.CreateSubscription(null, listener);

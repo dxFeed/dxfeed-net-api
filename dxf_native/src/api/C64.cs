@@ -219,10 +219,10 @@ namespace com.dxfeed.native.api
         }
 
         [DllImport(DXFEED_DLL, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl, EntryPoint = "dxf_create_snapshot")]
-        private static extern int __dxf_create_snapshot(IntPtr connection, EventType event_id,
+        private static extern int __dxf_create_snapshot(IntPtr connection, int event_id,
                                                         string symbol, byte[] source,
                                                         Int64 time, out IntPtr snapshot);
-        internal override int dxf_create_snapshot(IntPtr connection, EventType event_id,
+        internal override int dxf_create_snapshot(IntPtr connection, int event_id,
                                                   string symbol, byte[] source,
                                                   Int64 time, out IntPtr snapshot)
         {

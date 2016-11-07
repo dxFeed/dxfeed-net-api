@@ -14,18 +14,24 @@ namespace dxf_snapshot_sample
     /// <summary>
     /// Snapshots listener
     /// </summary>
-    public class SnapshotListener : IDxSnapshotListener
+    public class SnapshotListener :
+        IDxOrderSnapshotListener,
+        IDxCandleSnapshotListener,
+        IDxTimeAndSaleSnapshotListener,
+        IDxSpreadOrderSnapshotListener
     {
-        #region Implementation of IDxSnapshotListener
 
         private const int recordsPrintlimit = 7;
 
         private void PrintSnapshot<TE>(IDxEventBuf<TE> buf)
         {
             string symbolStr = buf.Symbol.ToString();
-            CandleSymbol candleSymbol = CandleSymbol.ValueOf(symbolStr);
-            if (candleSymbol.IsDefault())
-                symbolStr = candleSymbol.ToFullString();
+            if (buf.EventType == EventType.Candle)
+            {
+                CandleSymbol candleSymbol = CandleSymbol.ValueOf(symbolStr);
+                if (candleSymbol.IsDefault())
+                    symbolStr = candleSymbol.ToFullString();
+            }
             Console.WriteLine(string.Format("Snapshot {0} {{Symbol: '{1}', RecordsCount: {2}}}",
                 buf.EventType, symbolStr, buf.Size));
             int count = 0;
@@ -39,6 +45,8 @@ namespace dxf_snapshot_sample
                 }
             }
         }
+
+        #region Implementation of IDxOrderSnapshotListener
 
         /// <summary>
         /// On Order snapshot event received
@@ -54,6 +62,10 @@ namespace dxf_snapshot_sample
             PrintSnapshot(buf);
         }
 
+        #endregion //IDxOrderSnapshotListener
+
+        #region IDxCandleSnapshotListener
+
         /// <summary>
         /// On Candle shopshot event received
         /// </summary>
@@ -63,6 +75,42 @@ namespace dxf_snapshot_sample
         public void OnCandleSnapshot<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
             where TE : IDxCandle
+        {
+
+            PrintSnapshot(buf);
+        }
+
+        #endregion //IDxCandleSnapshotListener
+
+        #region IDxTimeAndSaleSnapshotListener
+
+        /// <summary>
+        /// On TimeAndSale snapshot event received.
+        /// </summary>
+        /// <typeparam name="TB">Event buffer type.</typeparam>
+        /// <typeparam name="TE">Event type.</typeparam>
+        /// <param name="buf">Event buffer object.</param>
+        public void OnTimeAndSaleSnapshot<TB, TE>(TB buf)
+            where TB : IDxEventBuf<TE>
+            where TE : IDxTimeAndSale
+        {
+
+            PrintSnapshot(buf);
+        }
+
+        #endregion //IDxTimeAndSaleSnapshotListener
+
+        #region  IDxSpreadOrderSnapshotListener
+
+        /// <summary>
+        /// On SpreadOrder snapshot event received.
+        /// </summary>
+        /// <typeparam name="TB">Event buffer type.</typeparam>
+        /// <typeparam name="TE">Event type.</typeparam>
+        /// <param name="buf">Event buffer object.</param>
+        public void OnSpreadOrderSnapshot<TB, TE>(TB buf)
+            where TB : IDxEventBuf<TE>
+            where TE : IDxSpreadOrder
         {
 
             PrintSnapshot(buf);

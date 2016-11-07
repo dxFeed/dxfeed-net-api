@@ -164,9 +164,9 @@ namespace com.dxfeed.native.api
         internal double vwap;
         internal double bid_volume;
         internal double ask_volume;
-        internal double open_interest;
-        internal double imp_volatility;
         internal long index;
+        internal long open_interest;
+        internal double imp_volatility;
     }
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]

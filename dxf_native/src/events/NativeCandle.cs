@@ -19,7 +19,7 @@ namespace com.dxfeed.native.events
     /// from the specified CandleSession with further details of aggregation provided by 
     /// CandleAlignment.
     /// </summary>
-    public struct NativeCandle : IDxCandle
+    public class NativeCandle : IDxCandle
     {
         private readonly DxCandle candle;
         private string symbolString;
@@ -36,9 +36,12 @@ namespace com.dxfeed.native.events
             return string.Format(CultureInfo.InvariantCulture, "Candle: {{{11}, DateTime: {0:o}, " +
             "Sequence: {1}, Count: {2:0.00}, Open: {3:0.000000}, High: {4:0.000000}, " +
             "Low: {5:0.000000}, Close: {6:0.000000}, Volume: {7:0.0}, VWAP: {8:0.0}, " +
-            "BidVolume: {9:0.0}, AskVolume: {10:0.0} }}",
-                DateTime, Sequence, Count, Open, High, Low, Close, Volume, VWAP, BidVolume, AskVolume, symbolString);
+            "BidVolume: {9:0.0}, AskVolume: {10:0.0}, OpenInterest: {12}, " +
+            "ImpVolatility: {13:0.0} }}",
+                DateTime, Sequence, Count, Open, High, Low, Close, Volume, VWAP, BidVolume, 
+                AskVolume, symbolString, OpenInterest, ImpVolatility);
         }
+
         #region Implementation of IDxCandle
 
         /// <summary>
@@ -196,6 +199,28 @@ namespace com.dxfeed.native.events
         public CandleSymbol EventSymbol
         {
             get; private set;
+        }
+
+        /// <summary>
+        /// Returns implied volatility.
+        /// </summary>
+        public double ImpVolatility
+        {
+            get
+            {
+                return candle.imp_volatility;
+            }
+        }
+
+        /// <summary>
+        /// Returns open interest.
+        /// </summary>
+        public long OpenInterest
+        {
+            get
+            {
+                return candle.open_interest;
+            }
         }
 
         #endregion

@@ -82,7 +82,8 @@ namespace dxf_client
                     "    source    - order sources NTV, BYX, BZX, DEA, DEX, IST, ISE,... (optional)\n" +
                     "    snapshot  - use keyword 'snapshot' for create snapshot subscription,\n" +
                     "                otherwise leave empty\n\n" +
-                    "example: dxf_client demo.dxfeed.com:7300 quote,trade MSFT.TEST,IBM.TEST NTV,IST"
+                    "example: dxf_client demo.dxfeed.com:7300 quote,trade MSFT.TEST,IBM.TEST\n" +
+                    "         dxf_client demo.dxfeed.com:7300 order MSFT.TEST,IBM.TEST NTV,IST\n"
                 );
                 return;
             }

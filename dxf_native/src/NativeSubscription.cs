@@ -36,12 +36,15 @@ namespace com.dxfeed.native
         /// <param name="connection">native connection pointer</param>
         /// <param name="eventType">type of event to create</param>
         /// <param name="listener">event listener</param>
-        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="ArgumentException">One of passed parameters is not valid.</exception>
         /// <exception cref="DxException"></exception>
         public NativeSubscription(NativeConnection connection, EventType eventType, IDxFeedListener listener)
         {
             if (listener == null)
                 throw new ArgumentNullException("listener");
+
+            if (eventType.HasFlag(EventType.Candle))
+                throw new ArgumentException("For Candle event use another constructor.");
 
             connectionPtr = connection.Handler;
             this.eventType = eventType;
@@ -66,7 +69,7 @@ namespace com.dxfeed.native
         /// <param name="connection">native connection pointer</param>
         /// <param name="time">date time in the past</param>
         /// <param name="listener">candle event listener</param>
-        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="ArgumentException">One of passed parameters is not valid.</exception>
         /// <exception cref="DxException"></exception>
         public NativeSubscription(NativeConnection connection, DateTime? time, IDxCandleListener listener)
         {

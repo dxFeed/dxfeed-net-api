@@ -73,6 +73,14 @@ namespace com.dxfeed.api.events
         /// Candle index is composed of Time and Sequence.
         /// Changing either time or sequence changes event index.
         /// </summary>
-        long Index { get;  }
+        long Index { get; }
+        /// <summary>
+        /// Returns open interest.
+        /// </summary>
+        long OpenInterest { get; }
+        /// <summary>
+        /// Returns implied volatility.
+        /// </summary>
+        double ImpVolatility { get; }
     }
 }

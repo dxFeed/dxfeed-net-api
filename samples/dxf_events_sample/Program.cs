@@ -17,9 +17,10 @@ namespace dxf_events_sample
     /// </summary>
     class Program
     {
-        private const int hostIndex = 0;
-        private const int eventIndex = 1;
-        private const int symbolIndex = 2;
+        private const int HostIndex = 0;
+        private const int EventIndex = 1;
+        private const int SymbolIndex = 2;
+        private const int DateIndex = 3;
 
         private static void OnDisconnect(IDxConnection con)
         {
@@ -28,30 +29,32 @@ namespace dxf_events_sample
 
         static void Main(string[] args)
         {
-            if (args.Length != 3)
+            if (args.Length < 3)
             {
                 Console.WriteLine(
-                    "Usage: dxf_events_sample <host:port> <event> <symbol>\n" +
+                    "Usage: dxf_events_sample <host:port> <event> <symbol> [<date>]\n" +
                     "where\n" +
                     "    host:port - address of dxfeed server (demo.dxfeed.com:7300)\n" +
                     "    event     - any of the {Profile,Order,Quote,Trade,TimeAndSale,Summary,\n" +
                     "                TradeETH,SpreadOrder}\n" +
                     "    symbol    - IBM, MSFT, ...\n\n" +
-                    "example: dxf_events_sample demo.dxfeed.com:7300 quote,trade MSFT.TEST,IBM.TEST"
+                    "    date      - date of time series event in the format YYYY-MM-DD (optional)\n" +
+                    "example: dxf_events_sample demo.dxfeed.com:7300 quote,trade MSFT.TEST,IBM.TEST\n" +
+                    "or: dxf_events_sample demo.dxfeed.com:7300 TimeAndSale MSFT,IBM 2016-10-10\n"
                 );
                 return;
             }
 
-            var address = args[hostIndex];
+            var address = args[HostIndex];
 
             EventType events;
-            if (!Enum.TryParse(args[eventIndex], true, out events))
+            if (!Enum.TryParse(args[EventIndex], true, out events))
             {
                 Console.WriteLine("Unsupported event type: " + args[1]);
                 return;
             }
 
-            string[] symbols = args[symbolIndex].Split(',');
+            string[] symbols = args[SymbolIndex].Split(',');
 
             Console.WriteLine(string.Format("Connecting to {0} for [{1}] on [{2}] ...",
                 address, events, string.Join(", ", symbols)));
@@ -61,7 +64,9 @@ namespace dxf_events_sample
                 NativeTools.InitializeLogging("log.log", true, true);
                 using (var con = new NativeConnection(address, OnDisconnect))
                 {
-                    using (var s = con.CreateSubscription(events, new EventListener()))
+                    using (var s = args.Length > DateIndex 
+                        ? con.CreateSubscription(events, DateTime.Parse(args[DateIndex]), new EventListener())
+                        : con.CreateSubscription(events, new EventListener()))
                     {
                         s.AddSymbols(symbols);
 

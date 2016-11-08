@@ -60,14 +60,14 @@ namespace com.dxfeed.native
         }
 
         /// <summary>
-        /// Create event subscription
+        /// Create event subscription.
         /// </summary>
-        /// <param name="type">event type</param>
-        /// <param name="listener">event listener callback</param>
-        /// <returns> subscription object</returns>
-        /// <exception cref="ArgumentNullException">If listener is null.</exception>
+        /// <param name="type">Event type.</param>
+        /// <param name="listener">Event listener callback.</param>
+        /// <returns>Subscription object.</returns>
+        /// <exception cref="ArgumentNullException">Listener is null.</exception>
         /// <exception cref="DxException"></exception>
-        public IDxSubscription CreateSubscription(EventType type, IDxFeedListener listener)
+        public IDxSubscription CreateSubscription(EventType type, IDxEventListener listener)
         {
             if (handler == IntPtr.Zero)
                 throw new NativeDxException("not connected");
@@ -76,11 +76,12 @@ namespace com.dxfeed.native
         }
 
         /// <summary>
-        /// Create candle event subscription
+        /// Create candle event subscription.
         /// </summary>
-        /// <param name="time">date time ini the past</param>
-        /// <param name="listener">candle listener callback</param>
-        /// <returns>subscription object</returns>
+        /// <param name="time">Date time in the past.</param>
+        /// <param name="listener">Candle listener callback.</param>
+        /// <returns>Subscription object.</returns>
+        /// <exception cref="ArgumentNullException">Listener is null.</exception>
         /// <exception cref="DxException"></exception>
         public IDxSubscription CreateSubscription(DateTime? time, IDxCandleListener listener)
         {
@@ -88,6 +89,23 @@ namespace com.dxfeed.native
                 throw new NativeDxException("not connected");
 
             return new NativeSubscription(this, time, listener);
+        }
+
+        /// <summary>
+        /// Create time event subscription.
+        /// </summary>
+        /// <param name="type">Event type.</param>
+        /// <param name="time">Date time in the past.</param>
+        /// <param name="listener">Event listener callback.</param>
+        /// <returns>Subscription object.</returns>
+        /// <exception cref="ArgumentNullException">Listener is null.</exception>
+        /// <exception cref="DxException"></exception>
+        public IDxSubscription CreateSubscription(EventType type, DateTime? time, IDxEventListener listener)
+        {
+            if (handler == IntPtr.Zero)
+                throw new NativeDxException("not connected");
+
+            return new NativeSubscription(this, type, time, listener);
         }
 
         /// <summary>

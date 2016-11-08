@@ -9,19 +9,18 @@ using com.dxfeed.api.events;
 namespace com.dxfeed.api
 {
     /// <summary>
-    /// Interface provides receiving candle events
+    /// Interface provides receiving TradeETH events.
     /// </summary>
-    public interface IDxCandleListener
+    public interface IDxTradeEthListener: IDxEventListener
     {
-
         /// <summary>
-        /// On Candle events received
+        /// On TradeETH event received.
         /// </summary>
-        /// <typeparam name="TB">event buffer type</typeparam>
-        /// <typeparam name="TE">event type</typeparam>
-        /// <param name="buf">event buffer object</param>
-        void OnCandle<TB, TE>(TB buf)
+        /// <typeparam name="TB">Event buffer type.</typeparam>
+        /// <typeparam name="TE">Event type.</typeparam>
+        /// <param name="buf">Event buffer object.</param>
+        void OnTradeEth<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
-            where TE : IDxCandle;
+            where TE : IDxTradeEth;
     }
 }

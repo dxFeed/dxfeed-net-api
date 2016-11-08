@@ -13,7 +13,7 @@ namespace dxf_events_sample
     /// <summary>
     /// Events listener
     /// </summary>
-    public class EventListener : IDxFeedListener
+    public class EventListener : IDxFeedListener, IDxTradeEthListener, IDxSpreadOrderListener
     {
         #region Implementation of IDxFeedListener
 
@@ -107,12 +107,16 @@ namespace dxf_events_sample
                 Console.WriteLine(string.Format("{0} {1}", buf.Symbol, ts));
         }
 
+        #endregion
+
+        #region Implementation of IDxTradeEthListener
+
         /// <summary>
-        /// On TradeETH event received
+        /// On TradeETH event received.
         /// </summary>
-        /// <typeparam name="TB">event buffer type</typeparam>
-        /// <typeparam name="TE">event type</typeparam>
-        /// <param name="buf">event buffer object</param>
+        /// <typeparam name="TB">Event buffer type.</typeparam>
+        /// <typeparam name="TE">Event type.</typeparam>
+        /// <param name="buf">Event buffer object.</param>
         public void OnTradeEth<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
             where TE : IDxTradeEth
@@ -121,12 +125,16 @@ namespace dxf_events_sample
                 Console.WriteLine(string.Format("{0} {1}", buf.Symbol, te));
         }
 
+        #endregion
+
+        #region Implementation of IDxSpreadOrderListener
+
         /// <summary>
-        /// On SpreadOrder event received
+        /// On SpreadOrder event received.
         /// </summary>
-        /// <typeparam name="TB">event buffer type</typeparam>
-        /// <typeparam name="TE">event type</typeparam>
-        /// <param name="buf">event buffer object</param>
+        /// <typeparam name="TB">Event buffer type.</typeparam>
+        /// <typeparam name="TE">Event type.</typeparam>
+        /// <param name="buf">Event buffer object.</param>
         public void OnSpreadOrder<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
             where TE : IDxSpreadOrder

@@ -39,7 +39,7 @@ namespace dxf_snapshot_sample
                     "Usage: dxf_snapshot_sample <host:port> <event> <symbol> [<source>]\n" +
                     "where\n" +
                     "    host:port - address of dxfeed server (demo.dxfeed.com:7300)\n" +
-                    "    event     - snapshot event Order or Candle\n" +
+                    "    event     - snapshot event Order, Candle, TimeAndSale, SpreadOrder\n" +
                     "                for MarketMaker see source parameter\n" +
                     "    symbol    - symbol string, it is allowed to use only one symbol\n" +
                     "                a) event symbol: IBM, MSFT, ...\n" +
@@ -68,7 +68,8 @@ namespace dxf_snapshot_sample
 
             EventType eventType;
             if (!Enum.TryParse(args[eventIndex], true, out eventType) ||
-                eventType != EventType.Order && eventType != EventType.Candle)
+                eventType != EventType.Order && eventType != EventType.Candle && 
+                eventType != EventType.TimeAndSale && eventType != EventType.SpreadOrder)
             {
 
                 Console.WriteLine("Unsupported event type: " + args[eventIndex]);
@@ -79,12 +80,7 @@ namespace dxf_snapshot_sample
             if (args.Length == sourceIndex + 1)
                 source = args[sourceIndex];
 
-            if (eventType == EventType.Candle)
-            {
-                Console.WriteLine(string.Format("Connecting to {0} for Candle snapshot on {1}...",
-                    address, symbol));
-            }
-            else
+            if (eventType == EventType.Order)
             {
                 if (source.Equals(COMPOSITE_BID))
                 {
@@ -96,6 +92,11 @@ namespace dxf_snapshot_sample
                     Console.WriteLine(string.Format("Connecting to {0} for Order#{1} snapshot on {2}...",
                         address, source, symbol));
                 }
+            }
+            else
+            {
+                Console.WriteLine(string.Format("Connecting to {0} for {1} snapshot on {2}...",
+                    address, eventType, symbol));
             }
 
             try
@@ -110,9 +111,13 @@ namespace dxf_snapshot_sample
                             s.AddSource(source);
                             s.AddSymbol(symbol);
                         }
-                        else
+                        else if (eventType == EventType.Candle)
                         {
                             s.AddSymbol(CandleSymbol.ValueOf(symbol));
+                        }
+                        else
+                        {
+                            s.AddSymbol(symbol);
                         }
 
                         Console.WriteLine("Press enter to stop");

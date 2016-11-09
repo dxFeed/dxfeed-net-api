@@ -20,20 +20,35 @@ namespace com.dxfeed.api
         void Disconnect();
 
         /// <summary>
-        /// Create event subscription
+        /// Create event subscription.
         /// </summary>
-        /// <param name="type">event type</param>
-        /// <param name="listener">event listener callback</param>
-        /// <returns></returns>
-        IDxSubscription CreateSubscription(EventType type, IDxFeedListener listener);
+        /// <param name="type">Event type.</param>
+        /// <param name="listener">Event listener callback.</param>
+        /// <returns>Subscription object.</returns>
+        /// <exception cref="ArgumentNullException">Listener is null.</exception>
+        /// <exception cref="DxException"></exception>
+        IDxSubscription CreateSubscription(EventType type, IDxEventListener listener);
 
         /// <summary>
         /// Create candle event subscription
         /// </summary>
         /// <param name="time">date time in the past</param>
         /// <param name="listener">candle listener callback</param>
-        /// <returns></returns>
+        /// <returns>Subscription object.</returns>
+        /// <exception cref="ArgumentNullException">Listener is null.</exception>
+        /// <exception cref="DxException"></exception>
         IDxSubscription CreateSubscription(DateTime? time, IDxCandleListener listener);
+
+        /// <summary>
+        /// Create time event subscription.
+        /// </summary>
+        /// <param name="type">Event type.</param>
+        /// <param name="time">Date time in the past.</param>
+        /// <param name="listener">Event listener callback.</param>
+        /// <returns>Subscription object.</returns>
+        /// <exception cref="ArgumentNullException">Listener is null.</exception>
+        /// <exception cref="DxException"></exception>
+        IDxSubscription CreateSubscription(EventType type, DateTime? time, IDxEventListener listener);
 
         /// <summary>
         /// Creates snapshot subscription
@@ -50,6 +65,28 @@ namespace com.dxfeed.api
         /// <param name="listener"></param>
         /// <returns></returns>
         IDxSubscription CreateSnapshotSubscription(DateTime? time, IDxSnapshotListener listener);
+
+        /// <summary>
+        /// Creates snapshot subscription
+        /// </summary>
+        /// <param name="eventType">Single event type.</param>
+        /// <param name="time">Time in the past - number of milliseconds from 1.1.1970 (unix time)</param>
+        /// <param name="listener">snapshot listener callback</param>
+        /// <returns>subscription object</returns>
+        /// <exception cref="DxException"></exception>
+        IDxSubscription CreateSnapshotSubscription(EventType eventType, Int64 time,
+            IDxSnapshotListener listener);
+
+        /// <summary>
+        /// Creates snapshot subscription
+        /// </summary>
+        /// <param name="eventType">Single event type.</param>
+        /// <param name="time">Date time in the past</param>
+        /// <param name="listener">snapshot listener callback</param>
+        /// <returns>subscription object</returns>
+        /// <exception cref="DxException"></exception>
+        IDxSubscription CreateSnapshotSubscription(EventType eventType, DateTime? time,
+            IDxSnapshotListener listener);
 
         /// <summary>
         /// Creates Order View subscription

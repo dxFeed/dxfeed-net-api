@@ -18,7 +18,11 @@ namespace com.dxfeed.tests.tools
     /// Event listener class for tests.
     /// Allow to get any parameters from received events and transfer to test method.
     /// </summary>
-    public class TestListener : IDxFeedListener, IDxCandleListener
+    public class TestListener : 
+        IDxFeedListener, 
+        IDxCandleListener, 
+        IDxTradeEthListener,
+        IDxSpreadOrderListener
     {
         public class ReceivedEvent<TE>
         {
@@ -303,6 +307,10 @@ namespace com.dxfeed.tests.tools
                 AddEvent<IDxTimeAndSale>(new ReceivedEvent<IDxTimeAndSale>(buf.Symbol, buf.EventParams, ts));
         }
 
+        #endregion
+
+        #region Implementation of IDxTradeEthListener
+
         public void OnTradeEth<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
             where TE : IDxTradeEth
@@ -310,6 +318,10 @@ namespace com.dxfeed.tests.tools
             foreach (var te in buf)
                 AddEvent<IDxTradeEth>(new ReceivedEvent<IDxTradeEth>(buf.Symbol, buf.EventParams, te));
         }
+
+        #endregion
+
+        #region Implementation of IDxSpreadOrderListener
 
         public void OnSpreadOrder<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>

@@ -429,7 +429,7 @@ namespace com.dxfeed.native.api
          *  time - time in the past (unix time in milliseconds).
          *  OUT snapshot - a handle of the created snapshot
          */
-        internal abstract int dxf_create_snapshot(IntPtr connection, EventType event_id,
+        internal abstract int dxf_create_snapshot(IntPtr connection, int event_id,
                                                  string symbol, byte[] source,
                                                  Int64 time, out IntPtr snapshot);
 

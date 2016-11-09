@@ -21,7 +21,11 @@ namespace com.dxfeed.tests.tools
     /// WARNING: this handler do not differ order snapshot by source, 
     /// i.e. "Order#NTV AAPL" and "Order#DEX AAPL" is the same snapshots
     /// </summary>
-    public class SnapshotTestListener : IDxSnapshotListener
+    public class SnapshotTestListener : 
+        IDxOrderSnapshotListener,
+        IDxCandleSnapshotListener,
+        IDxTimeAndSaleSnapshotListener,
+        IDxSpreadOrderSnapshotListener
     {
         public class ReceivedSnapshot<TE>
         {
@@ -45,6 +49,8 @@ namespace com.dxfeed.tests.tools
 
         Dictionary<string, ReceivedSnapshot<IDxOrder>> orders = new Dictionary<string, ReceivedSnapshot<IDxOrder>>();
         Dictionary<string, ReceivedSnapshot<IDxCandle>> candles = new Dictionary<string, ReceivedSnapshot<IDxCandle>>();
+        Dictionary<string, ReceivedSnapshot<IDxTimeAndSale>> timeAndSales = new Dictionary<string, ReceivedSnapshot<IDxTimeAndSale>>();
+        Dictionary<string, ReceivedSnapshot<IDxSpreadOrder>> spreadOrders = new Dictionary<string, ReceivedSnapshot<IDxSpreadOrder>>();
 
         ReaderWriterLock rwl = new ReaderWriterLock();
 
@@ -66,6 +72,10 @@ namespace com.dxfeed.tests.tools
                 return orders as Dictionary<string, ReceivedSnapshot<TE>>;
             else if (typeof(TE) == typeof(IDxCandle))
                 return candles as Dictionary<string, ReceivedSnapshot<TE>>;
+            else if (typeof(TE) == typeof(IDxTimeAndSale))
+                return timeAndSales as Dictionary<string, ReceivedSnapshot<TE>>;
+            else if (typeof(TE) == typeof(IDxSpreadOrder))
+                return spreadOrders as Dictionary<string, ReceivedSnapshot<TE>>;
             else
                 return null;
         }
@@ -185,7 +195,7 @@ namespace com.dxfeed.tests.tools
             }
         }
 
-        #region IDxSnapshotListener implementation
+        #region IDxOrderSnapshotListener implementation
 
         public void OnOrderSnapshot<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
@@ -197,6 +207,10 @@ namespace com.dxfeed.tests.tools
             AddSnapshot<IDxOrder>(new ReceivedSnapshot<IDxOrder>(buf.Symbol, list));
         }
 
+        #endregion //IDxOrderSnapshotListener implementation end
+
+        #region IDxCandleSnapshotListener implementation
+
         public void OnCandleSnapshot<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
             where TE : IDxCandle
@@ -207,6 +221,35 @@ namespace com.dxfeed.tests.tools
             AddSnapshot<IDxCandle>(new ReceivedSnapshot<IDxCandle>(buf.Symbol, list));
         }
 
-        #endregion //IDxSnapshotListener implementation end
+        #endregion //IDxCandleSnapshotListener implementation end
+
+        #region IDxTimeAndSaleSnapshotListener implementation
+
+        public void OnTimeAndSaleSnapshot<TB, TE>(TB buf)
+            where TB : IDxEventBuf<TE>
+            where TE : IDxTimeAndSale
+        {
+            List<IDxTimeAndSale> list = new List<IDxTimeAndSale>();
+            foreach (var o in buf)
+                list.Add(o);
+            AddSnapshot<IDxTimeAndSale>(new ReceivedSnapshot<IDxTimeAndSale>(buf.Symbol, list));
+        }
+
+        #endregion //IDxTimeAndSaleSnapshotListener implementation end
+
+        #region IDxSpreadOrderSnapshotListener implementation
+
+        public void OnSpreadOrderSnapshot<TB, TE>(TB buf)
+            where TB : IDxEventBuf<TE>
+            where TE : IDxSpreadOrder
+        {
+            List<IDxSpreadOrder> list = new List<IDxSpreadOrder>();
+            foreach (var o in buf)
+                list.Add(o);
+            AddSnapshot<IDxSpreadOrder>(new ReceivedSnapshot<IDxSpreadOrder>(buf.Symbol, list));
+        }
+
+        #endregion //IDxSpreadOrderSnapshotListener implementation end
+
     }
 }

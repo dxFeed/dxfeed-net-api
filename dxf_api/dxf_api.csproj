@@ -86,7 +86,11 @@
     <Compile Include="src\data\Side.cs" />
     <Compile Include="src\DxException.cs" />
     <Compile Include="src\events\IDxEventType.cs" />
+    <Compile Include="src\events\IDxGreeks.cs" />
+    <Compile Include="src\events\IDxSeries.cs" />
     <Compile Include="src\events\IDxSpreadOrder.cs" />
+    <Compile Include="src\events\IDxTheoPrice.cs" />
+    <Compile Include="src\events\IDxUnderlying.cs" />
     <Compile Include="src\events\Scope.cs" />
     <Compile Include="src\events\IDxMarketEvent.cs" />
     <Compile Include="src\events\EventFlag.cs" />

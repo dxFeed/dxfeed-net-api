@@ -181,6 +181,53 @@ namespace com.dxfeed.native.api
     }
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+    internal struct DxGreeks
+    {
+        internal long time;
+        internal int sequence;
+        internal double greeks_price;
+        internal double volatility;
+        internal double delta;
+        internal double gamma;
+        internal double theta;
+        internal double rho;
+        internal double vega;
+    }
+
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+    internal struct DxTheoPrice
+    {
+        internal long theo_time;
+        internal double theo_price;
+        internal double theo_underlying_price;
+        internal double theo_delta;
+        internal double theo_gamma;
+        internal double theo_dividend;
+        internal double theo_interest;
+    }
+
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+    internal struct DxUnderlying
+    {
+        internal double volatility;
+        internal double front_volatility;
+        internal double back_volatility;
+        internal double put_call_ratio;
+    }
+
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+    internal struct DxSeries
+    {
+        internal int expiration;
+        internal int sequence;
+        internal double volatility;
+        internal double put_call_ratio;
+        internal double forward_price;
+        internal double dividend;
+        internal double interest;
+    }
+
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
     internal struct DxEventParams
     {
         internal EventFlag flags;

@@ -23,6 +23,10 @@ namespace com.dxfeed.native.events
         private static readonly int CANDLE_SIZE;
         private static readonly int TRADE_ETH_SIZE;
         private static readonly int SPREAD_ORDER_SIZE;
+        private static readonly int GREEKS_SIZE;
+        private static readonly int THEO_PRICE_SIZE;
+        private static readonly int UNDERLYING_SIZE;
+        private static readonly int SERIES_SIZE;
 
         static DxMarshal()
         {
@@ -36,6 +40,10 @@ namespace com.dxfeed.native.events
             CANDLE_SIZE = sizeof(DxCandle);
             TRADE_ETH_SIZE = sizeof(DxTradeEth);
             SPREAD_ORDER_SIZE = sizeof(DxSpreadOrder);
+            GREEKS_SIZE = sizeof(DxGreeks);
+            THEO_PRICE_SIZE = sizeof(DxTheoPrice);
+            UNDERLYING_SIZE = sizeof(DxUnderlying);
+            SERIES_SIZE = sizeof(DxSeries);
         }
 
         public static string ReadString(IntPtr ptr)
@@ -93,10 +101,29 @@ namespace com.dxfeed.native.events
             return new NativeSpreadOrder((DxSpreadOrder*)IntPtr.Add(head, offset * SPREAD_ORDER_SIZE), symbol);
         }
 
+        public static NativeGreeks ReadGreeks(IntPtr head, int offset, string symbol)
+        {
+            return new NativeGreeks((DxGreeks*)IntPtr.Add(head, offset * GREEKS_SIZE), symbol);
+        }
+
+        public static NativeTheoPrice ReadTheoPrice(IntPtr head, int offset, string symbol)
+        {
+            return new NativeTheoPrice((DxTheoPrice*)IntPtr.Add(head, offset * THEO_PRICE_SIZE), symbol);
+        }
+
+        public static NativeUnderlying ReadUnderlying(IntPtr head, int offset, string symbol)
+        {
+            return new NativeUnderlying((DxUnderlying*)IntPtr.Add(head, offset * UNDERLYING_SIZE), symbol);
+        }
+
+        public static NativeSeries ReadSeries(IntPtr head, int offset, string symbol)
+        {
+            return new NativeSeries((DxSeries*)IntPtr.Add(head, offset * SERIES_SIZE), symbol);
+        }
+
         public static DxString ReadDxString(IntPtr ptr)
         {
             return new DxString((char*)ptr.ToPointer());
         }
-
     }
 }

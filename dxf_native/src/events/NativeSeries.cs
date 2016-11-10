@@ -16,7 +16,7 @@ namespace com.dxfeed.native.events
     /// the market. It represents the most recent information that is available
     /// about the corresponding values on the market at any given moment of time.
     /// </summary>
-    class NativeSeries : MarketEvent, IDxSeries
+    public class NativeSeries : MarketEvent, IDxSeries
     {
         private readonly DxSeries s;
 

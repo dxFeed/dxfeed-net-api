@@ -25,7 +25,9 @@ namespace com.dxfeed.tests.tools
         IDxOrderSnapshotListener,
         IDxCandleSnapshotListener,
         IDxTimeAndSaleSnapshotListener,
-        IDxSpreadOrderSnapshotListener
+        IDxSpreadOrderSnapshotListener,
+        IDxGreeksSnapshotListener,
+        IDxSeriesSnapshotListener
     {
         public class ReceivedSnapshot<TE>
         {
@@ -51,6 +53,8 @@ namespace com.dxfeed.tests.tools
         Dictionary<string, ReceivedSnapshot<IDxCandle>> candles = new Dictionary<string, ReceivedSnapshot<IDxCandle>>();
         Dictionary<string, ReceivedSnapshot<IDxTimeAndSale>> timeAndSales = new Dictionary<string, ReceivedSnapshot<IDxTimeAndSale>>();
         Dictionary<string, ReceivedSnapshot<IDxSpreadOrder>> spreadOrders = new Dictionary<string, ReceivedSnapshot<IDxSpreadOrder>>();
+        Dictionary<string, ReceivedSnapshot<IDxGreeks>> greeks = new Dictionary<string, ReceivedSnapshot<IDxGreeks>>();
+        Dictionary<string, ReceivedSnapshot<IDxSeries>> series = new Dictionary<string, ReceivedSnapshot<IDxSeries>>();
 
         ReaderWriterLock rwl = new ReaderWriterLock();
 
@@ -76,6 +80,10 @@ namespace com.dxfeed.tests.tools
                 return timeAndSales as Dictionary<string, ReceivedSnapshot<TE>>;
             else if (typeof(TE) == typeof(IDxSpreadOrder))
                 return spreadOrders as Dictionary<string, ReceivedSnapshot<TE>>;
+            else if (typeof(TE) == typeof(IDxGreeks))
+                return greeks as Dictionary<string, ReceivedSnapshot<TE>>;
+            else if (typeof(TE) == typeof(IDxSeries))
+                return series as Dictionary<string, ReceivedSnapshot<TE>>;
             else
                 return null;
         }
@@ -204,7 +212,7 @@ namespace com.dxfeed.tests.tools
             List<IDxOrder> list = new List<IDxOrder>();
             foreach (var o in buf)
                 list.Add(o);
-            AddSnapshot<IDxOrder>(new ReceivedSnapshot<IDxOrder>(buf.Symbol, list));
+            AddSnapshot(new ReceivedSnapshot<IDxOrder>(buf.Symbol, list));
         }
 
         #endregion //IDxOrderSnapshotListener implementation end
@@ -218,7 +226,7 @@ namespace com.dxfeed.tests.tools
             List<IDxCandle> list = new List<IDxCandle>();
             foreach (var c in buf)
                 list.Add(c);
-            AddSnapshot<IDxCandle>(new ReceivedSnapshot<IDxCandle>(buf.Symbol, list));
+            AddSnapshot(new ReceivedSnapshot<IDxCandle>(buf.Symbol, list));
         }
 
         #endregion //IDxCandleSnapshotListener implementation end
@@ -232,7 +240,7 @@ namespace com.dxfeed.tests.tools
             List<IDxTimeAndSale> list = new List<IDxTimeAndSale>();
             foreach (var o in buf)
                 list.Add(o);
-            AddSnapshot<IDxTimeAndSale>(new ReceivedSnapshot<IDxTimeAndSale>(buf.Symbol, list));
+            AddSnapshot(new ReceivedSnapshot<IDxTimeAndSale>(buf.Symbol, list));
         }
 
         #endregion //IDxTimeAndSaleSnapshotListener implementation end
@@ -246,10 +254,38 @@ namespace com.dxfeed.tests.tools
             List<IDxSpreadOrder> list = new List<IDxSpreadOrder>();
             foreach (var o in buf)
                 list.Add(o);
-            AddSnapshot<IDxSpreadOrder>(new ReceivedSnapshot<IDxSpreadOrder>(buf.Symbol, list));
+            AddSnapshot(new ReceivedSnapshot<IDxSpreadOrder>(buf.Symbol, list));
         }
 
         #endregion //IDxSpreadOrderSnapshotListener implementation end
+
+        #region IDxGreeksSnapshotListener implementation
+
+        public void OnGreeksSnapshot<TB, TE>(TB buf)
+            where TB : IDxEventBuf<TE>
+            where TE : IDxGreeks
+        {
+            List<IDxGreeks> list = new List<IDxGreeks>();
+            foreach (var o in buf)
+                list.Add(o);
+            AddSnapshot(new ReceivedSnapshot<IDxGreeks>(buf.Symbol, list));
+        }
+
+        #endregion //IDxGreeksSnapshotListener implementation end
+
+        #region IDxSeriesSnapshotListener implementation
+
+        public void OnSeriesSnapshot<TB, TE>(TB buf)
+            where TB : IDxEventBuf<TE>
+            where TE : IDxSeries
+        {
+            List<IDxSeries> list = new List<IDxSeries>();
+            foreach (var o in buf)
+                list.Add(o);
+            AddSnapshot(new ReceivedSnapshot<IDxSeries>(buf.Symbol, list));
+        }
+
+        #endregion //IDxSeriesSnapshotListener implementation end
 
     }
 }

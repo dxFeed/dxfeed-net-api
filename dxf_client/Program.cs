@@ -19,7 +19,9 @@ namespace dxf_client
         IDxOrderSnapshotListener,
         IDxCandleSnapshotListener,
         IDxTimeAndSaleSnapshotListener,
-        IDxSpreadOrderSnapshotListener
+        IDxSpreadOrderSnapshotListener,
+        IDxGreeksSnapshotListener,
+        IDxSeriesSnapshotListener
     {
 
         private const int RECORDS_PRINT_LIMIT = 7;
@@ -57,7 +59,7 @@ namespace dxf_client
 
         #endregion //IDxOrderSnapshotListener
 
-        #region IDxCandleSnapshotListener
+        #region Implementation of IDxCandleSnapshotListener
 
         /// <summary>
         /// On Candle shopshot event received
@@ -74,7 +76,7 @@ namespace dxf_client
 
         #endregion //IDxCandleSnapshotListener
 
-        #region IDxTimeAndSaleSnapshotListener
+        #region Implementation of IDxTimeAndSaleSnapshotListener
 
         /// <summary>
         /// On TimeAndSale snapshot event received.
@@ -91,7 +93,7 @@ namespace dxf_client
 
         #endregion //IDxTimeAndSaleSnapshotListener
 
-        #region  IDxSpreadOrderSnapshotListener
+        #region Implementation of IDxSpreadOrderSnapshotListener
 
         /// <summary>
         /// On SpreadOrder snapshot event received.
@@ -104,6 +106,28 @@ namespace dxf_client
             where TE : IDxSpreadOrder
         {
             PrintSnapshot(buf);
+        }
+
+        #endregion
+
+        #region Implementation of IDxGreeksSnapshotListener
+
+        public void OnGreeksSnapshot<TB, TE>(TB buf)
+            where TB : IDxEventBuf<TE>
+            where TE : IDxGreeks
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region Implementation of IDxSeriesSnapshotListener
+
+        public void OnSeriesSnapshot<TB, TE>(TB buf)
+            where TB : IDxEventBuf<TE>
+            where TE : IDxSeries
+        {
+            throw new NotImplementedException();
         }
 
         #endregion
@@ -181,7 +205,7 @@ namespace dxf_client
                     "where\n" +
                     "    host:port - address of dxfeed server (demo.dxfeed.com:7300)\n" +
                     "    event     - any of the {Profile,Order,Quote,Trade,TimeAndSale,Summary,\n" +
-                    "                TradeETH,SpreadOrder,Candle}\n" +
+                    "                TradeETH,SpreadOrder,Candle,Greeks,TheoPrice,Underlying,Series}\n" +
                     "    symbol    - a) IBM, MSFT, ...\n" +
                     "                b) if it is Candle event you can specify candle symbol\n" +
                     "                   attribute by string, for example: XBT/USD{=d}\n" +
@@ -196,9 +220,11 @@ namespace dxf_client
                     "    snapshot  - use keyword 'snapshot' for create snapshot subscription,\n" +
                     "                otherwise leave empty\n\n" +
                     "examples:\n" +
-                    "  events: dxf_client demo.dxfeed.com:7300 Quote,Trade MSFT.TEST,IBM.TEST\n" + 
+                    "  events: dxf_client demo.dxfeed.com:7300 Quote,Trade MSFT.TEST,IBM.TEST\n" +
                     "  order: dxf_client demo.dxfeed.com:7300 Order MSFT.TEST,IBM.TEST NTV,IST\n" +
                     "  candle: dxf_client demo.dxfeed.com:7300 Candle XBT/USD{=d} 2016-10-10\n" +
+                    "  underlying: dxf_client demo.dxfeed.com:7300 Underlyingn AAPL\n" +
+                    "  series: dxf_client demo.dxfeed.com:7300 Series AAPL\n" +
                     "  order snapshot: dxf_client demo.dxfeed.com:7300 Order AAPL NTV snapshot\n" +
                     "  market maker snapshot: dxf_client demo.dxfeed.com:7300 Order AAPL COMPOSITE_BID snapshot\n" +
                     "  candle snapshot: dxf_client demo.dxfeed.com:7300 Candle XBT/USD{=d} 2016-10-10 snapshot\n"
@@ -231,10 +257,10 @@ namespace dxf_client
             }
 
             Console.WriteLine(string.Format("Connecting to {0} for [{1}{2}]{3} on [{4}] ...",
-                address, 
-                events, 
-                isSnapshot.Value ? " snapshot" : string.Empty, 
-                dateTime.IsSet && !isSnapshot.Value ? " time-series" : string.Empty, 
+                address,
+                events,
+                isSnapshot.Value ? " snapshot" : string.Empty,
+                dateTime.IsSet && !isSnapshot.Value ? " time-series" : string.Empty,
                 symbols));
 
             NativeTools.InitializeLogging("log.log", true, true);

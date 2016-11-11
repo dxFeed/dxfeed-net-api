@@ -22,7 +22,11 @@ namespace com.dxfeed.tests.tools
         IDxFeedListener, 
         IDxCandleListener, 
         IDxTradeEthListener,
-        IDxSpreadOrderListener
+        IDxSpreadOrderListener,
+        IDxGreeksListener,
+        IDxTheoPriceListener,
+        IDxUnderlyingListener,
+        IDxSeriesListener
     {
         public class ReceivedEvent<TE>
         {
@@ -46,6 +50,10 @@ namespace com.dxfeed.tests.tools
         List<ReceivedEvent<IDxCandle>> candles = new List<ReceivedEvent<IDxCandle>>();
         List<ReceivedEvent<IDxTradeEth>> tradesEth = new List<ReceivedEvent<IDxTradeEth>>();
         List<ReceivedEvent<IDxSpreadOrder>> spreadOrders = new List<ReceivedEvent<IDxSpreadOrder>>();
+        List<ReceivedEvent<IDxGreeks>> greeks = new List<ReceivedEvent<IDxGreeks>>();
+        List<ReceivedEvent<IDxTheoPrice>> theoPrice = new List<ReceivedEvent<IDxTheoPrice>>();
+        List<ReceivedEvent<IDxUnderlying>> underlying = new List<ReceivedEvent<IDxUnderlying>>();
+        List<ReceivedEvent<IDxSeries>> series = new List<ReceivedEvent<IDxSeries>>();
 
         ReaderWriterLock rwl = new ReaderWriterLock();
 
@@ -81,6 +89,14 @@ namespace com.dxfeed.tests.tools
                 return tradesEth as List<ReceivedEvent<TE>>;
             else if (typeof(TE) == typeof(IDxSpreadOrder))
                 return spreadOrders as List<ReceivedEvent<TE>>;
+            else if (typeof(TE) == typeof(IDxGreeks))
+                return greeks as List<ReceivedEvent<TE>>;
+            else if (typeof(TE) == typeof(IDxTheoPrice))
+                return theoPrice as List<ReceivedEvent<TE>>;
+            else if (typeof(TE) == typeof(IDxUnderlying))
+                return underlying as List<ReceivedEvent<TE>>;
+            else if(typeof(TE) == typeof(IDxSeries))
+                return series as List<ReceivedEvent<TE>>;
             else
                 return null;
         }
@@ -264,7 +280,7 @@ namespace com.dxfeed.tests.tools
             where TE : IDxQuote
         {
             foreach (var q in buf)
-                AddEvent<IDxQuote>(new ReceivedEvent<IDxQuote>(buf.Symbol, buf.EventParams, q));
+                AddEvent(new ReceivedEvent<IDxQuote>(buf.Symbol, buf.EventParams, q));
         }
 
         public void OnTrade<TB, TE>(TB buf)
@@ -272,7 +288,7 @@ namespace com.dxfeed.tests.tools
             where TE : IDxTrade
         {
             foreach (var t in buf)
-                AddEvent<IDxTrade>(new ReceivedEvent<IDxTrade>(buf.Symbol, buf.EventParams, t));
+                AddEvent(new ReceivedEvent<IDxTrade>(buf.Symbol, buf.EventParams, t));
         }
 
         public void OnOrder<TB, TE>(TB buf)
@@ -280,7 +296,7 @@ namespace com.dxfeed.tests.tools
             where TE : IDxOrder
         {
             foreach (var o in buf)
-                AddEvent<IDxOrder>(new ReceivedEvent<IDxOrder>(buf.Symbol, buf.EventParams, o));
+                AddEvent(new ReceivedEvent<IDxOrder>(buf.Symbol, buf.EventParams, o));
         }
 
         public void OnProfile<TB, TE>(TB buf)
@@ -288,7 +304,7 @@ namespace com.dxfeed.tests.tools
             where TE : IDxProfile
         {
             foreach (var p in buf)
-                AddEvent<IDxProfile>(new ReceivedEvent<IDxProfile>(buf.Symbol, buf.EventParams, p));
+                AddEvent(new ReceivedEvent<IDxProfile>(buf.Symbol, buf.EventParams, p));
         }
 
         public void OnFundamental<TB, TE>(TB buf)
@@ -296,7 +312,7 @@ namespace com.dxfeed.tests.tools
             where TE : IDxSummary
         {
             foreach (var f in buf)
-                AddEvent<IDxSummary>(new ReceivedEvent<IDxSummary>(buf.Symbol, buf.EventParams, f));
+                AddEvent(new ReceivedEvent<IDxSummary>(buf.Symbol, buf.EventParams, f));
         }
 
         public void OnTimeAndSale<TB, TE>(TB buf)
@@ -304,7 +320,7 @@ namespace com.dxfeed.tests.tools
             where TE : IDxTimeAndSale
         {
             foreach (var ts in buf)
-                AddEvent<IDxTimeAndSale>(new ReceivedEvent<IDxTimeAndSale>(buf.Symbol, buf.EventParams, ts));
+                AddEvent(new ReceivedEvent<IDxTimeAndSale>(buf.Symbol, buf.EventParams, ts));
         }
 
         #endregion
@@ -316,7 +332,7 @@ namespace com.dxfeed.tests.tools
             where TE : IDxTradeEth
         {
             foreach (var te in buf)
-                AddEvent<IDxTradeEth>(new ReceivedEvent<IDxTradeEth>(buf.Symbol, buf.EventParams, te));
+                AddEvent(new ReceivedEvent<IDxTradeEth>(buf.Symbol, buf.EventParams, te));
         }
 
         #endregion
@@ -328,7 +344,7 @@ namespace com.dxfeed.tests.tools
             where TE : IDxSpreadOrder
         {
             foreach (var o in buf)
-                AddEvent<IDxSpreadOrder>(new ReceivedEvent<IDxSpreadOrder>(buf.Symbol, buf.EventParams, o));
+                AddEvent(new ReceivedEvent<IDxSpreadOrder>(buf.Symbol, buf.EventParams, o));
         }
 
         #endregion
@@ -340,7 +356,55 @@ namespace com.dxfeed.tests.tools
             where TE : IDxCandle
         {
             foreach (var c in buf)
-                AddEvent<IDxCandle>(new ReceivedEvent<IDxCandle>(buf.Symbol, buf.EventParams, c));
+                AddEvent(new ReceivedEvent<IDxCandle>(buf.Symbol, buf.EventParams, c));
+        }
+
+        #endregion
+
+        #region Implementation of IDxGreeksListener
+
+        public void OnGreeks<TB, TE>(TB buf)
+            where TB : IDxEventBuf<TE>
+            where TE : IDxGreeks
+        {
+            foreach (var g in buf)
+                AddEvent(new ReceivedEvent<IDxGreeks>(buf.Symbol, buf.EventParams, g));
+        }
+
+        #endregion
+
+        #region Implementation of IDxTheoPriceListener
+
+        public void OnTheoPrice<TB, TE>(TB buf)
+            where TB : IDxEventBuf<TE>
+            where TE : IDxTheoPrice
+        {
+            foreach (var tp in buf)
+                AddEvent(new ReceivedEvent<IDxTheoPrice>(buf.Symbol, buf.EventParams, tp));
+        }
+
+        #endregion
+
+        #region Implementation of IDxUnderlyingListener
+
+        public void OnUnderlying<TB, TE>(TB buf)
+            where TB : IDxEventBuf<TE>
+            where TE : IDxUnderlying
+        {
+            foreach (var u in buf)
+                AddEvent(new ReceivedEvent<IDxUnderlying>(buf.Symbol, buf.EventParams, u));
+        }
+
+        #endregion
+
+        #region Implementation of IDxSeriesListener
+
+        public void OnSeries<TB, TE>(TB buf)
+            where TB : IDxEventBuf<TE>
+            where TE : IDxSeries
+        {
+            foreach (var s in buf)
+                AddEvent(new ReceivedEvent<IDxSeries>(buf.Symbol, buf.EventParams, s));
         }
 
         #endregion

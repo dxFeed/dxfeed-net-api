@@ -32,6 +32,7 @@ namespace com.dxfeed.native.events
         }
 
         #region Implementation of IEnumerable
+
         public struct Enumerator : IEnumerator<T>
         {
             private readonly IntPtr head;
@@ -150,6 +151,10 @@ namespace com.dxfeed.native.events
         private static readonly Func<IntPtr, int, string, NativeCandle> CANDLE_READER = DxMarshal.ReadCandle;
         private static readonly Func<IntPtr, int, string, NativeTradeETH> TRADE_ETH_READER = DxMarshal.ReadTradeEth;
         private static readonly Func<IntPtr, int, string, NativeSpreadOrder> SPREAD_ORDER_READER = DxMarshal.ReadSpreadOrder;
+        private static readonly Func<IntPtr, int, string, NativeGreeks> GREEKS_READER = DxMarshal.ReadGreeks;
+        private static readonly Func<IntPtr, int, string, NativeTheoPrice> THEO_PRICE_READER = DxMarshal.ReadTheoPrice;
+        private static readonly Func<IntPtr, int, string, NativeUnderlying> UNDERLYING_READER = DxMarshal.ReadUnderlying;
+        private static readonly Func<IntPtr, int, string, NativeSeries> SERIES_READER = DxMarshal.ReadSeries;
 
 
         public static NativeEventBuffer<NativeQuote> CreateQuoteBuf(IntPtr symbol, IntPtr head, int size, EventParams eventParams)
@@ -195,6 +200,26 @@ namespace com.dxfeed.native.events
         public static NativeEventBuffer<NativeSpreadOrder> CreateSpreadOrderBuf(IntPtr symbol, IntPtr head, int size, EventParams eventParams)
         {
             return new NativeEventBuffer<NativeSpreadOrder>(EventType.SpreadOrder, symbol, head, size, eventParams, SPREAD_ORDER_READER);
+        }
+
+        public static NativeEventBuffer<NativeGreeks> CreateGreeksBuf(IntPtr symbol, IntPtr head, int size, EventParams eventParams)
+        {
+            return new NativeEventBuffer<NativeGreeks>(EventType.Greeks, symbol, head, size, eventParams, GREEKS_READER);
+        }
+
+        public static NativeEventBuffer<NativeTheoPrice> CreateTheoPriceBuf(IntPtr symbol, IntPtr head, int size, EventParams eventParams)
+        {
+            return new NativeEventBuffer<NativeTheoPrice>(EventType.TheoPrice, symbol, head, size, eventParams, THEO_PRICE_READER);
+        }
+
+        public static NativeEventBuffer<NativeUnderlying> CreateUnderlyingBuf(IntPtr symbol, IntPtr head, int size, EventParams eventParams)
+        {
+            return new NativeEventBuffer<NativeUnderlying>(EventType.Underlying, symbol, head, size, eventParams, UNDERLYING_READER);
+        }
+
+        public static NativeEventBuffer<NativeSeries> CreateSeriesBuf(IntPtr symbol, IntPtr head, int size, EventParams eventParams)
+        {
+            return new NativeEventBuffer<NativeSeries>(EventType.Series, symbol, head, size, eventParams, SERIES_READER);
         }
     }
 }

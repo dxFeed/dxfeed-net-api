@@ -23,11 +23,11 @@ namespace com.dxfeed.native
     public class NativeSnapshotSubscription : IDxSubscription
     {
         private readonly IntPtr connectionPtr;
-        private IntPtr snapshotPtr = NativeSnapshotSubscription.InvalidSnapshot;
+        private IntPtr snapshotPtr = InvalidSnapshot;
         private readonly IDxSnapshotListener listener;
         //to prevent callback from being garbage collected
         private C.dxf_snapshot_listener_t callback;
-        private Int64 time = 0;
+        private long time = 0;
         private string source = string.Empty;
         private EventType eventType = EventType.None;
 
@@ -43,13 +43,13 @@ namespace com.dxfeed.native
         /// <param name="time">Milliseconds time in the past.</param>
         /// <param name="listener">Snapshot events listener.</param>
         /// <exception cref="ArgumentNullException">Listener is invalid.</exception>
-        public NativeSnapshotSubscription(NativeConnection connection, Int64 time, 
+        public NativeSnapshotSubscription(NativeConnection connection, long time, 
             IDxSnapshotListener listener)
         {
             if (listener == null)
                 throw new ArgumentNullException("listener");
 
-            this.connectionPtr = connection.Handler;
+            connectionPtr = connection.Handler;
             this.listener = listener;
             this.time = time;
         }
@@ -62,13 +62,13 @@ namespace com.dxfeed.native
         /// <param name="time">Milliseconds time in the past.</param>
         /// <param name="listener">Snapshot events listener.</param>
         /// <exception cref="ArgumentNullException">Listener is invalid.</exception>
-        public NativeSnapshotSubscription(NativeConnection connection, EventType eventType, 
-            Int64 time, IDxSnapshotListener listener)
+        public NativeSnapshotSubscription(NativeConnection connection, EventType eventType,
+            long time, IDxSnapshotListener listener)
         {
             if (listener == null)
                 throw new ArgumentNullException("listener");
 
-            this.connectionPtr = connection.Handler;
+            connectionPtr = connection.Handler;
             this.eventType = eventType;
             this.listener = listener;
             this.time = time;
@@ -98,6 +98,16 @@ namespace com.dxfeed.native
                     var spreadOrderBuf = NativeBufferFactory.CreateSpreadOrderBuf(snapshotData.symbol, snapshotData.records, snapshotData.records_count, null);
                     if (listener is IDxSpreadOrderSnapshotListener)
                         (listener as IDxSpreadOrderSnapshotListener).OnSpreadOrderSnapshot<NativeEventBuffer<NativeSpreadOrder>, NativeSpreadOrder>(spreadOrderBuf);
+                    break;
+                case EventType.Greeks:
+                    var greeksBuf = NativeBufferFactory.CreateGreeksBuf(snapshotData.symbol, snapshotData.records, snapshotData.records_count, null);
+                    if (listener is IDxGreeksSnapshotListener)
+                        (listener as IDxGreeksSnapshotListener).OnGreeksSnapshot<NativeEventBuffer<NativeGreeks>, NativeGreeks>(greeksBuf);
+                    break;
+                case EventType.Series:
+                    var seriesBuf = NativeBufferFactory.CreateSeriesBuf(snapshotData.symbol, snapshotData.records, snapshotData.records_count, null);
+                    if (listener is IDxSeriesSnapshotListener)
+                        (listener as IDxSeriesSnapshotListener).OnSeriesSnapshot<NativeEventBuffer<NativeSeries>, NativeSeries>(seriesBuf);
                     break;
             }
         }

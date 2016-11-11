@@ -18,9 +18,10 @@ namespace dxf_snapshot_sample
         IDxOrderSnapshotListener,
         IDxCandleSnapshotListener,
         IDxTimeAndSaleSnapshotListener,
-        IDxSpreadOrderSnapshotListener
+        IDxSpreadOrderSnapshotListener,
+        IDxGreeksSnapshotListener,
+        IDxSeriesSnapshotListener
     {
-
         private const int recordsPrintlimit = 7;
 
         private void PrintSnapshot<TE>(IDxEventBuf<TE> buf)
@@ -64,7 +65,7 @@ namespace dxf_snapshot_sample
 
         #endregion //IDxOrderSnapshotListener
 
-        #region IDxCandleSnapshotListener
+        #region Implementation of IDxCandleSnapshotListener
 
         /// <summary>
         /// On Candle shopshot event received
@@ -82,7 +83,7 @@ namespace dxf_snapshot_sample
 
         #endregion //IDxCandleSnapshotListener
 
-        #region IDxTimeAndSaleSnapshotListener
+        #region Implementation of IDxTimeAndSaleSnapshotListener
 
         /// <summary>
         /// On TimeAndSale snapshot event received.
@@ -100,7 +101,7 @@ namespace dxf_snapshot_sample
 
         #endregion //IDxTimeAndSaleSnapshotListener
 
-        #region  IDxSpreadOrderSnapshotListener
+        #region Implementation of IDxSpreadOrderSnapshotListener
 
         /// <summary>
         /// On SpreadOrder snapshot event received.
@@ -113,6 +114,40 @@ namespace dxf_snapshot_sample
             where TE : IDxSpreadOrder
         {
 
+            PrintSnapshot(buf);
+        }
+
+        #endregion
+
+        #region Implementation of IDxGreeksSnapshotListener
+
+        /// <summary>
+        /// On Greeks shopshot event received.
+        /// </summary>
+        /// <typeparam name="TB">Event buffer type.</typeparam>
+        /// <typeparam name="TE">Event type.</typeparam>
+        /// <param name="buf">Event buffer object.</param>
+        public void OnGreeksSnapshot<TB, TE>(TB buf)
+            where TB : IDxEventBuf<TE>
+            where TE : IDxGreeks
+        {
+            PrintSnapshot(buf);
+        }
+
+        #endregion
+
+        #region Implementation of IDxSeriesSnapshotListener
+
+        /// <summary>
+        /// On Series shopshot event received.
+        /// </summary>
+        /// <typeparam name="TB">Event buffer type.</typeparam>
+        /// <typeparam name="TE">Event type.</typeparam>
+        /// <param name="buf">Event buffer object.</param>
+        public void OnSeriesSnapshot<TB, TE>(TB buf)
+            where TB : IDxEventBuf<TE>
+            where TE : IDxSeries
+        {
             PrintSnapshot(buf);
         }
 

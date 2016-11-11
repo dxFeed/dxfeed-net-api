@@ -13,7 +13,14 @@ namespace dxf_events_sample
     /// <summary>
     /// Events listener
     /// </summary>
-    public class EventListener : IDxFeedListener, IDxTradeEthListener, IDxSpreadOrderListener
+    public class EventListener : 
+        IDxFeedListener, 
+        IDxTradeEthListener, 
+        IDxSpreadOrderListener,
+        IDxGreeksListener,
+        IDxTheoPriceListener,
+        IDxUnderlyingListener,
+        IDxSeriesListener
     {
         #region Implementation of IDxFeedListener
 
@@ -141,6 +148,78 @@ namespace dxf_events_sample
         {
             foreach (var so in buf)
                 Console.WriteLine(string.Format("{0} {1}", buf.Symbol, so));
+        }
+
+        #endregion
+
+        #region Implementation of IDxGreeksListener
+
+        /// <summary>
+        /// On Greeks event received.
+        /// </summary>
+        /// <typeparam name="TB">Event buffer type.</typeparam>
+        /// <typeparam name="TE">Event type.</typeparam>
+        /// <param name="buf">Event buffer object.</param>
+        public void OnGreeks<TB, TE>(TB buf)
+            where TB : IDxEventBuf<TE>
+            where TE : IDxGreeks
+        {
+            foreach (var g in buf)
+                Console.WriteLine(string.Format("{0} {1}", buf.Symbol, g));
+        }
+
+        #endregion
+
+        #region Implementation of IDxTheoPriceListener
+
+        /// <summary>
+        /// On TheoPrice event received.
+        /// </summary>
+        /// <typeparam name="TB">Event buffer type.</typeparam>
+        /// <typeparam name="TE">Event type.</typeparam>
+        /// <param name="buf">Event buffer object.</param>
+        public void OnTheoPrice<TB, TE>(TB buf)
+            where TB : IDxEventBuf<TE>
+            where TE : IDxTheoPrice
+        {
+            foreach (var tp in buf)
+                Console.WriteLine(string.Format("{0} {1}", buf.Symbol, tp));
+        }
+
+        #endregion
+
+        #region Implementation of IDxUnderlyingListener
+
+        /// <summary>
+        /// On Underlying event received.
+        /// </summary>
+        /// <typeparam name="TB">Event buffer type.</typeparam>
+        /// <typeparam name="TE">Event type.</typeparam>
+        /// <param name="buf">Event buffer object.</param>
+        public void OnUnderlying<TB, TE>(TB buf)
+            where TB : IDxEventBuf<TE>
+            where TE : IDxUnderlying
+        {
+            foreach (var u in buf)
+                Console.WriteLine(string.Format("{0} {1}", buf.Symbol, u));
+        }
+
+        #endregion
+
+        #region Implementation of IDxSeriesListener
+
+        /// <summary>
+        /// On Series event received.
+        /// </summary>
+        /// <typeparam name="TB">Event buffer type.</typeparam>
+        /// <typeparam name="TE">Event type.</typeparam>
+        /// <param name="buf">Event buffer object.</param>
+        public void OnSeries<TB, TE>(TB buf)
+            where TB : IDxEventBuf<TE>
+            where TE : IDxSeries
+        {
+            foreach (var s in buf)
+                Console.WriteLine(string.Format("{0} {1}", buf.Symbol, s));
         }
 
         #endregion

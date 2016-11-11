@@ -172,6 +172,26 @@ namespace com.dxfeed.native
                     if (eventListener is IDxSpreadOrderListener)
                         (eventListener as IDxSpreadOrderListener).OnSpreadOrder<NativeEventBuffer<NativeSpreadOrder>, NativeSpreadOrder>(spreadOrderBuf);
                     break;
+                case EventType.Greeks:
+                    var greeksBuf = NativeBufferFactory.CreateGreeksBuf(symbol, data, dataCount, nativeEventParams);
+                    if (eventListener is IDxGreeksListener)
+                        (eventListener as IDxGreeksListener).OnGreeks<NativeEventBuffer<NativeGreeks>, NativeGreeks>(greeksBuf);
+                    break;
+                case EventType.TheoPrice:
+                    var theoPriceBuf = NativeBufferFactory.CreateTheoPriceBuf(symbol, data, dataCount, nativeEventParams);
+                    if (eventListener is IDxTheoPriceListener)
+                        (eventListener as IDxTheoPriceListener).OnTheoPrice<NativeEventBuffer<NativeTheoPrice>, NativeTheoPrice>(theoPriceBuf);
+                    break;
+                case EventType.Underlying:
+                    var underlyingBuf = NativeBufferFactory.CreateUnderlyingBuf(symbol, data, dataCount, nativeEventParams);
+                    if (eventListener is IDxUnderlyingListener)
+                        (eventListener as IDxUnderlyingListener).OnUnderlying<NativeEventBuffer<NativeUnderlying>, NativeUnderlying>(underlyingBuf);
+                    break;
+                case EventType.Series:
+                    var seriesBuf = NativeBufferFactory.CreateSeriesBuf(symbol, data, dataCount, nativeEventParams);
+                    if (eventListener is IDxSeriesListener)
+                        (eventListener as IDxSeriesListener).OnSeries<NativeEventBuffer<NativeSeries>, NativeSeries>(seriesBuf);
+                    break;
             }
         }
 

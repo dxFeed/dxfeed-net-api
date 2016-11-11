@@ -39,8 +39,8 @@ namespace dxf_snapshot_sample
                     "Usage: dxf_snapshot_sample <host:port> <event> <symbol> [<source>]\n" +
                     "where\n" +
                     "    host:port - address of dxfeed server (demo.dxfeed.com:7300)\n" +
-                    "    event     - snapshot event Order, Candle, TimeAndSale, SpreadOrder\n" +
-                    "                for MarketMaker see source parameter\n" +
+                    "    event     - snapshot event Order, Candle, TimeAndSale, SpreadOrder,\n" +
+                    "                Greeks, Series for MarketMaker see source parameter\n" +
                     "    symbol    - symbol string, it is allowed to use only one symbol\n" +
                     "                a) event symbol: IBM, MSFT, ...\n" +
                     "                b) candle symbol attribute: XBT/USD{=d},\n" +
@@ -69,7 +69,8 @@ namespace dxf_snapshot_sample
             EventType eventType;
             if (!Enum.TryParse(args[eventIndex], true, out eventType) ||
                 eventType != EventType.Order && eventType != EventType.Candle && 
-                eventType != EventType.TimeAndSale && eventType != EventType.SpreadOrder)
+                eventType != EventType.TimeAndSale && eventType != EventType.SpreadOrder &&
+                eventType != EventType.Greeks && eventType != EventType.Series)
             {
 
                 Console.WriteLine("Unsupported event type: " + args[eventIndex]);

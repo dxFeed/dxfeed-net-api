@@ -153,7 +153,6 @@ namespace com.dxfeed.api.events
         /// </summary>
         public string Name { get; private set; }
 
-
         /// <summary>
         /// Returns order source for the specified source identifier.
         /// </summary>
@@ -166,7 +165,6 @@ namespace com.dxfeed.api.events
                 return sourcesById[sourceId];
             return new OrderSource(sourceId);
         }
-
 
         /// <summary>
         /// Returns order source for the specified source name.

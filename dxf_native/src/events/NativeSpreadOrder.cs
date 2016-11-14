@@ -21,17 +21,11 @@ namespace com.dxfeed.native.events
     {
         private readonly DxSpreadOrder order;
         private readonly DxString spreadOrder;
-        private readonly string source;
 
         internal unsafe NativeSpreadOrder(DxSpreadOrder* order, string symbol) : base(order, symbol)
         {
             this.order = *order;
             spreadOrder = DxMarshal.ReadDxString(this.order.spread_symbol);
-
-            fixed (char* charPtr = this.order.source)
-            {
-                source = new string(charPtr);
-            }
         }
 
         public override string ToString()

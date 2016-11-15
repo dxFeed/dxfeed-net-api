@@ -12,6 +12,12 @@ using com.dxfeed.native.api;
 
 namespace com.dxfeed.native.events
 {
+    /// <summary>
+    /// Quote event is a snapshot of the best bid and ask prices,
+    /// and other fields that change with each quote.
+    /// It represents the most recent information that is available about the best quote on
+    /// the market at any given moment of time.
+    /// </summary>
     public class NativeQuote : MarketEvent, IDxQuote
     {
         private DxQuote quote;
@@ -32,41 +38,65 @@ namespace com.dxfeed.native.events
 
         #region Implementation of IDxQuote
 
+        /// <summary>
+        /// Returns date time of the last bid change.
+        /// </summary>
         public DateTime BidTime
         {
             get { return TimeConverter.ToUtcDateTime(quote.bid_time); }
         }
 
+        /// <summary>
+        /// Returns bid exchange code.
+        /// </summary>
         public char BidExchangeCode
         {
             get { return quote.bid_exchange_code; }
         }
 
+        /// <summary>
+        /// Returns bid price.
+        /// </summary>
         public double BidPrice
         {
             get { return quote.bid_price; }
         }
 
+        /// <summary>
+        /// Returns bid size.
+        /// </summary>
         public long BidSize
         {
             get { return quote.bid_size; }
         }
 
+        /// <summary>
+        /// Returns date time of the last ask change.
+        /// </summary>
         public DateTime AskTime
         {
             get { return TimeConverter.ToUtcDateTime(quote.ask_time); }
         }
 
+        /// <summary>
+        /// Returns ask exchange code.
+        /// </summary>
         public char AskExchangeCode
         {
             get { return quote.ask_exchange_code; }
         }
 
+        /// <summary>
+        /// Returns ask price.
+        /// </summary>
         public double AskPrice
         {
             get { return quote.ask_price; }
         }
 
+        /// <summary>
+        /// Returns ask size.
+        /// </summary>
         public long AskSize
         {
             get { return quote.ask_size; }

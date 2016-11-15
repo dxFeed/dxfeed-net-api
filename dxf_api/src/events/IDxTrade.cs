@@ -6,6 +6,12 @@
 
 namespace com.dxfeed.api.events
 {
+    /// <summary>
+    /// Trade event is a snapshot of the price and size of the last trade during regular trading hours
+    /// and an overall day volume.
+    /// It represents the most recent information that is available about the regular last trade price on
+    /// the market at any given moment of time.
+    /// </summary>
     public interface IDxTrade : IDxTradeBase
     {
         //Note: no extra fields in this interface.

@@ -65,8 +65,7 @@ namespace com.dxfeed.native.events
         #region Implementation of IDxTradeBase
 
         /// <summary>
-        /// Returns time of the last trade. Time is measured in milliseconds between the current 
-        /// time and midnight, January 1, 1970 UTC.
+        /// Returns date time of the last trade.
         /// </summary>
         public DateTime Time
         {
@@ -98,7 +97,7 @@ namespace com.dxfeed.native.events
         }
 
         /// <summary>
-        /// 
+        /// Returns tick of the last trade.
         /// </summary>
         public long Tick
         {
@@ -106,7 +105,7 @@ namespace com.dxfeed.native.events
         }
 
         /// <summary>
-        /// 
+        /// Returns change value of the last trade.
         /// </summary>
         public double Change
         {

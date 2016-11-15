@@ -20,12 +20,13 @@ namespace com.dxfeed.api.events
     {
         /// <summary>
         /// Returns timestamp of the candle in milliseconds.
+        /// Time is measured in milliseconds between the current time and midnight, January 1, 1970 UTC.
         /// </summary>
         long Time { get; }
         /// <summary>
         /// Returns sequence number of this event to distinguish events that have the same
         /// Time. This sequence number does not have to be unique and does not need to be 
-        /// sequential. Sequence can range from 0 to MAX_SEQUENCE.
+        /// sequential.
         /// </summary>
         int Sequence { get; }
         /// <summary>
@@ -65,13 +66,12 @@ namespace com.dxfeed.api.events
         /// </summary>
         double AskVolume { get; }
         /// <summary>
-        /// Returns datetime of the candle.
+        /// Returns date time of the candle.
         /// </summary>
         DateTime DateTime { get; }
         /// <summary>
         /// Returns unique per-symbol index of this candle event.
         /// Candle index is composed of Time and Sequence.
-        /// Changing either time or sequence changes event index.
         /// </summary>
         long Index { get; }
         /// <summary>

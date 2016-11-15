@@ -23,8 +23,7 @@ namespace com.dxfeed.api.events
     public interface IDxTradeBase : IDxMarketEvent
     {
         /// <summary>
-        /// get time of the last trade. Time is measured in milliseconds between the current time 
-        /// and midnight, January 1, 1970 UTC.
+        /// Get date time of the last trade.
         /// </summary>
         DateTime Time { get; }
         /// <summary>
@@ -40,11 +39,11 @@ namespace com.dxfeed.api.events
         /// </summary>
         long Size { get; }
         /// <summary>
-        /// 
+        /// Returns tick of the last trade.
         /// </summary>
         long Tick { get; }
         /// <summary>
-        /// 
+        /// Returns change value of the last trade.
         /// </summary>
         double Change { get; }
         /// <summary>

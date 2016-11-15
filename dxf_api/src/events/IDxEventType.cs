@@ -20,7 +20,7 @@ namespace com.dxfeed.api.events
     public interface IDxEventType<T>
     {
         /// <summary>
-        /// Returns event symbol that identifies this event type in {@link DXFeedSubscription subscription}.
+        /// Returns event symbol that identifies this event type.
         /// </summary>
         T EventSymbol { get; }
     }

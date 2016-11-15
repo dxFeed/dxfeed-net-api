@@ -77,7 +77,7 @@ namespace com.dxfeed.api.events
         /// <summary>
         /// Returns sequence number of this event to distinguish events that have the same
         /// Time. This sequence number does not have to be unique and does not need to be 
-        /// sequential.Sequence can range from 0 to MAX_SEQUENCE.
+        /// sequential.
         /// </summary>
         int Sequence { get; }
         /// <summary>
@@ -85,8 +85,7 @@ namespace com.dxfeed.api.events
         /// </summary>
         long Size { get; }
         /// <summary>
-        /// Returns timestamp of the original event.
-        /// Time is measured in milliseconds between the current time and midnight, January 1, 1970 UTC.
+        /// Returns date time of the original event.
         /// </summary>
         DateTime Time { get; }
         /// <summary>

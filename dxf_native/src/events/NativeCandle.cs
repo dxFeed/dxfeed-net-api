@@ -58,7 +58,7 @@ namespace com.dxfeed.native.events
         /// <summary>
         /// Returns sequence number of this event to distinguish events that have the same
         /// Time. This sequence number does not have to be unique and does not need to be 
-        /// sequential. Sequence can range from 0 to MAX_SEQUENCE.
+        /// sequential.
         /// </summary>
         public int Sequence
         {
@@ -168,7 +168,7 @@ namespace com.dxfeed.native.events
         }
 
         /// <summary>
-        /// Returns datetime of the candle.
+        /// Returns date time of the candle.
         /// </summary>
         public DateTime DateTime
         {
@@ -183,7 +183,6 @@ namespace com.dxfeed.native.events
         /// <summary>
         /// Returns unique per-symbol index of this candle event.
         /// Candle index is composed of Time and Sequence.
-        /// Changing either time or sequence changes event index.
         /// </summary>
         public long Index
         {

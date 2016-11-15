@@ -110,7 +110,7 @@ namespace com.dxfeed.api.events
         public static readonly OrderSource IST = new OrderSource("IST");
 
         /// <summary>
-        /// Default source for publishing custom order books.
+        /// Empty order source.
         /// </summary>
         public static readonly OrderSource EMPTY = new OrderSource(7, string.Empty);
 

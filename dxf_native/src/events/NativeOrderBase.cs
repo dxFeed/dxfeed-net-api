@@ -22,7 +22,7 @@ namespace com.dxfeed.native.events
     public class NativeOrderBase : MarketEvent, IDxOrderBase
     {
         private readonly DxOrder order;
-        private readonly string source;
+        private readonly OrderSource source;
 
         internal unsafe NativeOrderBase(DxOrder* order, string symbol) : base(symbol)
         {
@@ -30,7 +30,7 @@ namespace com.dxfeed.native.events
 
             fixed (char* charPtr = this.order.source)
             {
-                source = new string(charPtr);
+                source = OrderSource.ValueOf(new string(charPtr));
             }
         }
 
@@ -46,7 +46,7 @@ namespace com.dxfeed.native.events
             this.order.scope = order->scope;
             this.order.sequence = order->sequence;
             this.order.size = order->size;
-            source = new string(order->source);
+            source = OrderSource.ValueOf(new string(order->source));
             this.order.time = order->time;
             this.order.time_sequence = order->time_sequence;
         }
@@ -148,7 +148,7 @@ namespace com.dxfeed.native.events
         /// <summary>
         /// Returns source of this event.
         /// </summary>
-        public string Source
+        public OrderSource Source
         {
             get { return source; }
         }

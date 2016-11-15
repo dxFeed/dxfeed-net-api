@@ -63,7 +63,7 @@ namespace com.dxfeed.api.events
         /// <summary>
         /// Returns source of this event.
         /// </summary>
-        string Source { get; }
+        OrderSource Source { get; }
         /// <summary>
         /// Returns time of this order.
         /// Time is measured in milliseconds between the current time and midnight, January 1, 1970 UTC.

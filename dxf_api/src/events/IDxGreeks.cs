@@ -20,8 +20,7 @@ namespace com.dxfeed.api.events
         /// </summary>
         int MaxSequence { get; }
         /// <summary>
-        /// Returns timestamp of this event in milliseconds.
-        /// Time is measured in milliseconds between the current time and midnight, January 1, 1970 UTC.
+        /// Returns date time of this event.
         /// </summary>
         DateTime Time { get; }
         /// <summary>
@@ -66,7 +65,6 @@ namespace com.dxfeed.api.events
         /// <summary>
         /// Returns unique per-symbol index of this event.
         /// The index is composed of Time and Sequence.
-        /// Changing either time or sequence changes event index.
         /// </summary>
         long Index { get; }
     }

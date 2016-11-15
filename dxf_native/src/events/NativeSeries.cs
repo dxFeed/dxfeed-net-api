@@ -99,8 +99,7 @@ namespace com.dxfeed.native.events
 
         /// <summary>
         /// Returns unique per-symbol index of this series.
-        /// Most significant 32 bits of index contain Expiration value and Sequence,
-        /// so changing Expiration also changes index.
+        /// Most significant 32 bits of index contain Expiration value and Sequence.
         /// </summary>
         public long Index
         {

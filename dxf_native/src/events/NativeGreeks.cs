@@ -31,7 +31,7 @@ namespace com.dxfeed.native.events
         {
             return string.Format(CultureInfo.InvariantCulture, "Greeks: {{{0}, " +
                 "Time: {1:o}, Sequence: {2}, GreekPrice: {3}, Volatility: {4}, " +
-                "Delta: {5}, Gamma: {6}, Theta: {7}, Rho: {8}, Vega: {9}, Index: {8}}}",
+                "Delta: {5}, Gamma: {6}, Theta: {7}, Rho: {8}, Vega: {9}, Index: {10}}}",
                 EventSymbol, Time, Sequence, GreeksPrice, Volatility, Delta, Gamma, Theta, Rho, Vega, Index);
         }
 

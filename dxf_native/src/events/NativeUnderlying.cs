@@ -27,7 +27,7 @@ namespace com.dxfeed.native.events
 
         public override string ToString()
         {
-            return string.Format(CultureInfo.InvariantCulture, "TheoPrice: {{{0}, " +
+            return string.Format(CultureInfo.InvariantCulture, "Underlying: {{{0}, " +
                 "Volatility: {1}, FrontVolatility: {2}, BackVolatility: {3}, PutCallRatio: {4}}}",
                 EventSymbol, Volatility, FrontVolatility, BackVolatility, PutCallRatio);
         }

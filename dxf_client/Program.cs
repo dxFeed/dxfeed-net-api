@@ -116,7 +116,7 @@ namespace dxf_client
             where TB : IDxEventBuf<TE>
             where TE : IDxGreeks
         {
-            throw new NotImplementedException();
+            PrintSnapshot(buf);
         }
 
         #endregion
@@ -127,7 +127,7 @@ namespace dxf_client
             where TB : IDxEventBuf<TE>
             where TE : IDxSeries
         {
-            throw new NotImplementedException();
+            PrintSnapshot(buf);
         }
 
         #endregion

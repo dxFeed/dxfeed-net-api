@@ -14,7 +14,7 @@ namespace com.dxfeed.api
     public interface IDxSeriesSnapshotListener : IDxSnapshotListener
     {
         /// <summary>
-        /// On Series shopshot event received.
+        /// On Series snapshot event received.
         /// </summary>
         /// <typeparam name="TB">Event buffer type.</typeparam>
         /// <typeparam name="TE">Event type.</typeparam>

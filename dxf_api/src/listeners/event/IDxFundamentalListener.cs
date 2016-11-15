@@ -14,11 +14,11 @@ namespace com.dxfeed.api
     public interface IDxFundamentalListener : IDxEventListener
     {
         /// <summary>
-        /// On Fundamental event received
+        /// On Fundamental event received.
         /// </summary>
-        /// <typeparam name="TB">event buffer type</typeparam>
-        /// <typeparam name="TE">event type</typeparam>
-        /// <param name="buf">event buffer object</param>
+        /// <typeparam name="TB">Event buffer type.</typeparam>
+        /// <typeparam name="TE">Event type.</typeparam>
+        /// <param name="buf">Event buffer object.</param>
         void OnFundamental<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
             where TE : IDxSummary;

@@ -25,11 +25,11 @@ namespace dxf_events_sample
         #region Implementation of IDxFeedListener
 
         /// <summary>
-        /// On Quote event received
+        /// On Quote event received.
         /// </summary>
-        /// <typeparam name="TB">event buffer type</typeparam>
-        /// <typeparam name="TE">event type</typeparam>
-        /// <param name="buf">event buffer object</param>
+        /// <typeparam name="TB">Event buffer type.</typeparam>
+        /// <typeparam name="TE">Event type.</typeparam>
+        /// <param name="buf">Event buffer object.</param>
         public void OnQuote<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
             where TE : IDxQuote
@@ -40,11 +40,11 @@ namespace dxf_events_sample
         }
 
         /// <summary>
-        /// On Trade event received
+        /// On Trade event received.
         /// </summary>
-        /// <typeparam name="TB">event buffer type</typeparam>
-        /// <typeparam name="TE">event type</typeparam>
-        /// <param name="buf">event buffer object</param>
+        /// <typeparam name="TB">Event buffer type.</typeparam>
+        /// <typeparam name="TE">Event type.</typeparam>
+        /// <param name="buf">Event buffer object.</param>
         public void OnTrade<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
             where TE : IDxTrade
@@ -55,11 +55,11 @@ namespace dxf_events_sample
         }
 
         /// <summary>
-        /// On Order event received
+        /// On Order event received.
         /// </summary>
-        /// <typeparam name="TB">event buffer type</typeparam>
-        /// <typeparam name="TE">event type</typeparam>
-        /// <param name="buf">event buffer object</param>
+        /// <typeparam name="TB">Event buffer type.</typeparam>
+        /// <typeparam name="TE">Event type.</typeparam>
+        /// <param name="buf">Event buffer object.</param>
         public void OnOrder<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
             where TE : IDxOrder
@@ -70,11 +70,11 @@ namespace dxf_events_sample
         }
 
         /// <summary>
-        /// On Profile event received
+        /// On Profile event received.
         /// </summary>
-        /// <typeparam name="TB">event buffer type</typeparam>
-        /// <typeparam name="TE">event type</typeparam>
-        /// <param name="buf">event buffer object</param>
+        /// <typeparam name="TB">Event buffer type.</typeparam>
+        /// <typeparam name="TE">Event type.</typeparam>
+        /// <param name="buf">Event buffer object.</param>
         public void OnProfile<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
             where TE : IDxProfile
@@ -85,11 +85,11 @@ namespace dxf_events_sample
         }
 
         /// <summary>
-        /// On Fundamental event received
+        /// On Fundamental event received.
         /// </summary>
-        /// <typeparam name="TB">event buffer type</typeparam>
-        /// <typeparam name="TE">event type</typeparam>
-        /// <param name="buf">event buffer object</param>
+        /// <typeparam name="TB">Event buffer type.</typeparam>
+        /// <typeparam name="TE">Event type.</typeparam>
+        /// <param name="buf">Event buffer object.</param>
         public void OnFundamental<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
             where TE : IDxSummary
@@ -100,11 +100,11 @@ namespace dxf_events_sample
         }
 
         /// <summary>
-        /// On Time and Sale event received
+        /// On Time and Sale event received.
         /// </summary>
-        /// <typeparam name="TB">event buffer type</typeparam>
-        /// <typeparam name="TE">event type</typeparam>
-        /// <param name="buf">event buffer object</param>
+        /// <typeparam name="TB">Event buffer type.</typeparam>
+        /// <typeparam name="TE">Event type.</typeparam>
+        /// <param name="buf">Event buffer object.</param>
         public void OnTimeAndSale<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
             where TE : IDxTimeAndSale

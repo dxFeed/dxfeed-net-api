@@ -50,11 +50,11 @@ namespace dxf_snapshot_sample
         #region Implementation of IDxOrderSnapshotListener
 
         /// <summary>
-        /// On Order snapshot event received
+        /// On Order snapshot event received.
         /// </summary>
-        /// <typeparam name="TB">event buffer type</typeparam>
-        /// <typeparam name="TE">event type</typeparam>
-        /// <param name="buf">event buffer object</param>
+        /// <typeparam name="TB">Event buffer type.</typeparam>
+        /// <typeparam name="TE">Event type.</typeparam>
+        /// <param name="buf">Event buffer object.</param>
         public void OnOrderSnapshot<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
             where TE : IDxOrder
@@ -68,11 +68,11 @@ namespace dxf_snapshot_sample
         #region Implementation of IDxCandleSnapshotListener
 
         /// <summary>
-        /// On Candle shopshot event received
+        /// On Candle snapshot event received.
         /// </summary>
-        /// <typeparam name="TB">event buffer type</typeparam>
-        /// <typeparam name="TE">event type</typeparam>
-        /// <param name="buf">event buffer object</param>
+        /// <typeparam name="TB">Event buffer type.</typeparam>
+        /// <typeparam name="TE">Event type.</typeparam>
+        /// <param name="buf">Event buffer object.</param>
         public void OnCandleSnapshot<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
             where TE : IDxCandle
@@ -122,7 +122,7 @@ namespace dxf_snapshot_sample
         #region Implementation of IDxGreeksSnapshotListener
 
         /// <summary>
-        /// On Greeks shopshot event received.
+        /// On Greeks snapshot event received.
         /// </summary>
         /// <typeparam name="TB">Event buffer type.</typeparam>
         /// <typeparam name="TE">Event type.</typeparam>
@@ -139,7 +139,7 @@ namespace dxf_snapshot_sample
         #region Implementation of IDxSeriesSnapshotListener
 
         /// <summary>
-        /// On Series shopshot event received.
+        /// On Series snapshot event received.
         /// </summary>
         /// <typeparam name="TB">Event buffer type.</typeparam>
         /// <typeparam name="TE">Event type.</typeparam>

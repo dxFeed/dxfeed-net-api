@@ -14,7 +14,7 @@ namespace com.dxfeed.api
     public interface IDxGreeksSnapshotListener : IDxSnapshotListener
     {
         /// <summary>
-        /// On Greeks shopshot event received.
+        /// On Greeks snapshot event received.
         /// </summary>
         /// <typeparam name="TB">Event buffer type.</typeparam>
         /// <typeparam name="TE">Event type.</typeparam>

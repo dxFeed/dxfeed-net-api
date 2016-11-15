@@ -20,8 +20,7 @@ namespace com.dxfeed.api.events
     public interface IDxTheoPrice : IDxMarketEvent
     {
         /// <summary>
-        /// Returns time of the last theo price computation.
-        /// Time is measured in milliseconds between the current time and midnight, January 1, 1970 UTC.
+        /// Returns date time of the last theo price computation.
         /// </summary>
         DateTime TheoTime { get; }
         /// <summary>

@@ -14,7 +14,7 @@ namespace com.dxfeed.api
     public interface IDxCandleSnapshotListener : IDxSnapshotListener
     {
         /// <summary>
-        /// On Candle shopshot event received.
+        /// On Candle snapshot event received.
         /// </summary>
         /// <typeparam name="TB">Event buffer type.</typeparam>
         /// <typeparam name="TE">Event type.</typeparam>

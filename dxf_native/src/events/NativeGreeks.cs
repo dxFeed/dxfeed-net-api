@@ -31,8 +31,8 @@ namespace com.dxfeed.native.events
         {
             return string.Format(CultureInfo.InvariantCulture, "Greeks: {{{0}, " +
                 "Time: {1:o}, Sequence: {2}, GreekPrice: {3}, Volatility: {4}, " +
-                "Delta: {5}, Gamma: {6}, Theta: {7}, Rho: {8}, Vega: {9}}}",
-                EventSymbol, Time, Sequence, GreeksPrice, Volatility, Delta, Gamma, Theta, Rho, Vega);
+                "Delta: {5}, Gamma: {6}, Theta: {7}, Rho: {8}, Vega: {9}, Index: {8}}}",
+                EventSymbol, Time, Sequence, GreeksPrice, Volatility, Delta, Gamma, Theta, Rho, Vega, Index);
         }
 
         #region Implementation of IDxGreeks
@@ -123,6 +123,16 @@ namespace com.dxfeed.native.events
         public double Volatility
         {
             get { return grks.volatility; }
+        }
+
+        /// <summary>
+        /// Returns unique per-symbol index of this event.
+        /// The index is composed of Time and Sequence.
+        /// Changing either time or sequence changes event index.
+        /// </summary>
+        public long Index
+        {
+            get { return grks.index; }
         }
 
         #endregion

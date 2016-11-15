@@ -47,5 +47,11 @@ namespace com.dxfeed.api.events
         /// See the model section for an explanation this simple interest return \( R(\tau) \).
         /// </summary>
         double Interest { get; }
+        /// <summary>
+        /// Returns unique per-symbol index of this series.
+        /// Most significant 32 bits of index contain Expiration value and Sequence,
+        /// so changing Expiration also changes index.
+        /// </summary>
+        long Index { get; }
     }
 }

@@ -92,6 +92,8 @@ namespace com.dxfeed.native.api
         internal long open_interest;
         internal long flags;
         internal char exchange_code;
+        internal PriceType day_close_price_type;
+        internal PriceType prev_day_close_price_type;
     }
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
@@ -192,6 +194,7 @@ namespace com.dxfeed.native.api
         internal double theta;
         internal double rho;
         internal double vega;
+        internal long index;
     }
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
@@ -225,14 +228,15 @@ namespace com.dxfeed.native.api
         internal double forward_price;
         internal double dividend;
         internal double interest;
+        internal long index;
     }
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
     internal struct DxEventParams
     {
         internal EventFlag flags;
-        internal UInt64 time_int_field;
-        internal UInt64 snapshot_key;
+        internal ulong time_int_field;
+        internal ulong snapshot_key;
     }
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]

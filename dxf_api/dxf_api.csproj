@@ -92,6 +92,7 @@
     <Compile Include="src\events\IDxTheoPrice.cs" />
     <Compile Include="src\events\IDxUnderlying.cs" />
     <Compile Include="src\events\OrderSource.cs" />
+    <Compile Include="src\events\PriceType.cs" />
     <Compile Include="src\events\Scope.cs" />
     <Compile Include="src\events\IDxMarketEvent.cs" />
     <Compile Include="src\events\EventFlag.cs" />

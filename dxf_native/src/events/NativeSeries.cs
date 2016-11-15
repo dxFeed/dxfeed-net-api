@@ -29,8 +29,9 @@ namespace com.dxfeed.native.events
         {
             return string.Format(CultureInfo.InvariantCulture, "TheoPrice: {{{0}, " +
                 "Expiration: {1}, Sequence: {2}, Volatility: {3}, " +
-                "PutCallRatio: {4}, ForwardPrice: {5}, Dividend: {6}, Interest: {7}}}",
-                EventSymbol, Expiration, Sequence, Volatility, PutCallRatio, ForwardPrice, Dividend, Interest);
+                "PutCallRatio: {4}, ForwardPrice: {5}, Dividend: {6}, Interest: {7}, Index: {8}}}",
+                EventSymbol, Expiration, Sequence, Volatility, PutCallRatio,
+                ForwardPrice, Dividend, Interest, Index);
         }
 
         #region Implementation of IDxSeries
@@ -94,6 +95,16 @@ namespace com.dxfeed.native.events
         public double Volatility
         {
             get { return s.volatility; }
+        }
+
+        /// <summary>
+        /// Returns unique per-symbol index of this series.
+        /// Most significant 32 bits of index contain Expiration value and Sequence,
+        /// so changing Expiration also changes index.
+        /// </summary>
+        public long Index
+        {
+            get { return s.index; }
         }
 
         #endregion

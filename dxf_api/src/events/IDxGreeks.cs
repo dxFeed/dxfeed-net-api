@@ -63,5 +63,11 @@ namespace com.dxfeed.api.events
         /// Vega is the first derivative of an option price by percentage volatility.
         /// </summary>
         double Vega { get; }
+        /// <summary>
+        /// Returns unique per-symbol index of this event.
+        /// The index is composed of Time and Sequence.
+        /// Changing either time or sequence changes event index.
+        /// </summary>
+        long Index { get; }
     }
 }

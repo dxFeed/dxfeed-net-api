@@ -82,7 +82,7 @@ namespace com.dxfeed.native.events
         }
 
         /// <summary>
-        /// 
+        /// Returns sequence of this series
         /// </summary>
         public int Sequence
         {

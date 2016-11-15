@@ -22,7 +22,7 @@ namespace com.dxfeed.api.events
         /// </summary>
         int Expiration { get; }
         /// <summary>
-        /// 
+        /// Returns sequence of this series
         /// </summary>
         int Sequence { get; }
         /// <summary>

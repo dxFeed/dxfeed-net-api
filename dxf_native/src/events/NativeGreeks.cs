@@ -100,7 +100,7 @@ namespace com.dxfeed.native.events
         }
 
         /// <summary>
-        /// Returns option market price.
+        /// Returns date time of this event.
         /// </summary>
         public DateTime Time
         {

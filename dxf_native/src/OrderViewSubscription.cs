@@ -67,6 +67,8 @@ namespace com.dxfeed.native
             {
                 throw new InvalidOperationException(AddSymbolBeforeSourceErrorText);
             }
+            if (symbols.Contains(symbol.ToUpper()))
+                return;
             subscription.AddSymbol(symbol);
             symbols.Add(symbol);
             receivedSnapshots.Add(symbol.ToUpper(), new SortedSet<string>());
@@ -86,6 +88,8 @@ namespace com.dxfeed.native
             subscription.AddSymbols(symbols);
             foreach (var symbol in symbols)
             {
+                if (this.symbols.Contains(symbol.ToUpper()))
+                    continue;
                 this.symbols.Add(symbol);
                 receivedSnapshots.Add(symbol.ToUpper(), new SortedSet<string>());
             }
@@ -94,6 +98,19 @@ namespace com.dxfeed.native
         public void AddSymbols(params CandleSymbol[] symbols)
         {
             throw new InvalidOperationException(AddCandleSymbolErrorText);
+        }
+
+        private void removeSymbolSourcePair(string symbolSource)
+        {
+            if (symbolSourceToKey.ContainsKey(symbolSource))
+            {
+                var keysList = symbolSourceToKey[symbolSource];
+                foreach (var key in keysList)
+                {
+                    snapshots.Remove(key);
+                }
+                symbolSourceToKey.Remove(symbolSource);
+            }
         }
 
         public void RemoveSymbols(params string[] symbols)
@@ -109,17 +126,10 @@ namespace com.dxfeed.native
                 receivedSnapshots.Remove(upperSymbol);
                 foreach (var source in sources)
                 {
-                    var symbolSource = upperSymbol + source;
-                    if (symbolSourceToKey.ContainsKey(symbolSource))
-                    {
-                        var keysList = symbolSourceToKey[symbol + source];
-                        foreach (var key in keysList)
-                        {
-                            snapshots.Remove(key);
-                        }
-                        symbolSourceToKey.Remove(symbolSource);
-                    }
+                    removeSymbolSourcePair(upperSymbol + source);
                 }
+                // removing snapshots with empty source string i.e. ""
+                removeSymbolSourcePair(upperSymbol);
                 this.symbols.Remove(upperSymbol);
                 orderViewStates.Remove(upperSymbol);
             }

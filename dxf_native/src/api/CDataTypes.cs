@@ -14,16 +14,39 @@ namespace com.dxfeed.native.api
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
     internal unsafe struct DxOrder
     {
-        internal long index;
-        internal Side side;
-        internal int level;
-        internal long time;
+        internal int count;
+        internal int event_flags;
         internal char exchange_code;
-        internal IntPtr market_maker; //string
+        internal long index;
+        internal int level;
+        internal Side side;
         internal double price;
+        internal int scope;
+        internal int sequence;
         internal long size;
         internal fixed char source[5]; //string
+        internal long time;
+        internal long time_sequence;
+        internal IntPtr market_maker; //string
+    }
+
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+    internal unsafe struct DxSpreadOrder
+    {
         internal int count;
+        internal int event_flags;
+        internal char exchange_code;
+        internal long index;
+        internal int level;
+        internal Side side;
+        internal double price;
+        internal int scope;
+        internal int sequence;
+        internal long size;
+        internal fixed char source[5]; //string
+        internal long time;
+        internal long time_sequence;
+        internal IntPtr spread_symbol; //string
     }
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
@@ -69,6 +92,8 @@ namespace com.dxfeed.native.api
         internal long open_interest;
         internal long flags;
         internal char exchange_code;
+        internal PriceType day_close_price_type;
+        internal PriceType prev_day_close_price_type;
     }
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
@@ -107,13 +132,23 @@ namespace com.dxfeed.native.api
     {
         internal long event_id;
         internal long time;
+        internal int sequence;
         internal char exchange_code;
         internal double price;
         internal long size;
         internal double bid_price;
         internal double ask_price;
         internal IntPtr exchange_sale_conditions;
+        internal int flags;
+        internal int event_flags;
+        internal long index;
+        internal Side side;
+        internal bool is_cancel;
+        internal bool is_correction;
         internal bool is_trade;
+        internal bool is_new;
+        internal bool is_spread_leg;
+        internal bool is_valid_tick;
         internal TimeAndSaleType type;
     }
 
@@ -131,14 +166,77 @@ namespace com.dxfeed.native.api
         internal double vwap;
         internal double bid_volume;
         internal double ask_volume;
+        internal long index;
+        internal long open_interest;
+        internal double imp_volatility;
+    }
+
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+    internal struct DxTradeEth
+    {
+        internal long time;
+        internal int flags;
+        internal char exchange_code;
+        internal double price;
+        internal long size;
+        internal double eth_volume;
+    }
+
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+    internal struct DxGreeks
+    {
+        internal long time;
+        internal int sequence;
+        internal double greeks_price;
+        internal double volatility;
+        internal double delta;
+        internal double gamma;
+        internal double theta;
+        internal double rho;
+        internal double vega;
+        internal long index;
+    }
+
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+    internal struct DxTheoPrice
+    {
+        internal long theo_time;
+        internal double theo_price;
+        internal double theo_underlying_price;
+        internal double theo_delta;
+        internal double theo_gamma;
+        internal double theo_dividend;
+        internal double theo_interest;
+    }
+
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+    internal struct DxUnderlying
+    {
+        internal double volatility;
+        internal double front_volatility;
+        internal double back_volatility;
+        internal double put_call_ratio;
+    }
+
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+    internal struct DxSeries
+    {
+        internal int expiration;
+        internal int sequence;
+        internal double volatility;
+        internal double put_call_ratio;
+        internal double forward_price;
+        internal double dividend;
+        internal double interest;
+        internal long index;
     }
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
     internal struct DxEventParams
     {
         internal EventFlag flags;
-        internal UInt64 time_int_field;
-        internal UInt64 snapshot_key;
+        internal ulong time_int_field;
+        internal ulong snapshot_key;
     }
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]

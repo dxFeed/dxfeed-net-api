@@ -18,6 +18,12 @@ namespace com.dxfeed.api.events
         Profile = 8,
         Order = 16,
         TimeAndSale = 32,
-        Candle = 64
+        Candle = 64, 
+        TradeETH = 128,
+        SpreadOrder = 256,
+        Greeks = 512,
+        TheoPrice = 1024,
+        Underlying = 2048,
+        Series = 4096
     }
 }

@@ -242,7 +242,7 @@ namespace com.dxfeed.native
 
             var enmrtr = buf.GetEnumerator();
             enmrtr.MoveNext();
-            string source = enmrtr.Current.Source.ToUpper();
+            string source = enmrtr.Current.Source.Name.ToUpper();
 
             // in case if already have this snapshot
             if (snapshots.ContainsKey(buf.EventParams.SnapshotKey))
@@ -390,7 +390,7 @@ namespace com.dxfeed.native
 
             var enmrtr = buf.GetEnumerator();
             enmrtr.MoveNext();
-            var source = enmrtr.Current.Source.ToUpper();
+            var source = enmrtr.Current.Source.Name.ToUpper();
             var symbol = buf.Symbol.ToString().ToUpper();
             receivedSnapshots[symbol].Add(source);
 

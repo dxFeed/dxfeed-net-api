@@ -9,7 +9,15 @@ using com.dxfeed.api.events;
 
 namespace com.dxfeed.api.extras
 {
-    public class EventPrinter : IDxFeedListener, IDxCandleListener
+    public class EventPrinter : 
+        IDxFeedListener, 
+        IDxTradeEthListener,
+        IDxSpreadOrderListener,
+        IDxCandleListener,
+        IDxGreeksListener,
+        IDxTheoPriceListener,
+        IDxUnderlyingListener,
+        IDxSeriesListener
     {
         #region Implementation of IDxFeedListener
 
@@ -63,6 +71,30 @@ namespace com.dxfeed.api.extras
 
         #endregion
 
+        #region Implementation of IDxTradeEthListener
+
+        public void OnTradeEth<TB, TE>(TB buf)
+            where TB : IDxEventBuf<TE>
+            where TE : IDxTradeEth
+        {
+            foreach (var te in buf)
+                Console.WriteLine(string.Format("{0} {1}", buf.Symbol, te));
+        }
+
+        #endregion
+
+        #region Implementation of IDxSpreadOrderListener
+
+        public void OnSpreadOrder<TB, TE>(TB buf)
+            where TB : IDxEventBuf<TE>
+            where TE : IDxSpreadOrder
+        {
+            foreach (var so in buf)
+                Console.WriteLine(string.Format("{0} {1}", buf.Symbol, so));
+        }
+
+        #endregion
+
         #region Implementation of IDxCandleListener
 
         public void OnCandle<TB, TE>(TB buf)
@@ -71,6 +103,54 @@ namespace com.dxfeed.api.extras
         {
             foreach (var c in buf)
                 Console.WriteLine(string.Format("{0} {1}", buf.Symbol, c));
+        }
+
+        #endregion
+
+        #region Implementation of IDxGreeksListener
+
+        public void OnGreeks<TB, TE>(TB buf)
+            where TB : IDxEventBuf<TE>
+            where TE : IDxGreeks
+        {
+            foreach (var g in buf)
+                Console.WriteLine(string.Format("{0} {1}", buf.Symbol, g));
+        }
+
+        #endregion
+
+        #region Implementation of IDxTheoPriceListener
+
+        public void OnTheoPrice<TB, TE>(TB buf)
+            where TB : IDxEventBuf<TE>
+            where TE : IDxTheoPrice
+        {
+            foreach (var tp in buf)
+                Console.WriteLine(string.Format("{0} {1}", buf.Symbol, tp));
+        }
+
+        #endregion
+
+        #region Implementation of IDxUnderlyingListener
+
+        public void OnUnderlying<TB, TE>(TB buf)
+            where TB : IDxEventBuf<TE>
+            where TE : IDxUnderlying
+        {
+            foreach (var u in buf)
+                Console.WriteLine(string.Format("{0} {1}", buf.Symbol, u));
+        }
+
+        #endregion
+
+        #region Implementation of IDxSeriesListener
+
+        public void OnSeries<TB, TE>(TB buf)
+            where TB : IDxEventBuf<TE>
+            where TE : IDxSeries
+        {
+            foreach (var s in buf)
+                Console.WriteLine(string.Format("{0} {1}", buf.Symbol, s));
         }
 
         #endregion

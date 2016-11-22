@@ -6,16 +6,25 @@
 
 using com.dxfeed.api.events;
 using com.dxfeed.native.api;
+using System.Globalization;
 
 namespace com.dxfeed.native.events
 {
-    public struct NativeMarketMaker : IDxMarketMaker
+    public class NativeMarketMaker : MarketEvent, IDxMarketMaker
     {
         private readonly DxMarketMaker mm;
 
-        internal unsafe NativeMarketMaker(DxMarketMaker* mm)
+        internal unsafe NativeMarketMaker(DxMarketMaker* mm, string symbol) : base(symbol)
         {
             this.mm = *mm;
+        }
+
+        public override string ToString()
+        {
+            return string.Format(CultureInfo.InvariantCulture, "MarketMaker {{{6}, " +
+                "Exchange: '{0}', Id: {1}, BidPrice: {2}, BidSize: {3}, AskPrice: {4}, " +
+                "AskSize: {5}}}",
+                Exchange, Id, BidPrice, BidSize, AskPrice, AskSize, EventSymbol);
         }
 
         #region Implementation of IDxMarketMaker

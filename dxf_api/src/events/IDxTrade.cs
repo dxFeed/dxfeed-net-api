@@ -4,18 +4,16 @@
 /// If a copy of the MPL was not distributed with this file, You can obtain one at
 /// http://mozilla.org/MPL/2.0/.
 
-using System;
-
 namespace com.dxfeed.api.events
 {
-    public interface IDxTrade
+    /// <summary>
+    /// Trade event is a snapshot of the price and size of the last trade during regular trading hours
+    /// and an overall day volume.
+    /// It represents the most recent information that is available about the regular last trade price on
+    /// the market at any given moment of time.
+    /// </summary>
+    public interface IDxTrade : IDxTradeBase
     {
-        DateTime Time { get; }
-        char ExchangeCode { get; }
-        double Price { get; }
-        long Size { get; }
-        long Tick { get; }
-        double Change { get; }
-        double DayVolume { get; }
+        //Note: no extra fields in this interface.
     }
 }

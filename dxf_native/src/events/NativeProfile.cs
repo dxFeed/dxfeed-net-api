@@ -12,13 +12,13 @@ using com.dxfeed.api.extras;
 
 namespace com.dxfeed.native.events
 {
-    public struct NativeProfile : IDxProfile
+    public class NativeProfile : MarketEvent, IDxProfile
     {
         private readonly DxProfile profile;
         private readonly string description;
         private readonly string statusReason;
 
-        internal unsafe NativeProfile(DxProfile* profile)
+        internal unsafe NativeProfile(DxProfile* profile, string symbol) : base(symbol)
         {
             this.profile = *profile;
             description = new string((char*)this.profile.description.ToPointer());
@@ -27,12 +27,12 @@ namespace com.dxfeed.native.events
 
         public override string ToString()
         {
-            return string.Format(CultureInfo.InvariantCulture, "Profile: {{Beta: {0}, Eps: {1}, DivFreq: {2}, " +
+            return string.Format(CultureInfo.InvariantCulture, "Profile: {{{15}, Beta: {0}, Eps: {1}, DivFreq: {2}, " +
                 "ExdDivAmount: {3}, ExdDivDate: {4}, 52HighPrice: {5}, 52LowPrice: {6}, Shares: {7}, " +
                 "Description: '{8}', Flags: {9}, StatusReason: '{10}', HaltStartTime: {11}, HaltEndTime: {12}, " +
                 "HighLimitPrice: {13}, LowLimitPrice: {14}}}",
                 Beta, Eps, DivFreq, ExdDivAmount, ExdDivDate, _52HighPrice, _52LowPrice, Shares, Description,
-                Flags, StatusReason, HaltStartTime, HaltEndTime, HighLimitPrice, LowLimitPrice);
+                Flags, StatusReason, HaltStartTime, HaltEndTime, HighLimitPrice, LowLimitPrice, EventSymbol);
         }
 
         #region Implementation of IDxProfile

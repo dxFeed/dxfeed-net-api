@@ -30,7 +30,7 @@ namespace com.dxfeed.native
         /// </summary>
         /// <param name="address">server address to connect</param>
         /// <param name="disconnectListener">listener will be called when the connection is interrupted</param>
-        /// <exception cref="DxEception"></exception>
+        /// <exception cref="DxException"></exception>
         public NativeConnection(string address, Action<IDxConnection> disconnectListener)
         {
             callback = OnDisconnect;
@@ -49,7 +49,7 @@ namespace com.dxfeed.native
         /// <summary>
         /// Disconnect from the server
         /// </summary>
-        /// <exception cref="DxEception"></exception>
+        /// <exception cref="DxException"></exception>
         public void Disconnect()
         {
             if (handler == IntPtr.Zero)
@@ -60,13 +60,14 @@ namespace com.dxfeed.native
         }
 
         /// <summary>
-        /// Create event subscription
+        /// Create event subscription.
         /// </summary>
-        /// <param name="type">event type</param>
-        /// <param name="listener">event listener callback</param>
-        /// <returns> subscription object</returns>
-        /// <exception cref="DxEception"></exception>
-        public IDxSubscription CreateSubscription(EventType type, IDxFeedListener listener)
+        /// <param name="type">Event type.</param>
+        /// <param name="listener">Event listener callback.</param>
+        /// <returns>Subscription object.</returns>
+        /// <exception cref="ArgumentNullException">Listener is null.</exception>
+        /// <exception cref="DxException"></exception>
+        public IDxSubscription CreateSubscription(EventType type, IDxEventListener listener)
         {
             if (handler == IntPtr.Zero)
                 throw new NativeDxException("not connected");
@@ -75,12 +76,13 @@ namespace com.dxfeed.native
         }
 
         /// <summary>
-        /// Create candle event subscription
+        /// Create candle event subscription.
         /// </summary>
-        /// <param name="time">date time ini the past</param>
-        /// <param name="listener">candle listener callback</param>
-        /// <returns>subscription object</returns>
-        /// <exception cref="DxEception"></exception>
+        /// <param name="time">Date time in the past.</param>
+        /// <param name="listener">Candle listener callback.</param>
+        /// <returns>Subscription object.</returns>
+        /// <exception cref="ArgumentNullException">Listener is null.</exception>
+        /// <exception cref="DxException"></exception>
         public IDxSubscription CreateSubscription(DateTime? time, IDxCandleListener listener)
         {
             if (handler == IntPtr.Zero)
@@ -90,12 +92,29 @@ namespace com.dxfeed.native
         }
 
         /// <summary>
+        /// Create time event subscription.
+        /// </summary>
+        /// <param name="type">Event type.</param>
+        /// <param name="time">Date time in the past.</param>
+        /// <param name="listener">Event listener callback.</param>
+        /// <returns>Subscription object.</returns>
+        /// <exception cref="ArgumentNullException">Listener is null.</exception>
+        /// <exception cref="DxException"></exception>
+        public IDxSubscription CreateSubscription(EventType type, DateTime? time, IDxEventListener listener)
+        {
+            if (handler == IntPtr.Zero)
+                throw new NativeDxException("not connected");
+
+            return new NativeSubscription(this, type, time, listener);
+        }
+
+        /// <summary>
         /// Creates snapshot subscription
         /// </summary>
         /// <param name="time">Time in the past - number of milliseconds from 1.1.1970 (unix time)</param>
         /// <param name="listener">snapshot listener callback</param>
         /// <returns>subscription object</returns>
-        /// <exception cref="DxEception"></exception>
+        /// <exception cref="DxException"></exception>
         public IDxSubscription CreateSnapshotSubscription(Int64 time, IDxSnapshotListener listener)
         {
             if (handler == IntPtr.Zero)
@@ -110,7 +129,7 @@ namespace com.dxfeed.native
         /// <param name="time">Date time in the past</param>
         /// <param name="listener">snapshot listener callback</param>
         /// <returns>subscription object</returns>
-        /// <exception cref="DxEception"></exception>
+        /// <exception cref="DxException"></exception>
         public IDxSubscription CreateSnapshotSubscription(DateTime? time, IDxSnapshotListener listener)
         {
             if (handler == IntPtr.Zero)
@@ -121,11 +140,46 @@ namespace com.dxfeed.native
         }
 
         /// <summary>
+        /// Creates snapshot subscription
+        /// </summary>
+        /// <param name="eventType">Single event type.</param>
+        /// <param name="time">Time in the past - number of milliseconds from 1.1.1970 (unix time)</param>
+        /// <param name="listener">snapshot listener callback</param>
+        /// <returns>subscription object</returns>
+        /// <exception cref="DxException"></exception>
+        public IDxSubscription CreateSnapshotSubscription(EventType eventType, Int64 time, 
+            IDxSnapshotListener listener)
+        {
+            if (handler == IntPtr.Zero)
+                throw new NativeDxException("not connected");
+
+            return new NativeSnapshotSubscription(this, eventType, time, listener);
+        }
+
+        /// <summary>
+        /// Creates snapshot subscription
+        /// </summary>
+        /// <param name="eventType">Single event type.</param>
+        /// <param name="time">Date time in the past</param>
+        /// <param name="listener">snapshot listener callback</param>
+        /// <returns>subscription object</returns>
+        /// <exception cref="DxException"></exception>
+        public IDxSubscription CreateSnapshotSubscription(EventType eventType, DateTime? time, 
+            IDxSnapshotListener listener)
+        {
+            if (handler == IntPtr.Zero)
+                throw new NativeDxException("not connected");
+
+            long unixTime = time == null ? 0 : Tools.DateToUnixTime((DateTime)time);
+            return new NativeSnapshotSubscription(this, eventType, unixTime, listener);
+        }
+
+        /// <summary>
         /// Creates Order View subscription
         /// </summary>
         /// <param name="listener"></param>
         /// <returns>subscription object</returns>
-        /// <exception cref="DxEception"></exception>
+        /// <exception cref="DxException"></exception>
         public IDxSubscription CreateOrderViewSubscription(IDxOrderViewListener listener)
         {
             if (handler == IntPtr.Zero)

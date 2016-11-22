@@ -9,26 +9,26 @@ using com.dxfeed.api.events;
 namespace com.dxfeed.api
 {
     /// <summary>
-    /// Interface provides receiving Order View events
+    /// Interface provides receiving Order View events.
     /// </summary>
     public interface IDxOrderViewListener
     {
         /// <summary>
-        /// On shopshot event received
+        /// On snapshot event received.
         /// </summary>
-        /// <typeparam name="TB">event buffer type</typeparam>
-        /// <typeparam name="TE">event type</typeparam>
-        /// <param name="buf">event buffer object</param>
+        /// <typeparam name="TB">Event buffer type.</typeparam>
+        /// <typeparam name="TE">Event type.</typeparam>
+        /// <param name="buf">Event buffer object.</param>
         void OnSnapshot<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
             where TE : IDxOrder;
 
         /// <summary>
-        /// On event received
+        /// On event received.
         /// </summary>
-        /// <typeparam name="TB">event buffer type</typeparam>
-        /// <typeparam name="TE">event type</typeparam>
-        /// <param name="buf">event buffer object</param>
+        /// <typeparam name="TB">Event buffer type.</typeparam>
+        /// <typeparam name="TE">Event type.</typeparam>
+        /// <param name="buf">Event buffer object.</param>
         void OnUpdate<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
             where TE : IDxOrder;

@@ -17,7 +17,6 @@ namespace com.dxfeed.native.api
 #else
         private const string DXFEED_DLL = "DXFeed_64.dll";
 #endif
-
         [DllImport(DXFEED_DLL, CallingConvention = CallingConvention.Cdecl, EntryPoint = "dxf_initialize_logger")]
         private static extern int __dxf_initialize_logger(string file_name, bool rewrite_file, bool show_time_zone_info, bool verbose);
         internal override int dxf_initialize_logger(string file_name, bool rewrite_file, bool show_time_zone_info, bool verbose)
@@ -216,6 +215,17 @@ namespace com.dxfeed.native.api
         internal override int dxf_delete_candle_symbol_attributes(IntPtr candle_attributes)
         {
             return __dxf_delete_candle_symbol_attributes(candle_attributes);
+        }
+
+        [DllImport(DXFEED_DLL, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl, EntryPoint = "dxf_create_snapshot")]
+        private static extern int __dxf_create_snapshot(IntPtr connection, int event_id,
+                                                        string symbol, byte[] source,
+                                                        Int64 time, out IntPtr snapshot);
+        internal override int dxf_create_snapshot(IntPtr connection, int event_id,
+                                                  string symbol, byte[] source,
+                                                  Int64 time, out IntPtr snapshot)
+        {
+            return __dxf_create_snapshot(connection, event_id, symbol, source, time, out snapshot);
         }
 
         [DllImport(DXFEED_DLL, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl, EntryPoint = "dxf_create_order_snapshot")]

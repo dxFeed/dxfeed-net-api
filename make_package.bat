@@ -36,12 +36,13 @@ rem         CreatePackage   - Create zip archive containing sources and
 rem                           binaries.
 rem
 rem Usage: 
-rem     make_package <major.minor.patch> <c-api-path> [no-test]
+rem     make_package <major.minor.patch> <c-api-path> [no-test] [no-c-build]
 rem Where
 rem     <major.minor.patch> - Version of package, i.e. 1.2.6
 rem     <c-api-path>        - The path to C API directory where 
 rem                           %C_API_SCRIPT_NAME% is located
 rem     [no-test]           - build testing will not be started (optional)
+rem     [no-c-build]        - skip C build, it should be done already (optional)
 rem
 rem The result of build is located in dxf_master\bin
 
@@ -68,11 +69,15 @@ set C_API_LIB_NAME=DXFeed
 set C_API_LIB_EXT=.dll
 set TARGET_TEST=RunUnitTests;
 set C_API_NO_TEST=
+set C_API_NO_BUIILD=
 
 for %%A in (%*) do (
     if [%%A] EQU [no-test] (
         set TARGET_TEST=
         set C_API_NO_TEST=no-test
+    )
+    if [%%A] EQU [no-c-build] (
+        set C_API_NO_BUIILD=yes
     )
 )
 
@@ -85,6 +90,10 @@ rem Check C API path parameter
 if [%C_API_PATH%] EQU [] (
     echo ERROR: The c-api-path is not specified or invalid^!
     goto usage
+)
+if [%C_API_NO_BUIILD%] EQU [yes] (
+    echo Skip C API build
+    goto copy_c
 )
 if NOT EXIST %C_API_BUILD% (
     echo ERROR: The build script '%C_API_BUILD%' is not exist^!
@@ -101,6 +110,7 @@ if %C_API_ERRORLEVEL% GEQ 1 (
     echo C API build failed^!
     goto exit_error
 )
+:copy_c
 xcopy /Y /I %C_API_PATH%\build\x86\Release\%C_API_LIB_NAME%%C_API_LIB_EXT% %~dp0\lib
 if %ERRORLEVEL% GEQ 1 goto exit_error
 xcopy /Y /I %C_API_PATH%\build\x86\Debug\%C_API_LIB_NAME%d%C_API_LIB_EXT% %~dp0\lib
@@ -119,11 +129,12 @@ goto exit_success
 
 :usage
 echo.
-echo Usage: %0 ^<major.minor.patch^> ^<c-api-path^> [no-test]
+echo Usage: %0 ^<major.minor.patch^> ^<c-api-path^> [no-test] [no-c-build]
 echo    ^<major.minor.patch^> - Version of package, i.e. 1.2.6
 echo    ^<c-api-path^>        - The path to C API directory where %C_API_SCRIPT_NAME%
 echo                          is located
 echo    [no-test]           - build tests will not be started (optional)
+echo    [no-c-build]        - skip C build, it should be done already (optional)
 goto exit_error
 
 :exit_success

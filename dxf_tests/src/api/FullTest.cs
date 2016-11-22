@@ -164,11 +164,11 @@ namespace com.dxfeed.api
                 if (snapshotCase.SnapshotType == typeof(IDxOrder))
                     Console.WriteLine("    symbol {0}#{1}: data count: {2}", 
                         snapshotCase.Symbol, snapshotCase.Source, 
-                        listener.GetSnapshotEventsCount<IDxOrder>(snapshotCase.Symbol, snapshotCase.Source));
+                        listener.GetSnapshotsCount<IDxOrder>(snapshotCase.Symbol));
                 else if (snapshotCase.SnapshotType == typeof(IDxCandle))
                     Console.WriteLine("    symbol {0}: data count: {1}",
                         snapshotCase.Symbol, 
-                        listener.GetSnapshotEventsCount<IDxCandle>(snapshotCase.Symbol, string.Empty));
+                        listener.GetSnapshotsCount<IDxCandle>(snapshotCase.Symbol));
             }
         }
 

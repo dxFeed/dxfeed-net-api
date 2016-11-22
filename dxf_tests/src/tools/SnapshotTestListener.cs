@@ -52,6 +52,8 @@ namespace com.dxfeed.tests.tools
         int eventsTimeout = 120000;
         int eventsSleepTime = 100;
         Func<bool> IsConnected = null;
+        public const string COMPOSITE_BID = "COMPOSITE_BID";
+        public const string COMPOSITE_ASK = "COMPOSITE_ASK";
 
         public SnapshotTestListener(int eventsTimeout, int eventsSleepTime, Func<bool> IsConnected)
         {
@@ -183,6 +185,37 @@ namespace com.dxfeed.tests.tools
             {
                 rwl.ReleaseReaderLock();
             }
+        }
+
+        public int GetSnapshotEventsCount<TE>(string symbol, string source)
+        {
+            rwl.AcquireReaderLock(lockTimeout);
+            try
+            {
+                Dictionary<string, ReceivedSnapshot<TE>> dict = GetDictionary<TE>();
+                if (dict == null)
+                    return 0;
+                bool isCompareSource = typeof(TE) == typeof(IDxOrder) && !string.IsNullOrEmpty(source) &&
+                    !source.Equals(COMPOSITE_ASK) && !source.Equals(COMPOSITE_BID);
+                foreach (ReceivedSnapshot<TE> snapshot in dict.Values)
+                {
+                    if (!snapshot.Symbol.Equals(symbol))
+                        continue;
+                    if (!isCompareSource)
+                        return snapshot.Events.Count;
+                    foreach (IDxOrder order in snapshot.Events)
+                    {
+                        if (order.Source.Equals(source))
+                            return snapshot.Events.Count;
+                    }
+                    return 0;
+                }
+            }
+            finally
+            {
+                rwl.ReleaseReaderLock();
+            }
+            return 0;
         }
 
         #region IDxSnapshotListener implementation

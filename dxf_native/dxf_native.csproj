@@ -127,4 +127,20 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <!-- Copy sources tools -->
+  <Target Name="CopySources">
+    <ItemGroup>
+      <ProjectFile Include="$(MSBuildProjectFile)" />
+    </ItemGroup>
+    <Copy SourceFiles="@(Compile)" DestinationFiles="@(Compile->'$(OutputPath)$(MSBuildProjectName)\%(RelativeDir)%(Filename)%(Extension)')" Retries="5" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(ProjectFile)" DestinationFiles="$(OutputPath)$(MSBuildProjectName)\%(RecursiveDir)%(Filename)%(Extension)" Retries="5" SkipUnchangedFiles="true" />
+  </Target>
+  <!-- Update project version tools -->
+  <Import Project="$(MSBuildExtensionsPath)\ExtensionPack\4.0\MSBuild.ExtensionPack.tasks" Condition="Exists('$(MSBuildExtensionsPath)\ExtensionPack\4.0\MSBuild.ExtensionPack.tasks')" />
+  <Target Name="UpdateVersion">
+    <ItemGroup>
+      <AssemblyInfoFiles Include="$(MSBuildProjectDirectory)\Properties\AssemblyInfo.cs" />
+    </ItemGroup>
+    <AssemblyInfo AssemblyInfoFiles="@(AssemblyInfoFiles)" AssemblyVersion="$(AssemblyVersion)" AssemblyFileVersion="$(AssemblyVersion)" />
+  </Target>
 </Project>

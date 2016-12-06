@@ -155,6 +155,7 @@ namespace com.dxfeed.native.events
         private static readonly Func<IntPtr, int, string, NativeTheoPrice> THEO_PRICE_READER = DxMarshal.ReadTheoPrice;
         private static readonly Func<IntPtr, int, string, NativeUnderlying> UNDERLYING_READER = DxMarshal.ReadUnderlying;
         private static readonly Func<IntPtr, int, string, NativeSeries> SERIES_READER = DxMarshal.ReadSeries;
+        private static readonly Func<IntPtr, int, string, NativeConfiguration> CONFIGURATION_READER = DxMarshal.ReadConfiguration;
 
 
         public static NativeEventBuffer<NativeQuote> CreateQuoteBuf(IntPtr symbol, IntPtr head, int size, EventParams eventParams)
@@ -220,6 +221,11 @@ namespace com.dxfeed.native.events
         public static NativeEventBuffer<NativeSeries> CreateSeriesBuf(IntPtr symbol, IntPtr head, int size, EventParams eventParams)
         {
             return new NativeEventBuffer<NativeSeries>(EventType.Series, symbol, head, size, eventParams, SERIES_READER);
+        }
+
+        public static NativeEventBuffer<NativeConfiguration> CreateConfigurationBuf(IntPtr symbol, IntPtr head, int size, EventParams eventParams)
+        {
+            return new NativeEventBuffer<NativeConfiguration>(EventType.Configuration, symbol, head, size, eventParams, CONFIGURATION_READER);
         }
     }
 }

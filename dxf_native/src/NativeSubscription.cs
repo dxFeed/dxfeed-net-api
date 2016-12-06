@@ -192,6 +192,11 @@ namespace com.dxfeed.native
                     if (eventListener is IDxSeriesListener)
                         (eventListener as IDxSeriesListener).OnSeries<NativeEventBuffer<NativeSeries>, NativeSeries>(seriesBuf);
                     break;
+                case EventType.Configuration:
+                    var configurationBuf = NativeBufferFactory.CreateConfigurationBuf(symbol, data, dataCount, nativeEventParams);
+                    if (eventListener is IDxConfigurationListener)
+                        (eventListener as IDxConfigurationListener).OnConfiguration<NativeEventBuffer<NativeConfiguration>, NativeConfiguration>(configurationBuf);
+                    break;
             }
         }
 

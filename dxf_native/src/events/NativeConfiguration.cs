@@ -30,7 +30,7 @@ namespace com.dxfeed.native.events
                 EventSymbol, Attachment);
         }
 
-        #region Implementation of IDxOrder
+        #region Implementation of IDxConfiguration
 
         /// <summary>
         /// Returns attachment.

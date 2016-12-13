@@ -22,17 +22,11 @@ namespace com.dxfeed.native.events
     {
         private readonly DxOrder order;
         private readonly DxString marketMaker;
-        private readonly string source;
 
         internal unsafe NativeOrder(DxOrder* order, string symbol) : base(order, symbol)
         {
             this.order = *order;
             marketMaker = DxMarshal.ReadDxString(this.order.market_maker);
-
-            fixed (char* charPtr = this.order.source)
-            {
-                source = new string(charPtr);
-            }
         }
 
         public override string ToString()

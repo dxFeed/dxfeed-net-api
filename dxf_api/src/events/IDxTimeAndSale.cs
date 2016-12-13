@@ -34,6 +34,7 @@ namespace com.dxfeed.api.events
     /// Time and Sales are intended to provide information about trades in a continuous time slice
     /// (unlike Trade events which are supposed to provide snapshot about the current last trade).
     /// </summary>
+    [EventTypeAttribute("TimeAndSale")]
     public interface IDxTimeAndSale : IDxMarketEvent
     {
         /// <summary>

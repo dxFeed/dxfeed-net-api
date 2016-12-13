@@ -95,6 +95,8 @@
     <Compile Include="src\events\PriceType.cs" />
     <Compile Include="src\events\Scope.cs" />
     <Compile Include="src\events\IDxMarketEvent.cs" />
+    <Compile Include="src\events\EventTypeAttribute.cs" />
+
     <Compile Include="src\events\EventFlag.cs" />
     <Compile Include="src\events\EventParams.cs" />
     <Compile Include="src\events\IDxCandle.cs" />

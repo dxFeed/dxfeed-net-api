@@ -13,6 +13,7 @@ namespace com.dxfeed.api.events
     /// It represents the most recent information that is available about the corresponding
     /// values on the market at any given moment of time.
     /// </summary>
+    [EventTypeAttribute("Greeks")]
     public interface IDxGreeks : IDxMarketEvent
     {
         /// <summary>

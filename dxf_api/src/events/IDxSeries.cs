@@ -12,6 +12,7 @@ namespace com.dxfeed.api.events
     /// the market. It represents the most recent information that is available
     /// about the corresponding values on the market at any given moment of time.
     /// </summary>
+    [EventTypeAttribute("Series")]
     public interface IDxSeries : IDxMarketEvent
     {
         /// <summary>

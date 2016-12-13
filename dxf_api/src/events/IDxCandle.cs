@@ -16,6 +16,7 @@ namespace com.dxfeed.api.events
     /// from the specified CandleSession with further details of aggregation provided by 
     /// CandleAlignment.
     /// </summary>
+    [EventTypeAttribute("Candle")]
     public interface IDxCandle : IDxEventType<CandleSymbol>
     {
         /// <summary>

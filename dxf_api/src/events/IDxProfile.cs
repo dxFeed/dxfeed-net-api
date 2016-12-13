@@ -8,6 +8,7 @@ using System;
 
 namespace com.dxfeed.api.events
 {
+    [EventTypeAttribute("Profile")]
     public interface IDxProfile : IDxMarketEvent
     {
         double Beta { get; }

@@ -14,6 +14,7 @@ namespace com.dxfeed.api.events
     /// represents the most recent information that is available about spread orders on
     /// the market at any given moment of time.
     /// </summary>
+    [EventTypeAttribute("SpreadOrder")]
     public interface IDxSpreadOrder : IDxOrderBase
     {
         /// <summary>

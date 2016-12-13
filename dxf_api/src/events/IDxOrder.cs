@@ -15,6 +15,7 @@ namespace com.dxfeed.api.events
     /// Order events give information on several levels of details, called scopes - see Scope.
     /// Scope of an order is available via Scope property.
     /// </summary>
+    [EventTypeAttribute("Order")]
     public interface IDxOrder : IDxOrderBase
     {
         /// <summary>

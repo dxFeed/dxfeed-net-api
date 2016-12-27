@@ -100,11 +100,20 @@ namespace com.dxfeed.native.events
         }
 
         /// <summary>
-        /// Returns date time of this event.
+        /// Returns timestamp of this event.
+        /// The timestamp is in milliseconds from midnight, January 1, 1970 UTC.
+        /// </summary>
+        public long TimeStamp
+        {
+            get { return grks.time; }
+        }
+
+        /// <summary>
+        /// Returns UTC date and time of this event.
         /// </summary>
         public DateTime Time
         {
-            get { return TimeConverter.ToUtcDateTime(grks.time); }
+            get { return TimeConverter.ToUtcDateTime(TimeStamp); }
         }
 
         /// <summary>
@@ -131,6 +140,16 @@ namespace com.dxfeed.native.events
         public long Index
         {
             get { return grks.index; }
+        }
+
+        /// <summary>
+        /// Gets transactional event flags.
+        /// See "Event Flags" section from <see cref="IndexedEvent"/>.
+        /// </summary>
+        public int EventFlags
+        {
+            //TODO: implement
+            get { throw new NotImplementedException(); }
         }
 
         #endregion

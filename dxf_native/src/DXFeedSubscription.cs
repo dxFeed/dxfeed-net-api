@@ -5,6 +5,7 @@
 /// http://mozilla.org/MPL/2.0/.
 
 using com.dxfeed.api.events;
+using com.dxfeed.api.util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -145,7 +146,7 @@ namespace com.dxfeed.api
         {
             if (connection == null)
                 throw new ArgumentNullException("connection");
-            subscriptionInstance = connection.CreateSubscription(GetEventsType(typeof(E)), new DXFeedEventHandler(eventListeners, eventListenerLocker));
+            subscriptionInstance = connection.CreateSubscription(EventTypeUtil.GetEventsType(typeof(E)), new DXFeedEventHandler(eventListeners, eventListenerLocker));
         }
 
         /// <summary>
@@ -160,7 +161,7 @@ namespace com.dxfeed.api
         {
             if (connection == null)
                 throw new ArgumentNullException("connection");
-            subscriptionInstance = connection.CreateSubscription(GetEventsType(eventTypes), new DXFeedEventHandler(eventListeners, eventListenerLocker));
+            subscriptionInstance = connection.CreateSubscription(EventTypeUtil.GetEventsType(eventTypes), new DXFeedEventHandler(eventListeners, eventListenerLocker));
         }
 
         public void Dispose()
@@ -311,38 +312,6 @@ namespace com.dxfeed.api
             {
                 eventListeners.Remove(listener);
             }
-        }
-
-        /// <summary>
-        /// Gets enum values of events type by generic class.
-        /// </summary>
-        /// <param name="types">The list of generic class represents events.</param>
-        /// <returns>Enum values of events type by generic class.</returns>
-        /// <exception cref="ArgumentException">If types element is not event class.</exception>
-        private EventType GetEventsType(params Type[] types)
-        {
-            if (types == null)
-                throw new ArgumentNullException("types");
-            EventType events = EventType.None;
-            foreach (Type t in types)
-            {
-                if (t == typeof(IDxTrade))
-                    events |= EventType.Trade;
-                else if (t == typeof(IDxQuote))
-                    events |= EventType.Quote;
-                else if (t == typeof(IDxSummary))
-                    events |= EventType.Summary;
-                else if (t == typeof(IDxProfile))
-                    events |= EventType.Profile;
-                else if (t == typeof(IDxOrder))
-                    events |= EventType.Order;
-                else if (t == typeof(IDxTimeAndSale))
-                    events |= EventType.TimeAndSale;
-                else if (t == typeof(IDxCandle))
-                    events |= EventType.Candle;
-                else throw new ArgumentException("Unknown event type: " + t);
-            }
-            return events;
         }
     }
 }

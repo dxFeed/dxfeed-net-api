@@ -4,6 +4,7 @@
 /// If a copy of the MPL was not distributed with this file, You can obtain one at
 /// http://mozilla.org/MPL/2.0/.
 
+using System;
 using System.Globalization;
 using com.dxfeed.api.events;
 using com.dxfeed.native.api;
@@ -104,6 +105,16 @@ namespace com.dxfeed.native.events
         public long Index
         {
             get { return s.index; }
+        }
+
+        /// <summary>
+        /// Gets transactional event flags.
+        /// See "Event Flags" section from <see cref="IndexedEvent"/>.
+        /// </summary>
+        public int EventFlags
+        {
+            //TODO: implement
+            get { throw new NotImplementedException(); }
         }
 
         #endregion

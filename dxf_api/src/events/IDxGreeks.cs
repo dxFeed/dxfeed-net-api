@@ -14,16 +14,12 @@ namespace com.dxfeed.api.events
     /// values on the market at any given moment of time.
     /// </summary>
     [EventTypeAttribute("Greeks")]
-    public interface IDxGreeks : IDxMarketEvent
+    public interface IDxGreeks : IDxMarketEvent, TimeSeriesEvent<string>, LastingEvent<string>
     {
         /// <summary>
         /// Maximum allowed sequence value. Constant field value.
         /// </summary>
         int MaxSequence { get; }
-        /// <summary>
-        /// Returns date time of this event.
-        /// </summary>
-        DateTime Time { get; }
         /// <summary>
         /// Returns sequence number of this event to distinguish events that have the same time.
         /// This sequence number does not have to be unique and does not need to be sequential.
@@ -63,10 +59,5 @@ namespace com.dxfeed.api.events
         /// Vega is the first derivative of an option price by percentage volatility.
         /// </summary>
         double Vega { get; }
-        /// <summary>
-        /// Returns unique per-symbol index of this event.
-        /// The index is composed of Time and Sequence.
-        /// </summary>
-        long Index { get; }
     }
 }

@@ -75,6 +75,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public int EventFlags
         {
+            //TODO: possible need another implementation
             get { return order.event_flags; }
         }
 

@@ -9,6 +9,7 @@ using System.Globalization;
 using com.dxfeed.api.candle;
 using com.dxfeed.api.events;
 using com.dxfeed.native.api;
+using com.dxfeed.api.extras;
 
 namespace com.dxfeed.native.events
 {
@@ -45,13 +46,25 @@ namespace com.dxfeed.native.events
         #region Implementation of IDxCandle
 
         /// <summary>
-        /// Returns timestamp of the candle in milliseconds.
+        /// Returns timestamp of this event.
+        /// The timestamp is in milliseconds from midnight, January 1, 1970 UTC.
         /// </summary>
-        public long Time
+        public long TimeStamp
         {
             get
             {
                 return candle.time;
+            }
+        }
+
+        /// <summary>
+        /// Returns UTC date and time of this event.
+        /// </summary>
+        public DateTime Time
+        {
+            get
+            {
+                return TimeConverter.ToUtcDateTime(TimeStamp);
             }
         }
 
@@ -219,6 +232,19 @@ namespace com.dxfeed.native.events
             get
             {
                 return candle.open_interest;
+            }
+        }
+
+        /// <summary>
+        /// Gets transactional event flags.
+        /// See "Event Flags" section from <see cref="IndexedEvent"/>.
+        /// </summary>
+        public int EventFlags
+        {
+            get
+            {
+                //TODO: implement
+                throw new NotImplementedException();
             }
         }
 

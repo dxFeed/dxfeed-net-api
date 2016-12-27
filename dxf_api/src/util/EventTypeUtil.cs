@@ -38,5 +38,38 @@ namespace com.dxfeed.api.util
 
             return id;
         }
+
+        /// <summary>
+        /// Gets enum values of events type by generic class.
+        /// </summary>
+        /// <param name="types">The list of generic class represents events.</param>
+        /// <returns>Enum values of events type by generic class.</returns>
+        /// <exception cref="ArgumentException">If types element is not event class.</exception>
+        public static EventType GetEventsType(params Type[] types)
+        {
+            if (types == null)
+                throw new ArgumentNullException("types");
+            EventType events = EventType.None;
+            foreach (Type t in types)
+            {
+                if (t == typeof(IDxTrade))
+                    events |= EventType.Trade;
+                else if (t == typeof(IDxQuote))
+                    events |= EventType.Quote;
+                else if (t == typeof(IDxSummary))
+                    events |= EventType.Summary;
+                else if (t == typeof(IDxProfile))
+                    events |= EventType.Profile;
+                else if (t == typeof(IDxOrder))
+                    events |= EventType.Order;
+                else if (t == typeof(IDxTimeAndSale))
+                    events |= EventType.TimeAndSale;
+                else if (t == typeof(IDxCandle))
+                    events |= EventType.Candle;
+                //TODO: update event types
+                else throw new ArgumentException("Unknown event type: " + t);
+            }
+            return events;
+        }
     }
 }

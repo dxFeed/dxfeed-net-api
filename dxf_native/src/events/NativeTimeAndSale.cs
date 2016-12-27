@@ -70,6 +70,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public int EventFlags
         {
+            //TODO: check event flags
             get { return ts.event_flags; }
         }
 
@@ -134,11 +135,20 @@ namespace com.dxfeed.native.events
         }
 
         /// <summary>
-        /// Returns date time of the original event.
+        /// Returns timestamp of this event.
+        /// The timestamp is in milliseconds from midnight, January 1, 1970 UTC.
+        /// </summary>
+        public long TimeStamp
+        {
+            get { return ts.time; }
+        }
+
+        /// <summary>
+        /// Returns UTC date and time of this event.
         /// </summary>
         public DateTime Time
         {
-            get { return TimeConverter.ToUtcDateTime(ts.time); }
+            get { return TimeConverter.ToUtcDateTime(TimeStamp); }
         }
 
         /// <summary>

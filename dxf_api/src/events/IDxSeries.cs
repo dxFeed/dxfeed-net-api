@@ -13,7 +13,7 @@ namespace com.dxfeed.api.events
     /// about the corresponding values on the market at any given moment of time.
     /// </summary>
     [EventTypeAttribute("Series")]
-    public interface IDxSeries : IDxMarketEvent
+    public interface IDxSeries : IDxMarketEvent, IndexedEvent<string>
     {
         /// <summary>
         /// Returns day id of expiration.
@@ -48,10 +48,5 @@ namespace com.dxfeed.api.events
         /// See the model section for an explanation this simple interest return \( R(\tau) \).
         /// </summary>
         double Interest { get; }
-        /// <summary>
-        /// Returns unique per-symbol index of this series.
-        /// Most significant 32 bits of index contain Expiration value and Sequence.
-        /// </summary>
-        long Index { get; }
     }
 }

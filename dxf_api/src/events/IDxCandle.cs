@@ -17,13 +17,8 @@ namespace com.dxfeed.api.events
     /// CandleAlignment.
     /// </summary>
     [EventTypeAttribute("Candle")]
-    public interface IDxCandle : IDxEventType<CandleSymbol>
+    public interface IDxCandle : TimeSeriesEvent<CandleSymbol>, LastingEvent<CandleSymbol>
     {
-        /// <summary>
-        /// Returns timestamp of the candle in milliseconds.
-        /// Time is measured in milliseconds between the current time and midnight, January 1, 1970 UTC.
-        /// </summary>
-        long Time { get; }
         /// <summary>
         /// Returns sequence number of this event to distinguish events that have the same
         /// Time. This sequence number does not have to be unique and does not need to be 
@@ -70,11 +65,6 @@ namespace com.dxfeed.api.events
         /// Returns date time of the candle.
         /// </summary>
         DateTime DateTime { get; }
-        /// <summary>
-        /// Returns unique per-symbol index of this candle event.
-        /// Candle index is composed of Time and Sequence.
-        /// </summary>
-        long Index { get; }
         /// <summary>
         /// Returns open interest.
         /// </summary>

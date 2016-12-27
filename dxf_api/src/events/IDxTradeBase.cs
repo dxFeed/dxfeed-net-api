@@ -20,7 +20,7 @@ namespace com.dxfeed.api.events
     /// extended trading hours (ETH, pre market and post market trading sessions). It represents
     /// last trade price during ETH and accumulated volume during ETH.
     /// </summary>
-    public interface IDxTradeBase : IDxMarketEvent
+    public interface IDxTradeBase : IDxMarketEvent, LastingEvent<string>
     {
         /// <summary>
         /// Get date time of the last trade.

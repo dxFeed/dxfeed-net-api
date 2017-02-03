@@ -28,6 +28,8 @@ namespace com.dxfeed.native.events
         {
             this.ts = *ts;
             saleCond = DxMarshal.ReadDxString(this.ts.exchange_sale_conditions);
+            //TODO: check event flags
+            EventFlags = this.ts.event_flags;
         }
 
         public override string ToString()
@@ -70,8 +72,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public int EventFlags
         {
-            //TODO: check event flags
-            get { return ts.event_flags; }
+            get; set;
         }
 
         /// <summary>

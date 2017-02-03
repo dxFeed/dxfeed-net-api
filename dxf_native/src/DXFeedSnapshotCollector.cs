@@ -26,12 +26,12 @@ namespace com.dxfeed.api
         IDxTimeAndSaleSnapshotListener,
         IDxSpreadOrderSnapshotListener,
         IDxGreeksSnapshotListener,
-        IDxSeriesSnapshotListener where E : IDxEventType
+        IDxSeriesSnapshotListener 
+        where E : IDxEventType
     {
 
         private List<E> events = new List<E>();
-        private ReaderWriterLock rwl = new ReaderWriterLock();
-        private const int LockTimeout = 5000;
+        private object eventsLock = new object();
         private volatile bool isDone = false;
 
         public DXFeedSnapshotCollector() { }
@@ -112,30 +112,25 @@ namespace com.dxfeed.api
             get
             {
                 List<E> result;
-                rwl.AcquireReaderLock(LockTimeout);
-                try
+                lock(eventsLock)
                 {
                     result = new List<E>(events);
-                }
-                finally
-                {
-                    rwl.ReleaseReaderLock();
                 }
                 return result;
             }
         }
 
+        protected virtual List<E> FilterEvents(List<E> events)
+        {
+            return events;
+        }
+
         private void AddSnapshot(List<E> events)
         {
-            rwl.AcquireWriterLock(LockTimeout);
-            try
+            lock (eventsLock)
             {
-                this.events = events;
+                this.events = FilterEvents(events);
                 isDone = true;
-            }
-            finally
-            {
-                rwl.ReleaseWriterLock();
             }
         }
 

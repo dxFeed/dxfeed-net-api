@@ -24,7 +24,7 @@ namespace com.dxfeed.api.candle
     /// The value that this key shall be set to is equal to
     /// the corresponding {@link #toString() CandlePeriod.ToString()}
     /// </summary>
-    class CandlePeriod : ICandleSymbolAttribute
+    public class CandlePeriod : ICandleSymbolAttribute
     {
         /// <summary>
         /// The number represents default period value.

@@ -23,7 +23,9 @@ namespace com.dxfeed.api
         //TODO: restore AssemblyInfo versions in all projects
         //TODO: update new samples with MSBuild commands
 
-        private static readonly string DEFAULT_ADDRESS = "demo.dxfeed.com:7300";
+        //private static readonly string DEFAULT_ADDRESS = "demo.dxfeed.com:7300";
+        //TODO: temp
+        private static readonly string DEFAULT_ADDRESS = "mddqa.in.devexperts.com:7400";
         private static readonly string DEFAULT_USER = "demo";
         private static readonly string DEFAULT_PASSWORD = "demo";
 
@@ -195,6 +197,36 @@ namespace com.dxfeed.api
 
         /* private methods */
 
+        private class HistoryEventsCompleter<E> : DXFeedSnapshotCollector<E>
+            where E : IndexedEvent
+        {
+            private long fetchTime;
+            private long fromTime;
+            private long toTime;
+
+            public HistoryEventsCompleter(long fetchTime, long fromTime, long toTime) : base()
+            {
+                this.fetchTime = fetchTime;
+                this.fromTime = fromTime;
+                this.toTime = toTime;
+            }
+
+            protected override List<E> FilterEvents(List<E> events)
+            {
+                List<E> result = new List<E>();
+                foreach(E e in events)
+                {
+                    long time = e is TimeSeriesEvent ? (e as TimeSeriesEvent).TimeStamp : 0;
+                    if (time >= fromTime && time <= toTime)
+                    {
+                        e.EventFlags = 0;
+                        result.Add(e);
+                    }
+                }
+                return result;
+            }
+        }
+
         private async Task<List<E>> FetchOrSubscribeFromHistory<E>(object symbol, 
             long fetchTime, long fromTime, long toTime, CancellationToken cancellationToken) 
             where E : IndexedEvent
@@ -202,7 +234,7 @@ namespace com.dxfeed.api
             return await Task.Run(() =>
             {
                 EventType events = EventTypeUtil.GetEventsType(typeof(E));
-                DXFeedSnapshotCollector<E> collector = new DXFeedSnapshotCollector<E>();
+                HistoryEventsCompleter<E> collector = new HistoryEventsCompleter<E>(fetchTime, fromTime, toTime);
 
                 using (var con = new NativeConnection(address, OnDisconnect))
                 {

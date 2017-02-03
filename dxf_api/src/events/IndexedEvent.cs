@@ -107,7 +107,7 @@ namespace com.dxfeed.api.events
         /// Gets transactional event flags.
         /// See "Event Flags" section from <see cref="IndexedEvent"/>.
         /// </summary>
-        int EventFlags { get; }
+        int EventFlags { get; set; }
 
         /// <summary>
         /// Gets unique per-symbol index of this event.

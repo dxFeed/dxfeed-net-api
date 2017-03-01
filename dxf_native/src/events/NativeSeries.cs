@@ -21,6 +21,7 @@ namespace com.dxfeed.native.events
     {
         private readonly DxSeries s;
 
+        //TODO: add event flags argument
         internal unsafe NativeSeries(DxSeries* s, string symbol) : base(symbol)
         {
             this.s = *s;
@@ -114,7 +115,7 @@ namespace com.dxfeed.native.events
         public int EventFlags
         {
             //TODO: implement
-            get { throw new NotImplementedException(); }
+            get; set;
         }
 
         #endregion

@@ -22,6 +22,7 @@ namespace com.dxfeed.native.events
         private readonly DxGreeks grks;
         private static readonly int maxSequence = (1 << 22) - 1;
 
+        //TODO: add event flags argument
         internal unsafe NativeGreeks(DxGreeks* grks, string symbol) : base(symbol)
         {
             this.grks = *grks;
@@ -149,7 +150,7 @@ namespace com.dxfeed.native.events
         public int EventFlags
         {
             //TODO: implement
-            get { throw new NotImplementedException(); }
+            get; set;
         }
 
         #endregion

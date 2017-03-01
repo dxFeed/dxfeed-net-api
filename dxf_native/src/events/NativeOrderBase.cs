@@ -24,6 +24,7 @@ namespace com.dxfeed.native.events
         private readonly DxOrder order;
         private readonly OrderSource source;
 
+        //TODO: add event flags argument
         internal unsafe NativeOrderBase(DxOrder* order, string symbol) : base(symbol)
         {
             this.order = *order;
@@ -32,6 +33,9 @@ namespace com.dxfeed.native.events
             {
                 source = OrderSource.ValueOf(new string(charPtr));
             }
+
+            //TODO: possible need another implementation
+            EventFlags = order->event_flags;
         }
 
         internal unsafe NativeOrderBase(DxSpreadOrder* order, string symbol) : base(symbol)
@@ -75,8 +79,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public int EventFlags
         {
-            //TODO: possible need another implementation
-            get { return order.event_flags; }
+            get; set;
         }
 
         /// <summary>

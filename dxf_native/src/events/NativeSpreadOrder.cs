@@ -22,6 +22,7 @@ namespace com.dxfeed.native.events
         private readonly DxSpreadOrder order;
         private readonly DxString spreadOrder;
 
+        //TODO: add event flags argument
         internal unsafe NativeSpreadOrder(DxSpreadOrder* order, string symbol) : base(order, symbol)
         {
             this.order = *order;

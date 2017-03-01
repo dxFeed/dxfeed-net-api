@@ -200,6 +200,7 @@ namespace com.dxfeed.api
         private class HistoryEventsCompleter<E> : DXFeedSnapshotCollector<E>
             where E : IndexedEvent
         {
+            //TODO: fetch
             private long fetchTime;
             private long fromTime;
             private long toTime;
@@ -252,7 +253,9 @@ namespace com.dxfeed.api
                     }
                 }
 
-                return collector.Events;
+                List<E> eventsList = collector.Events;
+                eventsList.Reverse();
+                return eventsList;
             }, cancellationToken);
         }
 

@@ -23,6 +23,7 @@ namespace com.dxfeed.native.events
         private readonly DxOrder order;
         private readonly DxString marketMaker;
 
+        //TODO: add event flags argument
         internal unsafe NativeOrder(DxOrder* order, string symbol) : base(order, symbol)
         {
             this.order = *order;

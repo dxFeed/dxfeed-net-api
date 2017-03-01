@@ -25,6 +25,7 @@ namespace com.dxfeed.native.events
         private readonly DxCandle candle;
         private string symbolString;
 
+        //TODO: add event flags argument
         internal unsafe NativeCandle(DxCandle* c, string symbol)
         {
             candle = *c;
@@ -241,11 +242,8 @@ namespace com.dxfeed.native.events
         /// </summary>
         public int EventFlags
         {
-            get
-            {
-                //TODO: implement
-                throw new NotImplementedException();
-            }
+            //TODO: implement
+            get; set;
         }
 
         #endregion

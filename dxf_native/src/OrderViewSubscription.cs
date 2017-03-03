@@ -1,8 +1,10 @@
-﻿/// Copyright (C) 2010-2016 Devexperts LLC
+﻿﻿#region License
+/// Copyright (C) 2010-2016 Devexperts LLC
 ///
 /// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
 /// If a copy of the MPL was not distributed with this file, You can obtain one at
 /// http://mozilla.org/MPL/2.0/.
+#endregion
 
 using System.Collections.Generic;
 using com.dxfeed.api;
@@ -13,6 +15,12 @@ using com.dxfeed.api.extras;
 
 namespace com.dxfeed.native
 {
+    /// <summary>
+    ///   <para>
+    ///     Client will be notified about first combined snapshot from different
+    ///     sources, and, after that, about separate orders
+    ///   </para>
+    /// </summary>
     public class OrderViewSubscription : IDxSubscription, IDxFeedListener
     {
         private IDxOrderViewListener listener = null;
@@ -20,11 +28,11 @@ namespace com.dxfeed.native
         private IDxSubscription subscription = null;
 
         /// <summary>
-        /// All snapshots, acsess by unique snapshot key (ulong)
+        ///   All snapshots, acsess by unique snapshot key (ulong)
         /// </summary>
         private IDictionary<ulong, EventBuffer<IDxOrder>> snapshots = new Dictionary<ulong, EventBuffer<IDxOrder>>();
         /// <summary>
-        /// Map between Symbol + Source string and unique snapashot key in snapshots dictionary
+        ///   Map between Symbol + Source string and unique snapashot key in snapshots dictionary
         /// </summary>
         private IDictionary<string, IList<ulong>> symbolSourceToKey = new Dictionary<string, IList<ulong>>();
 
@@ -32,20 +40,25 @@ namespace com.dxfeed.native
         private ISet<string> symbols = new SortedSet<string>();
 
         /// <summary>
-        /// All received snapshots, empty set means no received snapshots yet.
-        /// Key - means symbol, value - set of received snapshots sources.
+        ///   All received snapshots, empty set means no received snapshots yet.
+        ///   Key - means symbol, value - set of received snapshots sources.
         /// </summary>
         private IDictionary<string, ISet<string>> receivedSnapshots = new Dictionary<string, ISet<string>>();
 
         /// <summary>
-        /// State of the order view subscription
-        ///     Update - when snapshot begins for one of the source in order view
-        ///     Ready  - when snapshot ends for all sources in order view
+        ///   State of the order view subscription
+        ///       <c>Update</c>  - when snapshot begins for one of the source in order view
+        ///       <c>Ready</c>   - when snapshot ends for all sources in order view
+        ///       <c>Pending</c> - when updating and received <see cref="EventFlag:TxPending"/> - begin collecting events
         /// </summary>
-        private enum OrderViewState { Update, Ready };
+        [Flags]
+        private enum OrderViewState : int { Update = 0x01, Ready = 0x02, Pending = 0x04 };
+
         /// <summary>
-        /// The dictionary os states for each order view in the format:
+        ///   The dictionary os states for each order view in the format:
+        ///   <code>
         ///     map[symbol-of-order-view] = state
+        ///   </code>
         /// </summary>
         private IDictionary<string, OrderViewState> orderViewStates = new Dictionary<string, OrderViewState>();
 
@@ -100,7 +113,7 @@ namespace com.dxfeed.native
             throw new InvalidOperationException(AddCandleSymbolErrorText);
         }
 
-        private void removeSymbolSourcePair(string symbolSource)
+        private void RemoveSymbolSourcePair(string symbolSource)
         {
             if (symbolSourceToKey.ContainsKey(symbolSource))
             {
@@ -126,10 +139,10 @@ namespace com.dxfeed.native
                 receivedSnapshots.Remove(upperSymbol);
                 foreach (var source in sources)
                 {
-                    removeSymbolSourcePair(upperSymbol + source);
+                    RemoveSymbolSourcePair(upperSymbol + source);
                 }
                 // removing snapshots with empty source string i.e. ""
-                removeSymbolSourcePair(upperSymbol);
+                RemoveSymbolSourcePair(upperSymbol);
                 this.symbols.Remove(upperSymbol);
                 orderViewStates.Remove(upperSymbol);
             }
@@ -250,6 +263,14 @@ namespace com.dxfeed.native
         {
             string symbol = buf.Symbol.ToString().ToUpper();
 
+            System.IO.File.AppendAllText(symbol + "-BeforeOrderView.txt", string.Format("F-s:{0} SK:{1} ", buf.EventParams.Flags, buf.EventParams.SnapshotKey));
+            Console.Write("F-s:{0} SK:{1} ", buf.EventParams.Flags, buf.EventParams.SnapshotKey);
+            foreach (var t in buf)
+            {
+                System.IO.File.AppendAllText(symbol + "-BeforeOrderView.txt", string.Format("{0} {1}\n", buf.Symbol, t));
+                Console.WriteLine(string.Format("{0} {1}", buf.Symbol, t));
+            }
+
             var enmrtr = buf.GetEnumerator();
             enmrtr.MoveNext();
             string source = enmrtr.Current.Source.Name.ToUpper();
@@ -278,14 +299,43 @@ namespace com.dxfeed.native
                 // third condition for case when snapshots sent, but single event with SnapshotEnd flag appears
                 // it will be sent as separate snapshot
                 if (orderViewStates.ContainsKey(symbol) &&
-                    orderViewStates[symbol] == OrderViewState.Ready &&
-                    !buf.EventParams.Flags.HasFlag(EventFlag.SnapshotEnd)) 
+                    orderViewStates[symbol].HasFlag(OrderViewState.Ready) &&
+                    !buf.EventParams.Flags.HasFlag(EventFlag.SnapshotEnd))
                 {
-                    listener.OnUpdate<TB, TE>(buf);
+                    if (buf.EventParams.Flags.HasFlag(EventFlag.TxPending) || orderViewStates[symbol].HasFlag(OrderViewState.Pending))
+                    {
+                        // if pending begins
+                        if (buf.EventParams.Flags.HasFlag(EventFlag.TxPending) && !orderViewStates[symbol].HasFlag(OrderViewState.Pending))
+                        {
+                            orderViewStates[symbol] |= OrderViewState.Pending;
+                        }
+                        foreach (var order in buf)
+                        {
+                            snapshots[buf.EventParams.SnapshotKey].AddEvent(order);
+                        }
+                        // if pending ends
+                        if (!buf.EventParams.Flags.HasFlag(EventFlag.TxPending) && orderViewStates[symbol].HasFlag(OrderViewState.Pending))
+                        {
+                            orderViewStates[symbol] -= OrderViewState.Pending;
+
+                            EventBuffer<IDxOrder> buffer = new EventBuffer<IDxOrder>(buf.EventType, buf.Symbol, buf.EventParams);
+                            buffer.EventParams = buf.EventParams;
+                            foreach (var order in snapshots[buf.EventParams.SnapshotKey])
+                            {
+                                buffer.AddEvent(order);
+                            }
+                            snapshots[buf.EventParams.SnapshotKey].Clear();
+                            listener.OnUpdate<IDxEventBuf<IDxOrder>, IDxOrder>(buffer);
+                        }
+                    }
+                    else
+                    {
+                        listener.OnUpdate<TB, TE>(buf);
+                    }
                     return;
                 }
 
-                //...otherwise continue fill current snapshot
+                // ...otherwise continue fill current snapshot
                 foreach (var order in buf)
                 {
                     // order with zeros and NaN's, same as RemoveEvent flag

@@ -46,10 +46,10 @@ namespace com.dxfeed.native
         private IDictionary<string, ISet<string>> receivedSnapshots = new Dictionary<string, ISet<string>>();
 
         /// <summary>
-        ///   State of the order view subscription
-        ///       <c>Update</c>  - when snapshot begins for one of the source in order view
-        ///       <c>Ready</c>   - when snapshot ends for all sources in order view
-        ///       <c>Pending</c> - when updating and received <see cref="EventFlag:TxPending"/> - begin collecting events
+        ///   States of the order view subscription:
+        ///     <c>Update</c>  - when snapshot begins for one of the source in order view
+        ///     <c>Ready</c>   - when snapshot ends for all sources in order view
+        ///     <c>Pending</c> - when updating and received <see cref="EventFlag:TxPending"/> - begin collecting events
         /// </summary>
         [Flags]
         private enum OrderViewState : int { Update = 0x01, Ready = 0x02, Pending = 0x04 };
@@ -262,14 +262,6 @@ namespace com.dxfeed.native
             where TE : IDxOrder
         {
             string symbol = buf.Symbol.ToString().ToUpper();
-
-            System.IO.File.AppendAllText(symbol + "-BeforeOrderView.txt", string.Format("F-s:{0} SK:{1} ", buf.EventParams.Flags, buf.EventParams.SnapshotKey));
-            Console.Write("F-s:{0} SK:{1} ", buf.EventParams.Flags, buf.EventParams.SnapshotKey);
-            foreach (var t in buf)
-            {
-                System.IO.File.AppendAllText(symbol + "-BeforeOrderView.txt", string.Format("{0} {1}\n", buf.Symbol, t));
-                Console.WriteLine(string.Format("{0} {1}", buf.Symbol, t));
-            }
 
             var enmrtr = buf.GetEnumerator();
             enmrtr.MoveNext();

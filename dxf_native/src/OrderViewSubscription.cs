@@ -1,9 +1,9 @@
 ﻿﻿#region License
-/// Copyright (C) 2010-2016 Devexperts LLC
-///
-/// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-/// If a copy of the MPL was not distributed with this file, You can obtain one at
-/// http://mozilla.org/MPL/2.0/.
+// Copyright (C) 2010-2016 Devexperts LLC
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at
+// http://mozilla.org/MPL/2.0/.
 #endregion
 
 using System.Collections.Generic;
@@ -21,18 +21,18 @@ namespace com.dxfeed.native
     ///     sources, and, after that, about separate orders
     ///   </para>
     /// </summary>
-    public class OrderViewSubscription : IDxSubscription, IDxFeedListener
+    public class OrderViewSubscription : IDxSubscription, IDxOrderListener
     {
         private IDxOrderViewListener listener = null;
         private IDxConnection connection = null;
         private IDxSubscription subscription = null;
 
         /// <summary>
-        ///   All snapshots, acsess by unique snapshot key (ulong)
+        ///   All snapshots, acsess by unique snapshot key (<see cref="ulong"/>)
         /// </summary>
         private IDictionary<ulong, EventBuffer<IDxOrder>> snapshots = new Dictionary<ulong, EventBuffer<IDxOrder>>();
         /// <summary>
-        ///   Map between Symbol + Source string and unique snapashot key in snapshots dictionary
+        ///   Map between Symbol + Source string and unique snapashot key in <see cref="snapshots"/> dictionary
         /// </summary>
         private IDictionary<string, IList<ulong>> symbolSourceToKey = new Dictionary<string, IList<ulong>>();
 
@@ -47,9 +47,15 @@ namespace com.dxfeed.native
 
         /// <summary>
         ///   States of the order view subscription:
+        ///   <para>
         ///     <c>Update</c>  - when snapshot begins for one of the source in order view
+        ///   </para>
+        ///   <para>
         ///     <c>Ready</c>   - when snapshot ends for all sources in order view
-        ///     <c>Pending</c> - when updating and received <see cref="EventFlag:TxPending"/> - begin collecting events
+        ///   </para>
+        ///   <para>
+        ///     <c>Pending</c> - when updating and received <see cref="EventFlag.TxPending"/> - begin collecting events
+        ///   </para>
         /// </summary>
         [Flags]
         private enum OrderViewState : int { Update = 0x01, Ready = 0x02, Pending = 0x04 };
@@ -66,6 +72,11 @@ namespace com.dxfeed.native
             with AddSource or SetSource before calling this method.";
         private const string AddCandleSymbolErrorText = "Candle symbols is not allowed for OrderViewSubscription.";
 
+        /// <summary>
+        ///   Constructor
+        /// </summary>
+        /// <param name="connection"></param>
+        /// <param name="listener"></param>
         public OrderViewSubscription(IDxConnection connection, IDxOrderViewListener listener)
         {
             this.connection = connection;
@@ -74,6 +85,16 @@ namespace com.dxfeed.native
 
         #region Implementation of IDxSubscription
 
+        /// <summary>
+        ///   Add a symbol to subscription
+        /// </summary>
+        /// <param name="symbol">symbol</param>
+        /// <exception cref="ArgumentException">Invalid symbol parameter</exception>
+        /// <exception cref="InvalidOperationException">
+        ///   You try to add symbol before adding source via <see cref="AddSource(string[])"/> or
+        ///   <see cref="SetSource(string[])"/> methods i.e. subscription is <c>null</c>
+        /// </exception>
+        /// <exception cref="DxException"></exception>
         public void AddSymbol(string symbol)
         {
             if (subscription == null)
@@ -87,11 +108,29 @@ namespace com.dxfeed.native
             receivedSnapshots.Add(symbol.ToUpper(), new SortedSet<string>());
         }
 
+        /// <summary>
+        ///   Inherited from <see cref="IDxSubscription"/>
+        ///   This method is not allowed. Throws exception.
+        /// </summary>
+        /// <param name="symbol">candle symbol</param>
+        /// <exception cref="InvalidOperationException">
+        ///   Candle symbols is not allowed for <see cref="OrderViewSubscription"/>
+        /// </exception>
         public void AddSymbol(CandleSymbol symbol)
         {
             throw new InvalidOperationException(AddCandleSymbolErrorText);
         }
 
+        /// <summary>
+        ///   Add multiply symbols to subscription.
+        /// </summary>
+        /// <param name="symbols">list of symbols</param>
+        /// <exception cref="ArgumentException">Invalid symbol parameter</exception>
+        /// <exception cref="InvalidOperationException">
+        ///   You try to add symbols before adding source via <see cref="AddSource(string[])"/> or
+        ///   <see cref="SetSource(string[])"/> methods i.e. subscription is <c>null</c>
+        /// </exception>
+        /// <exception cref="DxException"></exception>
         public void AddSymbols(params string[] symbols)
         {
             if (subscription == null)
@@ -108,6 +147,14 @@ namespace com.dxfeed.native
             }
         }
 
+        /// <summary>
+        ///   Inherited from <see cref="IDxSubscription"/>
+        ///   This method is not allowed. Throws exception.
+        /// </summary>
+        /// <param name="symbols">list of symbols</param>
+        /// <exception cref="InvalidOperationException">
+        ///   Candle symbols is not allowed for <see cref="OrderViewSubscription"/>
+        /// </exception>
         public void AddSymbols(params CandleSymbol[] symbols)
         {
             throw new InvalidOperationException(AddCandleSymbolErrorText);
@@ -126,6 +173,12 @@ namespace com.dxfeed.native
             }
         }
 
+        /// <summary>
+        ///   Remove multiply symbols from subscription.
+        /// </summary>
+        /// <param name="symbols">list of symbols</param>
+        /// <exception cref="ArgumentException">Invalid symbol parameter</exception>
+        /// <exception cref="DxException"></exception>
         public void RemoveSymbols(params string[] symbols)
         {
             if (subscription == null)
@@ -148,11 +201,29 @@ namespace com.dxfeed.native
             }
         }
 
+        /// <summary>
+        ///   Inherited from <see cref="IDxSubscription"/>
+        ///   This method is not allowed. Throws exception.
+        /// </summary>
+        /// <param name="symbols">list of symbols</param>
+        /// <exception cref="InvalidOperationException">
+        ///   Candle symbols is not allowed for <see cref="OrderViewSubscription"/>
+        /// </exception>
         public void RemoveSymbols(params CandleSymbol[] symbols)
         {
             throw new InvalidOperationException(AddCandleSymbolErrorText);
         }
 
+        /// <summary>
+        ///   Set multiply symbols to subscription.
+        /// </summary>
+        /// <param name="symbols">list of symbols</param>
+        /// <exception cref="ArgumentException">Invalid symbol parameter</exception>
+        /// <exception cref="InvalidOperationException">
+        ///   You try to set symbols before adding source via <see cref="AddSource(string[])"/> or
+        ///   <see cref="SetSource(string[])"/> methods i.e. subscription is <c>null</c>
+        /// </exception>
+        /// <exception cref="DxException"></exception>
         public void SetSymbols(params string[] symbols)
         {
             if (subscription == null)
@@ -173,11 +244,23 @@ namespace com.dxfeed.native
             orderViewStates.Clear();
         }
 
+        /// <summary>
+        ///   Inherited from <see cref="IDxSubscription"/>
+        ///   This method is not allowed. Throws exception.
+        /// </summary>
+        /// <param name="symbols">list of symbols</param>
+        /// <exception cref="InvalidOperationException">
+        ///   Candle symbols is not allowed for <see cref="OrderViewSubscription"/>
+        /// </exception>
         public void SetSymbols(params CandleSymbol[] symbols)
         {
             throw new InvalidOperationException(AddCandleSymbolErrorText);
         }
 
+        /// <summary>
+        ///   Clear all symbols from subscription.
+        /// </summary>
+        /// <exception cref="DxException"></exception>
         public void Clear()
         {
             subscription.Clear();
@@ -188,6 +271,11 @@ namespace com.dxfeed.native
             orderViewStates.Clear();
         }
 
+        /// <summary>
+        ///   Get all symbols list from subscription.
+        /// </summary>
+        /// <returns>list of subscribed symbols</returns>
+        /// <exception cref="DxException"></exception>
         public IList<string> GetSymbols()
         {
             if (subscription == null)
@@ -197,11 +285,35 @@ namespace com.dxfeed.native
             return subscription.GetSymbols();
         }
 
+        /// <summary>
+        ///   Sets order source to subscription.
+        /// </summary>
+        /// <remarks>
+        ///   This method calls <see cref="SetSource(string[])"/> and can be called only one times
+        /// </remarks>
+        /// <param name="sources">list of souces</param>
+        /// <exception cref="ArgumentException">Invalid source parameter</exception>
+        /// <exception cref="InvalidOperationException">
+        ///   Sources can be configured for this subscription only once
+        /// </exception>
+        /// <exception cref="DxException"></exception>
         public void AddSource(params string[] sources)
         {
             SetSource(sources);
         }
 
+        /// <summary>
+        ///   Sets order source to subscription.
+        /// </summary>
+        /// <remarks>
+        ///   This method can be called only one times
+        /// </remarks>
+        /// <param name="sources">list of souces</param>
+        /// <exception cref="ArgumentException">Invalid source parameter</exception>
+        /// <exception cref="InvalidOperationException">
+        ///   Sources can be configured for this subscription only once
+        /// </exception>
+        /// <exception cref="DxException"></exception>
         public void SetSource(params string[] sources)
         {
             if (subscription != null)
@@ -221,6 +333,9 @@ namespace com.dxfeed.native
         #region IDisposable Support
         private bool disposedValue = false; // To detect redundant calls
 
+        /// <summary>
+        ///   This code added to correctly implement the disposable pattern.
+        /// </summary>
         protected virtual void Dispose(bool disposing)
         {
             if (!disposedValue)
@@ -237,7 +352,9 @@ namespace com.dxfeed.native
             }
         }
 
-        // This code added to correctly implement the disposable pattern.
+        /// <summary>
+        ///   This code added to correctly implement the disposable pattern.
+        /// </summary>
         public void Dispose()
         {
             // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
@@ -245,18 +362,14 @@ namespace com.dxfeed.native
         }
         #endregion
 
-        #region Implementation of IDxFeedListener
+        #region Implementation of IDxOrderListener
 
-        public void OnQuote<TB, TE>(TB buf)
-            where TB : IDxEventBuf<TE>
-            where TE : IDxQuote
-        { }
-
-        public void OnTrade<TB, TE>(TB buf)
-            where TB : IDxEventBuf<TE>
-            where TE : IDxTrade
-        { }
-
+        /// <summary>
+        ///   
+        /// </summary>
+        /// <typeparam name="TB">Event buffer type.</typeparam>
+        /// <typeparam name="TE">Event type.</typeparam>
+        /// <param name="buf">Event buffer object.</param>
         public void OnOrder<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
             where TE : IDxOrder
@@ -311,7 +424,6 @@ namespace com.dxfeed.native
                             orderViewStates[symbol] -= OrderViewState.Pending;
 
                             EventBuffer<IDxOrder> buffer = new EventBuffer<IDxOrder>(buf.EventType, buf.Symbol, buf.EventParams);
-                            buffer.EventParams = buf.EventParams;
                             foreach (var order in snapshots[buf.EventParams.SnapshotKey])
                             {
                                 buffer.AddEvent(order);
@@ -358,7 +470,7 @@ namespace com.dxfeed.native
                         continue;
                     }
                     // ...or just add events
-                    snapshots[buf.EventParams.SnapshotKey].AddEvent(order);
+                    snapshots[buf.EventParams.SnapshotKey].ReplaceOrAdd(order);
                 }
                 // no flags no actions
                 if (buf.EventParams.Flags == 0)
@@ -465,21 +577,6 @@ namespace com.dxfeed.native
                 orderViewStates[symbol] = OrderViewState.Ready;
             }
         }
-
-        public void OnProfile<TB, TE>(TB buf)
-            where TB : IDxEventBuf<TE>
-            where TE : IDxProfile
-        { }
-
-        public void OnFundamental<TB, TE>(TB buf)
-            where TB : IDxEventBuf<TE>
-            where TE : IDxSummary
-        { }
-
-        public void OnTimeAndSale<TB, TE>(TB buf)
-            where TB : IDxEventBuf<TE>
-            where TE : IDxTimeAndSale
-        { }
         #endregion
     }
 }

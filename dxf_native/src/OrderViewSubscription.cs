@@ -31,6 +31,9 @@ namespace com.dxfeed.native
         ///   All snapshots, acsess by unique snapshot key (<see cref="ulong"/>)
         /// </summary>
         private IDictionary<ulong, EventBuffer<IDxOrder>> snapshots = new Dictionary<ulong, EventBuffer<IDxOrder>>();
+        private enum SnapshotState { Unbroken, Broken };
+        private IDictionary<ulong, SnapshotState> snapshotsStates = new Dictionary<ulong, SnapshotState>();
+
         /// <summary>
         ///   Map between Symbol + Source string and unique snapashot key in <see cref="snapshots"/> dictionary
         /// </summary>
@@ -472,6 +475,14 @@ namespace com.dxfeed.native
                     // ...or just add events
                     snapshots[buf.EventParams.SnapshotKey].ReplaceOrAdd(order);
                 }
+
+                if (buf.EventParams.Flags == 0 && snapshotsStates[buf.EventParams.SnapshotKey] == SnapshotState.Broken)
+                {
+                    snapshotsStates[buf.EventParams.SnapshotKey] = SnapshotState.Unbroken;
+                    SnapshotEndFlagReceived<TB, TE>(buf);
+                    return;
+                }
+
                 // no flags no actions
                 if (buf.EventParams.Flags == 0)
                 {
@@ -493,9 +504,16 @@ namespace com.dxfeed.native
                     }
                 }
 
-                if (buf.EventParams.Flags.HasFlag(EventFlag.SnapshotEnd) || buf.EventParams.Flags.HasFlag(EventFlag.SnapshotSnip))
+                if ((buf.EventParams.Flags.HasFlag(EventFlag.SnapshotEnd) || buf.EventParams.Flags.HasFlag(EventFlag.SnapshotSnip)) 
+                    && !buf.EventParams.Flags.HasFlag(EventFlag.TxPending))
                 {
                     SnapshotEndFlagReceived<TB, TE>(buf);
+                    return;
+                }
+                else
+                {
+                    // snapshot is broken
+                    snapshotsStates[buf.EventParams.SnapshotKey] = SnapshotState.Broken;
                     return;
                 }
             }
@@ -513,6 +531,7 @@ namespace com.dxfeed.native
                         }
                     }
                     snapshots.Add(buf.EventParams.SnapshotKey, outputBuffer);
+                    snapshotsStates.Add(buf.EventParams.SnapshotKey, SnapshotState.Unbroken);
                     string symbolSource = symbol + source;
                     if (symbolSourceToKey.ContainsKey(symbolSource))
                     {

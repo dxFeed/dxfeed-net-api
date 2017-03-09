@@ -6,12 +6,13 @@
 // http://mozilla.org/MPL/2.0/.
 #endregion
 
+using System;
 using System.Collections.Generic;
 using com.dxfeed.api;
 using com.dxfeed.api.candle;
 using com.dxfeed.api.events;
-using System;
 using com.dxfeed.api.extras;
+using com.dxfeed.native.events;
 
 namespace com.dxfeed.native
 {
@@ -419,7 +420,21 @@ namespace com.dxfeed.native
                         }
                         foreach (var order in buf)
                         {
-                            snapshots[buf.EventParams.SnapshotKey].AddEvent(order);
+                            if (buf.EventParams.Flags.HasFlag(EventFlag.RemoveEvent))
+                            {
+                                NativeOrder no = new NativeOrder(order)
+                                {
+                                    Size = 0,
+                                    Price = double.NaN,
+                                    Time = TimeConverter.ToUtcDateTime(0),
+                                    Sequence = 0,
+                                    ExchangeCode = '\0',
+                                    Count = 0
+                                };
+                                snapshots[buf.EventParams.SnapshotKey].AddEvent(no);
+                            }
+                            else
+                                snapshots[buf.EventParams.SnapshotKey].AddEvent(order);
                         }
                         // if pending ends
                         if (!buf.EventParams.Flags.HasFlag(EventFlag.TxPending) && orderViewStates[symbol].HasFlag(OrderViewState.Pending))

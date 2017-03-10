@@ -1,8 +1,10 @@
-﻿/// Copyright (C) 2010-2016 Devexperts LLC
-///
-/// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-/// If a copy of the MPL was not distributed with this file, You can obtain one at
-/// http://mozilla.org/MPL/2.0/.
+﻿#region License
+// Copyright (C) 2010-2016 Devexperts LLC
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at
+// http://mozilla.org/MPL/2.0/.
+#endregion
 
 using System;
 using System.Collections.Generic;
@@ -11,15 +13,19 @@ using System.Text;
 namespace com.dxfeed.api.events
 {
     /// <summary>
-    /// Identifies source of Order and SpreadOrder events.
-    /// There are the following kinds of order sources:
-    /// 
-    /// Synthetic sources COMPOSITE_BID, COMPOSITE_ASK, REGIONAL_BID, and REGIONAL_ASK are provided 
-    /// for convenience of a consolidated order book and are automatically generated based on the 
-    /// corresponding Quote events.
-    /// 
-    /// Aggregate sources AGGREGATE_BID and AGGREGATE_ASK provide futures depth (aggregated by 
-    /// price level) and NASDAQ Level II (top of book for each market maker).
+    /// <para>
+    ///   Identifies source of <see cref="IDxOrder"/> and <see cref="IDxSpreadOrder"/> events.
+    ///   There are the following kinds of order sources:
+    /// </para>
+    /// <para>
+    ///   Synthetic sources COMPOSITE_BID, COMPOSITE_ASK, REGIONAL_BID, and REGIONAL_ASK are provided 
+    ///   for convenience of a consolidated order book and are automatically generated based on the 
+    ///   corresponding Quote events.
+    /// </para>
+    /// <para>
+    ///   Aggregate sources AGGREGATE_BID and AGGREGATE_ASK provide futures depth (aggregated by 
+    ///   price level) and NASDAQ Level II (top of book for each market maker).
+    /// </para>
     /// </summary>
     public class OrderSource : IComparable
     {
@@ -27,95 +33,95 @@ namespace com.dxfeed.api.events
         private static Dictionary<string, OrderSource> sourcesByName = new Dictionary<string, OrderSource>();
 
         /// <summary>
-        /// Maximal source identifier that is supported by Order and SpreadOrder.
+        ///   Maximal source identifier that is supported by <see cref="IDxOrder"/> and <see cref="IDxSpreadOrder"/>.
         /// </summary>
         public static readonly int MAX_SOURCE_ID = (1 << 23) - 1;
 
         /// <summary>
-        /// Bid side of a composite Quote.
-        /// It is a synthetic source.
-        /// The subscription on composite Quote event is observed when this source is subscribed to.
+        ///   Bid side of a composite <see cref="IDxQuote"/>.
+        ///   It is a synthetic source.
+        ///   The subscription on composite <see cref="IDxQuote"/> event is observed when this source is subscribed to.
         /// </summary>
         public static readonly OrderSource COMPOSITE_BID = new OrderSource(1, "COMPOSITE_BID");
 
         /// <summary>
-        /// Ask side of a composite Quote.
-        /// It is a synthetic source.
-        /// The subscription on composite Quote event is observed when this source is subscribed to.
+        ///   Ask side of a composite <see cref="IDxQuote"/>.
+        ///   It is a synthetic source.
+        ///   The subscription on composite <see cref="IDxQuote"/> event is observed when this source is subscribed to.
         /// </summary>
         public static readonly OrderSource COMPOSITE_ASK = new OrderSource(2, "COMPOSITE_ASK");
 
         /// <summary>
-        /// Bid side of a regional Quote.
-        /// It is a synthetic source.
-        /// The subscription on regional Quote event is observed when this source is subscribed to.
+        ///   Bid side of a regional <see cref="IDxQuote"/>.
+        ///   It is a synthetic source.
+        ///   The subscription on regional <see cref="IDxQuote"/> event is observed when this source is subscribed to.
         /// </summary>
         public static readonly OrderSource REGIONAL_BID = new OrderSource(3, "REGIONAL_BID");
 
         /// <summary>
-        /// Ask side of a regional Quote.
-        /// It is a synthetic source.
-        /// The subscription on regional Quote event is observed when this source is subscribed to.
+        ///   Ask side of a regional <see cref="IDxQuote"/>.
+        ///   It is a synthetic source.
+        ///   The subscription on regional <see cref="IDxQuote"/> event is observed when this source is subscribed to.
         /// </summary>
         public static readonly OrderSource REGIONAL_ASK = new OrderSource(4, "REGIONAL_ASK");
 
         /// <summary>
-        /// Bid side of an aggregate order book (futures depth and NASDAQ Level II).
+        ///   Bid side of an aggregate order book (futures depth and NASDAQ Level II).
         /// </summary>
         public static readonly OrderSource AGGREGATE_BID = new OrderSource(5, "AGGREGATE_BID");
 
         /// <summary>
-        /// Ask side of an aggregate order book (futures depth and NASDAQ Level II).
+        ///   Ask side of an aggregate order book (futures depth and NASDAQ Level II).
         /// </summary>
         public static readonly OrderSource AGGREGATE_ASK = new OrderSource(6, "AGGREGATE_ASK");
 
         /// <summary>
-        /// Default source for publishing custom order books.
+        ///   Default source for publishing custom order books.
         /// </summary>
         public static readonly OrderSource DEFAULT = new OrderSource(0, "DEFAULT");
 
         /// <summary>
-        /// NASDAQ Total View.
+        ///   NASDAQ Total View.
         /// </summary>
         public static readonly OrderSource NTV = new OrderSource("NTV");
 
         /// <summary>
-        /// International Securities Exchange.
+        ///   International Securities Exchange.
         /// </summary>
         public static readonly OrderSource ISE = new OrderSource("ISE");
 
         /// <summary>
-        /// Direct-Edge EDGA Exchange.
+        ///   Direct-Edge EDGA Exchange.
         /// </summary>
         public static readonly OrderSource DEA = new OrderSource("DEA");
 
         /// <summary>
-        /// Direct-Edge EDGX Exchange.
+        ///   Direct-Edge EDGX Exchange.
         /// </summary>
         public static readonly OrderSource DEX = new OrderSource("DEX");
 
         /// <summary>
-        /// Bats BYX Exchange.
+        ///   Bats BYX Exchange.
         /// </summary>
         public static readonly OrderSource BYX = new OrderSource("BYX");
 
         /// <summary>
-        /// Bats BZX Exchange.
+        ///   Bats BZX Exchange.
         /// </summary>
         public static readonly OrderSource BZX = new OrderSource("BZX");
 
         /// <summary>
-        /// Borsa Istanbul Exchange.
+        ///   Borsa Istanbul Exchange.
         /// </summary>
         public static readonly OrderSource IST = new OrderSource("IST");
 
         /// <summary>
-        /// Empty order source.
+        ///   Empty order source.
         /// </summary>
         public static readonly OrderSource EMPTY = new OrderSource(7, string.Empty);
 
         /// <summary>
-        /// Create a new order source
+        ///   Create a new order source
         /// </summary>
         /// <param name="id">Id of the new order source.</param>
         /// <param name="name">Name of the new order source.</param>
@@ -132,29 +138,29 @@ namespace com.dxfeed.api.events
         }
 
         /// <summary>
-        /// For transient objects only (statically unknown source id)
+        ///   For transient objects only (statically unknown source id)
         /// </summary>
         /// <param name="id">Id of the new order source.</param>
         private OrderSource(int id) : this(id, DecodeName(id)) { }
 
         /// <summary>
-        /// For transient objects only (statically unknown source id)
+        ///   For transient objects only (statically unknown source id)
         /// </summary>
         /// <param name="name">Name of the new order source.</param>
         private OrderSource(string name) : this(ComposeId(name), name) { }
 
         /// <summary>
-        /// Gets the identifier of this order source.
+        ///   Gets the identifier of this order source.
         /// </summary>
         public int Id { get; private set; }
 
         /// <summary>
-        /// Gets the name of this order source.
+        ///   Gets the name of this order source.
         /// </summary>
         public string Name { get; private set; }
 
         /// <summary>
-        /// Returns order source for the specified source identifier.
+        ///   Returns order source for the specified source identifier.
         /// </summary>
         /// <param name="sourceId">The source identifier.</param>
         /// <returns>Order source.</returns>
@@ -167,8 +173,8 @@ namespace com.dxfeed.api.events
         }
 
         /// <summary>
-        /// Returns order source for the specified source name.
-        /// The name must be either predefined, or contain at most 3 ASCII characters.
+        ///   Returns order source for the specified source name.
+        ///   The name must be either predefined, or contain at most 3 ASCII characters.
         /// </summary>
         /// <param name="name">The name of the source.</param>
         /// <returns>Order source.</returns>
@@ -181,11 +187,19 @@ namespace com.dxfeed.api.events
             return new OrderSource(upName);
         }
 
+        /// <summary>
+        /// Returns string representation of source
+        /// </summary>
+        /// <returns>string representation of source</returns>
         public override string ToString()
         {
             return Name;
         }
 
+        /// <summary>
+        /// Returns string representation of source
+        /// </summary>
+        /// <param name="os">OrderSource</param>
         public static implicit operator string(OrderSource os)
         {
             return os.ToString();
@@ -193,6 +207,13 @@ namespace com.dxfeed.api.events
 
         #region Implementation of IComparable
 
+        /// <summary>
+        /// Compares the current instance with another object of the same type and returns an integer
+        /// that indicates whether the current instance precedes
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException">obj is not the same type as this instance</exception>
         public int CompareTo(object obj)
         {
             if (obj is OrderSource)

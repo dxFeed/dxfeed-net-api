@@ -555,7 +555,7 @@ namespace com.dxfeed.native
                         }
                     }
                     snapshots.Add(buf.EventParams.SnapshotKey, outputBuffer);
-                    snapshotsStates.Add(buf.EventParams.SnapshotKey, SnapshotState.Unbroken);
+                    snapshotsStates[buf.EventParams.SnapshotKey] = SnapshotState.Unbroken;
                     string symbolSource = symbol + source;
                     if (symbolSourceToKey.ContainsKey(symbolSource))
                     {

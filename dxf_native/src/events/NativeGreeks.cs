@@ -17,15 +17,15 @@ namespace com.dxfeed.native.events
     /// It represents the most recent information that is available about the corresponding
     /// values on the market at any given moment of time.
     /// </summary>
-    public class NativeGreeks : MarketEvent, IDxGreeks
+    public class NativeGreeks : MarketEventImpl, IDxGreeks
     {
-        private readonly DxGreeks grks;
+        private readonly DxGreeks greeks;
         private static readonly int maxSequence = (1 << 22) - 1;
 
-        //TODO: add event flags argument
-        internal unsafe NativeGreeks(DxGreeks* grks, string symbol) : base(symbol)
+        internal unsafe NativeGreeks(DxGreeks* greeks, string symbol) : base(symbol)
         {
-            this.grks = *grks;
+            this.greeks = *greeks;
+            EventFlags = this.greeks.event_flags;
         }
 
         public override string ToString()
@@ -44,7 +44,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public double Delta
         {
-            get { return grks.delta; }
+            get { return greeks.delta; }
         }
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public double Gamma
         {
-            get { return grks.gamma; }
+            get { return greeks.gamma; }
         }
 
         /// <summary>
@@ -61,7 +61,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public double GreeksPrice
         {
-            get { return grks.greeks_price; }
+            get { return greeks.greeks_price; }
         }
 
         /// <summary>
@@ -78,7 +78,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public double Rho
         {
-            get { return grks.rho; }
+            get { return greeks.rho; }
         }
 
         /// <summary>
@@ -88,7 +88,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public int Sequence
         {
-            get { return grks.sequence; }
+            get { return greeks.sequence; }
         }
 
         /// <summary>
@@ -97,7 +97,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public double Theta
         {
-            get { return grks.theta; }
+            get { return greeks.theta; }
         }
 
         /// <summary>
@@ -106,7 +106,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public long TimeStamp
         {
-            get { return grks.time; }
+            get { return greeks.time; }
         }
 
         /// <summary>
@@ -123,7 +123,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public double Vega
         {
-            get { return grks.vega; }
+            get { return greeks.vega; }
         }
 
         /// <summary>
@@ -131,7 +131,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public double Volatility
         {
-            get { return grks.volatility; }
+            get { return greeks.volatility; }
         }
 
         /// <summary>
@@ -140,16 +140,15 @@ namespace com.dxfeed.native.events
         /// </summary>
         public long Index
         {
-            get { return grks.index; }
+            get { return greeks.index; }
         }
 
         /// <summary>
         /// Gets transactional event flags.
         /// See "Event Flags" section from <see cref="IndexedEvent"/>.
         /// </summary>
-        public int EventFlags
+        public EventFlag EventFlags
         {
-            //TODO: implement
             get; set;
         }
 

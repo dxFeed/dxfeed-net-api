@@ -10,7 +10,7 @@ using System.Globalization;
 
 namespace com.dxfeed.native.events
 {
-    public class NativeMarketMaker : MarketEvent, IDxMarketMaker
+    public class NativeMarketMaker : MarketEventImpl, IDxMarketMaker
     {
         private readonly DxMarketMaker mm;
 

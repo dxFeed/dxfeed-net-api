@@ -25,12 +25,12 @@ namespace com.dxfeed.native.events
         private readonly DxCandle candle;
         private string symbolString;
 
-        //TODO: add event flags argument
         internal unsafe NativeCandle(DxCandle* c, string symbol)
         {
             candle = *c;
             symbolString = symbol;
             EventSymbol = CandleSymbol.ValueOf(symbolString);
+            EventFlags = candle.event_flags;
         }
 
         public override string ToString()
@@ -237,12 +237,11 @@ namespace com.dxfeed.native.events
         }
 
         /// <summary>
-        /// Gets transactional event flags.
-        /// See "Event Flags" section from <see cref="IndexedEvent"/>.
+        ///     Gets transactional event flags.
+        ///     See "Event Flags" section from <see cref="IndexedEvent"/>.
         /// </summary>
-        public int EventFlags
+        public EventFlag EventFlags
         {
-            //TODO: implement
             get; set;
         }
 

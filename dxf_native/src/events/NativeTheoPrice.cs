@@ -21,7 +21,7 @@ namespace com.dxfeed.native.events
     /// option price can be estimated on real-time changes of the underlying price
     /// in the vicinity.
     /// </summary>
-    public class NativeTheoPrice : MarketEvent, IDxTheoPrice
+    public class NativeTheoPrice : MarketEventImpl, IDxTheoPrice
     {
         private readonly DxTheoPrice tp;
 

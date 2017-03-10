@@ -18,7 +18,7 @@ namespace com.dxfeed.native.events
     /// It represents the most recent information that is available about the best quote on
     /// the market at any given moment of time.
     /// </summary>
-    public class NativeQuote : MarketEvent, IDxQuote
+    public class NativeQuote : MarketEventImpl, IDxQuote
     {
         private DxQuote quote;
 

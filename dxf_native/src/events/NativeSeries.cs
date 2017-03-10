@@ -17,14 +17,14 @@ namespace com.dxfeed.native.events
     /// the market. It represents the most recent information that is available
     /// about the corresponding values on the market at any given moment of time.
     /// </summary>
-    public class NativeSeries : MarketEvent, IDxSeries
+    public class NativeSeries : MarketEventImpl, IDxSeries
     {
         private readonly DxSeries s;
 
-        //TODO: add event flags argument
         internal unsafe NativeSeries(DxSeries* s, string symbol) : base(symbol)
         {
             this.s = *s;
+            EventFlags = this.s.event_flags;
         }
 
         public override string ToString()
@@ -112,9 +112,8 @@ namespace com.dxfeed.native.events
         /// Gets transactional event flags.
         /// See "Event Flags" section from <see cref="IndexedEvent"/>.
         /// </summary>
-        public int EventFlags
+        public EventFlag EventFlags
         {
-            //TODO: implement
             get; set;
         }
 

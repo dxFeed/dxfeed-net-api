@@ -16,7 +16,7 @@ namespace com.dxfeed.native.events
     /// represents the most recent information that is available about the corresponding
     /// values on the market at any given moment of time.
     /// </summary>
-    public class NativeUnderlying : MarketEvent, IDxUnderlying
+    public class NativeUnderlying : MarketEventImpl, IDxUnderlying
     {
         private readonly DxUnderlying u;
 

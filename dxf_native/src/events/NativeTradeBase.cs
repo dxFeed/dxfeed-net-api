@@ -24,7 +24,7 @@ namespace com.dxfeed.native.events
     /// extended trading hours (ETH, pre market and post market trading sessions). It represents
     /// last trade price during ETH and accumulated volume during ETH.
     /// </summary>
-    public abstract class NativeTradeBase : MarketEvent, IDxTradeBase
+    public abstract class NativeTradeBase : MarketEventImpl, IDxTradeBase
     {
         private readonly DxTrade trade;
 

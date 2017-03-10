@@ -19,7 +19,7 @@ namespace com.dxfeed.native.events
     /// Time and Sales are intended to provide information about trades in a continuous time slice
     /// (unlike Trade events which are supposed to provide snapshot about the current last trade).
     /// </summary>
-    public class NativeTimeAndSale : MarketEvent, IDxTimeAndSale
+    public class NativeTimeAndSale : MarketEventImpl, IDxTimeAndSale
     {
         private readonly DxTimeAndSale ts;
         private readonly DxString saleCond;
@@ -28,7 +28,6 @@ namespace com.dxfeed.native.events
         {
             this.ts = *ts;
             saleCond = DxMarshal.ReadDxString(this.ts.exchange_sale_conditions);
-            //TODO: check event flags
             EventFlags = this.ts.event_flags;
         }
 
@@ -68,9 +67,9 @@ namespace com.dxfeed.native.events
         }
 
         /// <summary>
-        /// Returns event flags of this time and sale event.
+        /// Gets or sets event flags of this time and sale event.
         /// </summary>
-        public int EventFlags
+        public EventFlag EventFlags
         {
             get; set;
         }

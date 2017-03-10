@@ -101,16 +101,15 @@ namespace com.dxfeed.api.events
 
     public interface IndexedEvent : IDxEventType
     {
-        //TODO: fill event flags
-        
-        /// <summary>
-        /// Gets transactional event flags.
-        /// See "Event Flags" section from <see cref="IndexedEvent"/>.
-        /// </summary>
-        int EventFlags { get; set; }
 
         /// <summary>
-        /// Gets unique per-symbol index of this event.
+        ///    Gets or sets transactional event flags.
+        ///    See "Event Flags" section from <see cref="IndexedEvent"/>.
+        /// </summary>
+        EventFlag EventFlags { get; set; }
+
+        /// <summary>
+        ///     Gets unique per-symbol index of this event.
         /// </summary>
         long Index { get; }
     }

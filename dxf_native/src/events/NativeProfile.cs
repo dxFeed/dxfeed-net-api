@@ -12,7 +12,7 @@ using com.dxfeed.api.extras;
 
 namespace com.dxfeed.native.events
 {
-    public class NativeProfile : MarketEvent, IDxProfile
+    public class NativeProfile : MarketEventImpl, IDxProfile
     {
         private readonly DxProfile profile;
         private readonly string description;

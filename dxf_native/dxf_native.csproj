@@ -83,7 +83,7 @@
     <Compile Include="src\DXFeedEventListener.cs" />
     <Compile Include="src\DXFeedSubscription.cs" />
     <Compile Include="src\events\DxMarshal.cs" />
-    <Compile Include="src\events\MarketEvent.cs" />
+    <Compile Include="src\events\MarketEventImpl.cs" />
     <Compile Include="src\events\NativeCandle.cs" />
     <Compile Include="src\events\NativeEventBuffer.cs" />
     <Compile Include="src\events\NativeGreeks.cs" />

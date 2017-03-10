@@ -15,7 +15,7 @@ namespace com.dxfeed.native.events
     /// It represents the most recent information that is available about the trading session 
     /// in the market at any given moment of time. 
     /// </summary>
-    public class NativeSummary : MarketEvent, IDxSummary
+    public class NativeSummary : MarketEventImpl, IDxSummary
     {
         private readonly DxSummary summary;
 

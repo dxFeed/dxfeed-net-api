@@ -19,7 +19,7 @@ namespace com.dxfeed.native.events
     /// The collection of order events of a symbol represents the most recent information that is
     /// available about orders on the market at any given moment of time.
     /// </summary>
-    public class NativeOrderBase : MarketEvent, IDxOrderBase
+    public class NativeOrderBase : MarketEventImpl, IDxOrderBase
     {
         private readonly DxOrder order;
         private readonly OrderSource source;
@@ -33,15 +33,13 @@ namespace com.dxfeed.native.events
             {
                 source = OrderSource.ValueOf(new string(charPtr));
             }
-
-            //TODO: possible need another implementation
-            EventFlags = order->event_flags;
+            EventFlags = this.order.event_flags;
         }
 
         internal unsafe NativeOrderBase(DxSpreadOrder* order, string symbol) : base(symbol)
         {
             this.order.count = order->count;
-            this.order.event_flags = order->event_flags;
+            this.EventFlags = order->event_flags;
             this.order.exchange_code = order->exchange_code;
             this.order.index = order->index;
             this.order.level = order->level;
@@ -77,7 +75,7 @@ namespace com.dxfeed.native.events
         /// <summary>
         /// Returns event flags.
         /// </summary>
-        public int EventFlags
+        public EventFlag EventFlags
         {
             get; set;
         }

@@ -93,7 +93,7 @@ namespace com.dxfeed.native.events
         /// <summary>
         ///   Returns event flags.
         /// </summary>
-        public int EventFlags
+        public EventFlag EventFlags
         {
             get { return order.event_flags; }
         }

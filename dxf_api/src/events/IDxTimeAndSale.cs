@@ -56,7 +56,7 @@ namespace com.dxfeed.api.events
         /// <summary>
         /// Returns event flags of this time and sale event.
         /// </summary>
-        int EventFlags { get; }
+        EventFlag EventFlags { get; }
         /// <summary>
         /// Returns exchange code of this time and sale event.
         /// </summary>

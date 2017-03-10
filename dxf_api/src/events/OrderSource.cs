@@ -21,7 +21,7 @@ namespace com.dxfeed.api.events
     /// Aggregate sources AGGREGATE_BID and AGGREGATE_ASK provide futures depth (aggregated by 
     /// price level) and NASDAQ Level II (top of book for each market maker).
     /// </summary>
-    public class OrderSource
+    public class OrderSource : IComparable
     {
         private static Dictionary<int, OrderSource> sourcesById = new Dictionary<int, OrderSource>();
         private static Dictionary<string, OrderSource> sourcesByName = new Dictionary<string, OrderSource>();
@@ -175,9 +175,10 @@ namespace com.dxfeed.api.events
         /// <exception cref="ArgumentException">If name is malformed.</exception>
         public static OrderSource ValueOf(string name)
         {
-            if (sourcesByName.ContainsKey(name))
-                return sourcesByName[name];
-            return new OrderSource(name);
+            string upName = name.ToUpper();
+            if (sourcesByName.ContainsKey(upName))
+                return sourcesByName[upName];
+            return new OrderSource(upName);
         }
 
         public override string ToString()
@@ -189,6 +190,19 @@ namespace com.dxfeed.api.events
         {
             return os.ToString();
         }
+
+        #region Implementation of IComparable
+
+        public int CompareTo(object obj)
+        {
+            if (obj is OrderSource)
+            {
+                return Id - (obj as OrderSource).Id;
+            }
+            else
+                throw new ArgumentException("object is not the OrderSource Type. ");
+        }
+        #endregion
 
         #region  private helper methods
 

@@ -32,7 +32,16 @@ namespace com.dxfeed.native
         ///   All snapshots, acsess by unique snapshot key (<see cref="ulong"/>)
         /// </summary>
         private IDictionary<ulong, EventBuffer<IDxOrder>> snapshots = new Dictionary<ulong, EventBuffer<IDxOrder>>();
+
+        /// <summary>
+        ///   used for <see cref="snapshotsStates"/>
+        /// </summary>
         private enum SnapshotState { Unbroken, Broken };
+
+        /// <summary>
+        ///   used when snapshot ends with flags <see cref="EventFlag.TxPending"/> combined
+        ///   with <see cref="EventFlag.SnapshotEnd"/> or <see cref="EventFlag.SnapshotSnip"/>
+        /// </summary>
         private IDictionary<ulong, SnapshotState> snapshotsStates = new Dictionary<ulong, SnapshotState>();
 
         /// <summary>
@@ -40,14 +49,14 @@ namespace com.dxfeed.native
         /// </summary>
         private IDictionary<string, IList<ulong>> symbolSourceToKey = new Dictionary<string, IList<ulong>>();
 
-        private ISet<string> sources = new SortedSet<string>();
+        private ISet<OrderSource> sources = new SortedSet<OrderSource>();
         private ISet<string> symbols = new SortedSet<string>();
 
         /// <summary>
         ///   All received snapshots, empty set means no received snapshots yet.
         ///   Key - means symbol, value - set of received snapshots sources.
         /// </summary>
-        private IDictionary<string, ISet<string>> receivedSnapshots = new Dictionary<string, ISet<string>>();
+        private IDictionary<string, ISet<OrderSource>> receivedSnapshots = new Dictionary<string, ISet<OrderSource>>();
 
         /// <summary>
         ///   States of the order view subscription:
@@ -79,8 +88,8 @@ namespace com.dxfeed.native
         /// <summary>
         ///   Constructor
         /// </summary>
-        /// <param name="connection"></param>
-        /// <param name="listener"></param>
+        /// <param name="connection">IDxConnection connection</param>
+        /// <param name="listener">OrderView listener</param>
         public OrderViewSubscription(IDxConnection connection, IDxOrderViewListener listener)
         {
             this.connection = connection;
@@ -109,7 +118,7 @@ namespace com.dxfeed.native
                 return;
             subscription.AddSymbol(symbol);
             symbols.Add(symbol);
-            receivedSnapshots.Add(symbol.ToUpper(), new SortedSet<string>());
+            receivedSnapshots.Add(symbol.ToUpper(), new SortedSet<OrderSource>());
         }
 
         /// <summary>
@@ -147,7 +156,7 @@ namespace com.dxfeed.native
                 if (this.symbols.Contains(symbol.ToUpper()))
                     continue;
                 this.symbols.Add(symbol);
-                receivedSnapshots.Add(symbol.ToUpper(), new SortedSet<string>());
+                receivedSnapshots.Add(symbol.ToUpper(), new SortedSet<OrderSource>());
             }
         }
 
@@ -243,7 +252,7 @@ namespace com.dxfeed.native
             {
                 string upperSymbol = symbol.ToUpper();
                 this.symbols.Add(upperSymbol);
-                receivedSnapshots.Add(upperSymbol, new SortedSet<string>());
+                receivedSnapshots.Add(upperSymbol, new SortedSet<OrderSource>());
             }
             orderViewStates.Clear();
         }
@@ -307,7 +316,7 @@ namespace com.dxfeed.native
         }
 
         /// <summary>
-        ///   Sets order source to subscription.
+        ///   Creates subscription. Sets order source to subscription.
         /// </summary>
         /// <remarks>
         ///   This method can be called only one times
@@ -328,7 +337,7 @@ namespace com.dxfeed.native
             subscription.SetSource(sources);
             foreach (var source in sources)
             {
-                this.sources.Add(source.ToUpper());
+                this.sources.Add(OrderSource.ValueOf(source));
             }
         }
 
@@ -369,7 +378,7 @@ namespace com.dxfeed.native
         #region Implementation of IDxOrderListener
 
         /// <summary>
-        ///   
+        ///   On Order event received.
         /// </summary>
         /// <typeparam name="TB">Event buffer type.</typeparam>
         /// <typeparam name="TE">Event type.</typeparam>
@@ -382,7 +391,7 @@ namespace com.dxfeed.native
 
             var enmrtr = buf.GetEnumerator();
             enmrtr.MoveNext();
-            string source = enmrtr.Current.Source.Name.ToUpper();
+            OrderSource source = enmrtr.Current.Source;
 
             // in case if already have this snapshot
             if (snapshots.ContainsKey(buf.EventParams.SnapshotKey))
@@ -534,7 +543,7 @@ namespace com.dxfeed.native
             }
             else
             {
-                if (buf.EventParams.Flags.HasFlag(EventFlag.SnapshotBegin))
+                if (buf.EventParams.Flags.HasFlag(EventFlag.SnapshotBegin) && sources.Contains(source))
                 {
                     orderViewStates[symbol] = OrderViewState.Update;
                     EventBuffer<IDxOrder> outputBuffer = new EventBuffer<IDxOrder>(buf.EventType, buf.Symbol, buf.EventParams);
@@ -588,7 +597,7 @@ namespace com.dxfeed.native
 
             var enmrtr = buf.GetEnumerator();
             enmrtr.MoveNext();
-            var source = enmrtr.Current.Source.Name.ToUpper();
+            var source = OrderSource.ValueOf(enmrtr.Current.Source.Name.ToUpper());
             var symbol = buf.Symbol.ToString().ToUpper();
             receivedSnapshots[symbol].Add(source);
 

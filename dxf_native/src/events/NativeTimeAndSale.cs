@@ -68,7 +68,7 @@ namespace com.dxfeed.native.events
         /// <summary>
         /// Returns event flags of this time and sale event.
         /// </summary>
-        public int EventFlags
+        public EventFlag EventFlags
         {
             get { return ts.event_flags; }
         }

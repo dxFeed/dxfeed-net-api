@@ -26,7 +26,7 @@ namespace com.dxfeed.api.events
         /// <summary>
         ///   Returns event flags.
         /// </summary>
-        int EventFlags { get; }
+        EventFlag EventFlags { get; }
         /// <summary>
         ///   Returns exchange code of this order.
         /// </summary>

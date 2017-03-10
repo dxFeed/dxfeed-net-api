@@ -15,7 +15,7 @@ namespace com.dxfeed.native.api
     internal unsafe struct DxOrder
     {
         internal int count;
-        internal int event_flags;
+        internal EventFlag event_flags;
         internal char exchange_code;
         internal long index;
         internal int level;
@@ -34,7 +34,7 @@ namespace com.dxfeed.native.api
     internal unsafe struct DxSpreadOrder
     {
         internal int count;
-        internal int event_flags;
+        internal EventFlag event_flags;
         internal char exchange_code;
         internal long index;
         internal int level;
@@ -140,7 +140,7 @@ namespace com.dxfeed.native.api
         internal double ask_price;
         internal IntPtr exchange_sale_conditions;
         internal int flags;
-        internal int event_flags;
+        internal EventFlag event_flags;
         internal long index;
         internal Side side;
         internal bool is_cancel;
@@ -169,6 +169,7 @@ namespace com.dxfeed.native.api
         internal long index;
         internal long open_interest;
         internal double imp_volatility;
+        internal EventFlag event_flags;
     }
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
@@ -195,6 +196,7 @@ namespace com.dxfeed.native.api
         internal double rho;
         internal double vega;
         internal long index;
+        internal EventFlag event_flags;
     }
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
@@ -229,6 +231,7 @@ namespace com.dxfeed.native.api
         internal double dividend;
         internal double interest;
         internal long index;
+        internal EventFlag event_flags;
     }
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]

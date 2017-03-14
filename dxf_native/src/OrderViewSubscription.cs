@@ -1,51 +1,83 @@
-﻿/// Copyright (C) 2010-2016 Devexperts LLC
-///
-/// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-/// If a copy of the MPL was not distributed with this file, You can obtain one at
-/// http://mozilla.org/MPL/2.0/.
+﻿﻿#region License
+// Copyright (C) 2010-2016 Devexperts LLC
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at
+// http://mozilla.org/MPL/2.0/.
+#endregion
 
+using System;
 using System.Collections.Generic;
 using com.dxfeed.api;
 using com.dxfeed.api.candle;
 using com.dxfeed.api.events;
-using System;
 using com.dxfeed.api.extras;
+using com.dxfeed.native.events;
 
 namespace com.dxfeed.native
 {
-    public class OrderViewSubscription : IDxSubscription, IDxFeedListener
+    /// <summary>
+    ///   <para>
+    ///     Client will be notified about first combined snapshot from different
+    ///     sources, and, after that, about separate orders
+    ///   </para>
+    /// </summary>
+    public class OrderViewSubscription : IDxSubscription, IDxOrderListener
     {
         private IDxOrderViewListener listener = null;
         private IDxConnection connection = null;
         private IDxSubscription subscription = null;
 
         /// <summary>
-        /// All snapshots, acsess by unique snapshot key (ulong)
+        ///   All snapshots, acsess by unique snapshot key (<see cref="ulong"/>)
         /// </summary>
         private IDictionary<ulong, EventBuffer<IDxOrder>> snapshots = new Dictionary<ulong, EventBuffer<IDxOrder>>();
+
         /// <summary>
-        /// Map between Symbol + Source string and unique snapashot key in snapshots dictionary
+        ///   used for <see cref="snapshotsStates"/>
+        /// </summary>
+        private enum SnapshotState { Unbroken, Broken };
+
+        /// <summary>
+        ///   used when snapshot ends with flags <see cref="EventFlag.TxPending"/> combined
+        ///   with <see cref="EventFlag.SnapshotEnd"/> or <see cref="EventFlag.SnapshotSnip"/>
+        /// </summary>
+        private IDictionary<ulong, SnapshotState> snapshotsStates = new Dictionary<ulong, SnapshotState>();
+
+        /// <summary>
+        ///   Map between Symbol + Source string and unique snapashot key in <see cref="snapshots"/> dictionary
         /// </summary>
         private IDictionary<string, IList<ulong>> symbolSourceToKey = new Dictionary<string, IList<ulong>>();
 
-        private ISet<string> sources = new SortedSet<string>();
+        private ISet<OrderSource> sources = new SortedSet<OrderSource>();
         private ISet<string> symbols = new SortedSet<string>();
 
         /// <summary>
-        /// All received snapshots, empty set means no received snapshots yet.
-        /// Key - means symbol, value - set of received snapshots sources.
+        ///   All received snapshots, empty set means no received snapshots yet.
+        ///   Key - means symbol, value - set of received snapshots sources.
         /// </summary>
-        private IDictionary<string, ISet<string>> receivedSnapshots = new Dictionary<string, ISet<string>>();
+        private IDictionary<string, ISet<OrderSource>> receivedSnapshots = new Dictionary<string, ISet<OrderSource>>();
 
         /// <summary>
-        /// State of the order view subscription
-        ///     Update - when snapshot begins for one of the source in order view
-        ///     Ready  - when snapshot ends for all sources in order view
+        ///   States of the order view subscription:
+        ///   <para>
+        ///     <c>Update</c>  - when snapshot begins for one of the source in order view
+        ///   </para>
+        ///   <para>
+        ///     <c>Ready</c>   - when snapshot ends for all sources in order view
+        ///   </para>
+        ///   <para>
+        ///     <c>Pending</c> - when updating and received <see cref="EventFlag.TxPending"/> - begin collecting events
+        ///   </para>
         /// </summary>
-        private enum OrderViewState { Update, Ready };
+        [Flags]
+        private enum OrderViewState : int { Update = 0x01, Ready = 0x02, Pending = 0x04 };
+
         /// <summary>
-        /// The dictionary os states for each order view in the format:
+        ///   The dictionary os states for each order view in the format:
+        ///   <code>
         ///     map[symbol-of-order-view] = state
+        ///   </code>
         /// </summary>
         private IDictionary<string, OrderViewState> orderViewStates = new Dictionary<string, OrderViewState>();
 
@@ -53,6 +85,11 @@ namespace com.dxfeed.native
             with AddSource or SetSource before calling this method.";
         private const string AddCandleSymbolErrorText = "Candle symbols is not allowed for OrderViewSubscription.";
 
+        /// <summary>
+        ///   Constructor
+        /// </summary>
+        /// <param name="connection">IDxConnection connection</param>
+        /// <param name="listener">OrderView listener</param>
         public OrderViewSubscription(IDxConnection connection, IDxOrderViewListener listener)
         {
             this.connection = connection;
@@ -61,6 +98,16 @@ namespace com.dxfeed.native
 
         #region Implementation of IDxSubscription
 
+        /// <summary>
+        ///   Add a symbol to subscription
+        /// </summary>
+        /// <param name="symbol">symbol</param>
+        /// <exception cref="ArgumentException">Invalid symbol parameter</exception>
+        /// <exception cref="InvalidOperationException">
+        ///   You try to add symbol before adding source via <see cref="AddSource(string[])"/> or
+        ///   <see cref="SetSource(string[])"/> methods i.e. subscription is <c>null</c>
+        /// </exception>
+        /// <exception cref="DxException"></exception>
         public void AddSymbol(string symbol)
         {
             if (subscription == null)
@@ -71,14 +118,32 @@ namespace com.dxfeed.native
                 return;
             subscription.AddSymbol(symbol);
             symbols.Add(symbol);
-            receivedSnapshots.Add(symbol.ToUpper(), new SortedSet<string>());
+            receivedSnapshots.Add(symbol.ToUpper(), new SortedSet<OrderSource>());
         }
 
+        /// <summary>
+        ///   Inherited from <see cref="IDxSubscription"/>
+        ///   This method is not allowed. Throws exception.
+        /// </summary>
+        /// <param name="symbol">candle symbol</param>
+        /// <exception cref="InvalidOperationException">
+        ///   Candle symbols is not allowed for <see cref="OrderViewSubscription"/>
+        /// </exception>
         public void AddSymbol(CandleSymbol symbol)
         {
             throw new InvalidOperationException(AddCandleSymbolErrorText);
         }
 
+        /// <summary>
+        ///   Add multiply symbols to subscription.
+        /// </summary>
+        /// <param name="symbols">list of symbols</param>
+        /// <exception cref="ArgumentException">Invalid symbol parameter</exception>
+        /// <exception cref="InvalidOperationException">
+        ///   You try to add symbols before adding source via <see cref="AddSource(string[])"/> or
+        ///   <see cref="SetSource(string[])"/> methods i.e. subscription is <c>null</c>
+        /// </exception>
+        /// <exception cref="DxException"></exception>
         public void AddSymbols(params string[] symbols)
         {
             if (subscription == null)
@@ -91,16 +156,24 @@ namespace com.dxfeed.native
                 if (this.symbols.Contains(symbol.ToUpper()))
                     continue;
                 this.symbols.Add(symbol);
-                receivedSnapshots.Add(symbol.ToUpper(), new SortedSet<string>());
+                receivedSnapshots.Add(symbol.ToUpper(), new SortedSet<OrderSource>());
             }
         }
 
+        /// <summary>
+        ///   Inherited from <see cref="IDxSubscription"/>
+        ///   This method is not allowed. Throws exception.
+        /// </summary>
+        /// <param name="symbols">list of symbols</param>
+        /// <exception cref="InvalidOperationException">
+        ///   Candle symbols is not allowed for <see cref="OrderViewSubscription"/>
+        /// </exception>
         public void AddSymbols(params CandleSymbol[] symbols)
         {
             throw new InvalidOperationException(AddCandleSymbolErrorText);
         }
 
-        private void removeSymbolSourcePair(string symbolSource)
+        private void RemoveSymbolSourcePair(string symbolSource)
         {
             if (symbolSourceToKey.ContainsKey(symbolSource))
             {
@@ -113,6 +186,12 @@ namespace com.dxfeed.native
             }
         }
 
+        /// <summary>
+        ///   Remove multiply symbols from subscription.
+        /// </summary>
+        /// <param name="symbols">list of symbols</param>
+        /// <exception cref="ArgumentException">Invalid symbol parameter</exception>
+        /// <exception cref="DxException"></exception>
         public void RemoveSymbols(params string[] symbols)
         {
             if (subscription == null)
@@ -126,20 +205,38 @@ namespace com.dxfeed.native
                 receivedSnapshots.Remove(upperSymbol);
                 foreach (var source in sources)
                 {
-                    removeSymbolSourcePair(upperSymbol + source);
+                    RemoveSymbolSourcePair(upperSymbol + source);
                 }
                 // removing snapshots with empty source string i.e. ""
-                removeSymbolSourcePair(upperSymbol);
+                RemoveSymbolSourcePair(upperSymbol);
                 this.symbols.Remove(upperSymbol);
                 orderViewStates.Remove(upperSymbol);
             }
         }
 
+        /// <summary>
+        ///   Inherited from <see cref="IDxSubscription"/>
+        ///   This method is not allowed. Throws exception.
+        /// </summary>
+        /// <param name="symbols">list of symbols</param>
+        /// <exception cref="InvalidOperationException">
+        ///   Candle symbols is not allowed for <see cref="OrderViewSubscription"/>
+        /// </exception>
         public void RemoveSymbols(params CandleSymbol[] symbols)
         {
             throw new InvalidOperationException(AddCandleSymbolErrorText);
         }
 
+        /// <summary>
+        ///   Set multiply symbols to subscription.
+        /// </summary>
+        /// <param name="symbols">list of symbols</param>
+        /// <exception cref="ArgumentException">Invalid symbol parameter</exception>
+        /// <exception cref="InvalidOperationException">
+        ///   You try to set symbols before adding source via <see cref="AddSource(string[])"/> or
+        ///   <see cref="SetSource(string[])"/> methods i.e. subscription is <c>null</c>
+        /// </exception>
+        /// <exception cref="DxException"></exception>
         public void SetSymbols(params string[] symbols)
         {
             if (subscription == null)
@@ -155,16 +252,28 @@ namespace com.dxfeed.native
             {
                 string upperSymbol = symbol.ToUpper();
                 this.symbols.Add(upperSymbol);
-                receivedSnapshots.Add(upperSymbol, new SortedSet<string>());
+                receivedSnapshots.Add(upperSymbol, new SortedSet<OrderSource>());
             }
             orderViewStates.Clear();
         }
 
+        /// <summary>
+        ///   Inherited from <see cref="IDxSubscription"/>
+        ///   This method is not allowed. Throws exception.
+        /// </summary>
+        /// <param name="symbols">list of symbols</param>
+        /// <exception cref="InvalidOperationException">
+        ///   Candle symbols is not allowed for <see cref="OrderViewSubscription"/>
+        /// </exception>
         public void SetSymbols(params CandleSymbol[] symbols)
         {
             throw new InvalidOperationException(AddCandleSymbolErrorText);
         }
 
+        /// <summary>
+        ///   Clear all symbols from subscription.
+        /// </summary>
+        /// <exception cref="DxException"></exception>
         public void Clear()
         {
             subscription.Clear();
@@ -175,6 +284,11 @@ namespace com.dxfeed.native
             orderViewStates.Clear();
         }
 
+        /// <summary>
+        ///   Get all symbols list from subscription.
+        /// </summary>
+        /// <returns>list of subscribed symbols</returns>
+        /// <exception cref="DxException"></exception>
         public IList<string> GetSymbols()
         {
             if (subscription == null)
@@ -184,11 +298,35 @@ namespace com.dxfeed.native
             return subscription.GetSymbols();
         }
 
+        /// <summary>
+        ///   Sets order source to subscription.
+        /// </summary>
+        /// <remarks>
+        ///   This method calls <see cref="SetSource(string[])"/> and can be called only one times
+        /// </remarks>
+        /// <param name="sources">list of souces</param>
+        /// <exception cref="ArgumentException">Invalid source parameter</exception>
+        /// <exception cref="InvalidOperationException">
+        ///   Sources can be configured for this subscription only once
+        /// </exception>
+        /// <exception cref="DxException"></exception>
         public void AddSource(params string[] sources)
         {
             SetSource(sources);
         }
 
+        /// <summary>
+        ///   Creates subscription. Sets order source to subscription.
+        /// </summary>
+        /// <remarks>
+        ///   This method can be called only one times
+        /// </remarks>
+        /// <param name="sources">list of souces</param>
+        /// <exception cref="ArgumentException">Invalid source parameter</exception>
+        /// <exception cref="InvalidOperationException">
+        ///   Sources can be configured for this subscription only once
+        /// </exception>
+        /// <exception cref="DxException"></exception>
         public void SetSource(params string[] sources)
         {
             if (subscription != null)
@@ -199,7 +337,7 @@ namespace com.dxfeed.native
             subscription.SetSource(sources);
             foreach (var source in sources)
             {
-                this.sources.Add(source.ToUpper());
+                this.sources.Add(OrderSource.ValueOf(source));
             }
         }
 
@@ -208,6 +346,9 @@ namespace com.dxfeed.native
         #region IDisposable Support
         private bool disposedValue = false; // To detect redundant calls
 
+        /// <summary>
+        ///   This code added to correctly implement the disposable pattern.
+        /// </summary>
         protected virtual void Dispose(bool disposing)
         {
             if (!disposedValue)
@@ -224,7 +365,9 @@ namespace com.dxfeed.native
             }
         }
 
-        // This code added to correctly implement the disposable pattern.
+        /// <summary>
+        ///   This code added to correctly implement the disposable pattern.
+        /// </summary>
         public void Dispose()
         {
             // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
@@ -232,18 +375,14 @@ namespace com.dxfeed.native
         }
         #endregion
 
-        #region Implementation of IDxFeedListener
+        #region Implementation of IDxOrderListener
 
-        public void OnQuote<TB, TE>(TB buf)
-            where TB : IDxEventBuf<TE>
-            where TE : IDxQuote
-        { }
-
-        public void OnTrade<TB, TE>(TB buf)
-            where TB : IDxEventBuf<TE>
-            where TE : IDxTrade
-        { }
-
+        /// <summary>
+        ///   On Order event received.
+        /// </summary>
+        /// <typeparam name="TB">Event buffer type.</typeparam>
+        /// <typeparam name="TE">Event type.</typeparam>
+        /// <param name="buf">Event buffer object.</param>
         public void OnOrder<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
             where TE : IDxOrder
@@ -252,7 +391,7 @@ namespace com.dxfeed.native
 
             var enmrtr = buf.GetEnumerator();
             enmrtr.MoveNext();
-            string source = enmrtr.Current.Source.Name.ToUpper();
+            OrderSource source = enmrtr.Current.Source;
 
             // in case if already have this snapshot
             if (snapshots.ContainsKey(buf.EventParams.SnapshotKey))
@@ -278,14 +417,56 @@ namespace com.dxfeed.native
                 // third condition for case when snapshots sent, but single event with SnapshotEnd flag appears
                 // it will be sent as separate snapshot
                 if (orderViewStates.ContainsKey(symbol) &&
-                    orderViewStates[symbol] == OrderViewState.Ready &&
-                    !buf.EventParams.Flags.HasFlag(EventFlag.SnapshotEnd)) 
+                    orderViewStates[symbol].HasFlag(OrderViewState.Ready) &&
+                    !buf.EventParams.Flags.HasFlag(EventFlag.SnapshotEnd))
                 {
-                    listener.OnUpdate<TB, TE>(buf);
+                    if (buf.EventParams.Flags.HasFlag(EventFlag.TxPending) || orderViewStates[symbol].HasFlag(OrderViewState.Pending))
+                    {
+                        // if pending begins
+                        if (buf.EventParams.Flags.HasFlag(EventFlag.TxPending) && !orderViewStates[symbol].HasFlag(OrderViewState.Pending))
+                        {
+                            orderViewStates[symbol] |= OrderViewState.Pending;
+                        }
+                        foreach (var order in buf)
+                        {
+                            if (buf.EventParams.Flags.HasFlag(EventFlag.RemoveEvent))
+                            {
+                                NativeOrder no = new NativeOrder(order)
+                                {
+                                    Size = 0,
+                                    Price = double.NaN,
+                                    Time = TimeConverter.ToUtcDateTime(0),
+                                    Sequence = 0,
+                                    ExchangeCode = '\0',
+                                    Count = 0
+                                };
+                                snapshots[buf.EventParams.SnapshotKey].AddEvent(no);
+                            }
+                            else
+                                snapshots[buf.EventParams.SnapshotKey].AddEvent(order);
+                        }
+                        // if pending ends
+                        if (!buf.EventParams.Flags.HasFlag(EventFlag.TxPending) && orderViewStates[symbol].HasFlag(OrderViewState.Pending))
+                        {
+                            orderViewStates[symbol] -= OrderViewState.Pending;
+
+                            EventBuffer<IDxOrder> buffer = new EventBuffer<IDxOrder>(buf.EventType, buf.Symbol, buf.EventParams);
+                            foreach (var order in snapshots[buf.EventParams.SnapshotKey])
+                            {
+                                buffer.AddEvent(order);
+                            }
+                            snapshots[buf.EventParams.SnapshotKey].Clear();
+                            listener.OnUpdate<IDxEventBuf<IDxOrder>, IDxOrder>(buffer);
+                        }
+                    }
+                    else
+                    {
+                        listener.OnUpdate<TB, TE>(buf);
+                    }
                     return;
                 }
 
-                //...otherwise continue fill current snapshot
+                // ...otherwise continue fill current snapshot
                 foreach (var order in buf)
                 {
                     // order with zeros and NaN's, same as RemoveEvent flag
@@ -316,8 +497,16 @@ namespace com.dxfeed.native
                         continue;
                     }
                     // ...or just add events
-                    snapshots[buf.EventParams.SnapshotKey].AddEvent(order);
+                    snapshots[buf.EventParams.SnapshotKey].ReplaceOrAdd(order);
                 }
+
+                if (buf.EventParams.Flags == 0 && snapshotsStates[buf.EventParams.SnapshotKey] == SnapshotState.Broken)
+                {
+                    snapshotsStates[buf.EventParams.SnapshotKey] = SnapshotState.Unbroken;
+                    SnapshotEndFlagReceived<TB, TE>(buf);
+                    return;
+                }
+
                 // no flags no actions
                 if (buf.EventParams.Flags == 0)
                 {
@@ -339,15 +528,22 @@ namespace com.dxfeed.native
                     }
                 }
 
-                if (buf.EventParams.Flags.HasFlag(EventFlag.SnapshotEnd) || buf.EventParams.Flags.HasFlag(EventFlag.SnapshotSnip))
+                if ((buf.EventParams.Flags.HasFlag(EventFlag.SnapshotEnd) || buf.EventParams.Flags.HasFlag(EventFlag.SnapshotSnip)) 
+                    && !buf.EventParams.Flags.HasFlag(EventFlag.TxPending))
                 {
                     SnapshotEndFlagReceived<TB, TE>(buf);
+                    return;
+                }
+                else
+                {
+                    // snapshot is broken
+                    snapshotsStates[buf.EventParams.SnapshotKey] = SnapshotState.Broken;
                     return;
                 }
             }
             else
             {
-                if (buf.EventParams.Flags.HasFlag(EventFlag.SnapshotBegin))
+                if (buf.EventParams.Flags.HasFlag(EventFlag.SnapshotBegin) && sources.Contains(source))
                 {
                     orderViewStates[symbol] = OrderViewState.Update;
                     EventBuffer<IDxOrder> outputBuffer = new EventBuffer<IDxOrder>(buf.EventType, buf.Symbol, buf.EventParams);
@@ -359,6 +555,7 @@ namespace com.dxfeed.native
                         }
                     }
                     snapshots.Add(buf.EventParams.SnapshotKey, outputBuffer);
+                    snapshotsStates[buf.EventParams.SnapshotKey] = SnapshotState.Unbroken;
                     string symbolSource = symbol + source;
                     if (symbolSourceToKey.ContainsKey(symbolSource))
                     {
@@ -400,7 +597,7 @@ namespace com.dxfeed.native
 
             var enmrtr = buf.GetEnumerator();
             enmrtr.MoveNext();
-            var source = enmrtr.Current.Source.Name.ToUpper();
+            var source = OrderSource.ValueOf(enmrtr.Current.Source.Name.ToUpper());
             var symbol = buf.Symbol.ToString().ToUpper();
             receivedSnapshots[symbol].Add(source);
 
@@ -423,21 +620,6 @@ namespace com.dxfeed.native
                 orderViewStates[symbol] = OrderViewState.Ready;
             }
         }
-
-        public void OnProfile<TB, TE>(TB buf)
-            where TB : IDxEventBuf<TE>
-            where TE : IDxProfile
-        { }
-
-        public void OnFundamental<TB, TE>(TB buf)
-            where TB : IDxEventBuf<TE>
-            where TE : IDxSummary
-        { }
-
-        public void OnTimeAndSale<TB, TE>(TB buf)
-            where TB : IDxEventBuf<TE>
-            where TE : IDxTimeAndSale
-        { }
         #endregion
     }
 }

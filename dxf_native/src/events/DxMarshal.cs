@@ -27,6 +27,7 @@ namespace com.dxfeed.native.events
         private static readonly int THEO_PRICE_SIZE;
         private static readonly int UNDERLYING_SIZE;
         private static readonly int SERIES_SIZE;
+        private static readonly int CONFIGURATION_SIZE;
 
         static DxMarshal()
         {
@@ -44,6 +45,7 @@ namespace com.dxfeed.native.events
             THEO_PRICE_SIZE = sizeof(DxTheoPrice);
             UNDERLYING_SIZE = sizeof(DxUnderlying);
             SERIES_SIZE = sizeof(DxSeries);
+            CONFIGURATION_SIZE = sizeof(DxConfiguration);
         }
 
         public static string ReadString(IntPtr ptr)
@@ -119,6 +121,11 @@ namespace com.dxfeed.native.events
         public static NativeSeries ReadSeries(IntPtr head, int offset, string symbol)
         {
             return new NativeSeries((DxSeries*)IntPtr.Add(head, offset * SERIES_SIZE), symbol);
+        }
+
+        public static NativeConfiguration ReadConfiguration(IntPtr head, int offset, string symbol)
+        {
+            return new NativeConfiguration((DxConfiguration*)IntPtr.Add(head, offset * CONFIGURATION_SIZE), symbol);
         }
 
         public static DxString ReadDxString(IntPtr ptr)

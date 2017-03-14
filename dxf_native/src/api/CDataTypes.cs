@@ -237,6 +237,13 @@ namespace com.dxfeed.native.api
     }
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+    internal unsafe struct DxConfiguration
+    {
+        internal IntPtr string_object; //string
+    }
+
+
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
     internal struct DxEventParams
     {
         internal EventFlag flags;

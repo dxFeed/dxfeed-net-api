@@ -24,6 +24,7 @@ namespace com.dxfeed.api.events
         Greeks = 512,
         TheoPrice = 1024,
         Underlying = 2048,
-        Series = 4096
+        Series = 4096,
+        Configuration = 8192
     }
 }

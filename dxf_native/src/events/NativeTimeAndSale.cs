@@ -1,8 +1,10 @@
-﻿/// Copyright (C) 2010-2016 Devexperts LLC
-///
-/// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-/// If a copy of the MPL was not distributed with this file, You can obtain one at
-/// http://mozilla.org/MPL/2.0/.
+﻿#region License
+// Copyright (C) 2010-2016 Devexperts LLC
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at
+// http://mozilla.org/MPL/2.0/.
+#endregion
 
 using System;
 using System.Globalization;
@@ -14,10 +16,10 @@ using com.dxfeed.native.api;
 namespace com.dxfeed.native.events
 {
     /// <summary>
-    /// Time and Sale represents a trade (or other market event with price, e.g. market open/close 
-    /// price, etc).
-    /// Time and Sales are intended to provide information about trades in a continuous time slice
-    /// (unlike Trade events which are supposed to provide snapshot about the current last trade).
+    ///   Time and Sale represents a trade (or other market event with price, e.g. market open/close 
+    ///   price, etc).
+    ///   Time and Sales are intended to provide information about trades in a continuous time slice
+    ///   (unlike Trade events which are supposed to provide snapshot about the current last trade).
     /// </summary>
     public class NativeTimeAndSale : MarketEvent, IDxTimeAndSale
     {
@@ -42,7 +44,7 @@ namespace com.dxfeed.native.events
         #region Implementation of IDxTimeAndSale
 
         /// <summary>
-        /// Returns aggressor side of this time and sale event.
+        ///   Returns aggressor side of this time and sale event.
         /// </summary>
         public Side AgressorSide
         {
@@ -50,7 +52,7 @@ namespace com.dxfeed.native.events
         }
 
         /// <summary>
-        /// Returns the current ask price on the market when this time and sale event had occurred.
+        ///   Returns the current ask price on the market when this time and sale event had occurred.
         /// </summary>
         public double AskPrice
         {
@@ -58,7 +60,7 @@ namespace com.dxfeed.native.events
         }
 
         /// <summary>
-        /// Returns the current bid price on the market when this time and sale event had occurred.
+        ///   Returns the current bid price on the market when this time and sale event had occurred.
         /// </summary>
         public double BidPrice
         {
@@ -66,16 +68,16 @@ namespace com.dxfeed.native.events
         }
 
         /// <summary>
-        /// Returns event flags of this time and sale event.
+        ///   Returns event flags of this time and sale event.
         /// </summary>
-        public int EventFlags
+        public EventFlag EventFlags
         {
             get { return ts.event_flags; }
         }
 
         /// <summary>
-        /// Returns unique per-symbol index of this time and sale event.
-        /// Deprecated Use Index
+        ///   Returns unique per-symbol index of this time and sale event.
+        ///   Deprecated Use Index
         /// </summary>
         public long EventId
         {
@@ -83,7 +85,7 @@ namespace com.dxfeed.native.events
         }
 
         /// <summary>
-        /// Returns exchange code of this time and sale event.
+        ///   Returns exchange code of this time and sale event.
         /// </summary>
         public char ExchangeCode
         {
@@ -91,7 +93,7 @@ namespace com.dxfeed.native.events
         }
 
         /// <summary>
-        /// Returns sale conditions provided for this event by data feed.
+        ///   Returns sale conditions provided for this event by data feed.
         /// </summary>
         public DxString ExchangeSaleConditions
         {
@@ -99,8 +101,8 @@ namespace com.dxfeed.native.events
         }
 
         /// <summary>
-        /// Returns unique per-symbol index of this time and sale event.
-        /// Time and sale index is composed of Time and Sequence.
+        ///   Returns unique per-symbol index of this time and sale event.
+        ///   Time and sale index is composed of Time and Sequence.
         /// </summary>
         public long Index
         {
@@ -108,7 +110,7 @@ namespace com.dxfeed.native.events
         }
 
         /// <summary>
-        /// Returns price of this time and sale event.
+        ///   Returns price of this time and sale event.
         /// </summary>
         public double Price
         {
@@ -116,9 +118,9 @@ namespace com.dxfeed.native.events
         }
 
         /// <summary>
-        /// Returns sequence number of this event to distinguish events that have the same
-        /// Time. This sequence number does not have to be unique and does not need to be 
-        /// sequential.
+        ///   Returns sequence number of this event to distinguish events that have the same
+        ///   Time. This sequence number does not have to be unique and does not need to be 
+        ///   sequential.
         /// </summary>
         public int Sequence
         {
@@ -126,7 +128,7 @@ namespace com.dxfeed.native.events
         }
 
         /// <summary>
-        /// Returns size of this time and sale event.
+        ///   Returns size of this time and sale event.
         /// </summary>
         public long Size
         {
@@ -134,7 +136,7 @@ namespace com.dxfeed.native.events
         }
 
         /// <summary>
-        /// Returns date time of the original event.
+        ///   Returns date time of the original event.
         /// </summary>
         public DateTime Time
         {
@@ -142,7 +144,7 @@ namespace com.dxfeed.native.events
         }
 
         /// <summary>
-        /// Returns type of this time and sale event.
+        ///   Returns type of this time and sale event.
         /// </summary>
         public TimeAndSaleType Type
         {
@@ -150,8 +152,8 @@ namespace com.dxfeed.native.events
         }
 
         /// <summary>
-        /// Returns whether this is a cancellation of a previous event.
-        /// It is false for newly created time and sale event.
+        ///   Returns whether this is a cancellation of a previous event.
+        ///   It is false for newly created time and sale event.
         /// </summary>
         public bool IsCancel
         {
@@ -159,8 +161,8 @@ namespace com.dxfeed.native.events
         }
 
         /// <summary>
-        /// Returns whether this is a correction of a previous event.
-        /// It is false for newly created time and sale event.
+        ///   Returns whether this is a correction of a previous event.
+        ///   It is false for newly created time and sale event.
         /// </summary>
         public bool IsCorrection
         {
@@ -168,7 +170,7 @@ namespace com.dxfeed.native.events
         }
 
         /// <summary>
-        /// Returns whether this event represents an extended trading hours sale.
+        ///   Returns whether this event represents an extended trading hours sale.
         /// </summary>
         public bool IsTrade
         {
@@ -176,8 +178,8 @@ namespace com.dxfeed.native.events
         }
 
         /// <summary>
-        /// Returns whether this is a new event (not cancellation or correction).
-        /// It is true for newly created time and sale event.
+        ///   Returns whether this is a new event (not cancellation or correction).
+        ///   It is true for newly created time and sale event.
         /// </summary>
         public bool IsNew
         {
@@ -185,7 +187,7 @@ namespace com.dxfeed.native.events
         }
 
         /// <summary>
-        /// Returns whether this event represents a spread leg.
+        ///   Returns whether this event represents a spread leg.
         /// </summary>
         public bool IsSpreadLeg
         {
@@ -193,9 +195,9 @@ namespace com.dxfeed.native.events
         }
 
         /// <summary>
-        /// Returns whether this event represents a valid intraday tick.
-        /// Note, that a correction for a previously distributed valid tick represents a new valid tick itself,
-        /// but a cancellation of a previous valid tick does not.
+        ///   Returns whether this event represents a valid intraday tick.
+        ///   Note, that a correction for a previously distributed valid tick represents a new valid tick itself,
+        ///   but a cancellation of a previous valid tick does not.
         /// </summary>
         public bool IsValidTick
         {

@@ -239,7 +239,9 @@ namespace com.dxfeed.api
 
                 using (var con = new NativeConnection(address, OnDisconnect))
                 {
-                    using (var s = con.CreateSnapshotSubscription(events, fromTime, collector))
+                    //TODO
+                    //using (var s = con.CreateSnapshotSubscription(events, fromTime, collector))
+                    using (var s = con.CreateSnapshotSubscription(events, 0, collector))
                     {
                         if (typeof(E) == typeof(IDxCandle))
                             s.AddSymbol(symbol as CandleSymbol);

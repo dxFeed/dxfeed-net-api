@@ -70,8 +70,8 @@ namespace dxf_read_write_raw_data_sample
                         s.AddSource(source);
                         s.AddSymbol(symbol);
 
+                        System.Threading.Thread.Sleep(2000);
                         Console.WriteLine("Press enter to stop");
-                        System.Threading.Thread.Sleep(15000);
                         Console.ReadLine();
                     }
                 }

@@ -30,6 +30,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dxf_option_chain_sample", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dxf_order_view_sample", "samples\dxf_order_view_sample\dxf_order_view_sample.csproj", "{632C4E8E-8697-4D38-BBB5-D79A3617A7A1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dxf_read_write_raw_data_sample", "samples\dxf_read_write_raw_data_sample\dxf_read_write_raw_data_sample.csproj", "{7B032113-9A20-499A-9231-B3D6261DB01C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -79,6 +81,10 @@ Global
 		{632C4E8E-8697-4D38-BBB5-D79A3617A7A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{632C4E8E-8697-4D38-BBB5-D79A3617A7A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{632C4E8E-8697-4D38-BBB5-D79A3617A7A1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7B032113-9A20-499A-9231-B3D6261DB01C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B032113-9A20-499A-9231-B3D6261DB01C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B032113-9A20-499A-9231-B3D6261DB01C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B032113-9A20-499A-9231-B3D6261DB01C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -91,5 +97,6 @@ Global
 		{93A06E32-50A6-4071-883B-34B5C3EDAE55} = {4C3AA050-1D5F-43C7-90B1-95D04B6763C8}
 		{27844D1F-5982-4761-B807-AAE549CF6448} = {4C3AA050-1D5F-43C7-90B1-95D04B6763C8}
 		{632C4E8E-8697-4D38-BBB5-D79A3617A7A1} = {4C3AA050-1D5F-43C7-90B1-95D04B6763C8}
+		{7B032113-9A20-499A-9231-B3D6261DB01C} = {4C3AA050-1D5F-43C7-90B1-95D04B6763C8}
 	EndGlobalSection
 EndGlobal

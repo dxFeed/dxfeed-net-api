@@ -1,8 +1,10 @@
-﻿/// Copyright (C) 2010-2016 Devexperts LLC
-///
-/// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-/// If a copy of the MPL was not distributed with this file, You can obtain one at
-/// http://mozilla.org/MPL/2.0/.
+﻿#region License
+// Copyright (C) 2010-2016 Devexperts LLC
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at
+// http://mozilla.org/MPL/2.0/.
+#endregion
 
 using System;
 using System.Runtime.InteropServices;
@@ -44,8 +46,8 @@ namespace com.dxfeed.native.api
 
 
         /// <summary>
-        /// Helper method to check error codes 
-        /// Throws NativeDxException if return_code != DX_OK
+        ///   Helper method to check error codes 
+        ///   Throws NativeDxException if return_code != DX_OK
         /// </summary>
         /// <param name="returnCode"></param>
         /// <exception cref="NativeDxException"></exception>
@@ -498,5 +500,13 @@ namespace com.dxfeed.native.api
          *  OUT symbol - a pointer to the string object to which the symbol is to be stored
          */
         internal abstract int dxf_get_snapshot_symbol(IntPtr snapshot, out IntPtr symbol);
+
+        /*
+         *  Add dumping of incoming traffic into specific file
+         *
+         *  connection - a handle of a previously created connection which the subscription will be using
+         *  raw_file_name - raw data file name
+         */
+        internal abstract int dxf_write_raw_data(IntPtr connection, byte[] raw_file_name);
     }
 }

@@ -1,10 +1,13 @@
-﻿/// Copyright (C) 2010-2016 Devexperts LLC
-///
-/// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-/// If a copy of the MPL was not distributed with this file, You can obtain one at
-/// http://mozilla.org/MPL/2.0/.
+﻿#region License
+// Copyright (C) 2010-2016 Devexperts LLC
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at
+// http://mozilla.org/MPL/2.0/.
+#endregion
 
 using System;
+using System.Text;
 using com.dxfeed.api;
 using com.dxfeed.api.events;
 using com.dxfeed.native.api;
@@ -12,7 +15,7 @@ using com.dxfeed.native.api;
 namespace com.dxfeed.native
 {
     /// <summary>
-    /// Class provides operations with event subscription
+    ///   Class provides operations with event subscription
     /// </summary>
     public class NativeConnection : IDxConnection
     {
@@ -26,7 +29,7 @@ namespace com.dxfeed.native
         }
 
         /// <summary>
-        /// Creates new connection
+        ///   Creates new connection
         /// </summary>
         /// <param name="address">server address to connect</param>
         /// <param name="disconnectListener">listener will be called when the connection is interrupted</param>
@@ -47,7 +50,7 @@ namespace com.dxfeed.native
         #region Implementation of IDxConnection
 
         /// <summary>
-        /// Disconnect from the server
+        ///   Disconnect from the server
         /// </summary>
         /// <exception cref="DxException"></exception>
         public void Disconnect()
@@ -60,7 +63,7 @@ namespace com.dxfeed.native
         }
 
         /// <summary>
-        /// Create event subscription.
+        ///   Create event subscription.
         /// </summary>
         /// <param name="type">Event type.</param>
         /// <param name="listener">Event listener callback.</param>
@@ -76,7 +79,7 @@ namespace com.dxfeed.native
         }
 
         /// <summary>
-        /// Create candle event subscription.
+        ///   Create candle event subscription.
         /// </summary>
         /// <param name="time">Date time in the past.</param>
         /// <param name="listener">Candle listener callback.</param>
@@ -92,7 +95,7 @@ namespace com.dxfeed.native
         }
 
         /// <summary>
-        /// Create time event subscription.
+        ///   Create time event subscription.
         /// </summary>
         /// <param name="type">Event type.</param>
         /// <param name="time">Date time in the past.</param>
@@ -109,7 +112,7 @@ namespace com.dxfeed.native
         }
 
         /// <summary>
-        /// Creates snapshot subscription
+        ///   Creates snapshot subscription
         /// </summary>
         /// <param name="time">Time in the past - number of milliseconds from 1.1.1970 (unix time)</param>
         /// <param name="listener">snapshot listener callback</param>
@@ -124,7 +127,7 @@ namespace com.dxfeed.native
         }
 
         /// <summary>
-        /// Creates snapshot subscription
+        ///   Creates snapshot subscription
         /// </summary>
         /// <param name="time">Date time in the past</param>
         /// <param name="listener">snapshot listener callback</param>
@@ -140,7 +143,7 @@ namespace com.dxfeed.native
         }
 
         /// <summary>
-        /// Creates snapshot subscription
+        ///   Creates snapshot subscription
         /// </summary>
         /// <param name="eventType">Single event type.</param>
         /// <param name="time">Time in the past - number of milliseconds from 1.1.1970 (unix time)</param>
@@ -157,7 +160,7 @@ namespace com.dxfeed.native
         }
 
         /// <summary>
-        /// Creates snapshot subscription
+        ///   Creates snapshot subscription
         /// </summary>
         /// <param name="eventType">Single event type.</param>
         /// <param name="time">Date time in the past</param>
@@ -175,7 +178,7 @@ namespace com.dxfeed.native
         }
 
         /// <summary>
-        /// Creates Order View subscription
+        ///   Creates Order View subscription
         /// </summary>
         /// <param name="listener"></param>
         /// <returns>subscription object</returns>
@@ -186,6 +189,21 @@ namespace com.dxfeed.native
                 throw new NativeDxException("not connected");
 
             return new OrderViewSubscription(this, listener);
+        }
+
+        /// <summary>
+        ///   Add dumping raw data of incoming traffic of connection into specific file
+        /// </summary>
+        /// <param name="rawFileName">file name for raw data</param>
+        /// <exception cref="ArgumentException">Invalid argument <c>rawFileName</c></exception>
+        /// <exception cref="NativeDxException"></exception>
+        public void WriteRawData(string rawFileName)
+        {
+            if (rawFileName == null || rawFileName == "")
+                throw new ArgumentException("Invalid file name");
+            Encoding ascii = Encoding.ASCII;
+            byte[] fileName = ascii.GetBytes(rawFileName);
+            C.CheckOk(C.Instance.dxf_write_raw_data(handler, fileName));
         }
 
         #endregion

@@ -1,58 +1,60 @@
-/// Copyright (C) 2010-2016 Devexperts LLC
-///
-/// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-/// If a copy of the MPL was not distributed with this file, You can obtain one at
-/// http://mozilla.org/MPL/2.0/.
+#region License
+// Copyright (C) 2010-2016 Devexperts LLC
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at
+// http://mozilla.org/MPL/2.0/.
+#endregion
 
-using System;
 using com.dxfeed.api.data;
+using System;
 
 namespace com.dxfeed.api.events
 {
     /// <summary>
-    /// Interface for common fields of Order and SpreadOrder events.
-    /// Order events represent a snapshot for a full available market depth for a symbol.
-    /// The collection of order events of a symbol represents the most recent information that is
-    /// available about orders on the market at any given moment of time.
+    ///   Interface for common fields of Order and SpreadOrder events.
+    ///   Order events represent a snapshot for a full available market depth for a symbol.
+    ///   The collection of order events of a symbol represents the most recent information that is
+    ///   available about orders on the market at any given moment of time.
     /// </summary>
     public interface IDxOrderBase : IDxMarketEvent, IndexedEvent<string>
     {
         /// <summary>
-        /// Returns number of individual orders in this aggregate order.
+        ///   Returns number of individual orders in this aggregate order.
         /// </summary>
-        long Count { get; }
+        int Count { get; }
         /// <summary>
-        /// Returns exchange code of this order.
+        ///   Returns exchange code of this order.
         /// </summary>
         char ExchangeCode { get; }
         /// <summary>
-        /// Returns detail level of this order.
-        /// Deprecated use Scope instead.
+        ///   Returns detail level of this order.
+        ///   Deprecated use Scope instead.
         /// </summary>
         int Level { get; }
         /// <summary>
-        /// Returns side of this order.
+        ///   Returns side of this order.
         /// </summary>
         Side Side { get; }
         /// <summary>
-        /// Returns price of this order.
+        ///   Returns price of this order.
         /// </summary>
         double Price { get; }
         /// <summary>
-        /// Returns scope of this order.
+        ///   Returns scope of this order.
         /// </summary>
         Scope Scope { get; }
         /// <summary>
-        /// Returns sequence number of this order to distinguish orders that have the same Time.
-        /// This sequence number does not have to be unique and does not need to be sequential.
+        ///   Returns sequence number of this order to distinguish orders that have the same Time.
+        ///   This sequence number does not have to be unique and does not need to be sequential.
         /// </summary>
         int Sequence { get; }
         /// <summary>
-        /// Returns size of this order.
+        ///   Returns size of this order.
         /// </summary>
         long Size { get; }
         /// <summary>
-        /// Returns source of this event.
+        ///   Returns source of this event.
         /// </summary>
         OrderSource Source { get; }
         /// <summary>
@@ -60,8 +62,8 @@ namespace com.dxfeed.api.events
         /// </summary>
         DateTime Time { get; }
         /// <summary>
-        /// Returns time and sequence of this order packaged into single long value.
-        /// This method is intended for efficient order time priority comparison.
+        ///   Returns time and sequence of this order packaged into single long value.
+        ///   This method is intended for efficient order time priority comparison.
         /// </summary>
         long TimeSequence { get; }
     }

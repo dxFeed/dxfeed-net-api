@@ -1,13 +1,15 @@
-﻿/// Copyright (C) 2010-2016 Devexperts LLC
-///
-/// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-/// If a copy of the MPL was not distributed with this file, You can obtain one at
-/// http://mozilla.org/MPL/2.0/.
+﻿#region License
+// Copyright (C) 2010-2016 Devexperts LLC
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at
+// http://mozilla.org/MPL/2.0/.
+#endregion
 
-using System.Globalization;
 using com.dxfeed.api.data;
 using com.dxfeed.api.events;
 using com.dxfeed.native.api;
+using System.Globalization;
 
 namespace com.dxfeed.native.events
 {
@@ -19,14 +21,15 @@ namespace com.dxfeed.native.events
     /// </summary>
     public class NativeSpreadOrder : NativeOrderBase, IDxSpreadOrder
     {
-        private readonly DxSpreadOrder order;
-        private readonly DxString spreadOrder;
-
-        //TODO: add event flags argument
         internal unsafe NativeSpreadOrder(DxSpreadOrder* order, string symbol) : base(order, symbol)
         {
-            this.order = *order;
-            spreadOrder = DxMarshal.ReadDxString(this.order.spread_symbol);
+            DxSpreadOrder o = *order;
+            SpreadSymbol = DxMarshal.ReadDxString(o.spread_symbol);
+        }
+
+        internal NativeSpreadOrder(IDxSpreadOrder order) : base(order)
+        {
+            SpreadSymbol = (DxString)order.SpreadSymbol.Clone();
         }
 
         public override string ToString()
@@ -42,7 +45,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public DxString SpreadSymbol
         {
-            get { return SpreadSymbol; }
+            get; internal set;
         }
 
         #endregion

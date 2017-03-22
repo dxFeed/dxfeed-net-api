@@ -17,7 +17,8 @@ namespace com.dxfeed.api.extras
         IDxGreeksListener,
         IDxTheoPriceListener,
         IDxUnderlyingListener,
-        IDxSeriesListener
+        IDxSeriesListener,
+        IDxConfigurationListener
     {
         #region Implementation of IDxFeedListener
 
@@ -148,6 +149,18 @@ namespace com.dxfeed.api.extras
         public void OnSeries<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
             where TE : IDxSeries
+        {
+            foreach (var s in buf)
+                Console.WriteLine(string.Format("{0} {1}", buf.Symbol, s));
+        }
+
+        #endregion
+
+        #region Implementation of IDxConfigurationListener
+
+        public void OnConfiguration<TB, TE>(TB buf)
+            where TB : IDxEventBuf<TE>
+            where TE : IDxConfiguration
         {
             foreach (var s in buf)
                 Console.WriteLine(string.Format("{0} {1}", buf.Symbol, s));

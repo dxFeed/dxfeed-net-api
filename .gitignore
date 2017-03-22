@@ -14,3 +14,6 @@ _ReSharper.*
 
 # ignore nuget repository
 packages/**
+
+# ignore Visual Studio folders
+.vs

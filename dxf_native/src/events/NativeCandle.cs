@@ -42,10 +42,7 @@ namespace com.dxfeed.native.events
             VWAP = candle.vwap;
             BidVolume = candle.bid_volume;
             AskVolume = candle.ask_volume;
-            //TODO: WTF??? duplicate datetime
-            DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0);
-            dateTime = dateTime.AddMilliseconds(candle.time);
-            DateTime = dateTime;
+            DateTime = TimeConverter.ToUtcDateTime(TimeStamp);
             Index = candle.index;
             ImpVolatility = candle.imp_volatility;
             OpenInterest = candle.open_interest;
@@ -53,11 +50,11 @@ namespace com.dxfeed.native.events
 
         internal NativeCandle(IDxCandle candle)
         {
-            EventSymbol = candle.EventSymbol;
+            EventSymbol = CandleSymbol.ValueOf(candle.EventSymbol.ToString());
             EventFlags = candle.EventFlags;
 
             TimeStamp = candle.TimeStamp;
-            Time = candle.Time;
+            Time = TimeConverter.ToUtcDateTime(TimeStamp);
             Sequence = candle.Sequence;
             Count = candle.Count;
             Open = candle.Open;
@@ -68,8 +65,7 @@ namespace com.dxfeed.native.events
             VWAP = candle.VWAP;
             BidVolume = candle.BidVolume;
             AskVolume = candle.AskVolume;
-            //TODO: WTF???
-            DateTime = candle.DateTime;
+            DateTime = TimeConverter.ToUtcDateTime(TimeStamp);
             Index = candle.Index;
             ImpVolatility = candle.ImpVolatility;
             OpenInterest = candle.OpenInterest;

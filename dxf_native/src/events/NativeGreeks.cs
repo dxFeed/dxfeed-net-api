@@ -54,7 +54,7 @@ namespace com.dxfeed.native.events
             Sequence = greeks.Sequence;
             Theta = greeks.Theta;
             TimeStamp = greeks.TimeStamp;
-            Time = greeks.Time;
+            Time = TimeConverter.ToUtcDateTime(TimeStamp);
             Vega = greeks.Vega;
             Volatility = greeks.Volatility;
             Index = greeks.Index;

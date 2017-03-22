@@ -22,6 +22,7 @@ namespace com.dxfeed.native.events
         internal unsafe NativeSummary(DxSummary* s, string symbol) : base(symbol)
         {
             DxSummary summary = *s;
+
             DayId = summary.day_id;
             DayOpenPrice = summary.day_open_price;
             DayHighPrice = summary.day_high_price;
@@ -36,7 +37,7 @@ namespace com.dxfeed.native.events
             PrevDayClosePriceType = summary.prev_day_close_price_type;
         }
 
-        internal unsafe NativeSummary(IDxSummary summary) : base(summary.EventSymbol)
+        internal NativeSummary(IDxSummary summary) : base(summary.EventSymbol)
         {
             DayId = summary.DayId;
             DayOpenPrice = summary.DayOpenPrice;

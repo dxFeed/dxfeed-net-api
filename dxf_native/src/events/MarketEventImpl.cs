@@ -6,7 +6,6 @@
 // http://mozilla.org/MPL/2.0/.
 #endregion
 
-using System;
 using com.dxfeed.api.events;
 
 namespace com.dxfeed.native.events
@@ -26,7 +25,7 @@ namespace com.dxfeed.native.events
         /// <param name="symbol">The event symbol.</param>
         protected MarketEventImpl(string symbol)
         {
-            EventSymbol = symbol;
+            EventSymbol = string.Copy(symbol);
         }
 
         #region Implementation of IDxMarketEvent

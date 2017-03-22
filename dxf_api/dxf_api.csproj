@@ -87,6 +87,7 @@
     <Compile Include="src\DxException.cs" />
     <Compile Include="src\events\IDxEventType.cs" />
     <Compile Include="src\events\IDxGreeks.cs" />
+    <Compile Include="src\events\IDxConfiguration.cs" />
     <Compile Include="src\events\LastingEvent.cs" />
     <Compile Include="src\events\IDxSeries.cs" />
     <Compile Include="src\events\IDxSpreadOrder.cs" />
@@ -109,6 +110,7 @@
     <Compile Include="src\extras\TimeConverter.cs" />
     <Compile Include="src\listeners\event\IDxCandleListener.cs" />
     <Compile Include="src\listeners\event\IDxGreeksListener.cs" />
+    <Compile Include="src\listeners\event\IDxConfigurationListener.cs" />
     <Compile Include="src\listeners\event\IDxSeriesListener.cs" />
     <Compile Include="src\listeners\event\IDxTheoPriceListener.cs" />
     <Compile Include="src\listeners\event\IDxTradeListener.cs" />
@@ -162,8 +164,6 @@
     <Compile Include="src\ipf\option\OptionChainsBuilder.cs" />
     <Compile Include="src\ipf\option\OptionSeries.cs" />
     <Compile Include="src\listeners\IDxOrderViewListener.cs" />
-    <Compile Include="src\promise\Promise.cs" />
-    <Compile Include="src\promise\PromiseHandler.cs" />
     <Compile Include="src\Tools.cs" />
     <Compile Include="src\util\DayUtil.cs" />
     <Compile Include="src\util\EventTypeUtil.cs" />

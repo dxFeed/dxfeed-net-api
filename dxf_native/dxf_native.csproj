@@ -88,6 +88,7 @@
     <Compile Include="src\events\NativeCandle.cs" />
     <Compile Include="src\events\NativeEventBuffer.cs" />
     <Compile Include="src\events\NativeGreeks.cs" />
+    <Compile Include="src\events\NativeConfiguration.cs" />
     <Compile Include="src\events\NativeSeries.cs" />
     <Compile Include="src\events\NativeSpreadOrder.cs" />
     <Compile Include="src\events\NativeOrderBase.cs" />

@@ -6,11 +6,11 @@
 // http://mozilla.org/MPL/2.0/.
 #endregion
 
+using com.dxfeed.api.events;
+using com.dxfeed.api.extras;
+using com.dxfeed.native.api;
 using System;
 using System.Globalization;
-using com.dxfeed.api.events;
-using com.dxfeed.native.api;
-using com.dxfeed.api.extras;
 
 namespace com.dxfeed.native.events
 {
@@ -47,9 +47,9 @@ namespace com.dxfeed.native.events
             _52HighPrice = profile._52HighPrice;
             _52LowPrice = profile._52LowPrice;
             Shares = profile.Shares;
-            Description = profile.Description;
+            Description = string.Copy(profile.Description);
             Flags = profile.Flags;
-            StatusReason = profile.StatusReason;
+            StatusReason = string.Copy(profile.StatusReason);
             HaltStartTime = profile.HaltStartTime;
             HaltEndTime = profile.HaltEndTime;
             HighLimitPrice = profile.HighLimitPrice;

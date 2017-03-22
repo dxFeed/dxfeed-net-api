@@ -6,9 +6,9 @@
 // http://mozilla.org/MPL/2.0/.
 #endregion
 
-using System.Globalization;
 using com.dxfeed.api.events;
 using com.dxfeed.native.api;
+using System.Globalization;
 
 namespace com.dxfeed.native.events
 {

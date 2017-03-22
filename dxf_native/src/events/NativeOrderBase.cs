@@ -16,10 +16,10 @@ using System.Globalization;
 namespace com.dxfeed.native.events
 {
     /// <summary>
-    /// Base class for common fields of Order and SpreadOrder events.
-    /// Order events represent a snapshot for a full available market depth for a symbol.
-    /// The collection of order events of a symbol represents the most recent information that is
-    /// available about orders on the market at any given moment of time.
+    ///   Base class for common fields of Order and SpreadOrder events.
+    ///   Order events represent a snapshot for a full available market depth for a symbol.
+    ///   The collection of order events of a symbol represents the most recent information that is
+    ///   available about orders on the market at any given moment of time.
     /// </summary>
     public class NativeOrderBase : MarketEventImpl, IDxOrderBase
     {
@@ -98,15 +98,15 @@ namespace com.dxfeed.native.events
         #region Implementation of IDxOrderBase
 
         /// <summary>
-        /// Returns number of individual orders in this aggregate order.
+        ///   Returns number of individual orders in this aggregate order.
         /// </summary>
-        public long Count
+        public int Count
         {
-            get; private set;
+            get; internal set;
         }
 
         /// <summary>
-        /// Returns event flags.
+        ///   Returns event flags.
         /// </summary>
         public EventFlag EventFlags
         {
@@ -114,94 +114,94 @@ namespace com.dxfeed.native.events
         }
 
         /// <summary>
-        /// Returns exchange code of this order.
+        ///   Returns exchange code of this order.
         /// </summary>
         public char ExchangeCode
         {
-            get; private set;
+            get; internal set;
         }
 
         /// <summary>
-        /// Returns unique per-symbol index of this order. Index is non-negative.
+        ///   Returns unique per-symbol index of this order. Index is non-negative.
         /// </summary>
         public long Index
         {
-            get; private set;
+            get; internal set;
         }
 
         /// <summary>
-        /// Returns detail level of this order.
-        /// Deprecated use Scope instead.
+        ///   Returns detail level of this order.
+        ///   Deprecated use Scope instead.
         /// </summary>
         public int Level
         {
-            get; private set;
+            get; internal set;
         }
 
         /// <summary>
-        /// Returns side of this order.
+        ///   Returns side of this order.
         /// </summary>
         public Side Side
         {
-            get; private set;
+            get; internal set;
         }
 
         /// <summary>
-        /// Returns price of this order.
+        ///   Returns price of this order.
         /// </summary>
         public double Price
         {
-            get; private set;
+            get; internal set;
         }
 
         /// <summary>
-        /// Returns scope of this order.
+        ///   Returns scope of this order.
         /// </summary>
         public Scope Scope
         {
-            get; private set;
+            get; internal set;
         }
 
         /// <summary>
-        /// Returns sequence number of this order to distinguish orders that have the same Time.
-        /// This sequence number does not have to be unique and does not need to be sequential.
+        ///   Returns sequence number of this order to distinguish orders that have the same Time.
+        ///   This sequence number does not have to be unique and does not need to be sequential.
         /// </summary>
         public int Sequence
         {
-            get; private set;
+            get; internal set;
         }
 
         /// <summary>
-        /// Returns size of this order.
+        ///   Returns size of this order.
         /// </summary>
         public long Size
         {
-            get; private set;
+            get; internal set;
         }
 
         /// <summary>
-        /// Returns source of this event.
+        ///   Returns source of this event.
         /// </summary>
         public OrderSource Source
         {
-            get; private set;
+            get; internal set;
         }
 
         /// <summary>
-        /// Returns date time of this order.
+        ///   Returns date time of this order.
         /// </summary>
         public DateTime Time
         {
-            get; private set;
+            get; internal set;
         }
 
         /// <summary>
-        /// Returns time and sequence of this order packaged into single long value.
-        /// This method is intended for efficient order time priority comparison.
+        ///   Returns time and sequence of this order packaged into single long value.
+        ///   This method is intended for efficient order time priority comparison.
         /// </summary>
         public long TimeSequence
         {
-            get; private set;
+            get; internal set;
         }
 
         #endregion

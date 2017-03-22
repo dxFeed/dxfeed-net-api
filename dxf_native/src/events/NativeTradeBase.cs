@@ -1,14 +1,16 @@
-﻿/// Copyright (C) 2010-2016 Devexperts LLC
-///
-/// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-/// If a copy of the MPL was not distributed with this file, You can obtain one at
-/// http://mozilla.org/MPL/2.0/.
+﻿#region License
+// Copyright (C) 2010-2016 Devexperts LLC
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at
+// http://mozilla.org/MPL/2.0/.
+#endregion
 
-using System;
-using System.Globalization;
 using com.dxfeed.api.events;
 using com.dxfeed.api.extras;
 using com.dxfeed.native.api;
+using System;
+using System.Globalization;
 
 namespace com.dxfeed.native.events
 {
@@ -26,16 +28,22 @@ namespace com.dxfeed.native.events
     /// </summary>
     public abstract class NativeTradeBase : MarketEventImpl, IDxTradeBase
     {
-        private readonly DxTrade trade;
-
         /// <summary>
         /// Creates new trade with the specified event symbol.
         /// </summary>
         /// <param name="trade">Native DxTrade object.</param>
         /// <param name="symbol">The event symbol.</param>
-        internal unsafe NativeTradeBase(DxTrade* trade, string symbol) : base(symbol)
+        internal unsafe NativeTradeBase(DxTrade* t, string symbol) : base(symbol)
         {
-            this.trade = *trade;
+            DxTrade trade = *t;
+
+            Time = TimeConverter.ToUtcDateTime(trade.time);
+            ExchangeCode = trade.exchange_code;
+            Price = trade.price;
+            Size = trade.size;
+            Tick = trade.tick;
+            Change = trade.change;
+            DayVolume = trade.day_volume;
         }
 
         /// <summary>
@@ -43,15 +51,32 @@ namespace com.dxfeed.native.events
         /// </summary>
         /// <param name="trade">Native DxTradeEth object.</param>
         /// <param name="symbol">The event symbol.</param>
-        internal unsafe NativeTradeBase(DxTradeEth* trade, string symbol) : base(symbol)
+        internal unsafe NativeTradeBase(DxTradeEth* t, string symbol) : base(symbol)
         {
-            this.trade.time = trade->time;
-            this.trade.exchange_code = trade->exchange_code;
-            this.trade.price = trade->price;
-            this.trade.size = trade->size;
-            this.trade.tick = 0;
-            this.trade.change = 0.0;
-            this.trade.day_volume = trade->eth_volume;
+            DxTradeEth trade = *t;
+
+            Time = TimeConverter.ToUtcDateTime(trade.time);
+            ExchangeCode = trade.exchange_code;
+            Price = trade.price;
+            Size = trade.size;
+            Tick = 0;
+            Change = 0.0;
+            DayVolume= trade.eth_volume;
+        }
+
+        /// <summary>
+        /// Creates copy of trade object.
+        /// </summary>
+        /// <param name="trade">The IDxTrade object.</param>
+        internal NativeTradeBase(IDxTradeBase trade) : base(trade.EventSymbol)
+        {
+            Time = trade.Time;
+            ExchangeCode = trade.ExchangeCode;
+            Price = trade.Price;
+            Size = trade.Size;
+            Tick = trade.Tick;
+            Change = trade.Change;
+            DayVolume = trade.DayVolume;
         }
 
         public override string ToString()
@@ -69,7 +94,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public DateTime Time
         {
-            get { return TimeConverter.ToUtcDateTime(trade.time); }
+            get; private set;
         }
 
         /// <summary>
@@ -77,7 +102,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public char ExchangeCode
         {
-            get { return trade.exchange_code; }
+            get; private set;
         }
 
         /// <summary>
@@ -85,7 +110,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public double Price
         {
-            get { return trade.price; }
+            get; private set;
         }
 
         /// <summary>
@@ -93,7 +118,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public long Size
         {
-            get { return trade.size; }
+            get; private set;
         }
 
         /// <summary>
@@ -101,7 +126,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public long Tick
         {
-            get { return trade.tick; }
+            get; private set;
         }
 
         /// <summary>
@@ -109,7 +134,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public double Change
         {
-            get { return trade.change; }
+            get; private set;
         }
 
         /// <summary>
@@ -117,7 +142,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public double DayVolume
         {
-            get { return trade.day_volume; }
+            get; private set;
         }
 
         #endregion

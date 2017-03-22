@@ -188,6 +188,9 @@ namespace com.dxfeed.promise
      * {@code CompletableFuture}, so this class can be potentially redesigned to extend {@code CompletableFuture}
      * while maintaining backwards compatibility.
      */
+
+        //TODO: remove this classes
+
     public class Promise<T> where T : class
     {
         private volatile T result;

@@ -1,8 +1,10 @@
-﻿/// Copyright (C) 2010-2016 Devexperts LLC
-///
-/// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-/// If a copy of the MPL was not distributed with this file, You can obtain one at
-/// http://mozilla.org/MPL/2.0/.
+﻿#region License
+// Copyright (C) 2010-2016 Devexperts LLC
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at
+// http://mozilla.org/MPL/2.0/.
+#endregion
 
 using System;
 using System.Globalization;
@@ -14,15 +16,44 @@ namespace com.dxfeed.native.events
 {
     public class NativeProfile : MarketEventImpl, IDxProfile
     {
-        private readonly DxProfile profile;
-        private readonly string description;
-        private readonly string statusReason;
-
-        internal unsafe NativeProfile(DxProfile* profile, string symbol) : base(symbol)
+        internal unsafe NativeProfile(DxProfile* p, string symbol) : base(symbol)
         {
-            this.profile = *profile;
-            description = new string((char*)this.profile.description.ToPointer());
-            statusReason = new string((char*)this.profile.status_reason.ToPointer());
+            DxProfile profile = *p;
+
+            Beta = profile.beta;
+            Eps = profile.eps;
+            DivFreq = profile.div_freq;
+            ExdDivAmount = profile.exd_div_amount;
+            ExdDivDate = profile.exd_div_date;
+            _52HighPrice = profile._52_high_price;
+            _52LowPrice = profile._52_low_price;
+            Shares = profile.shares;
+            Description = new string((char*)profile.description.ToPointer());
+            Flags = profile.flags;
+            StatusReason = new string((char*)profile.status_reason.ToPointer());
+            HaltStartTime = TimeConverter.ToUtcDateTime(profile.halt_start_time);
+            HaltEndTime = TimeConverter.ToUtcDateTime(profile.halt_end_time);
+            HighLimitPrice = profile.high_limit_price;
+            LowLimitPrice = profile.low_limit_price;
+        }
+
+        internal NativeProfile(IDxProfile profile) : base(profile.EventSymbol)
+        {
+            Beta = profile.Beta;
+            Eps = profile.Eps;
+            DivFreq = profile.DivFreq;
+            ExdDivAmount = profile.ExdDivAmount;
+            ExdDivDate = profile.ExdDivDate;
+            _52HighPrice = profile._52HighPrice;
+            _52LowPrice = profile._52LowPrice;
+            Shares = profile.Shares;
+            Description = profile.Description;
+            Flags = profile.Flags;
+            StatusReason = profile.StatusReason;
+            HaltStartTime = profile.HaltStartTime;
+            HaltEndTime = profile.HaltEndTime;
+            HighLimitPrice = profile.HighLimitPrice;
+            LowLimitPrice = profile.LowLimitPrice;
         }
 
         public override string ToString()
@@ -35,81 +66,88 @@ namespace com.dxfeed.native.events
                 Flags, StatusReason, HaltStartTime, HaltEndTime, HighLimitPrice, LowLimitPrice, EventSymbol);
         }
 
+        #region Implementation of ICloneable
+        public override object Clone()
+        {
+            return new NativeProfile(this);
+        }
+        #endregion
+
         #region Implementation of IDxProfile
 
         public double Beta
         {
-            get { return profile.beta; }
+            get; private set;
         }
 
         public double Eps
         {
-            get { return profile.eps; }
+            get; private set;
         }
 
         public long DivFreq
         {
-            get { return profile.div_freq; }
+            get; private set;
         }
 
         public double ExdDivAmount
         {
-            get { return profile.exd_div_amount; }
+            get; private set;
         }
 
         public int ExdDivDate
         {
-            get { return profile.exd_div_date; }
+            get; private set;
         }
 
         public double _52HighPrice
         {
-            get { return profile._52_high_price; }
+            get; private set;
         }
 
         public double _52LowPrice
         {
-            get { return profile._52_low_price; }
+            get; private set;
         }
 
         public double Shares
         {
-            get { return profile.shares; }
+            get; private set;
         }
 
         public string Description
         {
-            get { return description; }
+            get; private set;
         }
 
         public long Flags
         {
-            get { return profile.flags; }
+            get; private set;
         }
 
         public string StatusReason
         {
-            get { return statusReason; }
+            get; private set;
         }
 
         public DateTime HaltStartTime
         {
-            get { return TimeConverter.ToUtcDateTime(profile.halt_start_time); }
+            get; private set;
         }
 
         public DateTime HaltEndTime
         {
-            get { return TimeConverter.ToUtcDateTime(profile.halt_end_time); }
+            get; private set;
         }
 
         public double HighLimitPrice
         {
-            get { return profile.high_limit_price; }
+            get; private set;
         }
 
         public double LowLimitPrice
         {
-            get { return profile.low_limit_price; }
+            get; private set;
         }
 
         #endregion

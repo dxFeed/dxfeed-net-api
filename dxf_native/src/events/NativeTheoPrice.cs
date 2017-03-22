@@ -1,14 +1,16 @@
-﻿/// Copyright (C) 2010-2016 Devexperts LLC
-///
-/// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-/// If a copy of the MPL was not distributed with this file, You can obtain one at
-/// http://mozilla.org/MPL/2.0/.
+﻿#region License
+// Copyright (C) 2010-2016 Devexperts LLC
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at
+// http://mozilla.org/MPL/2.0/.
+#endregion
 
-using System;
-using System.Globalization;
 using com.dxfeed.api.events;
 using com.dxfeed.api.extras;
 using com.dxfeed.native.api;
+using System;
+using System.Globalization;
 
 namespace com.dxfeed.native.events
 {
@@ -23,11 +25,28 @@ namespace com.dxfeed.native.events
     /// </summary>
     public class NativeTheoPrice : MarketEventImpl, IDxTheoPrice
     {
-        private readonly DxTheoPrice tp;
-
-        internal unsafe NativeTheoPrice(DxTheoPrice* tp, string symbol) : base(symbol)
+        internal unsafe NativeTheoPrice(DxTheoPrice* theoPrice, string symbol) : base(symbol)
         {
-            this.tp = *tp;
+            DxTheoPrice tp = *theoPrice;
+
+            TheoDelta = tp.theo_delta;
+            TheoDividend = tp.theo_dividend;
+            TheoGamma = tp.theo_gamma;
+            TheoInterest = tp.theo_interest;
+            TheoPrice = tp.theo_price;
+            TheoTime = TimeConverter.ToUtcDateTime(tp.theo_time);
+            TheoUnderlyingPrice = tp.theo_underlying_price;
+        }
+
+        internal NativeTheoPrice(IDxTheoPrice tp) : base(tp.EventSymbol)
+        {
+            TheoDelta = tp.TheoDelta;
+            TheoDividend = tp.TheoDividend;
+            TheoGamma = tp.TheoGamma;
+            TheoInterest = tp.TheoInterest;
+            TheoPrice = tp.TheoPrice;
+            TheoTime = TheoTime;
+            TheoUnderlyingPrice = tp.TheoUnderlyingPrice;
         }
 
         public override string ToString()
@@ -38,6 +57,13 @@ namespace com.dxfeed.native.events
                 EventSymbol, TheoTime, TheoPrice, TheoUnderlyingPrice, TheoDelta, TheoGamma, TheoDividend, TheoInterest);
         }
 
+        #region Implementation of ICloneable
+        public override object Clone()
+        {
+            return new NativeTheoPrice(this);
+        }
+        #endregion
+
         #region Implementation of IDxTheoPrice
 
         /// <summary>
@@ -46,7 +72,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public double TheoDelta
         {
-            get { return tp.theo_delta; }
+            get; private set;
         }
 
         /// <summary>
@@ -55,7 +81,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public double TheoDividend
         {
-            get { return tp.theo_dividend; }
+            get; private set;
         }
 
         /// <summary>
@@ -64,7 +90,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public double TheoGamma
         {
-            get { return tp.theo_gamma; }
+            get; private set;
         }
 
         /// <summary>
@@ -73,7 +99,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public double TheoInterest
         {
-            get { return tp.theo_interest; }
+            get; private set;
         }
 
         /// <summary>
@@ -81,7 +107,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public double TheoPrice
         {
-            get { return tp.theo_price; }
+            get; private set;
         }
 
         /// <summary>
@@ -89,7 +115,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public DateTime TheoTime
         {
-            get { return TimeConverter.ToUtcDateTime(tp.theo_time); }
+            get; private set;
         }
 
         /// <summary>
@@ -97,7 +123,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public double TheoUnderlyingPrice
         {
-            get { return tp.theo_underlying_price; }
+            get; private set;
         }
 
         #endregion

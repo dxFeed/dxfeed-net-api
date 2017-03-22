@@ -1,13 +1,15 @@
-﻿/// Copyright (C) 2010-2016 Devexperts LLC
-///
-/// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-/// If a copy of the MPL was not distributed with this file, You can obtain one at
-/// http://mozilla.org/MPL/2.0/.
+﻿#region License
+// Copyright (C) 2010-2016 Devexperts LLC
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at
+// http://mozilla.org/MPL/2.0/.
+#endregion
 
-using System;
-using System.Globalization;
 using com.dxfeed.api.events;
 using com.dxfeed.native.api;
+using System;
+using System.Globalization;
 
 namespace com.dxfeed.native.events
 {
@@ -19,12 +21,32 @@ namespace com.dxfeed.native.events
     /// </summary>
     public class NativeSeries : MarketEventImpl, IDxSeries
     {
-        private readonly DxSeries s;
-
-        internal unsafe NativeSeries(DxSeries* s, string symbol) : base(symbol)
+        internal unsafe NativeSeries(DxSeries* series, string symbol) : base(symbol)
         {
-            this.s = *s;
-            EventFlags = this.s.event_flags;
+            DxSeries s = *series;
+
+            Dividend = s.dividend;
+            Expiration = s.expiration;
+            ForwardPrice = s.forward_price;
+            Interest = s.interest;
+            PutCallRatio = s.put_call_ratio;
+            Sequence = s.sequence;
+            Volatility = s.volatility;
+            Index = s.index;
+            EventFlags = s.event_flags;
+        }
+
+        internal NativeSeries(IDxSeries s) : base(s.EventSymbol)
+        {
+            Dividend = s.Dividend;
+            Expiration = s.Expiration;
+            ForwardPrice = s.ForwardPrice;
+            Interest = s.Interest;
+            PutCallRatio = s.PutCallRatio;
+            Sequence = s.Sequence;
+            Volatility = s.Volatility;
+            Index = s.Index;
+            EventFlags = s.EventFlags;
         }
 
         public override string ToString()
@@ -36,6 +58,13 @@ namespace com.dxfeed.native.events
                 ForwardPrice, Dividend, Interest, Index);
         }
 
+        #region Implementation of ICloneable
+        public override object Clone()
+        {
+            return new NativeSeries(this);
+        }
+        #endregion
+
         #region Implementation of IDxSeries
 
         /// <summary>
@@ -44,7 +73,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public double Dividend
         {
-            get { return s.dividend; }
+            get; private set;
         }
 
         /// <summary>
@@ -55,7 +84,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public int Expiration
         {
-            get { return s.expiration; }
+            get; private set;
         }
 
         /// <summary>
@@ -63,7 +92,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public double ForwardPrice
         {
-            get { return s.forward_price; }
+            get; private set;
         }
 
         /// <summary>
@@ -72,7 +101,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public double Interest
         {
-            get { return s.interest; }
+            get; private set;
         }
 
         /// <summary>
@@ -80,7 +109,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public double PutCallRatio
         {
-            get { return s.put_call_ratio; }
+            get; private set;
         }
 
         /// <summary>
@@ -88,7 +117,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public int Sequence
         {
-            get { return s.sequence; }
+            get; private set;
         }
 
         /// <summary>
@@ -96,7 +125,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public double Volatility
         {
-            get { return s.volatility; }
+            get; private set;
         }
 
         /// <summary>
@@ -105,7 +134,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public long Index
         {
-            get { return s.index; }
+            get; private set;
         }
 
         /// <summary>

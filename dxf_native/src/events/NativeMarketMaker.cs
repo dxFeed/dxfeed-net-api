@@ -1,8 +1,10 @@
-﻿/// Copyright (C) 2010-2016 Devexperts LLC
-///
-/// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-/// If a copy of the MPL was not distributed with this file, You can obtain one at
-/// http://mozilla.org/MPL/2.0/.
+﻿#region License
+// Copyright (C) 2010-2016 Devexperts LLC
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at
+// http://mozilla.org/MPL/2.0/.
+#endregion
 
 using com.dxfeed.api.events;
 using com.dxfeed.native.api;
@@ -12,11 +14,26 @@ namespace com.dxfeed.native.events
 {
     public class NativeMarketMaker : MarketEventImpl, IDxMarketMaker
     {
-        private readonly DxMarketMaker mm;
-
-        internal unsafe NativeMarketMaker(DxMarketMaker* mm, string symbol) : base(symbol)
+        internal unsafe NativeMarketMaker(DxMarketMaker* marketMaker, string symbol) : base(symbol)
         {
-            this.mm = *mm;
+            DxMarketMaker mm = *marketMaker;
+
+            Exchange = mm.mm_exchange;
+            Id = mm.mm_id;
+            BidPrice = mm.mmbid_price;
+            BidSize = mm.mmbid_size;
+            AskPrice = mm.mmask_price;
+            AskSize = mm.mmask_size;
+        }
+
+        internal NativeMarketMaker(IDxMarketMaker mm) : base(mm.EventSymbol)
+        {
+            Exchange = mm.Exchange;
+            Id = mm.Id;
+            BidPrice = mm.BidPrice;
+            BidSize = mm.BidSize;
+            AskPrice = mm.AskPrice;
+            AskSize = mm.AskSize;
         }
 
         public override string ToString()
@@ -27,36 +44,43 @@ namespace com.dxfeed.native.events
                 Exchange, Id, BidPrice, BidSize, AskPrice, AskSize, EventSymbol);
         }
 
+        #region Implementation of ICloneable
+        public override object Clone()
+        {
+            return new NativeMarketMaker(this);
+        }
+        #endregion
+
         #region Implementation of IDxMarketMaker
 
         public char Exchange
         {
-            get { return mm.mm_exchange; }
+            get; private set;
         }
 
         public int Id
         {
-            get { return mm.mm_id; }
+            get; private set;
         }
 
         public double BidPrice
         {
-            get { return mm.mmbid_price; }
+            get; private set;
         }
 
         public int BidSize
         {
-            get { return mm.mmbid_size; }
+            get; private set;
         }
 
         public double AskPrice
         {
-            get { return mm.mmask_price; }
+            get; private set;
         }
 
         public int AskSize
         {
-            get { return mm.mmask_size; }
+            get; private set;
         }
 
         #endregion

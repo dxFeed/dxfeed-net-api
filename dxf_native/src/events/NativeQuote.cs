@@ -1,14 +1,16 @@
-﻿/// Copyright (C) 2010-2016 Devexperts LLC
-///
-/// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-/// If a copy of the MPL was not distributed with this file, You can obtain one at
-/// http://mozilla.org/MPL/2.0/.
+﻿#region License
+// Copyright (C) 2010-2016 Devexperts LLC
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at
+// http://mozilla.org/MPL/2.0/.
+#endregion
 
-using System;
-using System.Globalization;
 using com.dxfeed.api.events;
 using com.dxfeed.api.extras;
 using com.dxfeed.native.api;
+using System;
+using System.Globalization;
 
 namespace com.dxfeed.native.events
 {
@@ -20,11 +22,29 @@ namespace com.dxfeed.native.events
     /// </summary>
     public class NativeQuote : MarketEventImpl, IDxQuote
     {
-        private DxQuote quote;
-
-        internal unsafe NativeQuote(DxQuote* quote, string symbol) : base(symbol)
+        internal unsafe NativeQuote(DxQuote* q, string symbol) : base(symbol)
         {
-            this.quote = *quote;
+            DxQuote quote = *q;
+            BidTime = TimeConverter.ToUtcDateTime(quote.bid_time);
+            BidExchangeCode = quote.bid_exchange_code;
+            BidPrice = quote.bid_price;
+            BidSize = quote.bid_size;
+            AskTime = TimeConverter.ToUtcDateTime(quote.ask_time);
+            AskExchangeCode = quote.ask_exchange_code;
+            AskPrice = quote.ask_price;
+            AskSize = quote.ask_size;
+        }
+
+        internal NativeQuote(IDxQuote quote) : base(quote.EventSymbol)
+        {
+            BidTime = quote.BidTime;
+            BidExchangeCode = quote.BidExchangeCode;
+            BidPrice = quote.BidPrice;
+            BidSize = quote.BidSize;
+            AskTime = quote.AskTime;
+            AskExchangeCode = quote.AskExchangeCode;
+            AskPrice = quote.AskPrice;
+            AskSize = quote.AskSize;
         }
 
         public override string ToString()
@@ -36,6 +56,13 @@ namespace com.dxfeed.native.events
                 BidSize, BidTime, EventSymbol);
         }
 
+        #region Implementation of ICloneable
+        public override object Clone()
+        {
+            return new NativeQuote(this);
+        }
+        #endregion
+
         #region Implementation of IDxQuote
 
         /// <summary>
@@ -43,7 +70,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public DateTime BidTime
         {
-            get { return TimeConverter.ToUtcDateTime(quote.bid_time); }
+            get; private set;
         }
 
         /// <summary>
@@ -51,7 +78,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public char BidExchangeCode
         {
-            get { return quote.bid_exchange_code; }
+            get; private set;
         }
 
         /// <summary>
@@ -59,7 +86,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public double BidPrice
         {
-            get { return quote.bid_price; }
+            get; private set;
         }
 
         /// <summary>
@@ -67,7 +94,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public long BidSize
         {
-            get { return quote.bid_size; }
+            get; private set;
         }
 
         /// <summary>
@@ -75,7 +102,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public DateTime AskTime
         {
-            get { return TimeConverter.ToUtcDateTime(quote.ask_time); }
+            get; private set;
         }
 
         /// <summary>
@@ -83,7 +110,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public char AskExchangeCode
         {
-            get { return quote.ask_exchange_code; }
+            get; private set;
         }
 
         /// <summary>
@@ -91,7 +118,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public double AskPrice
         {
-            get { return quote.ask_price; }
+            get; private set;
         }
 
         /// <summary>
@@ -99,7 +126,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public long AskSize
         {
-            get { return quote.ask_size; }
+            get; private set;
         }
 
         #endregion

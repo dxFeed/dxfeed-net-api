@@ -8,6 +8,9 @@ using System;
 using com.dxfeed.api;
 using com.dxfeed.api.events;
 using com.dxfeed.native.api;
+using com.dxfeed.api.candle;
+using com.dxfeed.api.util;
+using com.dxfeed.native.events;
 
 namespace com.dxfeed.native
 {

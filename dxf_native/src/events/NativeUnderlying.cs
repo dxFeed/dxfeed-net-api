@@ -1,8 +1,10 @@
-﻿/// Copyright (C) 2010-2016 Devexperts LLC
-///
-/// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-/// If a copy of the MPL was not distributed with this file, You can obtain one at
-/// http://mozilla.org/MPL/2.0/.
+﻿#region License
+// Copyright (C) 2010-2016 Devexperts LLC
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at
+// http://mozilla.org/MPL/2.0/.
+#endregion
 
 using System.Globalization;
 using com.dxfeed.api.events;
@@ -18,11 +20,22 @@ namespace com.dxfeed.native.events
     /// </summary>
     public class NativeUnderlying : MarketEventImpl, IDxUnderlying
     {
-        private readonly DxUnderlying u;
-
-        internal unsafe NativeUnderlying(DxUnderlying* u, string symbol) : base(symbol)
+        internal unsafe NativeUnderlying(DxUnderlying* underlying, string symbol) : base(symbol)
         {
-            this.u = *u;
+            DxUnderlying u = *underlying;
+
+            BackVolatility = u.back_volatility;
+            FrontVolatility = u.front_volatility;
+            PutCallRatio = u.put_call_ratio;
+            Volatility = u.volatility;
+        }
+
+        internal NativeUnderlying(IDxUnderlying u) : base(u.EventSymbol)
+        {
+            BackVolatility = u.BackVolatility;
+            FrontVolatility = u.FrontVolatility;
+            PutCallRatio = u.PutCallRatio;
+            Volatility = u.Volatility;
         }
 
         public override string ToString()
@@ -32,6 +45,13 @@ namespace com.dxfeed.native.events
                 EventSymbol, Volatility, FrontVolatility, BackVolatility, PutCallRatio);
         }
 
+        #region Implementation of ICloneable
+        public override object Clone()
+        {
+            return new NativeUnderlying(this);
+        }
+        #endregion
+
         #region Implementation of IDxUnderlying
 
         /// <summary>
@@ -39,7 +59,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public double BackVolatility
         {
-            get { return u.back_volatility; }
+            get; private set;
         }
 
         /// <summary>
@@ -47,7 +67,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public double FrontVolatility
         {
-            get { return u.front_volatility; }
+            get; private set;
         }
 
         /// <summary>
@@ -55,7 +75,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public double PutCallRatio
         {
-            get { return u.put_call_ratio; }
+            get; private set;
         }
 
         /// <summary>
@@ -63,7 +83,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public double Volatility
         {
-            get { return u.volatility; }
+            get; private set;
         }
 
         #endregion

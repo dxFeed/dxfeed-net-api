@@ -81,7 +81,7 @@
     <Compile Include="src\candle\CandleSymbolAttributes.cs" />
     <Compile Include="src\candle\CandleType.cs" />
     <Compile Include="src\candle\ICandleSymbolAttribute.cs" />
-    <Compile Include="src\candle\MarketEventSymbols.cs" />
+    <Compile Include="src\events\market\MarketEventSymbols.cs" />
     <Compile Include="src\data\DxString.cs" />
     <Compile Include="src\data\Side.cs" />
     <Compile Include="src\DxException.cs" />

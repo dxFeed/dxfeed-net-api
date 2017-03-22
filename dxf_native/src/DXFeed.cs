@@ -127,6 +127,36 @@ namespace com.dxfeed.api
                 connectionInstance.Dispose();
         }
 
+        public async Task<E> GetLastEventPromise<E>(object symbol, CancellationToken cancellationToken) 
+            where E : class, LastingEvent
+        {
+
+            if (symbol == null || !(symbol is string) && !(symbol is CandleSymbol))
+                throw new ArgumentException("Symbol could be a string or CandleSymbol objects.");
+
+            return await Task.Run(() =>
+            {
+                EventType events = EventTypeUtil.GetEventsType(typeof(E));
+                LastingEventsCollector collector = new LastingEventsCollector();
+
+                using (var con = new NativeConnection(address, OnDisconnect))
+                {
+                    using (var s = con.CreateSubscription(events, collector))
+                    {
+                        if (typeof(E) == typeof(IDxCandle))
+                            s.AddSymbol(symbol is string ? CandleSymbol.ValueOf(symbol as string) : symbol as CandleSymbol);
+                        else
+                            s.AddSymbol(symbol as string);
+
+                        while (!collector.HasEvent<E>(symbol))
+                        {
+                            cancellationToken.ThrowIfCancellationRequested();
+                        }
+                    }
+                }
+                return collector.GetEvent<E>(symbol);
+            }, cancellationToken);
+        }
 
         /**
 	     * Requests time series of events for the specified event type, symbol, and a range of time.
@@ -197,7 +227,7 @@ namespace com.dxfeed.api
 
         /* private methods */
 
-        private class HistoryEventsCompleter<E> : DXFeedSnapshotCollector<E>
+        private class HistoryEventsCollector<E> : DXFeedSnapshotCollector<E>
             where E : IndexedEvent
         {
             //TODO: fetch
@@ -205,7 +235,7 @@ namespace com.dxfeed.api
             private long fromTime;
             private long toTime;
 
-            public HistoryEventsCompleter(long fetchTime, long fromTime, long toTime) : base()
+            public HistoryEventsCollector(long fetchTime, long fromTime, long toTime) : base()
             {
                 this.fetchTime = fetchTime;
                 this.fromTime = fromTime;
@@ -235,7 +265,7 @@ namespace com.dxfeed.api
             return await Task.Run(() =>
             {
                 EventType events = EventTypeUtil.GetEventsType(typeof(E));
-                HistoryEventsCompleter<E> collector = new HistoryEventsCompleter<E>(fetchTime, fromTime, toTime);
+                HistoryEventsCollector<E> collector = new HistoryEventsCollector<E>(fetchTime, fromTime, toTime);
 
                 using (var con = new NativeConnection(address, OnDisconnect))
                 {

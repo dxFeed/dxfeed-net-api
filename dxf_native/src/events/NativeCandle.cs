@@ -1,15 +1,17 @@
-﻿/// Copyright (C) 2010-2016 Devexperts LLC
-///
-/// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-/// If a copy of the MPL was not distributed with this file, You can obtain one at
-/// http://mozilla.org/MPL/2.0/.
+﻿#region License
+// Copyright (C) 2010-2016 Devexperts LLC
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at
+// http://mozilla.org/MPL/2.0/.
+#endregion
 
-using System;
-using System.Globalization;
 using com.dxfeed.api.candle;
 using com.dxfeed.api.events;
-using com.dxfeed.native.api;
 using com.dxfeed.api.extras;
+using com.dxfeed.native.api;
+using System;
+using System.Globalization;
 
 namespace com.dxfeed.native.events
 {
@@ -22,27 +24,74 @@ namespace com.dxfeed.native.events
     /// </summary>
     public class NativeCandle : IDxCandle
     {
-        private readonly DxCandle candle;
-        private string symbolString;
-
         internal unsafe NativeCandle(DxCandle* c, string symbol)
         {
-            candle = *c;
-            symbolString = symbol;
-            EventSymbol = CandleSymbol.ValueOf(symbolString);
+            DxCandle candle = *c;
+            EventSymbol = CandleSymbol.ValueOf(symbol);
             EventFlags = candle.event_flags;
+
+            TimeStamp = candle.time;
+            Time = TimeConverter.ToUtcDateTime(TimeStamp);
+            Sequence = candle.sequence;
+            Count = candle.count;
+            Open = candle.open;
+            High = candle.high;
+            Low = candle.low;
+            Close = candle.close;
+            Volume = candle.volume;
+            VWAP = candle.vwap;
+            BidVolume = candle.bid_volume;
+            AskVolume = candle.ask_volume;
+            //TODO: WTF??? duplicate datetime
+            DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0);
+            dateTime = dateTime.AddMilliseconds(candle.time);
+            DateTime = dateTime;
+            Index = candle.index;
+            ImpVolatility = candle.imp_volatility;
+            OpenInterest = candle.open_interest;
+        }
+
+        internal NativeCandle(IDxCandle candle)
+        {
+            EventSymbol = candle.EventSymbol;
+            EventFlags = candle.EventFlags;
+
+            TimeStamp = candle.TimeStamp;
+            Time = candle.Time;
+            Sequence = candle.Sequence;
+            Count = candle.Count;
+            Open = candle.Open;
+            High = candle.High;
+            Low = candle.Low;
+            Close = candle.Close;
+            Volume = candle.Volume;
+            VWAP = candle.VWAP;
+            BidVolume = candle.BidVolume;
+            AskVolume = candle.AskVolume;
+            //TODO: WTF???
+            DateTime = candle.DateTime;
+            Index = candle.Index;
+            ImpVolatility = candle.ImpVolatility;
+            OpenInterest = candle.OpenInterest;
         }
 
         public override string ToString()
         {
-            return string.Format(CultureInfo.InvariantCulture, "Candle: {{{11}, DateTime: {0:o}, " +
+            return string.Format(CultureInfo.InvariantCulture, "Candle: {{{11}, Time: {0:o}, " +
             "Sequence: {1}, Count: {2:0.00}, Open: {3:0.000000}, High: {4:0.000000}, " +
             "Low: {5:0.000000}, Close: {6:0.000000}, Volume: {7:0.0}, VWAP: {8:0.0}, " +
             "BidVolume: {9:0.0}, AskVolume: {10:0.0}, OpenInterest: {12}, " +
             "ImpVolatility: {13:0.0} }}",
-                DateTime, Sequence, Count, Open, High, Low, Close, Volume, VWAP, BidVolume, 
-                AskVolume, symbolString, OpenInterest, ImpVolatility);
+                Time, Sequence, Count, Open, High, Low, Close, Volume, VWAP, BidVolume, 
+                AskVolume, EventSymbol.ToString(), OpenInterest, ImpVolatility);
         }
+
+        #region Implementation of ICloneable
+        public object Clone()
+        {
+            return new NativeCandle(this);
+        }
+        #endregion
 
         #region Implementation of IDxCandle
 
@@ -52,10 +101,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public long TimeStamp
         {
-            get
-            {
-                return candle.time;
-            }
+            get; private set;
         }
 
         /// <summary>
@@ -63,10 +109,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public DateTime Time
         {
-            get
-            {
-                return TimeConverter.ToUtcDateTime(TimeStamp);
-            }
+            get; private set;
         }
 
         /// <summary>
@@ -76,10 +119,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public int Sequence
         {
-            get
-            {
-                return candle.sequence;
-            }
+            get; private set;
         }
 
         /// <summary>
@@ -87,10 +127,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public double Count
         {
-            get
-            {
-                return candle.count;
-            }
+            get; private set;
         }
 
         /// <summary>
@@ -98,10 +135,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public double Open
         {
-            get
-            {
-                return candle.open;
-            }
+            get; private set;
         }
 
         /// <summary>
@@ -109,10 +143,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public double High
         {
-            get
-            {
-                return candle.high;
-            }
+            get; private set;
         }
 
         /// <summary>
@@ -120,10 +151,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public double Low
         {
-            get
-            {
-                return candle.low;
-            }
+            get; private set;
         }
 
         /// <summary>
@@ -131,10 +159,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public double Close
         {
-            get
-            {
-                return candle.close;
-            }
+            get; private set;
         }
 
         /// <summary>
@@ -142,10 +167,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public double Volume
         {
-            get
-            {
-                return candle.volume;
-            }
+            get; private set;
         }
 
         /// <summary>
@@ -153,10 +175,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public double VWAP
         {
-            get
-            {
-                return candle.vwap;
-            }
+            get; private set;
         }
 
         /// <summary>
@@ -164,10 +183,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public double BidVolume
         {
-            get
-            {
-                return candle.bid_volume;
-            }
+            get; private set;
         }
 
         /// <summary>
@@ -175,23 +191,16 @@ namespace com.dxfeed.native.events
         /// </summary>
         public double AskVolume
         {
-            get
-            {
-                return candle.ask_volume;
-            }
+            get; private set;
         }
 
         /// <summary>
         /// Returns date time of the candle.
         /// </summary>
+        [Obsolete("DateTime is deprecated, please use Time instead.")]
         public DateTime DateTime
         {
-            get
-            {
-                DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0);
-                dateTime = dateTime.AddMilliseconds(candle.time);
-                return dateTime;
-            }
+            get; private set;
         }
 
         /// <summary>
@@ -200,10 +209,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public long Index
         {
-            get
-            {
-                return candle.index;
-            }
+            get; private set;
         }
 
         /// <summary>
@@ -219,10 +225,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public double ImpVolatility
         {
-            get
-            {
-                return candle.imp_volatility;
-            }
+            get; private set;
         }
 
         /// <summary>
@@ -230,10 +233,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public long OpenInterest
         {
-            get
-            {
-                return candle.open_interest;
-            }
+            get; private set;
         }
 
         /// <summary>

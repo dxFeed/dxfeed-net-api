@@ -23,11 +23,11 @@ namespace com.dxfeed.sample.console
         {
             //TODO: comments
             /*
-         * Permanent subscription to the world is performed with a special property named "dxfeed.qd.subscribe.ticker".
-         * Its value consists of a comma-separated list of records, followed by a space, followed by a comma-separated
-         * list of symbols. Record names for composite (NBBO) events are the same as the corresponding event classes
-         * in API. The string below defines subscription for quote, trade, summary, and profile composite events:
-         */
+             * Permanent subscription to the world is performed with a special property named "dxfeed.qd.subscribe.ticker".
+             * Its value consists of a comma-separated list of records, followed by a space, followed by a comma-separated
+             * list of symbols. Record names for composite (NBBO) events are the same as the corresponding event classes
+             * in API. The string below defines subscription for quote, trade, summary, and profile composite events:
+             */
             string records = "Quote,Trade,Summary,Profile";
 
             /*
@@ -83,10 +83,11 @@ namespace com.dxfeed.sample.console
              */
             Console.WriteLine("Type symbols to get their quote, trade, summary, and profile event snapshots");
 
+            TimeSpan taskTimeout = TimeSpan.FromSeconds(1);
+
             /*
              * The main loop of this sample loops forever reading symbols from console and printing events.
              */
-
             while (true)
             {
                 /*
@@ -100,14 +101,14 @@ namespace com.dxfeed.sample.console
                  * The first step is to extract promises for all events that we are interested in. This way we
                  * can get an event even if we have not previously subscribed for it.
                  */
-                Task<IDxQuote> quoteTask = feed.GetLastEventPromise<IDxQuote>(symbol, CancellationToken.None);
-                Task<IDxTrade> tradeTask = feed.GetLastEventPromise<IDxTrade>(symbol, CancellationToken.None);
-                Task<IDxSummary> summaryTask = feed.GetLastEventPromise<IDxSummary>(symbol, CancellationToken.None);
+                Task<LastingEvent> quoteTask = feed.GetLastEventPromise<IDxQuote>(symbol, new CancellationTokenSource(taskTimeout).Token);
+                Task<LastingEvent> tradeTask = feed.GetLastEventPromise<IDxTrade>(symbol, new CancellationTokenSource(taskTimeout).Token);
+                Task<LastingEvent> summaryTask = feed.GetLastEventPromise<IDxSummary>(symbol, new CancellationTokenSource(taskTimeout).Token);
 
                 /*
                  * All promises are put into a list for convenience.
                  */
-                List<Task> tasks = new List<Task>();
+                List<Task<LastingEvent>> tasks = new List<Task<LastingEvent>>();
                 tasks.Add(quoteTask);
                 tasks.Add(tradeTask);
                 tasks.Add(summaryTask);
@@ -118,7 +119,7 @@ namespace com.dxfeed.sample.console
                  */
                 if (!MarketEventSymbols.HasExchangeCode(symbol))
                 {
-                    Task<IDxProfile> profileTask = feed.GetLastEventPromise<IDxProfile>(symbol, CancellationToken.None);
+                    Task<LastingEvent> profileTask = feed.GetLastEventPromise<IDxProfile>(symbol, new CancellationTokenSource(taskTimeout).Token);
                     tasks.Add(profileTask);
                 }
 
@@ -130,8 +131,14 @@ namespace com.dxfeed.sample.console
                  * have to specially process a case of timeout, so "awaitWithoutException" is used to continue
                  * normal execution even on timeout. This sample prints a special message in the case of timeout.
                  */
-                if (!Task.WaitAll(tasks.ToArray(), TimeSpan.FromSeconds(1000)))
+                try
+                {
+                    Task.WaitAll(tasks.ToArray());
+                }
+                catch (AggregateException)
+                {
                     Console.WriteLine("Request timed out");
+                }
 
                 /*
                  * The combination above is used only to ensure a common wait of 1 second. Promises to individual events
@@ -139,12 +146,10 @@ namespace com.dxfeed.sample.console
                  * available for any reason and the wait above had timed out. This sample just prints all results.
                  * "null" is printed when the event is not available.
                  */
-                //foreach (Task task in tasks)
-                //    Console.WriteLine((task as Task<LastingEvent>).Result);
-                foreach (Task task in tasks)
+                foreach (Task<LastingEvent> task in tasks)
                 {
-                    Task<LastingEvent> lastTask = task as Task<LastingEvent>;
-                    Console.WriteLine(lastTask.Result);
+                    if (task.Status == TaskStatus.RanToCompletion)
+                        Console.WriteLine(task.Result);
                 }
             }
 

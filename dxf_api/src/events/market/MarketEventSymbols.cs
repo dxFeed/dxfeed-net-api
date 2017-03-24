@@ -185,6 +185,22 @@ namespace com.dxfeed.api.events.market
             return RemoveAttributeInternal(symbol, GetLengthWithoutAttributesInternal(symbol), key);
         }
 
+        /// <summary>
+        /// <para>
+        ///     Validates symbolObj is not null and string or <see cref="CandleSymbol"/> object.
+        /// </para>
+        /// </summary>
+        /// <param name="symbolObj">Object to validate for symbol.</param>
+        /// <exception cref="ArgumentException">The symbolObj is not one of string or <see cref="CandleSymbol"/>.</exception>
+        /// <exception cref="ArgumentNullException">The symbolObj is null.</exception>
+        public static void ValidateSymbol(object symbolObj)
+        {
+            if (symbolObj == null)
+                throw new ArgumentNullException("Symbol object is null.");
+            if (!(symbolObj is string) && !(symbolObj is CandleSymbol))
+                throw new ArgumentException("Symbol object must be a string or CandleSymbol object.");
+        }
+
         private static bool HasExchangeCodeInternal(string symbol, int length)
         {
             return length >= 2 && symbol[length - 2] == EXCHANGE_SEPARATOR;

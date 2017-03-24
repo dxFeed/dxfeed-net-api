@@ -8,6 +8,7 @@
 
 using com.dxfeed.api.candle;
 using com.dxfeed.api.events;
+using com.dxfeed.api.events.market;
 using com.dxfeed.api.util;
 using com.dxfeed.native;
 using System;
@@ -127,12 +128,11 @@ namespace com.dxfeed.api
                 connectionInstance.Dispose();
         }
 
-        public async Task<E> GetLastEventPromise<E>(object symbol, CancellationToken cancellationToken) 
+        public async Task<LastingEvent> GetLastEventPromise<E>(object symbol, CancellationToken cancellationToken) 
             where E : class, LastingEvent
         {
 
-            if (symbol == null || !(symbol is string) && !(symbol is CandleSymbol))
-                throw new ArgumentException("Symbol could be a string or CandleSymbol objects.");
+            MarketEventSymbols.ValidateSymbol(symbol);
 
             return await Task.Run(() =>
             {
@@ -217,8 +217,7 @@ namespace com.dxfeed.api
             long fromTime, long toTime, CancellationToken cancellationToken) 
             where E : TimeSeriesEvent
         {
-            if (symbol == null)
-                throw new NullReferenceException();
+            MarketEventSymbols.ValidateSymbol(symbol);
 
             //TODO: fetch day method here
 
@@ -262,6 +261,8 @@ namespace com.dxfeed.api
             long fetchTime, long fromTime, long toTime, CancellationToken cancellationToken) 
             where E : IndexedEvent
         {
+            MarketEventSymbols.ValidateSymbol(symbol);
+
             return await Task.Run(() =>
             {
                 EventType events = EventTypeUtil.GetEventsType(typeof(E));
@@ -274,7 +275,7 @@ namespace com.dxfeed.api
                     using (var s = con.CreateSnapshotSubscription(events, 0, collector))
                     {
                         if (typeof(E) == typeof(IDxCandle))
-                            s.AddSymbol(symbol as CandleSymbol);
+                            s.AddSymbol(symbol is string ? CandleSymbol.ValueOf(symbol as string) : symbol as CandleSymbol);
                         else
                             s.AddSymbol(symbol as string);
 

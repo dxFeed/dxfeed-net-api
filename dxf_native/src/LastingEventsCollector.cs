@@ -8,6 +8,7 @@
 
 using com.dxfeed.api.candle;
 using com.dxfeed.api.events;
+using com.dxfeed.api.events.market;
 using com.dxfeed.api.util;
 using System.Collections.Concurrent;
 
@@ -79,7 +80,7 @@ namespace com.dxfeed.api
                 if (HasEvent<E>())
                     return;
                 EventType eventType = EventTypeUtil.GetEventsType(typeof(E));
-                lastEvents[eventType].Event = eventData;
+                lastEvents.GetOrAdd(eventType, new EventStorage<IDxEventType>()).Event = eventData;
             }
         }
 
@@ -103,6 +104,7 @@ namespace com.dxfeed.api
 
         private string GetSymbolKey(object symbolObj)
         {
+            MarketEventSymbols.ValidateSymbol(symbolObj);
             return (symbolObj is CandleSymbol) ? (symbolObj as CandleSymbol).ToString() : symbolObj as string;
         }
 
@@ -111,7 +113,7 @@ namespace com.dxfeed.api
             if (HasEvent<E>(symbol))
                 return;
             string key = GetSymbolKey(symbol);
-            lastSymbols[key].AddEvent(eventData);
+            lastSymbols.GetOrAdd(key, new EventsCollection()).AddEvent(eventData);
         }
 
         public void OnCandle<TB, TE>(TB buf)
@@ -119,7 +121,7 @@ namespace com.dxfeed.api
             where TE : IDxCandle
         {
             foreach (var e in buf)
-                AddEvent<IDxCandle>(buf.Symbol, e);
+                AddEvent<IDxCandle>(buf.Symbol.ToString(), e);
         }
 
         public void OnGreeks<TB, TE>(TB buf)
@@ -127,7 +129,7 @@ namespace com.dxfeed.api
             where TE : IDxGreeks
         {
             foreach (var e in buf)
-                AddEvent<IDxGreeks>(buf.Symbol, e);
+                AddEvent<IDxGreeks>(buf.Symbol.ToString(), e);
         }
 
         public void OnOrder<TB, TE>(TB buf)
@@ -135,7 +137,7 @@ namespace com.dxfeed.api
             where TE : IDxOrder
         {
             foreach (var e in buf)
-                AddEvent<IDxOrder>(buf.Symbol, e);
+                AddEvent<IDxOrder>(buf.Symbol.ToString(), e);
         }
 
         public void OnProfile<TB, TE>(TB buf)
@@ -143,7 +145,7 @@ namespace com.dxfeed.api
             where TE : IDxProfile
         {
             foreach (var e in buf)
-                AddEvent<IDxProfile>(buf.Symbol, e);
+                AddEvent<IDxProfile>(buf.Symbol.ToString(), e);
         }
 
         public void OnQuote<TB, TE>(TB buf)
@@ -151,7 +153,7 @@ namespace com.dxfeed.api
             where TE : IDxQuote
         {
             foreach (var e in buf)
-                AddEvent<IDxQuote>(buf.Symbol, e);
+                AddEvent<IDxQuote>(buf.Symbol.ToString(), e);
         }
 
         public void OnSeries<TB, TE>(TB buf)
@@ -159,7 +161,7 @@ namespace com.dxfeed.api
             where TE : IDxSeries
         {
             foreach (var e in buf)
-                AddEvent<IDxSeries>(buf.Symbol, e);
+                AddEvent<IDxSeries>(buf.Symbol.ToString(), e);
         }
 
         public void OnSpreadOrder<TB, TE>(TB buf)
@@ -167,7 +169,7 @@ namespace com.dxfeed.api
             where TE : IDxSpreadOrder
         {
             foreach (var e in buf)
-                AddEvent<IDxSpreadOrder>(buf.Symbol, e);
+                AddEvent<IDxSpreadOrder>(buf.Symbol.ToString(), e);
         }
 
         public void OnFundamental<TB, TE>(TB buf)
@@ -175,7 +177,7 @@ namespace com.dxfeed.api
             where TE : IDxSummary
         {
             foreach (var e in buf)
-                AddEvent<IDxSummary>(buf.Symbol, e);
+                AddEvent<IDxSummary>(buf.Symbol.ToString(), e);
         }
 
         public void OnTheoPrice<TB, TE>(TB buf)
@@ -183,7 +185,7 @@ namespace com.dxfeed.api
             where TE : IDxTheoPrice
         {
             foreach (var e in buf)
-                AddEvent<IDxTheoPrice>(buf.Symbol, e);
+                AddEvent<IDxTheoPrice>(buf.Symbol.ToString(), e);
         }
 
         public void OnTimeAndSale<TB, TE>(TB buf)
@@ -191,7 +193,7 @@ namespace com.dxfeed.api
             where TE : IDxTimeAndSale
         {
             foreach (var e in buf)
-                AddEvent<IDxTimeAndSale>(buf.Symbol, e);
+                AddEvent<IDxTimeAndSale>(buf.Symbol.ToString(), e);
         }
 
         public void OnTrade<TB, TE>(TB buf)
@@ -199,7 +201,7 @@ namespace com.dxfeed.api
             where TE : IDxTrade
         {
             foreach (var e in buf)
-                AddEvent<IDxTrade>(buf.Symbol, e);
+                AddEvent<IDxTrade>(buf.Symbol.ToString(), e);
         }
 
         public void OnTradeEth<TB, TE>(TB buf)
@@ -207,7 +209,7 @@ namespace com.dxfeed.api
             where TE : IDxTradeEth
         {
             foreach (var e in buf)
-                AddEvent<IDxTradeEth>(buf.Symbol, e);
+                AddEvent<IDxTradeEth>(buf.Symbol.ToString(), e);
         }
 
         public void OnUnderlying<TB, TE>(TB buf)
@@ -215,7 +217,7 @@ namespace com.dxfeed.api
             where TE : IDxUnderlying
         {
             foreach (var e in buf)
-                AddEvent<IDxUnderlying>(buf.Symbol, e);
+                AddEvent<IDxUnderlying>(buf.Symbol.ToString(), e);
         }
     }
 }

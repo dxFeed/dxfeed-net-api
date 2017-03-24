@@ -459,6 +459,25 @@ namespace com.dxfeed.native
                             listener.OnUpdate<IDxEventBuf<IDxOrder>, IDxOrder>(buffer);
                         }
                     }
+                    // sometimes alone event came with RemoveEvent falg. We need to set zeros to some fields
+                    else if (buf.EventParams.Flags.HasFlag(EventFlag.RemoveEvent))
+                    {
+                        EventBuffer<IDxOrder> buffer = new EventBuffer<IDxOrder>(buf.EventType, buf.Symbol, buf.EventParams);
+                        foreach (var order in buf)
+                        {
+                            NativeOrder no = new NativeOrder(order)
+                            {
+                                Size = 0,
+                                Price = double.NaN,
+                                Time = TimeConverter.ToUtcDateTime(0),
+                                Sequence = 0,
+                                ExchangeCode = '\0',
+                                Count = 0
+                            };
+                            buffer.AddEvent(no);
+                        }
+                        listener.OnUpdate<IDxEventBuf<IDxOrder>, IDxOrder>(buffer);
+                    }
                     else
                     {
                         listener.OnUpdate<TB, TE>(buf);

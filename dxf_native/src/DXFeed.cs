@@ -24,9 +24,9 @@ namespace com.dxfeed.api
         //TODO: restore AssemblyInfo versions in all projects
         //TODO: update new samples with MSBuild commands
 
-        //private static readonly string DEFAULT_ADDRESS = "demo.dxfeed.com:7300";
+        private static readonly string DEFAULT_ADDRESS = "demo.dxfeed.com:7300";
         //TODO: temp
-        private static readonly string DEFAULT_ADDRESS = "mddqa.in.devexperts.com:7400";
+        //private static readonly string DEFAULT_ADDRESS = "mddqa.in.devexperts.com:7400";
         private static readonly string DEFAULT_USER = "demo";
         private static readonly string DEFAULT_PASSWORD = "demo";
 
@@ -218,10 +218,7 @@ namespace com.dxfeed.api
             where E : TimeSeriesEvent
         {
             MarketEventSymbols.ValidateSymbol(symbol);
-
-            //TODO: fetch day method here
-
-            return await FetchOrSubscribeFromHistory<E>(symbol, fromTime, fromTime, toTime, cancellationToken);
+            return await FetchOrSubscribeFromHistory<E>(symbol, fromTime, toTime, cancellationToken);
         }
 
         /* private methods */
@@ -229,14 +226,11 @@ namespace com.dxfeed.api
         private class HistoryEventsCollector<E> : DXFeedSnapshotCollector<E>
             where E : IndexedEvent
         {
-            //TODO: fetch
-            private long fetchTime;
             private long fromTime;
             private long toTime;
 
-            public HistoryEventsCollector(long fetchTime, long fromTime, long toTime) : base()
-            {
-                this.fetchTime = fetchTime;
+            public HistoryEventsCollector(long fromTime, long toTime) : base()
+            {                
                 this.fromTime = fromTime;
                 this.toTime = toTime;
             }
@@ -258,7 +252,7 @@ namespace com.dxfeed.api
         }
 
         private async Task<List<E>> FetchOrSubscribeFromHistory<E>(object symbol, 
-            long fetchTime, long fromTime, long toTime, CancellationToken cancellationToken) 
+            long fromTime, long toTime, CancellationToken cancellationToken) 
             where E : IndexedEvent
         {
             MarketEventSymbols.ValidateSymbol(symbol);
@@ -266,7 +260,7 @@ namespace com.dxfeed.api
             return await Task.Run(() =>
             {
                 EventType events = EventTypeUtil.GetEventsType(typeof(E));
-                HistoryEventsCollector<E> collector = new HistoryEventsCollector<E>(fetchTime, fromTime, toTime);
+                HistoryEventsCollector<E> collector = new HistoryEventsCollector<E>(fromTime, toTime);
 
                 using (var con = new NativeConnection(address, OnDisconnect))
                 {

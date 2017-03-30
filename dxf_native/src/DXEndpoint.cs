@@ -42,14 +42,27 @@ namespace com.dxfeed.api
         {
             return new HashSet<Type>(new Type[] {
                 typeof(IDxCandle),
+                typeof(IDxConfiguration),
+                typeof(IDxGreeks),
                 typeof(IDxMarketMaker),
                 typeof(IDxOrder),
                 typeof(IDxProfile),
                 typeof(IDxQuote),
+                typeof(IDxSeries),
+                typeof(IDxSpreadOrder),
                 typeof(IDxSummary),
+                typeof(IDxTheoPrice),
                 typeof(IDxTimeAndSale),
-                typeof(IDxTrade)
+                typeof(IDxTrade),
+                typeof(IDxTradeEth),
+                typeof(IDxUnderlying)
             });
         }
+
+        public void Close()
+        {
+            //TODO: implement
+        }
+
     }
 }

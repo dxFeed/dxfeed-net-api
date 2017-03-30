@@ -24,9 +24,9 @@ namespace com.dxfeed.api
         //TODO: restore AssemblyInfo versions in all projects
         //TODO: update new samples with MSBuild commands
 
-        private static readonly string DEFAULT_ADDRESS = "demo.dxfeed.com:7300";
+        //private static readonly string DEFAULT_ADDRESS = "demo.dxfeed.com:7300";
         //TODO: temp
-        //private static readonly string DEFAULT_ADDRESS = "mddqa.in.devexperts.com:7400";
+        private static readonly string DEFAULT_ADDRESS = "mddqa.in.devexperts.com:7400";
         private static readonly string DEFAULT_USER = "demo";
         private static readonly string DEFAULT_PASSWORD = "demo";
 
@@ -128,6 +128,70 @@ namespace com.dxfeed.api
                 connectionInstance.Dispose();
         }
 
+        /// <summary>
+        ///     <para>
+        ///         Requests the last event for the specified event type and symbol.
+        ///         This method works only for event types that implement <see cref="LastingEvent"/> 
+        ///         marker interface.
+        ///         This method requests the data from the the uplink data provider, creates new 
+        ///         event of the specified event type, and completes the resulting promise with 
+        ///         this event.
+        ///     </para>
+        ///     <para>
+        ///         This method is designed for retrieval of a snapshot only.
+        ///         Use <see cref="DXFeedSubscription{E}"/> if you need event updates in real time.
+        ///     </para>
+        ///     <para>
+        ///         The promise is <see cref="CancellationTokenSource.Cancel"/> when the the 
+        ///         underlying <see cref="DXEndpoint"/> is <see cref="DXEndpoint.Close"/>.
+        ///         If the event is not available for any transient reason (no subscription, no 
+        ///         connection to uplink, etc), then the resulting promise completes when the issue 
+        ///         is resolved, which may involve an arbitrarily long wait.
+        ///         Use <see cref="CancellationTokenSource"/> class constructors and methods to 
+        ///         specify timeout while waiting for promise to complete.
+        ///         If the event is permanently not available (not supported), then the promise
+        ///         completes exceptionally with <see cref="AggregateException"/>.
+        ///     </para>
+        ///     <para>
+        ///         Use the following pattern of code to acquire multiple events (either for multiple 
+        ///         symbols and/or multiple events) and wait with a single timeout for all of them:
+        ///         <code>
+        ///             <see cref="List{T}"/><<see cref="Task{TResult}"/><<see cref="LastingEvent"/>>> promises = new List<Task<LastingEvent>>();
+        ///             // iterate the following line for all events and/or symbols that are needed
+        ///             promises.<see cref="List{T}.Add(T)"/>(feed.GetLastEventPromise<eventType>(symbol, new CancellationTokenSource(taskTimeout).Token));
+        ///             // combine the list of promises into one with Task utility method and wait
+        ///             try
+        ///                 Task.WaitAll(tasks.ToArray());
+        ///             catch (AggregateException)
+        ///             // now iterate the promises to retrieve results
+        ///             foreach (Task<LastingEvent> task in tasks)
+        ///                 // result received exceptionally if this event was not found
+        ///                 // so first check that task completes successfully
+        ///                 if (task.Status == TaskStatus.RanToCompletion)
+        ///                     doSomethingWith(task.Result);
+        ///         </code>
+        ///     </para>
+        ///     <para>
+        ///         There is a bulk version of this method that works much faster for a single event type and multiple symbols.
+        ///         See <see cref="GetLastEventsPromises{E}(ICollection{object}, CancellationToken)"/>.
+        ///     </para>
+        ///     <para>
+        ///         Note, that this method does not work when <see cref="DXEndpoint"/> was created with
+        ///         {@link DXEndpoint.Role#STREAM_FEED STREAM_FEED} role (promise completes exceptionally).
+        ///     </para>
+        ///     <para>Threads</para>
+        ///     <para>
+        ///         Use {@link Promise#whenDone(PromiseHandler) Promise.whenDone} method on the resulting promise to receive
+        ///         notification when the promise becomes {@link Promise#isDone() done}. This notification is invoked
+        ///         from inside this {@link DXEndpoint DXEndpoint} {@link DXEndpoint#executor(Executor) executor} thread.
+        ///     </para>
+        /// </summary>
+        /// <typeparam name="E">The event type.</typeparam>
+        /// <param name="symbol">The symbol.</param>
+        /// <param name="cancellationToken">The task cancellation token.</param>
+        /// <returns>The promise for the result of the request.</returns>
+        /// <exception cref = "ArgumentException" > The symbolObj is not one of string or<see cref= "CandleSymbol" />.</ exception >
+        /// <exception cref="ArgumentNullException">The symbolObj is null.</exception>
         public async Task<LastingEvent> GetLastEventPromise<E>(object symbol, CancellationToken cancellationToken) 
             where E : class, LastingEvent
         {
@@ -156,6 +220,55 @@ namespace com.dxfeed.api
                 }
                 return collector.GetEvent<E>(symbol);
             }, cancellationToken);
+        }
+
+        /**
+	     * Requests the last events for the specified event type and a collection of symbols.
+	     * This method works only for event types that implement {@link LastingEvent} marker interface.
+	     * This method requests the data from the the uplink data provider,
+	     * creates new events of the specified {@code eventType},
+	     * and {@link Promise#complete(Object) completes} the resulting promises with these events.
+	     *
+	     * <p>This is a bulk version of {@link #getLastEventPromise(Class, Object) getLastEventPromise(eventType, symbol)} method.
+	     *
+	     * <p>The promise is {@link Promise#cancel() cancelled} when the the underlying {@link DXEndpoint} is
+	     * {@link DXEndpoint#close() closed}.
+	     * If the event is not available for any transient reason (no subscription, no connection to uplink, etc),
+	     * then the resulting promise completes when the issue is resolved, which may involve an arbitrarily long wait.
+	     * Use {@link Promise#await(long, TimeUnit)} method to specify timeout while waiting for promise to complete.
+	     * If the event is permanently not available (not supported), then the promise
+	     * {@link Promise#completeExceptionally(Throwable) completes exceptionally} with {@link IllegalArgumentException}.
+	     *
+	     * <p>Use the following pattern of code to acquire multiple events (either for multiple symbols and/or multiple
+	     * events) and wait with a single timeout for all of them:
+	     * <pre><tt>
+	     * {@link List List}&lt;{@link Promise Promise}&lt;?&gt;&gt; promises = feed.<u>getLastEventsPromises</u>(eventType, symbols);
+	     * // combine the list of promises into one with Promises utility method and wait
+	     * {@link Promises Promises}.{@link Promises#allOf(Collection) allOf}(promises).{@link Promise#awaitWithoutException(long, TimeUnit) awaitWithoutException}(timeout, unit);
+	     * // now iterate the promises to retrieve results
+	     * <b>for</b> ({@link Promise Promise}&lt;?&gt; promise : promises)
+	     *     doSomethingWith(promise.{@link Promise#getResult() getResult}()); // result is null if this event was not found
+	     * </tt></pre>
+	     *
+	     * <p>Note, that this method does not work when {@link DXEndpoint} was created with
+	     * {@link DXEndpoint.Role#STREAM_FEED STREAM_FEED} role (promise completes exceptionally).
+	     *
+	     * <h3>Threads</h3>
+	     *
+	     * Use {@link Promise#whenDone(PromiseHandler) Promise.whenDone} method on the resulting promises to receive
+	     * notification when the promise becomes {@link Promise#isDone() done}. This notification is invoked
+	     * from inside this {@link DXEndpoint DXEndpoint} {@link DXEndpoint#executor(Executor) executor} thread.
+	     *
+	     * @param eventType the event type.
+	     * @param symbols the collection of symbols.
+	     * @param <E> the type of event.
+	     * @return the list of promises for the result of the requests, one item in list per symbol.
+	     * @throws NullPointerException if the eventType or symbols are null.
+	     */
+        public List<Task<LastingEvent>> GetLastEventsPromises<E>(ICollection<object> symbols, CancellationToken cancellationToken)
+        {
+            //TODO: implement
+            return null;
         }
 
         /**
@@ -264,9 +377,7 @@ namespace com.dxfeed.api
 
                 using (var con = new NativeConnection(address, OnDisconnect))
                 {
-                    //TODO
-                    //using (var s = con.CreateSnapshotSubscription(events, fromTime, collector))
-                    using (var s = con.CreateSnapshotSubscription(events, 0, collector))
+                    using (var s = con.CreateSnapshotSubscription(events, fromTime, collector))
                     {
                         if (typeof(E) == typeof(IDxCandle))
                             s.AddSymbol(symbol is string ? CandleSymbol.ValueOf(symbol as string) : symbol as CandleSymbol);

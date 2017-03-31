@@ -186,13 +186,12 @@ namespace com.dxfeed.api.events.market
         }
 
         /// <summary>
-        /// <para>
-        ///     Validates symbolObj is not null and string or <see cref="CandleSymbol"/> object.
-        /// </para>
+        ///     Validates symbolObj is not <c>null</c> and is <c>string</c> or <see cref="CandleSymbol"/> 
+        ///     object.
         /// </summary>
         /// <param name="symbolObj">Object to validate for symbol.</param>
-        /// <exception cref="ArgumentException">The symbolObj is not one of string or <see cref="CandleSymbol"/>.</exception>
-        /// <exception cref="ArgumentNullException">The symbolObj is null.</exception>
+        /// <exception cref="ArgumentException">The symbolObj is not one of <c>string</c> or <see cref="CandleSymbol"/>.</exception>
+        /// <exception cref="ArgumentNullException">The symbolObj is <c>null</c>.</exception>
         public static void ValidateSymbol(object symbolObj)
         {
             if (symbolObj == null)

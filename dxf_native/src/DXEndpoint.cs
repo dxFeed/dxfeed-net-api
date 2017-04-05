@@ -1,10 +1,13 @@
-﻿/// Copyright (C) 2010-2016 Devexperts LLC
-///
-/// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-/// If a copy of the MPL was not distributed with this file, You can obtain one at
-/// http://mozilla.org/MPL/2.0/.
+﻿#region License
+// Copyright (C) 2010-2016 Devexperts LLC
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at
+// http://mozilla.org/MPL/2.0/.
+#endregion
 
 using com.dxfeed.api.events;
+using com.dxfeed.native;
 using System;
 using System.Collections.Generic;
 
@@ -13,31 +16,231 @@ namespace com.dxfeed.api
     /// <summary>
     /// Manages network connections to DXFeed.
     /// </summary>
-    public class DXEndpoint
+    public class DXEndpoint : IDisposable
     {
         /// <summary>
-        /// Protected constructor for implementations of DXEndpoint.
+        /// Represents the current state of endpoint.
         /// </summary>
-        protected DXEndpoint() { }
-
-        private static DXEndpoint instance = null;
-
-        /// <summary>
-        /// Returns a default application-wide singleton instance of DXEndpoint with a default role.
-        /// Most applications use only a single data-source and should rely on this method to get one.
-        /// </summary>
-        /// <returns></returns>
-        public static DXEndpoint GetInstance()
+        public enum EndpointState
         {
-            if (instance == null)
-                instance = new DXEndpoint();
-            return instance;
+            /// <summary>
+            ///     Endpoint was created by is not connected to remote endpoints.
+            /// </summary>
+            NotConnected,
+
+            /// <summary>
+            ///     The <see cref="Connect(string)"/>  method was called to establish connection 
+            ///     to remove endpoint, but connection is not actually established yet or was lost.
+            /// </summary>
+            Connecting,
+
+            /// <summary>
+            ///     The connection to remote endpoint is established.
+            /// </summary>
+            Connected,
+
+            /// <summary>
+            ///     Endpoint was <see cref="Close()"/>.
+            /// </summary>
+            Closed
         }
 
         /// <summary>
-        /// Returns a set of all event types supported by this endpoint. The resulting set cannot be modified.
+        ///     Returns a default application-wide singleton instance of DXEndpoint with a default 
+        ///     role.
+        ///     Most applications use only a single data-source and should rely on this method to 
+        ///     get one.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Instance of DXEndpoint with a default role.</returns>
+        public static DXEndpoint GetInstance()
+        {
+            if (endpointInstance == null)
+            {
+                endpointInstance = new DXEndpoint();
+                endpointInstance.Connect(DefaultAddress);
+            }
+            return endpointInstance;
+        }
+
+        /// <summary>
+        ///     Thread-safe state getter of this endpoint.
+        /// </summary>
+        public EndpointState State
+        {
+            get
+            {
+                EndpointState result;
+                lock (stateLocker)
+                {
+                    result = assyncState;
+                }
+                return result;
+            }
+
+            private set
+            {
+                lock (stateLocker)
+                {
+                    assyncState = value;
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Changes user name for this endpoint.
+        ///     This method shall be called before <see cref="Connect(string)"/> together
+        ///     with <see cref="Password(string)"/> to configure service access credentials.
+        /// </summary>
+        /// <param name="user">User name.</param>
+        /// <returns>This <see cref="DXEndpoint"/>.</returns>
+        /// <exception cref="ArgumentNullException">If <paramref name="user"/> is null.</exception>
+        public DXEndpoint User(string user)
+        {
+            if (string.IsNullOrEmpty(user))
+                throw new ArgumentNullException("The user name is null!");
+            this.user = user;
+            return this;
+        }
+
+        /// <summary>
+        ///     Changes password for this endpoint.
+        ///     This method shall be called before <see cref="Connect(string)"/> together
+        ///     with <see cref="User(string)"/> to configure service access credentials.
+        /// </summary>
+        /// <param name="password">Password</param>
+        /// <returns>This <see cref="DXEndpoint"/>.</returns>
+        /// <exception cref="ArgumentNullException">If <paramref name="password"/> is null.</exception>
+        public DXEndpoint Password(string password)
+        {
+            if (string.IsNullOrEmpty(password))
+                throw new ArgumentNullException("The password is null!");
+            this.password = password;
+            return this;
+        }
+
+        /// <summary>
+        ///     <para>
+        ///         Connects to the specified remove address. Previously established connections 
+        ///         are closed if the new address is different from the old one.
+        ///         This method does nothing if address does not change or if this endpoint is 
+        ///         <see cref="EndpointState.Closed"/>.
+        ///         The endpoint <see cref="State"/> immediately becomes 
+        ///         <see cref="EndpointState.Connecting"/> otherwise.
+        ///     </para>
+        ///     <para>
+        ///         The address string is provided with the market data vendor agreement.
+        ///         Use "demo.dxfeed.com:7300" for a demo quote feed.
+        ///     </para>
+        ///     <list type="bullet">
+        ///         <listheader>
+        ///             <description>
+        ///                 The simplest address strings have the following format:
+        ///             </description>
+        ///         </listheader>
+        ///         <item>
+        ///             <description>
+        ///                 <c>host:port</c> to establish a TCP/IP connection
+        ///             </description>
+        ///         </item>
+        ///         <item>
+        ///             <description>
+        ///                 <c>:port</c> to listen for a TCP/IP connection with a plain socket 
+        ///                 connector (good for up to a few hundred of connections).
+        ///             </description>
+        ///         </item>
+        ///     </list>
+        ///     <para>
+        ///         For premium services access credentials must be configured before invocation of 
+        ///         <c>Connect</c> method using <see cref="User(string)"/> and 
+        ///         <see cref="Password(string)"/> methods.
+        ///     </para>
+        /// </summary>
+        /// <param name="address">The data source address.</param>
+        /// <returns>This <see cref="DXEndpoint"/>.</returns>
+        /// <exception cref="ArgumentNullException">If <paramref name="address"/> is null.</exception>
+        public DXEndpoint Connect(string address)
+        {
+            if (string.IsNullOrEmpty(address))
+                throw new ArgumentNullException("The address is null!");
+
+            if (this.address.Equals(address) && State != EndpointState.NotConnected || State == EndpointState.Closed)
+                return this;
+
+            //TODO: check if address string is malformed.
+
+            if (State == EndpointState.Connected || State == EndpointState.Connecting)
+                Disconnect();
+
+            State = EndpointState.Connecting;
+
+            lock (stateLocker)
+            {
+                this.address = address;
+                connection = new NativeConnection(this.address, null);
+                connection.OnCreation += ConnectionInstance_OnCreation;
+            }
+            return this;
+        }
+
+        /// <summary>
+        ///     <para>
+        ///         Terminates all remote network connections.
+        ///         This method does nothing if this endpoint is <see cref="EndpointState.Closed"/>.
+        ///         The endpoint <see cref="State"/> immediately becomes 
+        ///         <see cref="EndpointState.NotConnected"/> otherwise.
+        ///     </para>
+        ///     <para>
+        ///         This method does not release all resources that are associated with this 
+        ///         endpoint.
+        ///         Use <see cref="Close()"/> method to release all resources.
+        ///     </para>
+        /// </summary>
+        public void Disconnect()
+        {
+            if (State == EndpointState.Closed)
+                return;
+
+            lock (stateLocker)
+            {
+                assyncState = EndpointState.NotConnected;
+                UnsafeCloseConnection();
+            }
+        }
+
+        /// <summary>
+        ///     <para>
+        ///         Closes this endpoint. All network connection are terminated as with
+        ///         <see cref="Disconnect()"/> method and no further connections
+        ///         can be established.
+        ///     </para>
+        ///     <para>
+        ///         The endpoint <see cref="State"/> immediately becomes <see cref="EndpointState.Closed"/>.
+        ///         All resources associated with this endpoint are released.
+        ///     </para>
+        /// </summary>
+        public void Close()
+        {
+            if (State == EndpointState.Closed)
+                return;
+
+            lock (stateLocker)
+            {
+                assyncState = EndpointState.Closed;
+                UnsafeCloseConnection();
+            }
+        }
+
+        /// <summary>
+        ///     Returns feed that is associated with this endpoint.
+        /// </summary>
+        /// <returns>The feed.</returns>
+        public DXFeed Feed { get; private set; }
+
+        /// <summary>
+        ///     Returns a set of all event types supported by this endpoint. The resulting set 
+        ///     cannot be modified.
+        /// </summary>
+        /// <returns>Set of all event types.</returns>
         public HashSet<Type> GetEventTypes()
         {
             return new HashSet<Type>(new Type[] {
@@ -59,9 +262,54 @@ namespace com.dxfeed.api
             });
         }
 
-        public void Close()
+        public void Dispose()
         {
-            //TODO: implement
+            Close();
+        }
+
+        internal IDxConnection Connection
+        {
+            get
+            {
+                return connection;
+            }
+        }
+
+        /// <summary>
+        ///     Protected constructor for implementations of DXEndpoint.
+        /// </summary>
+        protected DXEndpoint()
+        {
+            assyncState = EndpointState.NotConnected;
+            Feed = new DXFeed(this);
+        }
+
+        //private static readonly string DefaultAddress = "demo.dxfeed.com:7300";
+        //TODO: temp
+        private static readonly string DefaultAddress = "mddqa.in.devexperts.com:7400";
+        private static readonly string DefaultUser = "demo";
+        private static readonly string DefaultPassword = "demo";
+        private static DXEndpoint endpointInstance = null;
+        private object stateLocker = new object();
+        private EndpointState assyncState = EndpointState.NotConnected;
+        private string address = DefaultAddress;
+        private string user = DefaultUser;
+        private string password = DefaultPassword;
+        private NativeConnection connection = null;
+
+        private void ConnectionInstance_OnCreation(object sender, EventArgs e)
+        {
+            State = EndpointState.Connected;
+        }
+
+        private void UnsafeCloseConnection()
+        {
+            if (connection != null)
+            {
+                connection.OnCreation -= ConnectionInstance_OnCreation;
+                connection.Disconnect();
+                connection = null;
+            }
         }
 
     }

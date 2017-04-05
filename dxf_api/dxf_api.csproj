@@ -71,6 +71,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IDXFeed.cs" />
+    <Compile Include="src\IDXFeedEventListener.cs" />
+    <Compile Include="src\IDXFeedSubscription.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="src\candle\CandleAlignment.cs" />
     <Compile Include="src\candle\CandleExchange.cs" />
@@ -81,6 +84,7 @@
     <Compile Include="src\candle\CandleSymbolAttributes.cs" />
     <Compile Include="src\candle\CandleType.cs" />
     <Compile Include="src\candle\ICandleSymbolAttribute.cs" />
+    <Compile Include="src\events\IndexedEventSource.cs" />
     <Compile Include="src\events\market\MarketEventSymbols.cs" />
     <Compile Include="src\data\DxString.cs" />
     <Compile Include="src\data\Side.cs" />

@@ -6,10 +6,7 @@
 // http://mozilla.org/MPL/2.0/.
 #endregion
 
-using com.dxfeed.api.candle;
 using com.dxfeed.api.events;
-using com.dxfeed.api.events.market;
-using com.dxfeed.api.util;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -18,30 +15,8 @@ using System.Threading.Tasks;
 namespace com.dxfeed.api
 {
     //TODO: comments
-    public class DXFeed : IDXFeed
+    public interface IDXFeed
     {
-
-        //TODO: restore AssemblyInfo versions in all projects
-        //TODO: update new samples with MSBuild commands
-
-        private DXEndpoint endpoint = null;
-        private HashSet<object> attachedSubscriptions = new HashSet<object>();
-
-        internal DXFeed(DXEndpoint endpoint)
-        {
-            this.endpoint = endpoint;
-        }
-
-        /// <summary>
-        /// Returns a default application-wide singleton instance of feed. Most applications use only a single
-        /// data-source and should rely on this method to get one.
-        /// </summary>
-        /// <returns>Singleton instance of feed.</returns>
-        public static DXFeed GetInstance()
-        {
-            return DXEndpoint.GetInstance().Feed;
-        }
-
         /// <summary>
         /// Creates new subscription for a single event type that is attached to this feed.
         /// For multiple event types in one subscription use
@@ -54,12 +29,7 @@ namespace com.dxfeed.api
         /// <typeparam name="E">The type of events.</typeparam>
         /// <param name="eventType">The class of event types.</param>
         /// <returns>New DXFeedSubscription for a single event type.</returns>
-        public IDXFeedSubscription<E> CreateSubscription<E>()
-        {
-            IDXFeedSubscription<E> subscription = new DXFeedSubscription<E>(endpoint) as IDXFeedSubscription<E>;
-            subscription.Attach(this);
-            return subscription;
-        }
+        IDXFeedSubscription<E> CreateSubscription<E>();
 
         /// <summary>
         /// Creates new subscription for multiple event types that is <i>attached</i> to this feed.
@@ -69,12 +39,7 @@ namespace com.dxfeed.api
         /// <typeparam name="E">The type of events.</typeparam>
         /// <param name="eventTypes">The classes of event types.</param>
         /// <returns>The new DXFeedSubscription.</returns>
-        public IDXFeedSubscription<E> CreateSubscription<E>(params Type[] eventTypes)
-        {
-            IDXFeedSubscription<E> subscription = new DXFeedSubscription<E>(endpoint, eventTypes) as IDXFeedSubscription<E>;
-            subscription.Attach(this);
-            return subscription;
-        }
+        IDXFeedSubscription<E> CreateSubscription<E>(params Type[] eventTypes);
 
         /// <summary>
         /// Attaches the given subscription to this feed. This method does nothing if the
@@ -87,22 +52,14 @@ namespace com.dxfeed.api
         /// </summary>
         /// <typeparam name="E">The type of events.</typeparam>
         /// <param name="subscription">The subscription.</param>
-        public void AttachSubscription<E>(IDXFeedSubscription<E> subscription)
-        {
-            if (attachedSubscriptions.Contains(subscription))
-                return;
-            attachedSubscriptions.Add(subscription);
-        }
+        void AttachSubscription<E>(IDXFeedSubscription<E> subscription);
 
         /// <summary>
         /// Detaches the given subscription from this feed. This method does nothing if the
         /// corresponding subscription is not attached to this feed.
         /// </summary>
         /// <param name="subscription">The subscription.</param>
-        public void DetachSubscription<E>(IDXFeedSubscription<E> subscription)
-        {
-            attachedSubscriptions.Remove(subscription);
-        }
+        void DetachSubscription<E>(IDXFeedSubscription<E> subscription);
 
         /// <summary>
         ///     Requests the last event for the specified event type and symbol.
@@ -173,30 +130,8 @@ namespace com.dxfeed.api
         ///     The <paramref name="symbol"/> symbol is not one of string or <see cref= "CandleSymbol"/>.
         /// </exception >
         /// <exception cref="ArgumentNullException">The <paramref name="symbol"/> is null.</exception>
-        public async Task<LastingEvent> GetLastEventPromise<E>(object symbol,
-            CancellationToken cancellationToken)
-            where E : class, LastingEvent
-        {
-
-            MarketEventSymbols.ValidateSymbol(symbol);
-
-            return await Task.Run(() =>
-            {
-                EventType events = EventTypeUtil.GetEventsType(typeof(E));
-                LastingEventsCollector<E> collector = new LastingEventsCollector<E>();
-
-                IDXFeedSubscription<E> s = CreateSubscription<E>();
-                s.AddSymbols(symbol);
-                s.AddEventListener(collector);
-                while (!collector.HasEvent<E>(symbol))
-                {
-                    if (endpoint.State == DXEndpoint.EndpointState.Closed)
-                        throw new OperationCanceledException("Endpoint was been closed.");
-                    cancellationToken.ThrowIfCancellationRequested();
-                }
-                return collector.GetEvent<E>(symbol);
-            }, cancellationToken);
-        }
+        Task<LastingEvent> GetLastEventPromise<E>(object symbol, CancellationToken cancellationToken)
+            where E : class, LastingEvent;
 
         /// <summary>
         ///     Requests the last events for the specified event type and a collection of symbols.
@@ -264,17 +199,9 @@ namespace com.dxfeed.api
         ///     The one of <paramref name="symbols"/> is not <c>string</c> or <see cref="CandleSymbol"/>.
         /// </exception>
         /// <exception cref="ArgumentNullException">The one of <paramref name="symbols"/> is <c>null</c>.</exception>
-        public List<Task<LastingEvent>> GetLastEventsPromises<E>(ICollection<object> symbols,
+        List<Task<LastingEvent>> GetLastEventsPromises<E>(ICollection<object> symbols, 
             CancellationToken cancellationToken)
-            where E : class, LastingEvent
-        {
-            List<Task<LastingEvent>> result = new List<Task<LastingEvent>>(symbols.Count);
-            foreach (object symbol in symbols)
-            {
-                result.Add(GetLastEventPromise<E>(symbol, cancellationToken));
-            }
-            return result;
-        }
+            where E : class, LastingEvent;
 
         /// <summary>
         ///     Requests a list of indexed events for the specified event type, symbol, and source.
@@ -345,15 +272,9 @@ namespace com.dxfeed.api
         /// <exception cref="ArgumentNullException">
         ///     The <paramref name="symbol"/> or <paramref name="source"/> is null.
         /// </exception>
-        public async Task<List<E>> GetIndexedEventsPromise<E>(object symbol,
-            IndexedEventSource source, CancellationToken cancellationToken)
-            where E : IndexedEvent
-        {
-            MarketEventSymbols.ValidateSymbol(symbol);
-            if (source == null)
-                throw new ArgumentNullException("Source is null!");
-            return await FetchOrSubscribeFromHistory<E>(symbol, 0, long.MaxValue, source, cancellationToken);
-        }
+        Task<List<E>> GetIndexedEventsPromise<E>(object symbol, IndexedEventSource source, 
+            CancellationToken cancellationToken)
+            where E : IndexedEvent;
 
         /// <summary>
         ///     Requests time series of events for the specified event type, symbol, and a range 
@@ -422,89 +343,8 @@ namespace com.dxfeed.api
         ///     The <paramref name="symbol"/> symbol is not one of string or <see cref= "CandleSymbol"/>.
         /// </exception >
         /// <exception cref="ArgumentNullException">The <paramref name="symbol"/> is null.</exception>
-        public async Task<List<E>> GetTimeSeriesPromise<E>(object symbol, long fromTime,
-            long toTime, CancellationToken cancellationToken)
-            where E : TimeSeriesEvent
-        {
-            MarketEventSymbols.ValidateSymbol(symbol);
-            return await FetchOrSubscribeFromHistory<E>(symbol, fromTime, toTime,
-                IndexedEventSource.DEFAULT, cancellationToken);
-        }
-
-        #region Internal methods
-
-        /// <summary>
-        ///     Creates new snapshot subscription for a single event type that is attached to this feed.
-        ///     This method creates new DXFeedSubscription.
-        /// </summary>
-        /// <typeparam name="E">The type of events.</typeparam>
-        /// <param name="eventType">The class of event types.</param>
-        /// <returns>New DXFeedSubscription for a single event type.</returns>
-        internal IDXFeedSubscription<E> CreateSubscription<E>(long time, IndexedEventSource source)
-        {
-            IDXFeedSubscription<E> subscription = new DXFeedSubscription<E>(endpoint, time, source) as IDXFeedSubscription<E>;
-            subscription.Attach(this);
-            return subscription;
-        }
-
-        #endregion
-
-        #region Private methods
-
-        private class HistoryEventsCollector<E> : DXFeedSnapshotCollector<E>
-            where E : IndexedEvent
-        {
-            private long fromTime;
-            private long toTime;
-
-            public HistoryEventsCollector(long fromTime, long toTime) : base()
-            {
-                this.fromTime = fromTime;
-                this.toTime = toTime;
-            }
-
-            protected override IList<E> FilterEvents(IList<E> events)
-            {
-                IList<E> result = new List<E>();
-                foreach (E e in events)
-                {
-                    long time = e is TimeSeriesEvent ? (e as TimeSeriesEvent).TimeStamp : 0;
-                    if (time >= fromTime && time <= toTime)
-                    {
-                        e.EventFlags = 0;
-                        result.Add(e);
-                    }
-                }
-                return result;
-            }
-        }
-
-        private async Task<List<E>> FetchOrSubscribeFromHistory<E>(object symbol, long fromTime,
-            long toTime, IndexedEventSource source, CancellationToken cancellationToken)
-            where E : IndexedEvent
-        {
-            MarketEventSymbols.ValidateSymbol(symbol);
-
-            return await Task.Run(() =>
-            {
-                EventType events = EventTypeUtil.GetEventsType(typeof(E));
-                HistoryEventsCollector<E> collector = new HistoryEventsCollector<E>(fromTime, toTime);
-
-                IDXFeedSubscription<E> s = CreateSubscription<E>(fromTime, source);
-                s.AddSymbols(symbol);
-                s.AddEventListener(collector);
-
-                while (!collector.IsDone)
-                {
-                    if (endpoint.State == DXEndpoint.EndpointState.Closed)
-                        throw new OperationCanceledException("Endpoint was been closed.");
-                    cancellationToken.ThrowIfCancellationRequested();
-                }
-                List<E> eventsList = collector.Events;
-                eventsList.Reverse();
-                return eventsList;
-            }, cancellationToken);
-        }
-        #endregion
+        Task<List<E>> GetTimeSeriesPromise<E>(object symbol, long fromTime, long toTime, 
+            CancellationToken cancellationToken)
+            where E : TimeSeriesEvent;
     }
 }

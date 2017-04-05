@@ -20,8 +20,11 @@ namespace com.dxfeed.native
     public class NativeConnection : IDxConnection
     {
         private IntPtr handler = IntPtr.Zero;
-        private readonly C.dxf_conn_termination_notifier_t callback;
+        private readonly C.dxf_conn_termination_notifier_t termination_notifier;
+        private readonly C.dxf_socket_thread_creation_notifier_t creation_notifier;
         private readonly Action<IDxConnection> disconnectListener;
+        public delegate void OnCreationEventHandler(object sender, EventArgs e);
+        public event OnCreationEventHandler OnCreation;
 
         internal IntPtr Handler
         {
@@ -36,15 +39,23 @@ namespace com.dxfeed.native
         /// <exception cref="DxException"></exception>
         public NativeConnection(string address, Action<IDxConnection> disconnectListener)
         {
-            callback = OnDisconnect;
+            termination_notifier = OnNativeDisconnect;
+            creation_notifier = OnNativeCreate;
             this.disconnectListener = disconnectListener;
-            C.CheckOk(C.Instance.dxf_create_connection(address, callback, null, null, IntPtr.Zero, out handler));
+            C.CheckOk(C.Instance.dxf_create_connection(address, termination_notifier, null, null, IntPtr.Zero, out handler));
         }
 
-        private void OnDisconnect(IntPtr connection, IntPtr userData)
+        private void OnNativeDisconnect(IntPtr connection, IntPtr userData)
         {
             if (disconnectListener != null)
                 disconnectListener(this);
+        }
+
+        private int OnNativeCreate(IntPtr connection, IntPtr userData)
+        {
+            if (OnCreation != null)
+                OnCreation(this, new EventArgs());
+            return 0;
         }
 
         #region Implementation of IDxConnection

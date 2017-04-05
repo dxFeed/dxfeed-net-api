@@ -11,6 +11,8 @@ using com.dxfeed.api.events;
 using com.dxfeed.api.events.market;
 using com.dxfeed.api.util;
 using System.Collections.Concurrent;
+using System;
+using System.Collections.Generic;
 
 namespace com.dxfeed.api
 {
@@ -28,7 +30,8 @@ namespace com.dxfeed.api
         IDxTimeAndSaleListener,
         IDxTradeListener,
         IDxTradeEthListener,
-        IDxUnderlyingListener
+        IDxUnderlyingListener,
+        IDxConfigurationListener
     {
 
         class EventStorage<E> where E : class, IDxEventType
@@ -77,8 +80,9 @@ namespace com.dxfeed.api
 
             public void AddEvent<E>(E eventData) where E : class, IDxEventType
             {
-                if (HasEvent<E>())
-                    return;
+                //TODO: bulk checking
+                //if (HasEvent<E>())
+                //    return;
                 EventType eventType = EventTypeUtil.GetEventsType(typeof(E));
                 lastEvents.GetOrAdd(eventType, new EventStorage<IDxEventType>()).Event = eventData;
             }
@@ -108,10 +112,11 @@ namespace com.dxfeed.api
             return (symbolObj is CandleSymbol) ? (symbolObj as CandleSymbol).ToString() : symbolObj as string;
         }
 
-        private void AddEvent<E>(object symbol, E eventData) where E : class, IDxEventType
+        protected void AddEvent<E>(object symbol, E eventData) where E : class, IDxEventType
         {
-            if (HasEvent<E>(symbol))
-                return;
+            //TODO: a bulk checking
+            //if (HasEvent<E>(symbol))
+            //    return;
             string key = GetSymbolKey(symbol);
             lastSymbols.GetOrAdd(key, new EventsCollection()).AddEvent(eventData);
         }
@@ -219,5 +224,25 @@ namespace com.dxfeed.api
             foreach (var e in buf)
                 AddEvent<IDxUnderlying>(buf.Symbol.ToString(), e);
         }
+
+        public void OnConfiguration<TB, TE>(TB buf)
+            where TB : IDxEventBuf<TE>
+            where TE : IDxConfiguration
+        {
+            foreach (var e in buf)
+                AddEvent<IDxConfiguration>(buf.Symbol.ToString(), e);
+        }
+
     }
+
+    class LastingEventsCollector<E> : LastingEventsCollector, IDXFeedEventListener<E>
+        where E : class, IDxEventType
+    {
+        public void EventsReceived(IList<E> events)
+        {
+            foreach (var e in events)
+                AddEvent(e.EventSymbol, e);
+        }
+    }
+
 }

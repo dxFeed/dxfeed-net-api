@@ -241,6 +241,14 @@ namespace com.dxfeed.native.events
             get; set;
         }
 
+        object IDxEventType.EventSymbol
+        {
+            get
+            {
+                return EventSymbol;
+            }
+        }
+
         #endregion
     }
 }

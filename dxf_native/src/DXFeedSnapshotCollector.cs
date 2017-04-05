@@ -9,6 +9,7 @@
 using System.Collections.Generic;
 using com.dxfeed.api.events;
 using System.Threading;
+using System;
 
 namespace com.dxfeed.api
 {
@@ -26,11 +27,12 @@ namespace com.dxfeed.api
         IDxTimeAndSaleSnapshotListener,
         IDxSpreadOrderSnapshotListener,
         IDxGreeksSnapshotListener,
-        IDxSeriesSnapshotListener 
+        IDxSeriesSnapshotListener,
+        IDXFeedEventListener<E>
         where E : IDxEventType
     {
 
-        private List<E> events = new List<E>();
+        private IList<E> events = new List<E>();
         private object eventsLock = new object();
         private volatile bool isDone = false;
 
@@ -48,60 +50,65 @@ namespace com.dxfeed.api
             where TB : IDxEventBuf<TE>
             where TE : IDxCandle
         {
-            List<IDxCandle> list = new List<IDxCandle>();
+            IList<IDxCandle> list = new List<IDxCandle>();
             foreach (var o in buf)
                 list.Add(o);
-            AddSnapshot(list as List<E>);
+            AddSnapshot(list as IList<E>);
         }
 
         public void OnGreeksSnapshot<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
             where TE : IDxGreeks
         {
-            List<IDxGreeks> list = new List<IDxGreeks>();
+            IList<IDxGreeks> list = new List<IDxGreeks>();
             foreach (var o in buf)
                 list.Add(o);
-            AddSnapshot(list as List<E>);
+            AddSnapshot(list as IList<E>);
         }
 
         public void OnOrderSnapshot<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
             where TE : IDxOrder
         {
-            List<IDxOrder> list = new List<IDxOrder>();
+            IList<IDxOrder> list = new List<IDxOrder>();
             foreach (var o in buf)
                 list.Add(o);
-            AddSnapshot(list as List<E>);
+            AddSnapshot(list as IList<E>);
         }
 
         public void OnSeriesSnapshot<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
             where TE : IDxSeries
         {
-            List<IDxSeries> list = new List<IDxSeries>();
+            IList<IDxSeries> list = new List<IDxSeries>();
             foreach (var o in buf)
                 list.Add(o);
-            AddSnapshot(list as List<E>);
+            AddSnapshot(list as IList<E>);
         }
 
         public void OnSpreadOrderSnapshot<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
             where TE : IDxSpreadOrder
         {
-            List<IDxSpreadOrder> list = new List<IDxSpreadOrder>();
+            IList<IDxSpreadOrder> list = new List<IDxSpreadOrder>();
             foreach (var o in buf)
                 list.Add(o);
-            AddSnapshot(list as List<E>);
+            AddSnapshot(list as IList<E>);
         }
 
         public void OnTimeAndSaleSnapshot<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
             where TE : IDxTimeAndSale
         {
-            List<IDxTimeAndSale> list = new List<IDxTimeAndSale>();
+            IList<IDxTimeAndSale> list = new List<IDxTimeAndSale>();
             foreach (var o in buf)
                 list.Add(o);
-            AddSnapshot(list as List<E>);
+            AddSnapshot(list as IList<E>);
+        }
+
+        public void EventsReceived(IList<E> events)
+        {
+            AddSnapshot(events);
         }
 
         /// <summary>
@@ -120,19 +127,20 @@ namespace com.dxfeed.api
             }
         }
 
-        protected virtual List<E> FilterEvents(List<E> events)
+        protected virtual IList<E> FilterEvents(IList<E> events)
         {
             return events;
         }
 
-        private void AddSnapshot(List<E> events)
+        private void AddSnapshot(IList<E> events)
         {
+            if (events == null)
+                throw new ArgumentNullException("events");
             lock (eventsLock)
             {
                 this.events = FilterEvents(events);
                 isDone = true;
             }
         }
-
     }
 }

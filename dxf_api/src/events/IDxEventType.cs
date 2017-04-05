@@ -11,6 +11,7 @@ using System;
 namespace com.dxfeed.api.events
 {
     //TODO: need a another solution?
+    //TODO: comments
 
     /// <summary>
     /// Marks all event types that can be received via dxFeed API.
@@ -25,12 +26,10 @@ namespace com.dxfeed.api.events
     /// </summary>
     public interface IDxEventType : ICloneable
     {
-        ///// <summary>
-        ///// Returns event symbol that identifies this event type.
-        ///// </summary>
-        //object EventSymbol { get; }
-
-        //TODO: Is need EventSymbol here?
+        /// <summary>
+        /// Returns event symbol that identifies this event type.
+        /// </summary>
+        object EventSymbol { get; }
     }
 
     /// <summary>
@@ -49,6 +48,6 @@ namespace com.dxfeed.api.events
         /// <summary>
         /// Returns event symbol that identifies this event type.
         /// </summary>
-        T EventSymbol { get; }
+        new T EventSymbol { get; }
     }
 }

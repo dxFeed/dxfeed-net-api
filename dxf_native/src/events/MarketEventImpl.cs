@@ -38,6 +38,14 @@ namespace com.dxfeed.native.events
             get; private set;
         }
 
+        object IDxEventType.EventSymbol
+        {
+            get
+            {
+                return EventSymbol;
+            }
+        }
+
         #endregion
 
         public abstract object Clone();

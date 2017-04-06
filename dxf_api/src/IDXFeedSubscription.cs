@@ -6,10 +6,25 @@
 // http://mozilla.org/MPL/2.0/.
 #endregion
 
+using System;
 using System.Collections.Generic;
 
 namespace com.dxfeed.api
 {
+    /// <summary>
+    ///     Symbols update event handler.
+    /// </summary>
+    /// <param name="sender">Subscription object.</param>
+    /// <param name="args">Event arguments.</param>
+    public delegate void DXFeedSymbolsUpdateEventHandler(object sender, DXFeedSymbolsUpdateEventArgs args);
+
+    /// <summary>
+    ///     Subscription close event handler.
+    /// </summary>
+    /// <param name="sender">Subscription object.</param>
+    /// <param name="args">Event arguments.</param>
+    public delegate void DXFeedSubscriptionClosedEventHandler(object sender, EventArgs args);
+
     /// <summary>
     ///     Subscription for a set of symbols and event types.
     /// </summary>
@@ -57,7 +72,16 @@ namespace com.dxfeed.api
         void Close();
 
         /// <summary>
-        ///     Clears the set of subscribed symbols.
+        ///     <para>
+        ///         Clears the set of subscribed symbols.
+        ///     </para>
+        ///     <para>
+        ///         Implementation notes.
+        ///     </para>
+        ///     <para>
+        ///         This method notifies all subscribed <see cref="OnSymbolsRemoved"/> events on 
+        ///         clear symbols from this subscription.
+        ///     </para>
         /// </summary>
         void Clear();
 
@@ -72,79 +96,137 @@ namespace com.dxfeed.api
         ISet<object> GetSymbols();
 
         /// <summary>
-        ///     Changes the set of subscribed symbols so that it contains just the symbols from 
-        ///     the specified collection.
-        ///     To conveniently set subscription for just one or few symbols you can use
-        ///     <see cref="SetSymbols(object[])"/> method.
-        ///     All registered event listeners will receive update on the last events for all
-        ///     newly added symbols.
+        ///     <para>
+        ///         Changes the set of subscribed symbols so that it contains just the symbols from 
+        ///         the specified collection.
+        ///         To conveniently set subscription for just one or few symbols you can use
+        ///         <see cref="SetSymbols(object[])"/> method.
+        ///         All registered event listeners will receive update on the last events for all
+        ///         newly added symbols.
+        ///     </para>
+        ///     <para>
+        ///         Implementation notes.
+        ///     </para>
+        ///     <para>
+        ///         This method notifies all subscribed <see cref="OnSymbolsAdded"/> and 
+        ///         <see cref="OnSymbolsRemoved"/> events on symbols changing for this subscription.
+        ///     </para>
         /// </summary>
         /// <param name="symbols">The collection of symbols.</param>
         void SetSymbols(ICollection<object> symbols);
 
         /// <summary>
-        /// Changes the set of subscribed symbols so that it contains just the symbols from the specified array.
-        /// This is a convenience method to set subscription to one or few symbols at a time.
-        /// When setting subscription to multiple symbols at once it is preferable to use
-        /// SetSymbols(ICollection<string> symbols) method.
-        /// All registered event listeners will receive update on the last events for all
-        /// newly added symbols.
+        ///     <para>
+        ///         Changes the set of subscribed symbols so that it contains just the symbols from 
+        ///         the specified array.
+        ///         This is a convenience method to set subscription to one or few symbols at a time.
+        ///         When setting subscription to multiple symbols at once it is preferable to use
+        ///         <see cref="SetSymbols(ICollection{object})"/> method.
+        ///         All registered event listeners will receive update on the last events for all
+        ///         newly added symbols.
+        ///     </para>
+        ///     <para>
+        ///         Implementation notes.
+        ///     </para>
+        ///     <para>
+        ///         This method notifies all subscribed <see cref="OnSymbolsAdded"/> and 
+        ///         <see cref="OnSymbolsRemoved"/> events on symbols changing for this subscription.
+        ///     </para>
         /// </summary>
         /// <param name="symbols">The array of symbols.</param>
         void SetSymbols(params object[] symbols);
 
         /// <summary>
-        /// Adds the specified collection of symbols to the set of subscribed symbols.
-        /// To conveniently add one or few symbols you can use
-        /// AddSymbols(params string[] symbols) method.
-        /// All registered event listeners will receive update on the last events for all
-        /// newly added symbols.
+        ///     <para>
+        ///         Adds the specified collection of symbols to the set of subscribed symbols.
+        ///         To conveniently add one or few symbols you can use
+        ///         <see cref="AddSymbols(object[])"/> method.
+        ///         All registered event listeners will receive update on the last events for all
+        ///         newly added symbols.
+        ///     </para>
+        ///     <para>
+        ///         Implementation notes.
+        ///     </para>
+        ///     <para>
+        ///         This method notifies all subscribed <see cref="OnSymbolsAdded"/> events on 
+        ///         symbols changing for this subscription.
+        ///     </para>
         /// </summary>
         /// <param name="symbols">Symbols the collection of symbols.</param>
         void AddSymbols(ICollection<object> symbols);
 
         /// <summary>
-        /// Adds the specified array of symbols to the set of subscribed symbols.
-        /// This is a convenience method to subscribe to one or few symbols at a time.
-        /// When subscribing to multiple symbols at once it is preferable to use
-        /// AddSymbols(ICollection<string> symbols) method.
-        /// All registered event listeners will receive update on the last events for all
-        /// newly added symbols.
+        ///     <para>
+        ///         Adds the specified array of symbols to the set of subscribed symbols.
+        ///         This is a convenience method to subscribe to one or few symbols at a time.
+        ///         When subscribing to multiple symbols at once it is preferable to use
+        ///         <see cref="AddSymbols(ICollection{object})"/> method.
+        ///         All registered event listeners will receive update on the last events for all
+        ///         newly added symbols.
+        ///     </para>
+        ///     <para>
+        ///         Implementation notes.
+        ///     </para>
+        ///     <para>
+        ///         This method notifies all subscribed <see cref="OnSymbolsAdded"/> events on 
+        ///         symbols changing for this subscription.
+        ///     </para>
         /// </summary>
         /// <param name="symbols">The array of symbols.</param>
         void AddSymbols(params object[] symbols);
 
         /// <summary>
-        /// Adds the specified symbol to the set of subscribed symbols.
-        /// This is a convenience method to subscribe to one symbol at a time that
-        /// has a return fast-path for a case when the symbol is already in the set.
-        /// When subscribing to multiple symbols at once it is preferable to use
-        /// AddSymbols(ICollection<string> symbols) method.
-        /// All registered event listeners will receive update on the last events for all
-        /// newly added symbols.
+        ///     <para>
+        ///         Adds the specified symbol to the set of subscribed symbols.
+        ///         This is a convenience method to subscribe to one symbol at a time that
+        ///         has a return fast-path for a case when the symbol is already in the set.
+        ///         When subscribing to multiple symbols at once it is preferable to use
+        ///         <see cref="AddSymbols(ICollection{object})"/> method.
+        ///         All registered event listeners will receive update on the last events for all
+        ///         newly added symbols.
+        ///     </para>
+        ///     <para>
+        ///         Implementation notes.
+        ///     </para>
+        ///     <para>
+        ///         This method notifies all subscribed <see cref="OnSymbolsAdded"/> events on 
+        ///         symbols changing for this subscription.
+        ///     </para>
         /// </summary>
         /// <param name="symbol">The symbol.</param>
         void AddSymbols(object symbol);
 
         /// <summary>
-        ///     Removes the specified collection of symbols from the set of subscribed symbols.
-        ///     To conveniently remove one or few symbols you can use
-        ///     <see cref="RemoveSymbols(object[])"/> method.
-        ///
-        ///     TODO: implementation notes
-        ///
+        ///     <para>
+        ///         Removes the specified collection of symbols from the set of subscribed symbols.
+        ///         To conveniently remove one or few symbols you can use
+        ///         <see cref="RemoveSymbols(object[])"/> method.
+        ///     </para>
+        ///     <para>
+        ///         Implementation notes.
+        ///     </para>
+        ///     <para>
+        ///         This method notifies all subscribed <see cref="OnSymbolsRemoved"/> events on 
+        ///         symbols changing for this subscription.
+        ///     </para>
         /// </summary>
         /// <param name="symbols">The collection of symbols.</param>
         void RemoveSymbols(ICollection<object> symbols);
 
         /// <summary>
-        ///     Removes the specified array of symbols from the set of subscribed symbols.
-        ///     This is a convenience method to remove one or few symbols at a time.
-        ///     When removing multiple symbols at once it is preferable to use
-        ///     <see cref="RemoveSymbols(ICollection{object})"/> method.
-        ///
-        ///     TODO: implementation notes
-        ///
+        ///     <para>
+        ///         Removes the specified array of symbols from the set of subscribed symbols.
+        ///         This is a convenience method to remove one or few symbols at a time.
+        ///         When removing multiple symbols at once it is preferable to use
+        ///         <see cref="RemoveSymbols(ICollection{object})"/> method.
+        ///     </para>
+        ///     <para>
+        ///         Implementation notes.
+        ///     </para>
+        ///     <para>
+        ///         This method notifies all subscribed <see cref="OnSymbolsRemoved"/> events on 
+        ///         symbols changing for this subscription.
+        ///     </para>
         /// </summary>
         /// <param name="symbols">The array of symbols.</param>
         void RemoveSymbols(params object[] symbols);
@@ -163,5 +245,20 @@ namespace com.dxfeed.api
         /// <param name="listener">Listener the event listener.</param>
         /// <exception cref="ArgumentNullException">If listener is null.</exception>
         void RemoveEventListener(IDXFeedEventListener<E> listener);
+
+        /// <summary>
+        ///     Event calls when any symbols is added to subscription.
+        /// </summary>
+        event DXFeedSymbolsUpdateEventHandler OnSymbolsAdded;
+
+        /// <summary>
+        /// Event calls when any symbols is removed from subscription.
+        /// </summary>
+        event DXFeedSymbolsUpdateEventHandler OnSymbolsRemoved;
+
+        /// <summary>
+        /// Event calls when subscription is closing.
+        /// </summary>
+        event DXFeedSubscriptionClosedEventHandler OnSubscriptionClosed;
     }
 }

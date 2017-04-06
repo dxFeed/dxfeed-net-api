@@ -496,13 +496,25 @@ namespace com.dxfeed.api
                 eventListeners.Clear();
                 subscriptionInstance.Dispose();
             }
+
+            OnSubscriptionClosed?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>
-        ///     Clears the set of subscribed symbols.
+        ///     <para>
+        ///         Clears the set of subscribed symbols.
+        ///     </para>
+        ///     <para>
+        ///         Implementation notes.
+        ///     </para>
+        ///     <para>
+        ///         This method notifies all subscribed <see cref="OnSymbolsRemoved"/> events on 
+        ///         clear symbols from this subscription.
+        ///     </para>
         /// </summary>
         public void Clear()
         {
+            OnSymbolsRemoved?.Invoke(this, new DXFeedSymbolsUpdateEventArgs(GetSymbols()));
             subscriptionInstance.Clear();
         }
 
@@ -516,54 +528,86 @@ namespace com.dxfeed.api
         /// <returns>Set of subscribed symbols.</returns>
         public ISet<object> GetSymbols()
         {
-            HashSet<object> symbolsSet = new HashSet<object>();
+            ISet<object> symbolsSet;
             lock (symbolsLocker)
             {
-                subscriptionInstance.GetSymbols().All(s => symbolsSet.Add(s));
+                symbolsSet = GetSymbolsUnsafe();
             }
             return symbolsSet;
         }
 
         /// <summary>
-        ///     Changes the set of subscribed symbols so that it contains just the symbols from 
-        ///     the specified collection.
-        ///     To conveniently set subscription for just one or few symbols you can use
-        ///     <see cref="SetSymbols(object[])"/> method.
-        ///     All registered event listeners will receive update on the last events for all
-        ///     newly added symbols.
+        ///     <para>
+        ///         Changes the set of subscribed symbols so that it contains just the symbols from 
+        ///         the specified collection.
+        ///         To conveniently set subscription for just one or few symbols you can use
+        ///         <see cref="SetSymbols(object[])"/> method.
+        ///         All registered event listeners will receive update on the last events for all
+        ///         newly added symbols.
+        ///     </para>
+        ///     <para>
+        ///         Implementation notes.
+        ///     </para>
+        ///     <para>
+        ///         This method notifies all subscribed <see cref="OnSymbolsAdded"/> and 
+        ///         <see cref="OnSymbolsRemoved"/> events on symbols changing for this subscription.
+        ///     </para>
         /// </summary>
         /// <param name="symbols">The collection of symbols.</param>
         public void SetSymbols(ICollection<object> symbols)
         {
             lock (symbolsLocker)
             {
+                OnSymbolsRemoved?.Invoke(this, new DXFeedSymbolsUpdateEventArgs(GetSymbolsUnsafe()));
                 subscriptionInstance.SetSymbols(SymbolsToStringList(symbols).ToArray());
+                OnSymbolsAdded?.Invoke(this, new DXFeedSymbolsUpdateEventArgs(symbols));
             }
         }
 
         /// <summary>
-        /// Changes the set of subscribed symbols so that it contains just the symbols from the specified array.
-        /// This is a convenience method to set subscription to one or few symbols at a time.
-        /// When setting subscription to multiple symbols at once it is preferable to use
-        /// SetSymbols(ICollection<string> symbols) method.
-        /// All registered event listeners will receive update on the last events for all
-        /// newly added symbols.
+        ///     <para>
+        ///         Changes the set of subscribed symbols so that it contains just the symbols from 
+        ///         the specified array.
+        ///         This is a convenience method to set subscription to one or few symbols at a time.
+        ///         When setting subscription to multiple symbols at once it is preferable to use
+        ///         <see cref="SetSymbols(ICollection{object})"/> method.
+        ///         All registered event listeners will receive update on the last events for all
+        ///         newly added symbols.
+        ///     </para>
+        ///     <para>
+        ///         Implementation notes.
+        ///     </para>
+        ///     <para>
+        ///         This method notifies all subscribed <see cref="OnSymbolsAdded"/> and 
+        ///         <see cref="OnSymbolsRemoved"/> events on symbols changing for this subscription.
+        ///     </para>
         /// </summary>
         /// <param name="symbols">The array of symbols.</param>
         public void SetSymbols(params object[] symbols)
         {
             lock (symbolsLocker)
             {
+                OnSymbolsRemoved?.Invoke(this, new DXFeedSymbolsUpdateEventArgs(GetSymbolsUnsafe()));
                 subscriptionInstance.SetSymbols(SymbolsToStringList(symbols).ToArray());
+                OnSymbolsAdded?.Invoke(this, new DXFeedSymbolsUpdateEventArgs(symbols));
             }
         }
 
         /// <summary>
-        /// Adds the specified collection of symbols to the set of subscribed symbols.
-        /// To conveniently add one or few symbols you can use
-        /// AddSymbols(params string[] symbols) method.
-        /// All registered event listeners will receive update on the last events for all
-        /// newly added symbols.
+        ///     <para>
+        ///         Adds the specified collection of symbols to the set of subscribed symbols.
+        ///         To conveniently add one or few symbols you can use
+        ///         <see cref="AddSymbols(object[])"/> method.
+        ///         All registered event listeners will receive update on the last events for all
+        ///         newly added symbols.
+        ///     </para>
+        ///     <para>
+        ///         Implementation notes.
+        ///     </para>
+        ///     <para>
+        ///         This method notifies all subscribed <see cref="OnSymbolsAdded"/> events on 
+        ///         symbols changing for this subscription.
+        ///     </para>
         /// </summary>
         /// <param name="symbols">Symbols the collection of symbols.</param>
         public void AddSymbols(ICollection<object> symbols)
@@ -573,16 +617,26 @@ namespace com.dxfeed.api
             lock (symbolsLocker)
             {
                 subscriptionInstance.AddSymbols(SymbolsToStringList(symbols).ToArray());
+                OnSymbolsAdded?.Invoke(this, new DXFeedSymbolsUpdateEventArgs(symbols));
             }
         }
 
         /// <summary>
-        /// Adds the specified array of symbols to the set of subscribed symbols.
-        /// This is a convenience method to subscribe to one or few symbols at a time.
-        /// When subscribing to multiple symbols at once it is preferable to use
-        /// AddSymbols(ICollection<string> symbols) method.
-        /// All registered event listeners will receive update on the last events for all
-        /// newly added symbols.
+        ///     <para>
+        ///         Adds the specified array of symbols to the set of subscribed symbols.
+        ///         This is a convenience method to subscribe to one or few symbols at a time.
+        ///         When subscribing to multiple symbols at once it is preferable to use
+        ///         <see cref="AddSymbols(ICollection{object})"/> method.
+        ///         All registered event listeners will receive update on the last events for all
+        ///         newly added symbols.
+        ///     </para>
+        ///     <para>
+        ///         Implementation notes.
+        ///     </para>
+        ///     <para>
+        ///         This method notifies all subscribed <see cref="OnSymbolsAdded"/> events on 
+        ///         symbols changing for this subscription.
+        ///     </para>
         /// </summary>
         /// <param name="symbols">The array of symbols.</param>
         public void AddSymbols(params object[] symbols)
@@ -592,17 +646,27 @@ namespace com.dxfeed.api
             lock (symbolsLocker)
             {
                 subscriptionInstance.AddSymbols(SymbolsToStringList(symbols).ToArray());
+                OnSymbolsAdded?.Invoke(this, new DXFeedSymbolsUpdateEventArgs(symbols));
             }
         }
 
         /// <summary>
-        /// Adds the specified symbol to the set of subscribed symbols.
-        /// This is a convenience method to subscribe to one symbol at a time that
-        /// has a return fast-path for a case when the symbol is already in the set.
-        /// When subscribing to multiple symbols at once it is preferable to use
-        /// AddSymbols(ICollection<string> symbols) method.
-        /// All registered event listeners will receive update on the last events for all
-        /// newly added symbols.
+        ///     <para>
+        ///         Adds the specified symbol to the set of subscribed symbols.
+        ///         This is a convenience method to subscribe to one symbol at a time that
+        ///         has a return fast-path for a case when the symbol is already in the set.
+        ///         When subscribing to multiple symbols at once it is preferable to use
+        ///         <see cref="AddSymbols(ICollection{object})"/> method.
+        ///         All registered event listeners will receive update on the last events for all
+        ///         newly added symbols.
+        ///     </para>
+        ///     <para>
+        ///         Implementation notes.
+        ///     </para>
+        ///     <para>
+        ///         This method notifies all subscribed <see cref="OnSymbolsAdded"/> events on 
+        ///         symbols changing for this subscription.
+        ///     </para>
         /// </summary>
         /// <param name="symbol">The symbol.</param>
         public void AddSymbols(object symbol)
@@ -610,9 +674,25 @@ namespace com.dxfeed.api
             lock (symbolsLocker)
             {
                 subscriptionInstance.AddSymbol(SymbolToString(symbol));
+                OnSymbolsAdded?.Invoke(this, new DXFeedSymbolsUpdateEventArgs(symbol));
             }
         }
 
+        /// <summary>
+        ///     <para>
+        ///         Removes the specified collection of symbols from the set of subscribed symbols.
+        ///         To conveniently remove one or few symbols you can use
+        ///         <see cref="RemoveSymbols(object[])"/> method.
+        ///     </para>
+        ///     <para>
+        ///         Implementation notes.
+        ///     </para>
+        ///     <para>
+        ///         This method notifies all subscribed <see cref="OnSymbolsRemoved"/> events on 
+        ///         symbols changing for this subscription.
+        ///     </para>
+        /// </summary>
+        /// <param name="symbols">The collection of symbols.</param>
         public void RemoveSymbols(ICollection<object> symbols)
         {
             if (symbols.Count == 0)
@@ -620,9 +700,26 @@ namespace com.dxfeed.api
             lock (symbolsLocker)
             {
                 subscriptionInstance.RemoveSymbols(SymbolsToStringList(symbols).ToArray());
+                OnSymbolsRemoved?.Invoke(this, new DXFeedSymbolsUpdateEventArgs(symbols));
             }
         }
 
+        /// <summary>
+        ///     <para>
+        ///         Removes the specified array of symbols from the set of subscribed symbols.
+        ///         This is a convenience method to remove one or few symbols at a time.
+        ///         When removing multiple symbols at once it is preferable to use
+        ///         <see cref="RemoveSymbols(ICollection{object})"/> method.
+        ///     </para>
+        ///     <para>
+        ///         Implementation notes.
+        ///     </para>
+        ///     <para>
+        ///         This method notifies all subscribed <see cref="OnSymbolsRemoved"/> events on 
+        ///         symbols changing for this subscription.
+        ///     </para>
+        /// </summary>
+        /// <param name="symbols">The array of symbols.</param>
         public void RemoveSymbols(params object[] symbols)
         {
             if (symbols.Length == 0)
@@ -630,6 +727,7 @@ namespace com.dxfeed.api
             lock (symbolsLocker)
             {
                 subscriptionInstance.RemoveSymbols(SymbolsToStringList(symbols).ToArray());
+                OnSymbolsRemoved?.Invoke(this, new DXFeedSymbolsUpdateEventArgs(symbols));
             }
         }
 
@@ -667,6 +765,21 @@ namespace com.dxfeed.api
             }
         }
 
+        /// <summary>
+        ///     Event calls when any symbols is added to subscription.
+        /// </summary>
+        public event DXFeedSymbolsUpdateEventHandler OnSymbolsAdded;
+
+        /// <summary>
+        /// Event calls when any symbols is removed from subscription.
+        /// </summary>
+        public event DXFeedSymbolsUpdateEventHandler OnSymbolsRemoved;
+
+        /// <summary>
+        /// Event calls when subscription is closing.
+        /// </summary>
+        public event DXFeedSubscriptionClosedEventHandler OnSubscriptionClosed;
+
         private ICollection<string> SymbolsToStringList(ICollection<object> symbols)
         {
             List<string> stringList = new List<string>();
@@ -679,6 +792,13 @@ namespace com.dxfeed.api
         {
             MarketEventSymbols.ValidateSymbol(obj);
             return obj is CandleSymbol ? (obj as CandleSymbol).ToString() : obj as string;
+        }
+
+        private ISet<object> GetSymbolsUnsafe()
+        {
+            HashSet<object> symbolsSet = new HashSet<object>();
+            subscriptionInstance.GetSymbols().All(s => symbolsSet.Add(s));
+            return symbolsSet;
         }
 
     }

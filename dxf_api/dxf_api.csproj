@@ -71,9 +71,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IDXFeed.cs" />
-    <Compile Include="src\IDXFeedEventListener.cs" />
-    <Compile Include="src\IDXFeedSubscription.cs" />
+    <Compile Include="src\api\IDXFeed.cs" />
+    <Compile Include="src\api\DXFeedSymbolsUpdateEventArgs.cs" />
+    <Compile Include="src\api\IDXFeedEventListener.cs" />
+    <Compile Include="src\api\IDXFeedSubscription.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="src\candle\CandleAlignment.cs" />
     <Compile Include="src\candle\CandleExchange.cs" />

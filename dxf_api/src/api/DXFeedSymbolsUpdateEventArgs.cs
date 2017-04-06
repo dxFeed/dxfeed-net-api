@@ -13,7 +13,7 @@ using System.Linq;
 namespace com.dxfeed.api
 {
     /// <summary>
-    /// Represents class contains data for symbols update events.
+    ///     Represents class contains data for symbols update events.
     /// </summary>
     public class DXFeedSymbolsUpdateEventArgs : EventArgs
     {
@@ -31,7 +31,7 @@ namespace com.dxfeed.api
         }
 
         /// <summary>
-        /// Gets symbols that was been added or removed via update event.
+        ///     Gets symbols that was been added or removed via update event.
         /// </summary>
         public ISet<object> Symbols
         {

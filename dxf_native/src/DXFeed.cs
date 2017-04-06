@@ -6,7 +6,6 @@
 // http://mozilla.org/MPL/2.0/.
 #endregion
 
-using com.dxfeed.api.candle;
 using com.dxfeed.api.events;
 using com.dxfeed.api.events.market;
 using com.dxfeed.api.util;
@@ -182,9 +181,7 @@ namespace com.dxfeed.api
 
             return await Task.Run(() =>
             {
-                EventType events = EventTypeUtil.GetEventsType(typeof(E));
                 LastingEventsCollector<E> collector = new LastingEventsCollector<E>();
-
                 IDXFeedSubscription<E> s = CreateSubscription<E>();
                 s.AddSymbols(symbol);
                 s.AddEventListener(collector);
@@ -487,9 +484,7 @@ namespace com.dxfeed.api
 
             return await Task.Run(() =>
             {
-                EventType events = EventTypeUtil.GetEventsType(typeof(E));
                 HistoryEventsCollector<E> collector = new HistoryEventsCollector<E>(fromTime, toTime);
-
                 IDXFeedSubscription<E> s = CreateSubscription<E>(fromTime, source);
                 s.AddSymbols(symbol);
                 s.AddEventListener(collector);

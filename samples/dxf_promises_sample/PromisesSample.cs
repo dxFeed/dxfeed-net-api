@@ -29,7 +29,12 @@ namespace com.dxfeed.samples
             {
                 Task.WaitAll(promises.ToArray());
             }
-            catch (AggregateException) { }
+            catch (AggregateException ae)
+            {
+                foreach (var exc in ae.InnerExceptions)
+                    if (!(exc is OperationCanceledException))
+                        Console.WriteLine(exc);
+            }
             // now iterate the promises to retrieve results
             Console.WriteLine(string.Format("Last events for {0} symbols:", string.Join(", ", symbols)));
             foreach (var promise in promises)
@@ -52,9 +57,13 @@ namespace com.dxfeed.samples
                 foreach (var result in tsPromise.Result)
                     Console.WriteLine(result);
             }
-            catch (AggregateException)
+            catch (AggregateException ae)
             {
-                Console.WriteLine("not found");
+                foreach (var exc in ae.InnerExceptions)
+                    if (exc is OperationCanceledException)
+                        Console.WriteLine("not found");
+                    else
+                        Console.WriteLine(exc);
             }
 
             var orderPromise = feed.GetIndexedEventsPromise<IDxOrder>("IBM", OrderSource.NTV,
@@ -65,9 +74,13 @@ namespace com.dxfeed.samples
                 foreach (var result in orderPromise.Result)
                     Console.WriteLine(result);
             }
-            catch (AggregateException)
+            catch (AggregateException ae)
             {
-                Console.WriteLine("not found");
+                foreach (var exc in ae.InnerExceptions)
+                    if (exc is OperationCanceledException)
+                        Console.WriteLine("not found");
+                    else
+                        Console.WriteLine(exc);
             }
         }
 

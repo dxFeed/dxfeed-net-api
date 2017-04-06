@@ -23,6 +23,7 @@ namespace com.dxfeed.api
         private List<IDXFeedEventListener<E>> eventListeners = new List<IDXFeedEventListener<E>>();
         private object eventListenerLocker = new object();
         private object isClosedLocker = new object();
+        private object symbolsLocker = new object();
         private IDxSubscription subscriptionInstance;
         private IDXFeed attachedFeed = null;
 
@@ -449,6 +450,10 @@ namespace com.dxfeed.api
             attachedFeed = null;
         }
 
+        /// <summary>
+        ///     Returns <c>true</c> if this subscription is closed.
+        ///     <seealso cref="Close()"/>
+        /// </summary>
         public bool IsClosed
         {
             get
@@ -464,7 +469,18 @@ namespace com.dxfeed.api
         }
 
         /// <summary>
-        /// Closes this subscription and makes it <i>permanently detached</i>. 
+        ///     <para>
+        ///         Closes this subscription and makes it permanently detached. 
+        ///         This method notifies attached <see cref="IDXFeed"/> by invoking 
+        ///         <see cref="Detach(IDXFeed)"/> and <see cref="IDXFeed.DetachSubscription{E}(IDXFeedSubscription{E})"/> 
+        ///         methods while holding the lock for this subscription. This method clears lists 
+        ///         of all installed event listeners and subscription change listeners and makes 
+        ///         sure that no more listeners can be added.
+        ///     </para>
+        ///     <para>
+        ///         This method ensures that subscription can be safely garbage-collected when all 
+        ///         outside references to it are lost.
+        ///     </para>
         /// </summary>
         public void Close()
         {
@@ -482,31 +498,47 @@ namespace com.dxfeed.api
             }
         }
 
+        /// <summary>
+        ///     Clears the set of subscribed symbols.
+        /// </summary>
         public void Clear()
         {
             subscriptionInstance.Clear();
         }
 
         /// <summary>
-        /// Returns a set of subscribed symbols.
+        ///     Returns a set of subscribed symbols. The resulting set cannot be modified. The 
+        ///     contents of the resulting set are undefined if the set of symbols is changed after 
+        ///     invocation of this method, but the resulting set is safe for concurrent reads from 
+        ///     any threads. The resulting set maybe either a snapshot of the set of the subscribed 
+        ///     symbols at the time of invocation or a weakly consistent view of the set. 
         /// </summary>
-        /// <returns></returns>
-        public HashSet<object> GetSymbols()
+        /// <returns>Set of subscribed symbols.</returns>
+        public ISet<object> GetSymbols()
         {
-            return new HashSet<object>(subscriptionInstance.GetSymbols());
+            HashSet<object> symbolsSet = new HashSet<object>();
+            lock (symbolsLocker)
+            {
+                subscriptionInstance.GetSymbols().All(s => symbolsSet.Add(s));
+            }
+            return symbolsSet;
         }
 
         /// <summary>
-        /// Changes the set of subscribed symbols so that it contains just the symbols from the specified collection.
-        /// To conveniently set subscription for just one or few symbols you can use
-        /// SetSymbols(params string[] symbols) method.
-        /// All registered event listeners will receive update on the last events for all
-        /// newly added symbols.
+        ///     Changes the set of subscribed symbols so that it contains just the symbols from 
+        ///     the specified collection.
+        ///     To conveniently set subscription for just one or few symbols you can use
+        ///     <see cref="SetSymbols(object[])"/> method.
+        ///     All registered event listeners will receive update on the last events for all
+        ///     newly added symbols.
         /// </summary>
         /// <param name="symbols">The collection of symbols.</param>
         public void SetSymbols(ICollection<object> symbols)
         {
-            subscriptionInstance.SetSymbols(SymbolsToStringList(symbols).ToArray());
+            lock (symbolsLocker)
+            {
+                subscriptionInstance.SetSymbols(SymbolsToStringList(symbols).ToArray());
+            }
         }
 
         /// <summary>
@@ -520,7 +552,10 @@ namespace com.dxfeed.api
         /// <param name="symbols">The array of symbols.</param>
         public void SetSymbols(params object[] symbols)
         {
-            subscriptionInstance.SetSymbols(SymbolsToStringList(symbols).ToArray());
+            lock (symbolsLocker)
+            {
+                subscriptionInstance.SetSymbols(SymbolsToStringList(symbols).ToArray());
+            }
         }
 
         /// <summary>
@@ -535,7 +570,10 @@ namespace com.dxfeed.api
         {
             if (symbols.Count == 0)
                 return;
-            subscriptionInstance.AddSymbols(SymbolsToStringList(symbols).ToArray());
+            lock (symbolsLocker)
+            {
+                subscriptionInstance.AddSymbols(SymbolsToStringList(symbols).ToArray());
+            }
         }
 
         /// <summary>
@@ -550,8 +588,11 @@ namespace com.dxfeed.api
         public void AddSymbols(params object[] symbols)
         {
             if (symbols.Length == 0)
-                return; // no symbols -- nothing to do
-            subscriptionInstance.AddSymbols(SymbolsToStringList(symbols).ToArray());
+                return;
+            lock (symbolsLocker)
+            {
+                subscriptionInstance.AddSymbols(SymbolsToStringList(symbols).ToArray());
+            }
         }
 
         /// <summary>
@@ -566,21 +607,30 @@ namespace com.dxfeed.api
         /// <param name="symbol">The symbol.</param>
         public void AddSymbols(object symbol)
         {
-            subscriptionInstance.AddSymbol(SymbolToString(symbol));
+            lock (symbolsLocker)
+            {
+                subscriptionInstance.AddSymbol(SymbolToString(symbol));
+            }
         }
 
         public void RemoveSymbols(ICollection<object> symbols)
         {
             if (symbols.Count == 0)
-                return; // no symbols -- nothing to do
-            subscriptionInstance.RemoveSymbols(SymbolsToStringList(symbols).ToArray());
+                return;
+            lock (symbolsLocker)
+            {
+                subscriptionInstance.RemoveSymbols(SymbolsToStringList(symbols).ToArray());
+            }
         }
 
         public void RemoveSymbols(params object[] symbols)
         {
             if (symbols.Length == 0)
-                return; // no symbols -- nothing to do
-            subscriptionInstance.RemoveSymbols(SymbolsToStringList(symbols).ToArray());
+                return;
+            lock (symbolsLocker)
+            {
+                subscriptionInstance.RemoveSymbols(SymbolsToStringList(symbols).ToArray());
+            }
         }
 
         /// <summary>

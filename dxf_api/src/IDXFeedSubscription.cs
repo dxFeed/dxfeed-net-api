@@ -232,18 +232,19 @@ namespace com.dxfeed.api
         void RemoveSymbols(params object[] symbols);
 
         /// <summary>
-        /// Adds listener for events.
-        /// Newly added listeners start receiving only new events.
+        ///     Adds listener for events.
+        ///     Newly added listeners start receiving only new events.
+        ///     This method does nothing if this subscription is <see cref="IsClosed"/>.
         /// </summary>
         /// <param name="listener">The event listener.</param>
-        /// <exception cref="ArgumentNullException">If listener is null.</exception>
+        /// <exception cref="ArgumentNullException">If <paramref name="listener"/> is null.</exception>
         void AddEventListener(IDXFeedEventListener<E> listener);
 
         /// <summary>
-        /// Removes listener for events.
+        ///     Removes listener for events.
         /// </summary>
         /// <param name="listener">Listener the event listener.</param>
-        /// <exception cref="ArgumentNullException">If listener is null.</exception>
+        /// <exception cref="ArgumentNullException">If <paramref name="listener"/> is null.</exception>
         void RemoveEventListener(IDXFeedEventListener<E> listener);
 
         /// <summary>

@@ -732,11 +732,12 @@ namespace com.dxfeed.api
         }
 
         /// <summary>
-        /// Adds listener for events.
-        /// Newly added listeners start receiving only new events.
+        ///     Adds listener for events.
+        ///     Newly added listeners start receiving only new events.
+        ///     This method does nothing if this subscription is <see cref="IsClosed"/>.
         /// </summary>
         /// <param name="listener">The event listener.</param>
-        /// <exception cref="ArgumentNullException">If listener is null.</exception>
+        /// <exception cref="ArgumentNullException">If <paramref name="listener"/> is null.</exception>
         public void AddEventListener(IDXFeedEventListener<E> listener)
         {
             if (listener == null)
@@ -751,10 +752,10 @@ namespace com.dxfeed.api
         }
 
         /// <summary>
-        /// Removes listener for events.
+        ///     Removes listener for events.
         /// </summary>
         /// <param name="listener">Listener the event listener.</param>
-        /// <exception cref="ArgumentNullException">If listener is null.</exception>
+        /// <exception cref="ArgumentNullException">If <paramref name="listener"/> is null.</exception>
         public void RemoveEventListener(IDXFeedEventListener<E> listener)
         {
             if (listener == null)

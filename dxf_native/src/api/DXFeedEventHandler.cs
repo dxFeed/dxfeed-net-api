@@ -12,6 +12,13 @@ using System.Collections.Generic;
 
 namespace com.dxfeed.api
 {
+    /// <summary>
+    ///     The universal event listener class for handling all native events. It is aggregates 
+    ///     as simple as snapshots events and calls <see cref="IDXFeedEventListener{E}"/> from
+    ///     list. This class used as event listener converter from native events wrapper to 
+    ///     high-level event listener.
+    /// </summary>
+    /// <typeparam name="E">The type of event.</typeparam>
     internal class DXFeedEventHandler<E> :
         IDxCandleListener,
         IDxGreeksListener,
@@ -39,20 +46,19 @@ namespace com.dxfeed.api
         private object eventListenerLocker = null;
         private Type subscriptionType;
 
+        /// <summary>
+        ///     Creates event handler.
+        /// </summary>
+        /// <param name="eventListeners">Listeners to call on events received.</param>
+        /// <param name="eventListenerLocker">Listeners list locker.</param>
+        /// <exception cref="ArgumentNullException">If listener locker is null.</exception>
         public DXFeedEventHandler(IList<IDXFeedEventListener<E>> eventListeners, object eventListenerLocker)
         {
+            if (eventListenerLocker == null)
+                throw new ArgumentNullException("eventListenerLocker");
             this.eventListeners = eventListeners;
             this.eventListenerLocker = eventListenerLocker;
             subscriptionType = typeof(E);
-        }
-
-        private void CallListeners(IList<E> events)
-        {
-            lock (eventListenerLocker)
-            {
-                foreach (IDXFeedEventListener<E> listener in eventListeners)
-                    listener.EventsReceived(events);
-            }
         }
 
         #region Implementation of IDxFeedListener
@@ -354,5 +360,14 @@ namespace com.dxfeed.api
         }
 
         #endregion
+
+        private void CallListeners(IList<E> events)
+        {
+            lock (eventListenerLocker)
+            {
+                foreach (IDXFeedEventListener<E> listener in eventListeners)
+                    listener.EventsReceived(events);
+            }
+        }
     }
 }

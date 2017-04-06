@@ -8,7 +8,6 @@
 
 using com.dxfeed.api.events;
 using com.dxfeed.api.events.market;
-using com.dxfeed.api.util;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -35,8 +34,8 @@ namespace com.dxfeed.api
         }
 
         /// <summary>
-        /// Returns a default application-wide singleton instance of feed. Most applications use only a single
-        /// data-source and should rely on this method to get one.
+        ///     Returns a default application-wide singleton instance of feed. Most applications 
+        ///     use only a single data-source and should rely on this method to get one.
         /// </summary>
         /// <returns>Singleton instance of feed.</returns>
         public static DXFeed GetInstance()
@@ -115,13 +114,17 @@ namespace com.dxfeed.api
         }
 
         /// <summary>
-        /// Attaches the given subscription to this feed. This method does nothing if the
-        /// corresponding subscription is already attached to this feed.
-        /// This feed publishes data to the attached subscription.
-        /// 
-        /// Application can attach DXFeedEventListener via DXFeedSubscription.AddEventListener 
-        /// to get notified about data changes and can change its data subscription via 
-        /// DXFeedSubscription methods.
+        ///     <para>
+        ///         Attaches the given subscription to this feed. This method does nothing if the
+        ///         corresponding subscription is already attached to this feed.
+        ///     </para>
+        ///     <para>
+        ///         This feed publishes data to the attached subscription. 
+        ///         Application can attach <see cref="IDXFeedEventListener{E}"/> via 
+        ///         <see cref="IDXFeedSubscription{E}.AddEventListener(IDXFeedEventListener{E})"/> 
+        ///         to get notified about data changes and can change its data subscription via 
+        ///         <see cref="IDXFeedSubscription{E}"/> methods.
+        ///     </para>
         /// </summary>
         /// <typeparam name="E">The type of events.</typeparam>
         /// <param name="subscription">The subscription.</param>
@@ -134,8 +137,8 @@ namespace com.dxfeed.api
         }
 
         /// <summary>
-        /// Detaches the given subscription from this feed. This method does nothing if the
-        /// corresponding subscription is not attached to this feed.
+        ///     Detaches the given subscription from this feed. This method does nothing if the
+        ///     corresponding subscription is not attached to this feed.
         /// </summary>
         /// <param name="subscription">The subscription.</param>
         public void DetachSubscription<E>(IDXFeedSubscription<E> subscription) 

@@ -6,21 +6,23 @@
 // http://mozilla.org/MPL/2.0/.
 #endregion
 
-using System.Collections.Generic;
 using com.dxfeed.api.events;
-using System.Threading;
 using System;
+using System.Collections.Generic;
 
 namespace com.dxfeed.api
 {
     /// <summary>
-    /// Collector of snapshot events.
-    /// 
-    /// It is also listener of snapshot events that stores all events into 
-    /// list. Events are updated with snapshot. You can get events list at any 
-    /// time. This class supports only one snapshot.
+    ///     <para>
+    ///         Collector of snapshot events.
+    ///     </para>
+    ///     <para>
+    ///         It is also listener of snapshot events that stores all events into list. Events 
+    ///         are updated with snapshot. You can get events list at any time. This class 
+    ///         supports only one snapshot.
+    ///     </para>
     /// </summary>
-    /// <typeparam name="E"></typeparam>
+    /// <typeparam name="E">The event type.</typeparam>
     class DXFeedSnapshotCollector<E> :
         IDxOrderSnapshotListener,
         IDxCandleSnapshotListener,
@@ -36,13 +38,35 @@ namespace com.dxfeed.api
         private object eventsLock = new object();
         private volatile bool isDone = false;
 
+        /// <summary>
+        /// Default constructor.
+        /// </summary>
         public DXFeedSnapshotCollector() { }
 
+        /// <summary>
+        /// Returns <c>true</c> if collector contains full snapshot.
+        /// </summary>
         public bool IsDone
         {
             get
             {
                 return isDone;
+            }
+        }
+
+        /// <summary>
+        /// Gets all collected events of this snapshot.
+        /// </summary>
+        public List<E> Events
+        {
+            get
+            {
+                List<E> result;
+                lock (eventsLock)
+                {
+                    result = new List<E>(events);
+                }
+                return result;
             }
         }
 
@@ -109,22 +133,6 @@ namespace com.dxfeed.api
         public void EventsReceived(IList<E> events)
         {
             AddSnapshot(events);
-        }
-
-        /// <summary>
-        /// Gets all collected events.
-        /// </summary>
-        public List<E> Events
-        {
-            get
-            {
-                List<E> result;
-                lock(eventsLock)
-                {
-                    result = new List<E>(events);
-                }
-                return result;
-            }
         }
 
         protected virtual IList<E> FilterEvents(IList<E> events)

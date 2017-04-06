@@ -71,13 +71,17 @@ namespace com.dxfeed.api
             where E : TimeSeriesEvent;
 
         /// <summary>
-        /// Attaches the given subscription to this feed. This method does nothing if the
-        /// corresponding subscription is already attached to this feed.
-        /// This feed publishes data to the attached subscription.
-        /// 
-        /// Application can attach DXFeedEventListener via DXFeedSubscription.AddEventListener 
-        /// to get notified about data changes and can change its data subscription via 
-        /// DXFeedSubscription methods.
+        ///     <para>
+        ///         Attaches the given subscription to this feed. This method does nothing if the
+        ///         corresponding subscription is already attached to this feed.
+        ///     </para>
+        ///     <para>
+        ///         This feed publishes data to the attached subscription. 
+        ///         Application can attach <see cref="IDXFeedEventListener{E}"/> via 
+        ///         <see cref="IDXFeedSubscription{E}.AddEventListener(IDXFeedEventListener{E})"/> 
+        ///         to get notified about data changes and can change its data subscription via 
+        ///         <see cref="IDXFeedSubscription{E}"/> methods.
+        ///     </para>
         /// </summary>
         /// <typeparam name="E">The type of events.</typeparam>
         /// <param name="subscription">The subscription.</param>
@@ -85,8 +89,8 @@ namespace com.dxfeed.api
             where E : IDxEventType;
 
         /// <summary>
-        /// Detaches the given subscription from this feed. This method does nothing if the
-        /// corresponding subscription is not attached to this feed.
+        ///     Detaches the given subscription from this feed. This method does nothing if the
+        ///     corresponding subscription is not attached to this feed.
         /// </summary>
         /// <param name="subscription">The subscription.</param>
         void DetachSubscription<E>(IDXFeedSubscription<E> subscription) 

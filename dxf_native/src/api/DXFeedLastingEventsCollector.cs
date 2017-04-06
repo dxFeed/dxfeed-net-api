@@ -11,12 +11,14 @@ using com.dxfeed.api.events;
 using com.dxfeed.api.events.market;
 using com.dxfeed.api.util;
 using System.Collections.Concurrent;
-using System;
 using System.Collections.Generic;
 
 namespace com.dxfeed.api
 {
-    class LastingEventsCollector :
+    /// <summary>
+    ///     Class provides methods for collecting and storing lasting events.
+    /// </summary>
+    internal class DXFeedLastingEventsCollector :
         //TODO: add and check configuration
         IDxCandleListener,
         IDxGreeksListener,
@@ -34,7 +36,7 @@ namespace com.dxfeed.api
         IDxConfigurationListener
     {
 
-        class EventStorage<E> where E : class, IDxEventType
+        private class EventStorage<E> where E : class, IDxEventType
         {
             private E eventData;
             private object eventLock = new object();
@@ -60,7 +62,7 @@ namespace com.dxfeed.api
             }
         }
 
-        class EventsCollection
+        private class EventsCollection
         {
             private ConcurrentDictionary<EventType, EventStorage<IDxEventType>> lastEvents = new ConcurrentDictionary<EventType, EventStorage<IDxEventType>>();
 
@@ -80,9 +82,6 @@ namespace com.dxfeed.api
 
             public void AddEvent<E>(E eventData) where E : class, IDxEventType
             {
-                //TODO: bulk checking
-                //if (HasEvent<E>())
-                //    return;
                 EventType eventType = EventTypeUtil.GetEventsType(typeof(E));
                 lastEvents.GetOrAdd(eventType, new EventStorage<IDxEventType>()).Event = eventData;
             }
@@ -90,14 +89,38 @@ namespace com.dxfeed.api
 
         private ConcurrentDictionary<string, EventsCollection> lastSymbols = new ConcurrentDictionary<string, EventsCollection>();
 
-        public LastingEventsCollector() { }
+        /// <summary>
+        ///     Default constructor.
+        /// </summary>
+        public DXFeedLastingEventsCollector() { }
 
+        /// <summary>
+        ///     Checks collector contains lasting event for specified <paramref name="symbol"/> 
+        ///     and event of type <c>E</c>.
+        /// </summary>
+        /// <typeparam name="E">Event type.</typeparam>
+        /// <param name="symbol">The market symbol.</param>
+        /// <returns>
+        ///     <c>True</c> if collector contains lasting event for specified 
+        ///     <paramref name="symbol"/> and event of type <c>E</c>; otherwise returns 
+        ///     <c>false</c>.
+        /// </returns>
         public bool HasEvent<E>(object symbol) where E : class, IDxEventType
         {
             string key = GetSymbolKey(symbol);
             return lastSymbols.ContainsKey(key) && lastSymbols[key].HasEvent<E>();
         }
 
+        /// <summary>
+        ///     Returns lasting event for specified <paramref name="symbol"/> and event of type 
+        ///     <c>E</c>. If collector haven't such event <c>null</c> will be returned.
+        /// </summary>
+        /// <typeparam name="E">Event type.</typeparam>
+        /// <param name="symbol">The market symbol.</param>
+        /// <returns>
+        ///     Lasting event for specified <paramref name="symbol"/> and event of type 
+        ///     <c>E</c> if such contains in collector; otherwise returns <c>null.</c>
+        /// </returns>
         public E GetEvent<E>(object symbol) where E : class, IDxEventType
         {
             if (!HasEvent<E>(symbol))
@@ -114,9 +137,6 @@ namespace com.dxfeed.api
 
         protected void AddEvent<E>(object symbol, E eventData) where E : class, IDxEventType
         {
-            //TODO: a bulk checking
-            //if (HasEvent<E>(symbol))
-            //    return;
             string key = GetSymbolKey(symbol);
             lastSymbols.GetOrAdd(key, new EventsCollection()).AddEvent(eventData);
         }
@@ -235,7 +255,12 @@ namespace com.dxfeed.api
 
     }
 
-    class LastingEventsCollector<E> : LastingEventsCollector, IDXFeedEventListener<E>
+    /// <summary>
+    ///     Class provides methods for collecting and storing lasting events. This collector 
+    ///     expands with universal event listener.
+    /// </summary>
+    /// <typeparam name="E">The type of event.</typeparam>
+    class LastingEventsCollector<E> : DXFeedLastingEventsCollector, IDXFeedEventListener<E>
         where E : class, IDxEventType
     {
         public void EventsReceived(IList<E> events)

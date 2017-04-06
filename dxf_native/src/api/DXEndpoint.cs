@@ -166,8 +166,6 @@ namespace com.dxfeed.api
             if (this.address.Equals(address) && State != EndpointState.NotConnected || State == EndpointState.Closed)
                 return this;
 
-            //TODO: check if address string is malformed.
-
             if (State == EndpointState.Connected || State == EndpointState.Connecting)
                 Disconnect();
 

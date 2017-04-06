@@ -17,6 +17,10 @@ using System.Linq;
 namespace com.dxfeed.api
 {
     //TODO: comments
+    /// <summary>
+    ///     Subscription for a set of symbols and event types.
+    /// </summary>
+    /// <typeparam name="E">The type of events.</typeparam>
     public class DXFeedSubscription<E> : IDXFeedSubscription<E>
         where E : IDxEventType
     {

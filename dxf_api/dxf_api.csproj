@@ -76,6 +76,7 @@
     <Compile Include="src\api\IDXFeedEventListener.cs" />
     <Compile Include="src\api\IDXFeedSubscription.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="src\api\IDXFeedTimeSeriesSubscription.cs" />
     <Compile Include="src\candle\CandleAlignment.cs" />
     <Compile Include="src\candle\CandleExchange.cs" />
     <Compile Include="src\candle\CandlePeriod.cs" />

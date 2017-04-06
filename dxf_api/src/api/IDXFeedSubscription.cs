@@ -6,6 +6,7 @@
 // http://mozilla.org/MPL/2.0/.
 #endregion
 
+using com.dxfeed.api.events;
 using System;
 using System.Collections.Generic;
 
@@ -29,7 +30,7 @@ namespace com.dxfeed.api
     ///     Subscription for a set of symbols and event types.
     /// </summary>
     /// <typeparam name="E">The type of events.</typeparam>
-    public interface IDXFeedSubscription<E>
+    public interface IDXFeedSubscription<E> where E : IDxEventType
     {
 
         //TODO: need tests for all methods
@@ -50,10 +51,7 @@ namespace com.dxfeed.api
         ///     Returns <c>true</c> if this subscription is closed.
         ///     <seealso cref="Close()"/>
         /// </summary>
-        bool IsClosed
-        {
-            get;
-        }
+        bool IsClosed { get; }
 
         /// <summary>
         ///     <para>
@@ -70,6 +68,18 @@ namespace com.dxfeed.api
         ///     </para>
         /// </summary>
         void Close();
+
+        /// <summary>
+        ///     Returns a set of subscribed event types. The resulting set cannot be modified.
+        /// </summary>
+        ISet<Type> EventTypes { get; }
+
+        /// <summary>
+        ///     Returns <c>true</c> if this subscription contains the corresponding event type.
+        /// </summary>
+        /// <param name="eventType">Type of event.</param>
+        /// <returns><c>True</c> if this subscription contains the corresponding event type.</returns>
+        bool ContainsEventType(Type eventType);
 
         /// <summary>
         ///     <para>

@@ -63,10 +63,11 @@ namespace com.dxfeed.native
         /// </summary>
         /// <param name="connection">Native connection pointer.</param>
         /// <param name="eventType">Type of event to create.</param>
+        /// <param name="time">Unix time stamp (the number of milliseconds from 1.1.1970)</param>
         /// <param name="listener">Event listener.</param>
         /// <exception cref="ArgumentException">One of passed parameters is not valid.</exception>
         /// <exception cref="DxException"></exception>
-        public NativeSubscription(NativeConnection connection, EventType eventType, DateTime? time, IDxEventListener listener)
+        public NativeSubscription(NativeConnection connection, EventType eventType, long time, IDxEventListener listener)
         {
             if (listener == null)
                 throw new ArgumentNullException("listener");
@@ -75,8 +76,7 @@ namespace com.dxfeed.native
             this.eventType = eventType;
             eventListener = listener;
 
-            long unixTimestamp = (time == null ? 0 : Tools.DateToUnixTime((DateTime)time));
-            C.CheckOk(C.Instance.dxf_create_subscription_timed(connectionPtr, eventType, unixTimestamp, out subscriptionPtr));
+            C.CheckOk(C.Instance.dxf_create_subscription_timed(connectionPtr, eventType, time, out subscriptionPtr));
             try
             {
                 C.CheckOk(C.Instance.dxf_attach_event_listener_v2(subscriptionPtr, callback = OnEvent, IntPtr.Zero));
@@ -87,6 +87,19 @@ namespace com.dxfeed.native
                 throw;
             }
         }
+
+        /// <summary>
+        /// Create time event subscription.
+        /// </summary>
+        /// <param name="connection">Native connection pointer.</param>
+        /// <param name="eventType">Type of event to create.</param>
+        /// <param name="time">Time to getting events from.</param>
+        /// <param name="listener">Event listener.</param>
+        /// <exception cref="ArgumentException">One of passed parameters is not valid.</exception>
+        /// <exception cref="DxException"></exception>
+        public NativeSubscription(NativeConnection connection, EventType eventType, DateTime time, IDxEventListener listener) :
+            this(connection, eventType, Tools.DateToUnixTime(time), listener)
+        {}
 
         /// <summary>
         /// Create Candle event subscription.

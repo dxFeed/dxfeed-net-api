@@ -18,376 +18,36 @@ namespace com.dxfeed.api
 {
     //TODO: comments
     public class DXFeedSubscription<E> : IDXFeedSubscription<E>
+        where E : IDxEventType
     {
         private bool isClosedNotSync = false;
-        private List<IDXFeedEventListener<E>> eventListeners = new List<IDXFeedEventListener<E>>();
-        private object eventListenerLocker = new object();
         private object isClosedLocker = new object();
         private object symbolsLocker = new object();
-        private IDxSubscription subscriptionInstance;
         private IDXFeed attachedFeed = null;
+        private HashSet<Type> eventTypesSet = new HashSet<Type>();
 
-        private class DXFeedEventHandler :
-            IDxCandleListener,
-            IDxGreeksListener,
-            IDxOrderListener,
-            IDxProfileListener,
-            IDxQuoteListener,
-            IDxSeriesListener,
-            IDxSpreadOrderListener,
-            IDxFundamentalListener,
-            IDxTheoPriceListener,
-            IDxTimeAndSaleListener,
-            IDxTradeListener,
-            IDxTradeEthListener,
-            IDxUnderlyingListener,
-            IDxConfigurationListener,
-            IDxOrderSnapshotListener,
-            IDxCandleSnapshotListener,
-            IDxTimeAndSaleSnapshotListener,
-            IDxSpreadOrderSnapshotListener,
-            IDxGreeksSnapshotListener,
-            IDxSeriesSnapshotListener
-        {
-            private IList<IDXFeedEventListener<E>> eventListeners = null;
-            private object eventListenerLocker = null;
-            private Type subscriptionType;
-
-            public DXFeedEventHandler(IList<IDXFeedEventListener<E>> eventListeners, object eventListenerLocker)
-            {
-                this.eventListeners = eventListeners;
-                this.eventListenerLocker = eventListenerLocker;
-                subscriptionType = typeof(E);
-            }
-
-            private void CallListeners(IList<E> events)
-            {
-                lock (eventListenerLocker)
-                {
-                    foreach (IDXFeedEventListener<E> listener in eventListeners)
-                        listener.EventsReceived(events);
-                }
-            }
-
-            #region Implementation of IDxFeedListener
-
-            public void OnQuote<TB, TE>(TB buf)
-                where TB : IDxEventBuf<TE>
-                where TE : IDxQuote
-            {
-                if (!subscriptionType.IsAssignableFrom(typeof(IDxQuote)))
-                    return;
-                List<E> events = new List<E>();
-                foreach (var item in buf)
-                    events.Add((E)(object)item);
-                CallListeners(events);
-            }
-
-            public void OnTrade<TB, TE>(TB buf)
-                where TB : IDxEventBuf<TE>
-                where TE : IDxTrade
-            {
-                if (!subscriptionType.IsAssignableFrom(typeof(IDxTrade)))
-                    return;
-                List<E> events = new List<E>();
-                foreach (var item in buf)
-                    events.Add((E)(object)item);
-                CallListeners(events);
-            }
-
-            public void OnOrder<TB, TE>(TB buf)
-                where TB : IDxEventBuf<TE>
-                where TE : IDxOrder
-            {
-                if (!subscriptionType.IsAssignableFrom(typeof(IDxOrder)))
-                    return;
-                List<E> events = new List<E>();
-                foreach (var item in buf)
-                    events.Add((E)(object)item);
-                CallListeners(events);
-            }
-
-            public void OnProfile<TB, TE>(TB buf)
-                where TB : IDxEventBuf<TE>
-                where TE : IDxProfile
-            {
-                if (!subscriptionType.IsAssignableFrom(typeof(IDxProfile)))
-                    return;
-                List<E> events = new List<E>();
-                foreach (var item in buf)
-                    events.Add((E)(object)item);
-                CallListeners(events);
-            }
-
-            public void OnFundamental<TB, TE>(TB buf)
-                where TB : IDxEventBuf<TE>
-                where TE : IDxSummary
-            {
-                if (!subscriptionType.IsAssignableFrom(typeof(IDxSummary)))
-                    return;
-                List<E> events = new List<E>();
-                foreach (var item in buf)
-                    events.Add((E)(object)item);
-                CallListeners(events);
-            }
-
-            public void OnTimeAndSale<TB, TE>(TB buf)
-                where TB : IDxEventBuf<TE>
-                where TE : IDxTimeAndSale
-            {
-                if (!subscriptionType.IsAssignableFrom(typeof(IDxTimeAndSale)))
-                    return;
-                List<E> events = new List<E>();
-                foreach (var item in buf)
-                    events.Add((E)(object)item);
-                CallListeners(events);
-            }
-
-            #endregion
-
-            #region Implementation of IDxCandleListener
-
-            public void OnCandle<TB, TE>(TB buf)
-                where TB : IDxEventBuf<TE>
-                where TE : IDxCandle
-            {
-                if (!subscriptionType.IsAssignableFrom(typeof(IDxCandle)))
-                    return;
-                List<E> events = new List<E>();
-                foreach (var item in buf)
-                    events.Add((E)(object)item);
-                CallListeners(events);
-            }
-
-            #endregion
-
-            #region Implementation of IDxGreeks
-
-            public void OnGreeks<TB, TE>(TB buf)
-                where TB : IDxEventBuf<TE>
-                where TE : IDxGreeks
-            {
-                if (!subscriptionType.IsAssignableFrom(typeof(IDxGreeks)))
-                    return;
-                List<E> events = new List<E>();
-                foreach (var item in buf)
-                    events.Add((E)(object)item);
-                CallListeners(events);
-            }
-
-            #endregion
-
-            #region Implementation of IDxSeries
-
-            public void OnSeries<TB, TE>(TB buf)
-                where TB : IDxEventBuf<TE>
-                where TE : IDxSeries
-            {
-                if (!subscriptionType.IsAssignableFrom(typeof(IDxSeries)))
-                    return;
-                List<E> events = new List<E>();
-                foreach (var item in buf)
-                    events.Add((E)(object)item);
-                CallListeners(events);
-            }
-
-            #endregion
-
-            #region Implementation of IDxSpreadOrder
-
-            public void OnSpreadOrder<TB, TE>(TB buf)
-                where TB : IDxEventBuf<TE>
-                where TE : IDxSpreadOrder
-            {
-                if (!subscriptionType.IsAssignableFrom(typeof(IDxSpreadOrder)))
-                    return;
-                List<E> events = new List<E>();
-                foreach (var item in buf)
-                    events.Add((E)(object)item);
-                CallListeners(events);
-            }
-
-            #endregion
-
-            #region Implementation of IDxTheoPrice
-
-            public void OnTheoPrice<TB, TE>(TB buf)
-                where TB : IDxEventBuf<TE>
-                where TE : IDxTheoPrice
-            {
-                if (!subscriptionType.IsAssignableFrom(typeof(IDxTheoPrice)))
-                    return;
-                List<E> events = new List<E>();
-                foreach (var item in buf)
-                    events.Add((E)(object)item);
-                CallListeners(events);
-            }
-
-            #endregion
-
-            #region Implementation of IDxTradeEth
-
-            public void OnTradeEth<TB, TE>(TB buf)
-                where TB : IDxEventBuf<TE>
-                where TE : IDxTradeEth
-            {
-                if (!subscriptionType.IsAssignableFrom(typeof(IDxTradeEth)))
-                    return;
-                List<E> events = new List<E>();
-                foreach (var item in buf)
-                    events.Add((E)(object)item);
-                CallListeners(events);
-            }
-
-            #endregion
-
-            #region Implementation of IDxUnderlying
-
-            public void OnUnderlying<TB, TE>(TB buf)
-                where TB : IDxEventBuf<TE>
-                where TE : IDxUnderlying
-            {
-                if (!subscriptionType.IsAssignableFrom(typeof(IDxUnderlying)))
-                    return;
-                List<E> events = new List<E>();
-                foreach (var item in buf)
-                    events.Add((E)(object)item);
-                CallListeners(events);
-            }
-
-            #endregion
-
-            #region Implementation of IDxConfiguration
-
-            public void OnConfiguration<TB, TE>(TB buf)
-                where TB : IDxEventBuf<TE>
-                where TE : IDxConfiguration
-            {
-                if (!subscriptionType.IsAssignableFrom(typeof(IDxConfiguration)))
-                    return;
-                List<E> events = new List<E>();
-                foreach (var item in buf)
-                    events.Add((E)(object)item);
-                CallListeners(events);
-            }
-
-            #endregion
-
-            #region Implementation of IDxOrder snapshot
-
-            public void OnOrderSnapshot<TB, TE>(TB buf)
-                where TB : IDxEventBuf<TE>
-                where TE : IDxOrder
-            {
-                if (!subscriptionType.IsAssignableFrom(typeof(IDxOrder)))
-                    return;
-                List<E> events = new List<E>();
-                foreach (var item in buf)
-                    events.Add((E)(object)item);
-                CallListeners(events);
-            }
-
-            #endregion
-
-            #region Implementation of IDxCandle snapshot
-
-            public void OnCandleSnapshot<TB, TE>(TB buf)
-                where TB : IDxEventBuf<TE>
-                where TE : IDxCandle
-            {
-                if (!subscriptionType.IsAssignableFrom(typeof(IDxCandle)))
-                    return;
-                List<E> events = new List<E>();
-                foreach (var item in buf)
-                    events.Add((E)(object)item);
-                CallListeners(events);
-            }
-
-            #endregion
-
-            #region Implementation of IDxTimeAndSale snapshot
-
-            public void OnTimeAndSaleSnapshot<TB, TE>(TB buf)
-                where TB : IDxEventBuf<TE>
-                where TE : IDxTimeAndSale
-            {
-                if (!subscriptionType.IsAssignableFrom(typeof(IDxTimeAndSale)))
-                    return;
-                List<E> events = new List<E>();
-                foreach (var item in buf)
-                    events.Add((E)(object)item);
-                CallListeners(events);
-            }
-
-            #endregion
-
-            #region Implementation of IDxSpreadOrder snapshot
-
-            public void OnSpreadOrderSnapshot<TB, TE>(TB buf)
-                where TB : IDxEventBuf<TE>
-                where TE : IDxSpreadOrder
-            {
-                if (!subscriptionType.IsAssignableFrom(typeof(IDxSpreadOrder)))
-                    return;
-                List<E> events = new List<E>();
-                foreach (var item in buf)
-                    events.Add((E)(object)item);
-                CallListeners(events);
-            }
-
-            #endregion
-
-            #region Implementation of IDxGreeks snapshot
-
-            public void OnGreeksSnapshot<TB, TE>(TB buf)
-                where TB : IDxEventBuf<TE>
-                where TE : IDxGreeks
-            {
-                if (!subscriptionType.IsAssignableFrom(typeof(IDxGreeks)))
-                    return;
-                List<E> events = new List<E>();
-                foreach (var item in buf)
-                    events.Add((E)(object)item);
-                CallListeners(events);
-            }
-
-            #endregion
-
-            #region Implementation of IDxSeries snapshot
-
-            public void OnSeriesSnapshot<TB, TE>(TB buf)
-                where TB : IDxEventBuf<TE>
-                where TE : IDxSeries
-            {
-                if (!subscriptionType.IsAssignableFrom(typeof(IDxSeries)))
-                    return;
-                List<E> events = new List<E>();
-                foreach (var item in buf)
-                    events.Add((E)(object)item);
-                CallListeners(events);
-            }
-
-            #endregion
-        }
+        protected IDxSubscription subscriptionInstance = null;
+        protected List<IDXFeedEventListener<E>> eventListeners = new List<IDXFeedEventListener<E>>();
+        protected object eventListenerLocker = new object();
 
         /// <summary>
-        /// Creates detached subscription for a single event type.
+        ///     Creates detached subscription for a single event type.
         /// </summary>
         /// <param name="endpoint">The <see cref="DXEndpoint"/> instance.</param>
         /// <exception cref="ArgumentNullException">If <paramref name="endpoint"/> is null.</exception>
         /// <exception cref="ArgumentException">If type E is not event class.</exception>
         /// <exception cref="DxException">Internal error.</exception>
-        public DXFeedSubscription(DXEndpoint endpoint)
+        public DXFeedSubscription(DXEndpoint endpoint) : this()
         {
             if (endpoint == null)
                 throw new ArgumentNullException("endpoint");
             subscriptionInstance = endpoint.Connection.CreateSubscription(
                 EventTypeUtil.GetEventsType(typeof(E)),
-                new DXFeedEventHandler(eventListeners, eventListenerLocker));
+                new DXFeedEventHandler<E>(eventListeners, eventListenerLocker));
         }
 
         /// <summary>
-        /// Creates detached subscription for the given list of event types.
+        ///     Creates detached subscription for the given list of event types.
         /// </summary>
         /// <param name="endpoint">The <see cref="DXEndpoint"/> instance.</param>
         /// <param name="eventTypes">The list of event types.</param>
@@ -399,17 +59,17 @@ namespace com.dxfeed.api
         ///     <paramref name="eventTypes"/> is not event class.
         /// </exception>
         /// <exception cref="DxException">Internal error.</exception>
-        public DXFeedSubscription(DXEndpoint endpoint, params Type[] eventTypes)
+        public DXFeedSubscription(DXEndpoint endpoint, params Type[] eventTypes) : this(eventTypes)
         {
             if (endpoint == null)
-                throw new ArgumentNullException("connection");
+                throw new ArgumentNullException("endpoint");
             subscriptionInstance = endpoint.Connection.CreateSubscription(
                 EventTypeUtil.GetEventsType(eventTypes),
-                new DXFeedEventHandler(eventListeners, eventListenerLocker));
+                new DXFeedEventHandler<E>(eventListeners, eventListenerLocker));
         }
 
         /// <summary>
-        /// Creates detached snapshot subscription for a single event type.
+        ///     Creates detached snapshot subscription for a single event type.
         /// </summary>
         /// <param name="endpoint">The <see cref="DXEndpoint"/> instance.</param>
         /// <param name="time">Unix time in the past - number of milliseconds from 1.1.1970.</param>
@@ -417,13 +77,15 @@ namespace com.dxfeed.api
         /// <exception cref="ArgumentNullException">If <paramref name="endpoint"/> is null.</exception>
         /// <exception cref="ArgumentException">If type E is not event class.</exception>
         /// <exception cref="DxException">Internal error.</exception>
-        internal DXFeedSubscription(DXEndpoint endpoint, long time, IndexedEventSource source)
+        internal DXFeedSubscription(DXEndpoint endpoint, long time, IndexedEventSource source) : base()
         {
             if (endpoint == null)
                 throw new ArgumentNullException("endpoint");
+
             subscriptionInstance = endpoint.Connection.CreateSnapshotSubscription(
-                EventTypeUtil.GetEventsType(typeof(E)), time,
-                new DXFeedEventHandler(eventListeners, eventListenerLocker));
+                EventTypeUtil.GetEventsType(typeof(E)),
+                time,
+                new DXFeedEventHandler<E>(eventListeners, eventListenerLocker));
             if (source != IndexedEventSource.DEFAULT)
                 subscriptionInstance.SetSource(source.Name);
         }
@@ -498,6 +160,27 @@ namespace com.dxfeed.api
             }
 
             OnSubscriptionClosed?.Invoke(this, EventArgs.Empty);
+        }
+
+        /// <summary>
+        ///     Returns a set of subscribed event types. The resulting set cannot be modified.
+        /// </summary>
+        public ISet<Type> EventTypes
+        {
+            get
+            {
+                return new HashSet<Type>(eventTypesSet);
+            }
+        }
+
+        /// <summary>
+        ///     Returns <c>true</c> if this subscription contains the corresponding event type.
+        /// </summary>
+        /// <param name="eventType">Type of event.</param>
+        /// <returns><c>True</c> if this subscription contains the corresponding event type.</returns>
+        public bool ContainsEventType(Type eventType)
+        {
+            return EventTypes.Contains(eventType);
         }
 
         /// <summary>
@@ -612,13 +295,7 @@ namespace com.dxfeed.api
         /// <param name="symbols">Symbols the collection of symbols.</param>
         public void AddSymbols(ICollection<object> symbols)
         {
-            if (symbols.Count == 0)
-                return;
-            lock (symbolsLocker)
-            {
-                subscriptionInstance.AddSymbols(SymbolsToStringList(symbols).ToArray());
-                OnSymbolsAdded?.Invoke(this, new DXFeedSymbolsUpdateEventArgs(symbols));
-            }
+            AddSymbols(symbols.ToArray());
         }
 
         /// <summary>
@@ -641,13 +318,7 @@ namespace com.dxfeed.api
         /// <param name="symbols">The array of symbols.</param>
         public void AddSymbols(params object[] symbols)
         {
-            if (symbols.Length == 0)
-                return;
-            lock (symbolsLocker)
-            {
-                subscriptionInstance.AddSymbols(SymbolsToStringList(symbols).ToArray());
-                OnSymbolsAdded?.Invoke(this, new DXFeedSymbolsUpdateEventArgs(symbols));
-            }
+            AddSymbols(true, symbols);
         }
 
         /// <summary>
@@ -780,6 +451,51 @@ namespace com.dxfeed.api
         /// Event calls when subscription is closing.
         /// </summary>
         public event DXFeedSubscriptionClosedEventHandler OnSubscriptionClosed;
+
+        protected DXFeedSubscription()
+        {
+            eventTypesSet.Add(typeof(E));
+        }
+
+        protected DXFeedSubscription(params Type[] eventTypes)
+        {
+            eventTypes.All(t => eventTypesSet.Add(t));
+        }
+
+        /// <summary>
+        ///     <para>
+        ///         Adds the specified array of symbols to the set of subscribed symbols.
+        ///         This is a convenience method to subscribe to one or few symbols at a time.
+        ///         When subscribing to multiple symbols at once it is preferable to use
+        ///         <see cref="AddSymbols(ICollection{object})"/> method.
+        ///         All registered event listeners will receive update on the last events for all
+        ///         newly added symbols.
+        ///     </para>
+        ///     <para>
+        ///         Implementation notes.
+        ///     </para>
+        ///     <para>
+        ///         This method notifies all subscribed <see cref="OnSymbolsAdded"/> events on 
+        ///         symbols changing for this subscription. The <c>false</c> value of 
+        ///         <paramref name="callUpdateEvent"/> disables calling any symbols update events 
+        ///         for this method.
+        ///     </para>
+        /// </summary>
+        /// <param name="callUpdateEvent">
+        ///     The <c>false</c> value disables calling any symbols update events for this method.
+        /// </param>
+        /// <param name="symbols">The array of symbols.</param>
+        protected void AddSymbols(bool callUpdateEvent, params object[] symbols)
+        {
+            if (symbols.Length == 0)
+                return;
+            lock (symbolsLocker)
+            {
+                subscriptionInstance.AddSymbols(SymbolsToStringList(symbols).ToArray());
+                if (callUpdateEvent)
+                    OnSymbolsAdded?.Invoke(this, new DXFeedSymbolsUpdateEventArgs(symbols));
+            }
+        }
 
         private ICollection<string> SymbolsToStringList(ICollection<object> symbols)
         {

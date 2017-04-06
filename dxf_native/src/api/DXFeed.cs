@@ -17,6 +17,9 @@ using System.Threading.Tasks;
 namespace com.dxfeed.api
 {
     //TODO: comments
+    /// <summary>
+    /// Main entry class for dxFeed API (read it first).
+    /// </summary>
     public class DXFeed : IDXFeed
     {
 
@@ -42,18 +45,16 @@ namespace com.dxfeed.api
         }
 
         /// <summary>
-        /// Creates new subscription for a single event type that is attached to this feed.
-        /// For multiple event types in one subscription use
-        /// createSubscription(Class... eventTypes)
-        /// This method creates new DXFeedSubscription.
-        ///
-        /// @see DXFeedSubscription#DXFeedSubscription(Class)
-        /// @see #attachSubscription(DXFeedSubscription)
+        ///     Creates new subscription for a single event type that is attached to this feed.
+        ///     For multiple event types in one subscription use
+        ///     <see cref="CreateSubscription{E}(Type[])"/>.
+        ///     This method creates new DXFeedSubscription.
         /// </summary>
         /// <typeparam name="E">The type of events.</typeparam>
         /// <param name="eventType">The class of event types.</param>
-        /// <returns>New DXFeedSubscription for a single event type.</returns>
-        public IDXFeedSubscription<E> CreateSubscription<E>()
+        /// <returns>New <see cref="IDXFeedSubscription{E}"/> for a single event type.</returns>
+        public IDXFeedSubscription<E> CreateSubscription<E>() 
+            where E : IDxEventType
         {
             IDXFeedSubscription<E> subscription = new DXFeedSubscription<E>(endpoint) as IDXFeedSubscription<E>;
             subscription.Attach(this);
@@ -61,16 +62,54 @@ namespace com.dxfeed.api
         }
 
         /// <summary>
-        /// Creates new subscription for multiple event types that is <i>attached</i> to this feed.
-        /// For a single event type use CreateSubscription<E>().
-        /// This method creates new DXFeedSubscription and invokes AttachSubscription.
+        ///     Creates new subscription for multiple event types that is attached to this feed.
+        ///     For a single event type use <see cref="CreateSubscription{E}"/>.
+        ///     This method creates new <see cref="IDXFeedSubscription{E}"/> and invokes 
+        ///     <see cref="AttachSubscription{E}(IDXFeedSubscription{E})"/>.
         /// </summary>
         /// <typeparam name="E">The type of events.</typeparam>
         /// <param name="eventTypes">The classes of event types.</param>
-        /// <returns>The new DXFeedSubscription.</returns>
-        public IDXFeedSubscription<E> CreateSubscription<E>(params Type[] eventTypes)
+        /// <returns>The new <see cref="IDXFeedSubscription{E}"/>.</returns>
+        public IDXFeedSubscription<E> CreateSubscription<E>(params Type[] eventTypes) 
+            where E : IDxEventType
         {
             IDXFeedSubscription<E> subscription = new DXFeedSubscription<E>(endpoint, eventTypes) as IDXFeedSubscription<E>;
+            subscription.Attach(this);
+            return subscription;
+        }
+
+        /// <summary>
+        ///     Creates new time series subscription for a single event type that is attached to 
+        ///     this feed.
+        ///     For multiple event types in one subscription use
+        ///     <see cref="CreateTimeSeriesSubscription{E}(Type[])"/>.
+        ///     This method creates new <see cref="IDXFeedTimeSeriesSubscription{E}"/> and invokes 
+        ///     <see cref="AttachSubscription{E}(IDXFeedSubscription{E})"/>.
+        /// </summary>
+        /// <typeparam name="E">The type of event.</typeparam>
+        /// <returns>New time series subscription.</returns>
+        public IDXFeedTimeSeriesSubscription<E> CreateTimeSeriesSubscription<E>()
+            where E : TimeSeriesEvent
+        {
+            IDXFeedTimeSeriesSubscription<E> subscription = new DXFeedTimeSeriesSubscription<E>(endpoint) as IDXFeedTimeSeriesSubscription<E>;
+            subscription.Attach(this);
+            return subscription;
+        }
+
+        /// <summary>
+        ///     Creates new time series subscription for multiple event types that is attached to 
+        ///     this feed.
+        ///     For a single event type use <see cref="CreateTimeSeriesSubscription{E}"/>.
+        ///     This method creates new <see cref="IDXFeedTimeSeriesSubscription{E}"/> and invokes 
+        ///     <see cref="AttachSubscription{E}(IDXFeedSubscription{E})"/>.
+        /// </summary>
+        /// <typeparam name="E">The base type of events.</typeparam>
+        /// <param name="eventTypes">The classes of event types.</param>
+        /// <returns></returns>
+        public IDXFeedTimeSeriesSubscription<E> CreateTimeSeriesSubscription<E>(params Type[] eventTypes)
+            where E : TimeSeriesEvent
+        {
+            IDXFeedTimeSeriesSubscription<E> subscription = new DXFeedTimeSeriesSubscription<E>(endpoint, eventTypes) as IDXFeedTimeSeriesSubscription<E>;
             subscription.Attach(this);
             return subscription;
         }
@@ -86,7 +125,8 @@ namespace com.dxfeed.api
         /// </summary>
         /// <typeparam name="E">The type of events.</typeparam>
         /// <param name="subscription">The subscription.</param>
-        public void AttachSubscription<E>(IDXFeedSubscription<E> subscription)
+        public void AttachSubscription<E>(IDXFeedSubscription<E> subscription) 
+            where E : IDxEventType
         {
             if (attachedSubscriptions.Contains(subscription))
                 return;
@@ -98,7 +138,8 @@ namespace com.dxfeed.api
         /// corresponding subscription is not attached to this feed.
         /// </summary>
         /// <param name="subscription">The subscription.</param>
-        public void DetachSubscription<E>(IDXFeedSubscription<E> subscription)
+        public void DetachSubscription<E>(IDXFeedSubscription<E> subscription) 
+            where E : IDxEventType
         {
             attachedSubscriptions.Remove(subscription);
         }
@@ -432,12 +473,13 @@ namespace com.dxfeed.api
 
         /// <summary>
         ///     Creates new snapshot subscription for a single event type that is attached to this feed.
-        ///     This method creates new DXFeedSubscription.
+        ///     This method creates new <see cref="IDXFeedSubscription{E}"/>.
         /// </summary>
         /// <typeparam name="E">The type of events.</typeparam>
         /// <param name="eventType">The class of event types.</param>
         /// <returns>New DXFeedSubscription for a single event type.</returns>
-        internal IDXFeedSubscription<E> CreateSubscription<E>(long time, IndexedEventSource source)
+        internal IDXFeedSubscription<E> CreateSnapshotSubscription<E>(long time, IndexedEventSource source) 
+            where E : IndexedEvent
         {
             IDXFeedSubscription<E> subscription = new DXFeedSubscription<E>(endpoint, time, source) as IDXFeedSubscription<E>;
             subscription.Attach(this);
@@ -485,7 +527,7 @@ namespace com.dxfeed.api
             return await Task.Run(() =>
             {
                 HistoryEventsCollector<E> collector = new HistoryEventsCollector<E>(fromTime, toTime);
-                IDXFeedSubscription<E> s = CreateSubscription<E>(fromTime, source);
+                IDXFeedSubscription<E> s = CreateSnapshotSubscription<E>(fromTime, source);
                 s.AddSymbols(symbol);
                 s.AddEventListener(collector);
 

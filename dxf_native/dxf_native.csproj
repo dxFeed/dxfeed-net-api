@@ -72,6 +72,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="src\api\DXFeedEventHandler.cs" />
+    <Compile Include="src\api\DXFeedTimeSeriesSubscription.cs" />
     <Compile Include="src\native\C.cs" />
     <Compile Include="src\native\C32.cs" />
     <Compile Include="src\native\CDataTypes.cs" />

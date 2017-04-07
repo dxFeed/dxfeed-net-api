@@ -16,33 +16,32 @@ namespace com.dxfeed.api
     /// <summary>
     ///     Manages network connections to DXFeed.
     /// </summary>
-    public class DXEndpoint : IDisposable
+    public class DXEndpoint : IDXEndpoint
     {
         /// <summary>
-        ///     Represents the current state of endpoint.
+        ///     Returns a set of all event types supported by this endpoint. The resulting set 
+        ///     cannot be modified.
         /// </summary>
-        public enum EndpointState
+        /// <returns>Set of all event types.</returns>
+        public static ISet<Type> GetEventTypes()
         {
-            /// <summary>
-            ///     Endpoint was created by is not connected to remote endpoints.
-            /// </summary>
-            NotConnected,
-
-            /// <summary>
-            ///     The <see cref="Connect(string)"/>  method was called to establish connection 
-            ///     to remove endpoint, but connection is not actually established yet or was lost.
-            /// </summary>
-            Connecting,
-
-            /// <summary>
-            ///     The connection to remote endpoint is established.
-            /// </summary>
-            Connected,
-
-            /// <summary>
-            ///     Endpoint was <see cref="Close()"/>.
-            /// </summary>
-            Closed
+            return new HashSet<Type>(new Type[] {
+                typeof(IDxCandle),
+                typeof(IDxConfiguration),
+                typeof(IDxGreeks),
+                typeof(IDxMarketMaker),
+                typeof(IDxOrder),
+                typeof(IDxProfile),
+                typeof(IDxQuote),
+                typeof(IDxSeries),
+                typeof(IDxSpreadOrder),
+                typeof(IDxSummary),
+                typeof(IDxTheoPrice),
+                typeof(IDxTimeAndSale),
+                typeof(IDxTrade),
+                typeof(IDxTradeEth),
+                typeof(IDxUnderlying)
+            });
         }
 
         /// <summary>
@@ -52,7 +51,7 @@ namespace com.dxfeed.api
         ///     get one.
         /// </summary>
         /// <returns>Instance of DXEndpoint with a default role.</returns>
-        public static DXEndpoint GetInstance()
+        public static IDXEndpoint GetInstance()
         {
             if (endpointInstance == null)
             {
@@ -65,11 +64,11 @@ namespace com.dxfeed.api
         /// <summary>
         ///     Thread-safe state getter of this endpoint.
         /// </summary>
-        public EndpointState State
+        public DXEndpointState State
         {
             get
             {
-                EndpointState result;
+                DXEndpointState result;
                 lock (stateLocker)
                 {
                     result = assyncState;
@@ -94,7 +93,7 @@ namespace com.dxfeed.api
         /// <param name="user">User name.</param>
         /// <returns>This <see cref="DXEndpoint"/>.</returns>
         /// <exception cref="ArgumentNullException">If <paramref name="user"/> is null.</exception>
-        public DXEndpoint User(string user)
+        public IDXEndpoint User(string user)
         {
             if (string.IsNullOrEmpty(user))
                 throw new ArgumentNullException("The user name is null!");
@@ -110,7 +109,7 @@ namespace com.dxfeed.api
         /// <param name="password">Password</param>
         /// <returns>This <see cref="DXEndpoint"/>.</returns>
         /// <exception cref="ArgumentNullException">If <paramref name="password"/> is null.</exception>
-        public DXEndpoint Password(string password)
+        public IDXEndpoint Password(string password)
         {
             if (string.IsNullOrEmpty(password))
                 throw new ArgumentNullException("The password is null!");
@@ -123,9 +122,9 @@ namespace com.dxfeed.api
         ///         Connects to the specified remove address. Previously established connections 
         ///         are closed if the new address is different from the old one.
         ///         This method does nothing if address does not change or if this endpoint is 
-        ///         <see cref="EndpointState.Closed"/>.
+        ///         <see cref="DXEndpointState.Closed"/>.
         ///         The endpoint <see cref="State"/> immediately becomes 
-        ///         <see cref="EndpointState.Connecting"/> otherwise.
+        ///         <see cref="DXEndpointState.Connecting"/> otherwise.
         ///     </para>
         ///     <para>
         ///         The address string is provided with the market data vendor agreement.
@@ -158,18 +157,18 @@ namespace com.dxfeed.api
         /// <param name="address">The data source address.</param>
         /// <returns>This <see cref="DXEndpoint"/>.</returns>
         /// <exception cref="ArgumentNullException">If <paramref name="address"/> is null.</exception>
-        public DXEndpoint Connect(string address)
+        public IDXEndpoint Connect(string address)
         {
             if (string.IsNullOrEmpty(address))
                 throw new ArgumentNullException("The address is null!");
 
-            if (this.address.Equals(address) && State != EndpointState.NotConnected || State == EndpointState.Closed)
+            if (this.address.Equals(address) && State != DXEndpointState.NotConnected || State == DXEndpointState.Closed)
                 return this;
 
-            if (State == EndpointState.Connected || State == EndpointState.Connecting)
+            if (State == DXEndpointState.Connected || State == DXEndpointState.Connecting)
                 Disconnect();
 
-            State = EndpointState.Connecting;
+            State = DXEndpointState.Connecting;
 
             lock (stateLocker)
             {
@@ -183,9 +182,9 @@ namespace com.dxfeed.api
         /// <summary>
         ///     <para>
         ///         Terminates all remote network connections.
-        ///         This method does nothing if this endpoint is <see cref="EndpointState.Closed"/>.
+        ///         This method does nothing if this endpoint is <see cref="DXEndpointState.Closed"/>.
         ///         The endpoint <see cref="State"/> immediately becomes 
-        ///         <see cref="EndpointState.NotConnected"/> otherwise.
+        ///         <see cref="DXEndpointState.NotConnected"/> otherwise.
         ///     </para>
         ///     <para>
         ///         This method does not release all resources that are associated with this 
@@ -195,12 +194,12 @@ namespace com.dxfeed.api
         /// </summary>
         public void Disconnect()
         {
-            if (State == EndpointState.Closed)
+            if (State == DXEndpointState.Closed)
                 return;
 
             lock (stateLocker)
             {
-                assyncState = EndpointState.NotConnected;
+                assyncState = DXEndpointState.NotConnected;
                 UnsafeCloseConnection();
             }
         }
@@ -212,18 +211,18 @@ namespace com.dxfeed.api
         ///         can be established.
         ///     </para>
         ///     <para>
-        ///         The endpoint <see cref="State"/> immediately becomes <see cref="EndpointState.Closed"/>.
+        ///         The endpoint <see cref="State"/> immediately becomes <see cref="DXEndpointState.Closed"/>.
         ///         All resources associated with this endpoint are released.
         ///     </para>
         /// </summary>
         public void Close()
         {
-            if (State == EndpointState.Closed)
+            if (State == DXEndpointState.Closed)
                 return;
 
             lock (stateLocker)
             {
-                assyncState = EndpointState.Closed;
+                assyncState = DXEndpointState.Closed;
                 UnsafeCloseConnection();
             }
         }
@@ -232,33 +231,7 @@ namespace com.dxfeed.api
         ///     Returns feed that is associated with this endpoint.
         /// </summary>
         /// <returns>The feed.</returns>
-        public DXFeed Feed { get; private set; }
-
-        /// <summary>
-        ///     Returns a set of all event types supported by this endpoint. The resulting set 
-        ///     cannot be modified.
-        /// </summary>
-        /// <returns>Set of all event types.</returns>
-        public HashSet<Type> GetEventTypes()
-        {
-            return new HashSet<Type>(new Type[] {
-                typeof(IDxCandle),
-                typeof(IDxConfiguration),
-                typeof(IDxGreeks),
-                typeof(IDxMarketMaker),
-                typeof(IDxOrder),
-                typeof(IDxProfile),
-                typeof(IDxQuote),
-                typeof(IDxSeries),
-                typeof(IDxSpreadOrder),
-                typeof(IDxSummary),
-                typeof(IDxTheoPrice),
-                typeof(IDxTimeAndSale),
-                typeof(IDxTrade),
-                typeof(IDxTradeEth),
-                typeof(IDxUnderlying)
-            });
-        }
+        public IDXFeed Feed { get; private set; }
 
         public void Dispose()
         {
@@ -278,7 +251,7 @@ namespace com.dxfeed.api
         /// </summary>
         protected DXEndpoint()
         {
-            assyncState = EndpointState.NotConnected;
+            assyncState = DXEndpointState.NotConnected;
             Feed = new DXFeed(this);
         }
 
@@ -289,7 +262,7 @@ namespace com.dxfeed.api
         private static readonly string DefaultPassword = "demo";
         private static DXEndpoint endpointInstance = null;
         private object stateLocker = new object();
-        private EndpointState assyncState = EndpointState.NotConnected;
+        private DXEndpointState assyncState = DXEndpointState.NotConnected;
         private string address = DefaultAddress;
         private string user = DefaultUser;
         private string password = DefaultPassword;
@@ -297,7 +270,7 @@ namespace com.dxfeed.api
 
         private void ConnectionInstance_OnCreation(object sender, EventArgs e)
         {
-            State = EndpointState.Connected;
+            State = DXEndpointState.Connected;
         }
 
         private void UnsafeCloseConnection()

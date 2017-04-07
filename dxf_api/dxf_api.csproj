@@ -71,6 +71,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="src\api\IDXEndpoint.cs" />
     <Compile Include="src\api\IDXFeed.cs" />
     <Compile Include="src\api\DXFeedSymbolsUpdateEventArgs.cs" />
     <Compile Include="src\api\IDXFeedEventListener.cs" />

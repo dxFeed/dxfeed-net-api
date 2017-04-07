@@ -33,7 +33,7 @@ namespace com.dxfeed.api
         ///     use only a single data-source and should rely on this method to get one.
         /// </summary>
         /// <returns>Singleton instance of feed.</returns>
-        public static DXFeed GetInstance()
+        public static IDXFeed GetInstance()
         {
             return DXEndpoint.GetInstance().Feed;
         }
@@ -226,7 +226,7 @@ namespace com.dxfeed.api
                 s.AddEventListener(collector);
                 while (!collector.HasEvent<E>(symbol))
                 {
-                    if (endpoint.State == DXEndpoint.EndpointState.Closed)
+                    if (endpoint.State == DXEndpointState.Closed)
                         throw new OperationCanceledException("Endpoint was been closed.");
                     cancellationToken.ThrowIfCancellationRequested();
                 }
@@ -531,7 +531,7 @@ namespace com.dxfeed.api
 
                 while (!collector.IsDone)
                 {
-                    if (endpoint.State == DXEndpoint.EndpointState.Closed)
+                    if (endpoint.State == DXEndpointState.Closed)
                         throw new OperationCanceledException("Endpoint was been closed.");
                     cancellationToken.ThrowIfCancellationRequested();
                 }

@@ -20,7 +20,7 @@ namespace com.dxfeed.samples
         static void GetLastEventPromisesSample()
         {
             string[] symbols = new string[] { "C", "IBM", "MSFT" };
-            DXFeed feed = DXFeed.GetInstance();
+            IDXFeed feed = DXFeed.GetInstance();
             List<Task<LastingEvent>> promises = feed.GetLastEventsPromises<IDxTrade>(
                 symbols,
                 new CancellationTokenSource(TimeSpan.FromSeconds(5)).Token);
@@ -48,7 +48,7 @@ namespace com.dxfeed.samples
 
         static void GetIndexedEventsPromise()
         {
-            DXFeed feed = DXFeed.GetInstance();
+            IDXFeed feed = DXFeed.GetInstance();
             var tsPromise = feed.GetIndexedEventsPromise<IDxTimeAndSale>("IBM", IndexedEventSource.DEFAULT,
                 new CancellationTokenSource(TimeSpan.FromSeconds(2)).Token);
             Console.WriteLine("TimeAndSale events:");

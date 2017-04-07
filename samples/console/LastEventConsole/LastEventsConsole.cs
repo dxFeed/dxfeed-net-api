@@ -75,7 +75,7 @@ namespace com.dxfeed.sample.console
              */
             //TODO: getting feed via endpoint
             //DXFeed feed = endpoint.getFeed();
-            DXFeed feed = DXFeed.GetInstance();
+            IDXFeed feed = DXFeed.GetInstance();
 
             /*
              * Print a short help.

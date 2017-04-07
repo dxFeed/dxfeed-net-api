@@ -50,6 +50,8 @@ namespace com.dxfeed.api
         public IDXFeedSubscription<E> CreateSubscription<E>() 
             where E : IDxEventType
         {
+            if (endpoint.State == DXEndpointState.Closed)
+                throw new InvalidOperationException("Endpoint was been closed.");
             IDXFeedSubscription<E> subscription = new DXFeedSubscription<E>(endpoint) as IDXFeedSubscription<E>;
             subscription.Attach(this);
             return subscription;
@@ -67,6 +69,8 @@ namespace com.dxfeed.api
         public IDXFeedSubscription<E> CreateSubscription<E>(params Type[] eventTypes) 
             where E : IDxEventType
         {
+            if (endpoint.State == DXEndpointState.Closed)
+                throw new InvalidOperationException("Endpoint was been closed.");
             IDXFeedSubscription<E> subscription = new DXFeedSubscription<E>(endpoint, eventTypes) as IDXFeedSubscription<E>;
             subscription.Attach(this);
             return subscription;
@@ -85,6 +89,8 @@ namespace com.dxfeed.api
         public IDXFeedTimeSeriesSubscription<E> CreateTimeSeriesSubscription<E>()
             where E : TimeSeriesEvent
         {
+            if (endpoint.State == DXEndpointState.Closed)
+                throw new InvalidOperationException("Endpoint was been closed.");
             IDXFeedTimeSeriesSubscription<E> subscription = new DXFeedTimeSeriesSubscription<E>(endpoint) as IDXFeedTimeSeriesSubscription<E>;
             subscription.Attach(this);
             return subscription;
@@ -103,6 +109,8 @@ namespace com.dxfeed.api
         public IDXFeedTimeSeriesSubscription<E> CreateTimeSeriesSubscription<E>(params Type[] eventTypes)
             where E : TimeSeriesEvent
         {
+            if (endpoint.State == DXEndpointState.Closed)
+                throw new InvalidOperationException("Endpoint was been closed.");
             IDXFeedTimeSeriesSubscription<E> subscription = new DXFeedTimeSeriesSubscription<E>(endpoint, eventTypes) as IDXFeedTimeSeriesSubscription<E>;
             subscription.Attach(this);
             return subscription;
@@ -220,6 +228,8 @@ namespace com.dxfeed.api
 
             return await Task.Run(() =>
             {
+                if (endpoint.State == DXEndpointState.Closed)
+                    throw new OperationCanceledException("Endpoint was been closed.");
                 LastingEventsCollector<E> collector = new LastingEventsCollector<E>();
                 IDXFeedSubscription<E> s = CreateSubscription<E>();
                 s.AddSymbols(symbol);
@@ -524,6 +534,8 @@ namespace com.dxfeed.api
 
             return await Task.Run(() =>
             {
+                if (endpoint.State == DXEndpointState.Closed)
+                    throw new OperationCanceledException("Endpoint was been closed.");
                 HistoryEventsCollector<E> collector = new HistoryEventsCollector<E>(fromTime, toTime);
                 IDXFeedSubscription<E> s = CreateSnapshotSubscription<E>(fromTime, source);
                 s.AddSymbols(symbol);

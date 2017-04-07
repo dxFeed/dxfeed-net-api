@@ -55,11 +55,37 @@ namespace com.dxfeed.api
         {
             if (endpointInstance == null)
             {
+                lock (instanceLocker)
+                {
+                    endpointInstance = new DXEndpoint();
+                    endpointInstance.Connect(DefaultAddress);
+                }
+            }
+            return endpointInstance;
+        }
+
+        /// <summary>
+        ///     Creates an new endpoint.
+        /// </summary>
+        /// <returns>The created endpoint.</returns>
+        public static IDXEndpoint Create()
+        {
+            lock (instanceLocker)
+            {
+                if (endpointInstance != null && endpointInstance.State != DXEndpointState.Closed)
+                {
+                    endpointInstance.Close();
+                }
                 endpointInstance = new DXEndpoint();
                 endpointInstance.Connect(DefaultAddress);
             }
             return endpointInstance;
         }
+
+        /// <summary>
+        ///     Event fires when <see cref="Close()"/> method was called.
+        /// </summary>
+        public event OnClosingEventHandler OnClosing;
 
         /// <summary>
         ///     Thread-safe state getter of this endpoint.
@@ -159,7 +185,7 @@ namespace com.dxfeed.api
         /// <exception cref="ArgumentNullException">If <paramref name="address"/> is null.</exception>
         public IDXEndpoint Connect(string address)
         {
-            if (string.IsNullOrEmpty(address))
+            if (string.IsNullOrWhiteSpace(address))
                 throw new ArgumentNullException("The address is null!");
 
             if (this.address.Equals(address) && State != DXEndpointState.NotConnected || State == DXEndpointState.Closed)
@@ -222,6 +248,7 @@ namespace com.dxfeed.api
 
             lock (stateLocker)
             {
+                OnClosing?.Invoke(this, EventArgs.Empty);
                 assyncState = DXEndpointState.Closed;
                 UnsafeCloseConnection();
             }
@@ -261,6 +288,7 @@ namespace com.dxfeed.api
         private static readonly string DefaultUser = "demo";
         private static readonly string DefaultPassword = "demo";
         private static DXEndpoint endpointInstance = null;
+        private static object instanceLocker = new object();
         private object stateLocker = new object();
         private DXEndpointState assyncState = DXEndpointState.NotConnected;
         private string address = DefaultAddress;

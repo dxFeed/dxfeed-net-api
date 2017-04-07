@@ -38,8 +38,23 @@ namespace com.dxfeed.api
         Closed
     }
 
+    /// <summary>
+    ///     Handler for <see cref="IDXEndpoint"/> closing event.
+    /// </summary>
+    /// <param name="sender"><see cref="IDXEndpoint"/> instance.</param>
+    /// <param name="e">Event arguments.</param>
+    public delegate void OnClosingEventHandler(object sender, EventArgs e);
+
+    /// <summary>
+    ///     Manages network connections to DXFeed.
+    /// </summary>
     public interface IDXEndpoint : IDisposable
     {
+        /// <summary>
+        ///     Event fires when <see cref="Close()"/> method was called.
+        /// </summary>
+        event OnClosingEventHandler OnClosing;
+
         /// <summary>
         ///     Thread-safe state getter of this endpoint.
         /// </summary>

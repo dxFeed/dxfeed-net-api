@@ -44,6 +44,9 @@ namespace com.dxfeed.api
         {
             if (endpoint == null)
                 throw new ArgumentNullException("endpoint");
+
+            endpoint.OnClosing += Endpoint_OnClosing;
+
             subscriptionInstance = endpoint.Connection.CreateSubscription(
                 EventTypeUtil.GetEventsType(typeof(E)),
                 new DXFeedEventHandler<E>(eventListeners, eventListenerLocker));
@@ -66,6 +69,9 @@ namespace com.dxfeed.api
         {
             if (endpoint == null)
                 throw new ArgumentNullException("endpoint");
+
+            endpoint.OnClosing += Endpoint_OnClosing;
+
             subscriptionInstance = endpoint.Connection.CreateSubscription(
                 EventTypeUtil.GetEventsType(eventTypes),
                 new DXFeedEventHandler<E>(eventListeners, eventListenerLocker));
@@ -80,10 +86,12 @@ namespace com.dxfeed.api
         /// <exception cref="ArgumentNullException">If <paramref name="endpoint"/> is null.</exception>
         /// <exception cref="ArgumentException">If type E is not event class.</exception>
         /// <exception cref="DxException">Internal error.</exception>
-        internal DXFeedSubscription(DXEndpoint endpoint, long time, IndexedEventSource source) : base()
+        internal DXFeedSubscription(DXEndpoint endpoint, long time, IndexedEventSource source) : this()
         {
             if (endpoint == null)
                 throw new ArgumentNullException("endpoint");
+
+            endpoint.OnClosing += Endpoint_OnClosing;
 
             subscriptionInstance = endpoint.Connection.CreateSnapshotSubscription(
                 EventTypeUtil.GetEventsType(typeof(E)),
@@ -519,6 +527,12 @@ namespace com.dxfeed.api
             HashSet<object> symbolsSet = new HashSet<object>();
             subscriptionInstance.GetSymbols().All(s => symbolsSet.Add(s));
             return symbolsSet;
+        }
+
+        private void Endpoint_OnClosing(object sender, EventArgs e)
+        {
+            ((IDXEndpoint)sender).OnClosing -= Endpoint_OnClosing;
+            Close();
         }
 
     }

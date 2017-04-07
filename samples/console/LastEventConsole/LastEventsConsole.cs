@@ -16,12 +16,11 @@ using System.Threading.Tasks;
 
 namespace com.dxfeed.sample.console
 {
-    //TODO: fill AssemblyInfo
     class LastEventsConsole
     {
+        //TODO: update new samples with MSBuild commands
         static void Main(string[] args)
         {
-            //TODO: comments
             /*
              * Permanent subscription to the world is performed with a special property named "dxfeed.qd.subscribe.ticker".
              * Its value consists of a comma-separated list of records, followed by a space, followed by a comma-separated

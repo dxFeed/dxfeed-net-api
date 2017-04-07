@@ -38,7 +38,6 @@ namespace com.dxfeed.native.events
             Sequence = order.sequence;
             Size = order.size;
             Time = TimeConverter.ToUtcDateTime(order.time);
-            //TODO: check 
             Source = OrderSource.ValueOf(new string(order.source));
             TimeSequence = order.time_sequence;
         }
@@ -182,7 +181,7 @@ namespace com.dxfeed.native.events
         /// <summary>
         ///   Returns source of this event.
         /// </summary>
-        public OrderSource Source
+        public IndexedEventSource Source
         {
             get; internal set;
         }

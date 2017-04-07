@@ -19,7 +19,6 @@ namespace com.dxfeed.api
     ///     Class provides methods for collecting and storing lasting events.
     /// </summary>
     internal class DXFeedLastingEventsCollector :
-        //TODO: add and check configuration
         IDxCandleListener,
         IDxGreeksListener,
         IDxOrderListener,

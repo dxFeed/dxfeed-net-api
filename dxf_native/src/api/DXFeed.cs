@@ -15,16 +15,11 @@ using System.Threading.Tasks;
 
 namespace com.dxfeed.api
 {
-    //TODO: comments
     /// <summary>
-    /// Main entry class for dxFeed API (read it first).
+    ///     Main entry class for dxFeed API (read it first).
     /// </summary>
     public class DXFeed : IDXFeed
     {
-
-        //TODO: restore AssemblyInfo versions in all projects
-        //TODO: update new samples with MSBuild commands
-
         private DXEndpoint endpoint = null;
         private HashSet<object> attachedSubscriptions = new HashSet<object>();
 

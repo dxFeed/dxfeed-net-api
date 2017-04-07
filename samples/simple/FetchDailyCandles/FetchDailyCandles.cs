@@ -21,7 +21,6 @@ namespace com.dxfeed.sample._simple_
     /// </summary>
     class FetchDailyCandles
     {
-        //TODO: fill AssemblyInfo
         private static readonly int Days = 20;
 
         static void Main(string[] args)

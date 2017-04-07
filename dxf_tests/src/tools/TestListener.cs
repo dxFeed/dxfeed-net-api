@@ -241,8 +241,8 @@ namespace com.dxfeed.tests.tools
                 for (int i = lastIndex; i < size; i++)
                 {
                     IDxOrder order = list[i].Event;
-                    if (sourceList.Contains(order.Source))
-                        sourceList.Remove(order.Source);
+                    if (sourceList.Contains(order.Source.Name))
+                        sourceList.Remove(order.Source.Name);
                 }
                 lastIndex = size;
                 rwl.ReleaseReaderLock();
@@ -263,7 +263,7 @@ namespace com.dxfeed.tests.tools
                 List<string> sourceList = new List<string>(sources);
                 int count = 0;
                 foreach (ReceivedEvent<IDxOrder> ev in list)
-                    if (sourceList.Contains(ev.Event.Source))
+                    if (sourceList.Contains(ev.Event.Source.Name))
                         count++;
                 return count;
             }

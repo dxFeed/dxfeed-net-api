@@ -14,12 +14,12 @@ using System.Collections.Generic;
 namespace com.dxfeed.api
 {
     /// <summary>
-    /// Manages network connections to DXFeed.
+    ///     Manages network connections to DXFeed.
     /// </summary>
     public class DXEndpoint : IDisposable
     {
         /// <summary>
-        /// Represents the current state of endpoint.
+        ///     Represents the current state of endpoint.
         /// </summary>
         public enum EndpointState
         {

@@ -54,10 +54,6 @@ namespace com.dxfeed.api.events
         /// </summary>
         long Size { get; }
         /// <summary>
-        ///   Returns source of this event.
-        /// </summary>
-        OrderSource Source { get; }
-        /// <summary>
         /// Returns date time of this order.
         /// </summary>
         DateTime Time { get; }

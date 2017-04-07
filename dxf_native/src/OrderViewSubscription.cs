@@ -49,14 +49,14 @@ namespace com.dxfeed.native
         /// </summary>
         private IDictionary<string, IList<ulong>> symbolSourceToKey = new Dictionary<string, IList<ulong>>();
 
-        private ISet<OrderSource> sources = new SortedSet<OrderSource>();
+        private ISet<IndexedEventSource> sources = new SortedSet<IndexedEventSource>();
         private ISet<string> symbols = new SortedSet<string>();
 
         /// <summary>
         ///   All received snapshots, empty set means no received snapshots yet.
         ///   Key - means symbol, value - set of received snapshots sources.
         /// </summary>
-        private IDictionary<string, ISet<OrderSource>> receivedSnapshots = new Dictionary<string, ISet<OrderSource>>();
+        private IDictionary<string, ISet<IndexedEventSource>> receivedSnapshots = new Dictionary<string, ISet<IndexedEventSource>>();
 
         /// <summary>
         ///   States of the order view subscription:
@@ -118,7 +118,7 @@ namespace com.dxfeed.native
                 return;
             subscription.AddSymbol(symbol);
             symbols.Add(symbol);
-            receivedSnapshots.Add(symbol.ToUpper(), new SortedSet<OrderSource>());
+            receivedSnapshots.Add(symbol.ToUpper(), new SortedSet<IndexedEventSource>());
         }
 
         /// <summary>
@@ -156,7 +156,7 @@ namespace com.dxfeed.native
                 if (this.symbols.Contains(symbol.ToUpper()))
                     continue;
                 this.symbols.Add(symbol);
-                receivedSnapshots.Add(symbol.ToUpper(), new SortedSet<OrderSource>());
+                receivedSnapshots.Add(symbol.ToUpper(), new SortedSet<IndexedEventSource>());
             }
         }
 
@@ -252,7 +252,7 @@ namespace com.dxfeed.native
             {
                 string upperSymbol = symbol.ToUpper();
                 this.symbols.Add(upperSymbol);
-                receivedSnapshots.Add(upperSymbol, new SortedSet<OrderSource>());
+                receivedSnapshots.Add(upperSymbol, new SortedSet<IndexedEventSource>());
             }
             orderViewStates.Clear();
         }
@@ -391,7 +391,7 @@ namespace com.dxfeed.native
 
             var enmrtr = buf.GetEnumerator();
             enmrtr.MoveNext();
-            OrderSource source = enmrtr.Current.Source;
+            IndexedEventSource source = enmrtr.Current.Source;
 
             // in case if already have this snapshot
             if (snapshots.ContainsKey(buf.EventParams.SnapshotKey))

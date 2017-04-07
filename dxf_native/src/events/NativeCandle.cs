@@ -249,6 +249,14 @@ namespace com.dxfeed.native.events
             }
         }
 
+        public IndexedEventSource Source
+        {
+            get
+            {
+                return IndexedEventSource.DEFAULT;
+            }
+        }
+
         #endregion
     }
 }

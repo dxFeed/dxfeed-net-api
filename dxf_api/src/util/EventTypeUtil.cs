@@ -66,7 +66,20 @@ namespace com.dxfeed.api.util
                     events |= EventType.TimeAndSale;
                 else if (t == typeof(IDxCandle))
                     events |= EventType.Candle;
-                //TODO: update event types
+                else if (t == typeof(IDxTradeEth))
+                    events |= EventType.TradeETH;
+                else if (t == typeof(IDxSpreadOrder))
+                    events |= EventType.SpreadOrder;
+                else if (t == typeof(IDxGreeks))
+                    events |= EventType.Greeks;
+                else if (t == typeof(IDxTheoPrice))
+                    events |= EventType.TheoPrice;
+                else if (t == typeof(IDxUnderlying))
+                    events |= EventType.Underlying;
+                else if (t == typeof(IDxSeries))
+                    events |= EventType.Series;
+                else if (t == typeof(IDxConfiguration))
+                    events |= EventType.Configuration;
                 else throw new ArgumentException("Unknown event type: " + t);
             }
             return events;

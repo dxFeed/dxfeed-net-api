@@ -16,7 +16,6 @@ using System.Linq;
 
 namespace com.dxfeed.api
 {
-    //TODO: comments
     /// <summary>
     ///     Subscription for a set of symbols and event types.
     /// </summary>

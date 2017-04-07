@@ -136,7 +136,6 @@ namespace com.dxfeed.api.data
             return hc;
         }
 
-        //TODO: test
         public object Clone()
         {
             fixed (char* pChars = chars)

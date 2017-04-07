@@ -79,7 +79,7 @@
     <Compile Include="src\native\CDataTypes.cs" />
     <Compile Include="src\native\C64.cs" />
     <Compile Include="src\api\DXFeedSnapshotCollector.cs" />
-    <Compile Include="src\LastingEventsCollector.cs" />
+    <Compile Include="src\api\DXFeedLastingEventsCollector.cs" />
     <Compile Include="src\EventBuffer.cs" />
     <Compile Include="src\api\DXEndpoint.cs" />
     <Compile Include="src\api\DXFeed.cs" />

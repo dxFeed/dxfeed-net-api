@@ -57,7 +57,6 @@ namespace com.dxfeed.native.events
             EventFlags = ts.EventFlags;
             EventId = ts.EventId;
             ExchangeCode = ts.ExchangeCode;
-            //TODO: check
             ExchangeSaleConditions = (DxString)ts.ExchangeSaleConditions.Clone();
             Index = ts.Index;
             Price = ts.Price;
@@ -260,6 +259,14 @@ namespace com.dxfeed.native.events
         public bool IsValidTick
         {
             get; private set;
+        }
+
+        public IndexedEventSource Source
+        {
+            get
+            {
+                return IndexedEventSource.DEFAULT;
+            }
         }
 
         #endregion

@@ -29,9 +29,10 @@ namespace com.dxfeed.native
         private IDxSubscription subscription = null;
 
         /// <summary>
-        ///   All snapshots, acsess by unique snapshot key (<see cref="ulong"/>)
+        ///   All snapshots, acsess by unique key (<see cref="string"/>)
+        ///   key is string wich consists of snapahot key of recevid snapahot, symbol and source
         /// </summary>
-        private IDictionary<ulong, EventBuffer<IDxOrder>> snapshots = new Dictionary<ulong, EventBuffer<IDxOrder>>();
+        private IDictionary<string, EventBuffer<IDxOrder>> snapshots = new Dictionary<string, EventBuffer<IDxOrder>>();
 
         /// <summary>
         ///   used for <see cref="snapshotsStates"/>
@@ -42,12 +43,12 @@ namespace com.dxfeed.native
         ///   used when snapshot ends with flags <see cref="EventFlag.TxPending"/> combined
         ///   with <see cref="EventFlag.SnapshotEnd"/> or <see cref="EventFlag.SnapshotSnip"/>
         /// </summary>
-        private IDictionary<ulong, SnapshotState> snapshotsStates = new Dictionary<ulong, SnapshotState>();
+        private IDictionary<string, SnapshotState> snapshotsStates = new Dictionary<string, SnapshotState>();
 
         /// <summary>
         ///   Map between Symbol + Source string and unique snapashot key in <see cref="snapshots"/> dictionary
         /// </summary>
-        private IDictionary<string, IList<ulong>> symbolSourceToKey = new Dictionary<string, IList<ulong>>();
+        private IDictionary<string, IList<string>> symbolSourceToKey = new Dictionary<string, IList<string>>();
 
         private ISet<OrderSource> sources = new SortedSet<OrderSource>();
         private ISet<string> symbols = new SortedSet<string>();
@@ -393,18 +394,20 @@ namespace com.dxfeed.native
             enmrtr.MoveNext();
             OrderSource source = enmrtr.Current.Source;
 
+            string key = buf.EventParams.SnapshotKey.ToString() + symbol + source;
+
             // in case if already have this snapshot
-            if (snapshots.ContainsKey(buf.EventParams.SnapshotKey))
+            if (snapshots.ContainsKey(key))
             {
                 // flag SnapshotBegin came again
                 if (buf.EventParams.Flags.HasFlag(EventFlag.SnapshotBegin))
                 {
                     // in case when events Sell/Buy came in pair and both have SnapshotBegin flag. To keep both events
-                    var snapshotEnmrtr = snapshots[buf.EventParams.SnapshotKey].GetEnumerator();
+                    var snapshotEnmrtr = snapshots[key].GetEnumerator();
                     snapshotEnmrtr.MoveNext();
-                    if (snapshots[buf.EventParams.SnapshotKey].Size != 1 || buf.Size != 1 || snapshotEnmrtr.Current.Side == enmrtr.Current.Side)
+                    if (snapshots[key].Size != 1 || buf.Size != 1 || snapshotEnmrtr.Current.Side == enmrtr.Current.Side)
                     {
-                        snapshots[buf.EventParams.SnapshotKey].Clear();
+                        snapshots[key].Clear();
                     }
                     foreach (var order in buf)
                     {
@@ -440,10 +443,10 @@ namespace com.dxfeed.native
                                     ExchangeCode = '\0',
                                     Count = 0
                                 };
-                                snapshots[buf.EventParams.SnapshotKey].AddEvent(no);
+                                snapshots[key].AddEvent(no);
                             }
                             else
-                                snapshots[buf.EventParams.SnapshotKey].AddEvent(order);
+                                snapshots[key].AddEvent(order);
                         }
                         // if pending ends
                         if (!buf.EventParams.Flags.HasFlag(EventFlag.TxPending) && orderViewStates[symbol].HasFlag(OrderViewState.Pending))
@@ -451,11 +454,11 @@ namespace com.dxfeed.native
                             orderViewStates[symbol] -= OrderViewState.Pending;
 
                             EventBuffer<IDxOrder> buffer = new EventBuffer<IDxOrder>(buf.EventType, buf.Symbol, buf.EventParams);
-                            foreach (var order in snapshots[buf.EventParams.SnapshotKey])
+                            foreach (var order in snapshots[key])
                             {
                                 buffer.AddEvent(order);
                             }
-                            snapshots[buf.EventParams.SnapshotKey].Clear();
+                            snapshots[key].Clear();
                             listener.OnUpdate<IDxEventBuf<IDxOrder>, IDxOrder>(buffer);
                         }
                     }
@@ -491,37 +494,37 @@ namespace com.dxfeed.native
                     // order with zeros and NaN's, same as RemoveEvent flag
                     if (IsZeroOrder(order))
                     {
-                        snapshots[buf.EventParams.SnapshotKey].Remove(order);
+                        snapshots[key].Remove(order);
                         continue;
                     }
                     // if previos flag was TxPending we continue updating
-                    if (snapshots[buf.EventParams.SnapshotKey].EventParams.Flags.HasFlag(EventFlag.TxPending) &&
-                        !snapshots[buf.EventParams.SnapshotKey].EventParams.Flags.HasFlag(EventFlag.SnapshotEnd))
+                    if (snapshots[key].EventParams.Flags.HasFlag(EventFlag.TxPending) &&
+                        !snapshots[key].EventParams.Flags.HasFlag(EventFlag.SnapshotEnd))
                     {
-                        snapshots[buf.EventParams.SnapshotKey].ReplaceOrAdd(order);
-                        snapshots[buf.EventParams.SnapshotKey].EventParams = buf.EventParams;
+                        snapshots[key].ReplaceOrAdd(order);
+                        snapshots[key].EventParams = buf.EventParams;
                         continue;
                     }
                     // if snapshot is consistent (fully received), it means that update transaction consist from
                     // only one event without flags
                     if (receivedSnapshots[symbol].Contains(source) && buf.EventParams.Flags == 0)
                     {
-                        snapshots[buf.EventParams.SnapshotKey].ReplaceOrAdd(order);
+                        snapshots[key].ReplaceOrAdd(order);
                         continue;
                     }
                     // removing
                     if (buf.EventParams.Flags.HasFlag(EventFlag.RemoveEvent))
                     {
-                        snapshots[buf.EventParams.SnapshotKey].Remove(order);
+                        snapshots[key].Remove(order);
                         continue;
                     }
                     // ...or just add events
-                    snapshots[buf.EventParams.SnapshotKey].ReplaceOrAdd(order);
+                    snapshots[key].ReplaceOrAdd(order);
                 }
 
-                if (buf.EventParams.Flags == 0 && snapshotsStates[buf.EventParams.SnapshotKey] == SnapshotState.Broken)
+                if (buf.EventParams.Flags == 0 && snapshotsStates[key] == SnapshotState.Broken)
                 {
-                    snapshotsStates[buf.EventParams.SnapshotKey] = SnapshotState.Unbroken;
+                    snapshotsStates[key] = SnapshotState.Unbroken;
                     SnapshotEndFlagReceived<TB, TE>(buf);
                     return;
                 }
@@ -535,7 +538,7 @@ namespace com.dxfeed.native
                 if (buf.EventParams.Flags.HasFlag(EventFlag.TxPending) && !buf.EventParams.Flags.HasFlag(EventFlag.RemoveEvent))
                 {
                     // saving TxPending flag for future updating events
-                    snapshots[buf.EventParams.SnapshotKey].EventParams = buf.EventParams;
+                    snapshots[key].EventParams = buf.EventParams;
                     if (receivedSnapshots[symbol].Contains(source))
                     {
                         // snapshot is no longer consistent (fully received) and should wait for SnapshotEnd flag again
@@ -543,7 +546,7 @@ namespace com.dxfeed.native
                     }
                     foreach (var order in buf)
                     {
-                        snapshots[buf.EventParams.SnapshotKey].ReplaceOrAdd(order);
+                        snapshots[key].ReplaceOrAdd(order);
                     }
                 }
 
@@ -556,7 +559,7 @@ namespace com.dxfeed.native
                 else
                 {
                     // snapshot is broken
-                    snapshotsStates[buf.EventParams.SnapshotKey] = SnapshotState.Broken;
+                    snapshotsStates[key] = SnapshotState.Broken;
                     return;
                 }
             }
@@ -573,18 +576,20 @@ namespace com.dxfeed.native
                             outputBuffer.AddEvent(order);
                         }
                     }
-                    snapshots.Add(buf.EventParams.SnapshotKey, outputBuffer);
-                    snapshotsStates[buf.EventParams.SnapshotKey] = SnapshotState.Unbroken;
+                    snapshots.Add(key, outputBuffer);
+                    snapshotsStates[key] = SnapshotState.Unbroken;
                     string symbolSource = symbol + source;
                     if (symbolSourceToKey.ContainsKey(symbolSource))
                     {
                         var snapshotKeys = symbolSourceToKey[symbolSource];
-                        snapshotKeys.Add(buf.EventParams.SnapshotKey);
+                        snapshotKeys.Add(key);
                     }
                     else
                     {
-                        var snapshotKeys = new List<ulong>();
-                        snapshotKeys.Add(buf.EventParams.SnapshotKey);
+                        var snapshotKeys = new List<string>
+                        {
+                            key
+                        };
                         symbolSourceToKey.Add(symbolSource, snapshotKeys);
                     }
 
@@ -611,13 +616,15 @@ namespace com.dxfeed.native
             where TB : IDxEventBuf<TE>
             where TE : IDxOrder
         {
-            // to set right flags befor sending
-            snapshots[buf.EventParams.SnapshotKey].EventParams = buf.EventParams;
 
             var enmrtr = buf.GetEnumerator();
             enmrtr.MoveNext();
             var source = OrderSource.ValueOf(enmrtr.Current.Source.Name.ToUpper());
             var symbol = buf.Symbol.ToString().ToUpper();
+
+            // to set right flags befor sending
+            snapshots[buf.EventParams.SnapshotKey.ToString() + symbol + source].EventParams = buf.EventParams;
+
             receivedSnapshots[symbol].Add(source);
 
             if (receivedSnapshots[symbol].IsSupersetOf(sources))

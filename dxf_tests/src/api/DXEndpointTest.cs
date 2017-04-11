@@ -105,11 +105,14 @@ namespace com.dxfeed.api
         [Test]
         public void CloseTest()
         {
+            isFiresOnClosing = false;
             IDXEndpoint endpoint = DXEndpoint.Create();
+            endpoint.OnClosing += Endpoint_OnClosing;
             Assert.True(endpoint.State == DXEndpointState.Connected || endpoint.State == DXEndpointState.Connecting);
 
             endpoint.Close();
             Assert.AreEqual(endpoint.State, DXEndpointState.Closed);
+            Assert.True(isFiresOnClosing);
 
             endpoint.Connect(demoServerAddress);
             Assert.AreEqual(endpoint.State, DXEndpointState.Closed);
@@ -131,6 +134,12 @@ namespace com.dxfeed.api
 
         private static readonly string demoServerAddress = "demo.dxfeed.com:7300";
         private static readonly string testServerAddress = "mddqa.in.devexperts.com:7400";
+        private bool isFiresOnClosing = false;
+
+        private void Endpoint_OnClosing(object sender, EventArgs e)
+        {
+            isFiresOnClosing = true;
+        }
 
         #endregion
     }

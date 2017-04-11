@@ -29,7 +29,6 @@ namespace com.dxfeed.api
                 typeof(IDxCandle),
                 typeof(IDxConfiguration),
                 typeof(IDxGreeks),
-                typeof(IDxMarketMaker),
                 typeof(IDxOrder),
                 typeof(IDxProfile),
                 typeof(IDxQuote),

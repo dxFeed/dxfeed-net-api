@@ -208,8 +208,13 @@ namespace com.dxfeed.api
         /// </summary>
         public void Clear()
         {
-            OnSymbolsRemoved?.Invoke(this, new DXFeedSymbolsUpdateEventArgs(GetSymbols()));
-            subscriptionInstance.Clear();
+            if (IsClosed)
+                return;
+            lock (symbolsLocker)
+            {
+                OnSymbolsRemoved?.Invoke(this, new DXFeedSymbolsUpdateEventArgs(GetSymbols()));
+                subscriptionInstance.Clear();
+            }
         }
 
         /// <summary>
@@ -250,6 +255,10 @@ namespace com.dxfeed.api
         /// <param name="symbols">The collection of symbols.</param>
         public void SetSymbols(ICollection<object> symbols)
         {
+            if (IsClosed)
+                return;
+            if (symbols == null || symbols.Count == 0)
+                return;
             lock (symbolsLocker)
             {
                 OnSymbolsRemoved?.Invoke(this, new DXFeedSymbolsUpdateEventArgs(GetSymbolsUnsafe()));
@@ -279,6 +288,10 @@ namespace com.dxfeed.api
         /// <param name="symbols">The array of symbols.</param>
         public void SetSymbols(params object[] symbols)
         {
+            if (IsClosed)
+                return;
+            if (symbols == null || symbols.Length == 0)
+                return;
             lock (symbolsLocker)
             {
                 OnSymbolsRemoved?.Invoke(this, new DXFeedSymbolsUpdateEventArgs(GetSymbolsUnsafe()));
@@ -306,6 +319,8 @@ namespace com.dxfeed.api
         /// <param name="symbols">Symbols the collection of symbols.</param>
         public void AddSymbols(ICollection<object> symbols)
         {
+            if (symbols == null)
+                return;
             AddSymbols(symbols.ToArray());
         }
 
@@ -353,6 +368,10 @@ namespace com.dxfeed.api
         /// <param name="symbol">The symbol.</param>
         public void AddSymbols(object symbol)
         {
+            if (IsClosed)
+                return;
+            if (symbol == null)
+                return;
             lock (symbolsLocker)
             {
                 subscriptionInstance.AddSymbol(SymbolToString(symbol));
@@ -377,7 +396,9 @@ namespace com.dxfeed.api
         /// <param name="symbols">The collection of symbols.</param>
         public void RemoveSymbols(ICollection<object> symbols)
         {
-            if (symbols.Count == 0)
+            if (IsClosed)
+                return;
+            if (symbols == null || symbols.Count == 0)
                 return;
             lock (symbolsLocker)
             {
@@ -404,7 +425,9 @@ namespace com.dxfeed.api
         /// <param name="symbols">The array of symbols.</param>
         public void RemoveSymbols(params object[] symbols)
         {
-            if (symbols.Length == 0)
+            if (IsClosed)
+                return;
+            if (symbols == null || symbols.Length == 0)
                 return;
             lock (symbolsLocker)
             {
@@ -498,7 +521,9 @@ namespace com.dxfeed.api
         /// <param name="symbols">The array of symbols.</param>
         protected void AddSymbols(bool callUpdateEvent, params object[] symbols)
         {
-            if (symbols.Length == 0)
+            if (IsClosed)
+                return;
+            if (symbols == null || symbols.Length == 0)
                 return;
             lock (symbolsLocker)
             {
@@ -525,7 +550,8 @@ namespace com.dxfeed.api
         private ISet<object> GetSymbolsUnsafe()
         {
             HashSet<object> symbolsSet = new HashSet<object>();
-            subscriptionInstance.GetSymbols().All(s => symbolsSet.Add(s));
+            if (!IsClosed)
+                subscriptionInstance.GetSymbols().All(s => symbolsSet.Add(s));
             return symbolsSet;
         }
 

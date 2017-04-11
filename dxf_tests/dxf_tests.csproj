@@ -74,6 +74,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="src\api\CandleSymbolTest.cs" />
     <Compile Include="src\api\DXEndpointTest.cs" />
+    <Compile Include="src\api\DXFeedSubscriptionTest.cs" />
     <Compile Include="src\api\DxStringTest.cs" />
     <Compile Include="src\api\FullTest.cs" />
     <Compile Include="src\api\InstrumentProfileLiveTest.cs" />

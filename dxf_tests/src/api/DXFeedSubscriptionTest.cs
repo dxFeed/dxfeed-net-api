@@ -11,9 +11,6 @@ namespace com.dxfeed.api
     [TestFixture]
     public class DXFeedSubscriptionTest
     {
-
-        //TODO: multithreaded test
-
         [Test]
         public void IsClosedTest()
         {
@@ -26,10 +23,17 @@ namespace com.dxfeed.api
 
             s.Close();
             Assert.True(s.IsClosed);
+
             Parallel.For(ParallelFrom, ParallelTo, i =>
             {
                 Assert.True(s.IsClosed);
             });
+
+            //try to close subscription via closing endpoint
+            s = DXFeed.GetInstance().CreateSubscription<IDxOrder>();
+            Assert.False(s.IsClosed);
+            DXEndpoint.GetInstance().Close();
+            Assert.True(s.IsClosed);
         }
 
         [Test]

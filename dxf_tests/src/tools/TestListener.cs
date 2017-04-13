@@ -18,15 +18,18 @@ namespace com.dxfeed.tests.tools
     /// Event listener class for tests.
     /// Allow to get any parameters from received events and transfer to test method.
     /// </summary>
-    public class TestListener : 
-        IDxFeedListener, 
-        IDxCandleListener, 
+    public class TestListener :
+        IDxFeedListener,
+        IDxCandleListener,
         IDxTradeEthListener,
         IDxSpreadOrderListener,
         IDxGreeksListener,
         IDxTheoPriceListener,
         IDxUnderlyingListener,
-        IDxSeriesListener
+        IDxSeriesListener,
+        IDxConfigurationListener,
+        IDXFeedEventListener<IDxOrder>,
+        IDXFeedEventListener<IDxEventType>
     {
         public class ReceivedEvent<TE>
         {
@@ -36,6 +39,12 @@ namespace com.dxfeed.tests.tools
             public ReceivedEvent(DxString symbol, EventParams eventParams, TE eventObj)
             {
                 Symbol = symbol.ToString();
+                EventParams = new EventParams(eventParams.Flags, eventParams.TimeIntField, eventParams.SnapshotKey);
+                Event = eventObj;
+            }
+            public ReceivedEvent(string symbol, EventParams eventParams, TE eventObj)
+            {
+                Symbol = symbol;
                 EventParams = new EventParams(eventParams.Flags, eventParams.TimeIntField, eventParams.SnapshotKey);
                 Event = eventObj;
             }
@@ -54,6 +63,7 @@ namespace com.dxfeed.tests.tools
         List<ReceivedEvent<IDxTheoPrice>> theoPrice = new List<ReceivedEvent<IDxTheoPrice>>();
         List<ReceivedEvent<IDxUnderlying>> underlying = new List<ReceivedEvent<IDxUnderlying>>();
         List<ReceivedEvent<IDxSeries>> series = new List<ReceivedEvent<IDxSeries>>();
+        List<ReceivedEvent<IDxConfiguration>> configurations = new List<ReceivedEvent<IDxConfiguration>>();
 
         ReaderWriterLock rwl = new ReaderWriterLock();
 
@@ -61,6 +71,8 @@ namespace com.dxfeed.tests.tools
         int eventsTimeout = 120000;
         int eventsSleepTime = 100;
         Func<bool> IsConnected = null;
+
+        public TestListener() { }
 
         public TestListener(int eventsTimeout, int eventsSleepTime, Func<bool> IsConnected)
         {
@@ -71,34 +83,37 @@ namespace com.dxfeed.tests.tools
 
         private List<ReceivedEvent<TE>> GetList<TE>()
         {
-            if (typeof(TE) == typeof(IDxQuote))
+            Type type = typeof(TE);
+            if (typeof(IDxQuote).IsAssignableFrom(type))
                 return quotes as List<ReceivedEvent<TE>>;
-            else if (typeof(TE) == typeof(IDxTrade))
+            else if (typeof(IDxTrade).IsAssignableFrom(type))
                 return trades as List<ReceivedEvent<TE>>;
-            else if (typeof(TE) == typeof(IDxOrder))
+            else if (typeof(IDxOrder).IsAssignableFrom(type))
                 return orders as List<ReceivedEvent<TE>>;
-            else if (typeof(TE) == typeof(IDxProfile))
+            else if (typeof(IDxProfile).IsAssignableFrom(type))
                 return profiles as List<ReceivedEvent<TE>>;
-            else if (typeof(TE) == typeof(IDxSummary))
+            else if (typeof(IDxSummary).IsAssignableFrom(type))
                 return summaries as List<ReceivedEvent<TE>>;
-            else if (typeof(TE) == typeof(IDxTimeAndSale))
+            else if (typeof(IDxTimeAndSale).IsAssignableFrom(type))
                 return timesAndSales as List<ReceivedEvent<TE>>;
-            else if (typeof(TE) == typeof(IDxCandle))
+            else if (typeof(IDxCandle).IsAssignableFrom(type))
                 return candles as List<ReceivedEvent<TE>>;
-            else if (typeof(TE) == typeof(IDxTradeEth))
+            else if (typeof(IDxTradeEth).IsAssignableFrom(type))
                 return tradesEth as List<ReceivedEvent<TE>>;
-            else if (typeof(TE) == typeof(IDxSpreadOrder))
+            else if (typeof(IDxSpreadOrder).IsAssignableFrom(type))
                 return spreadOrders as List<ReceivedEvent<TE>>;
-            else if (typeof(TE) == typeof(IDxGreeks))
+            else if (typeof(IDxGreeks).IsAssignableFrom(type))
                 return greeks as List<ReceivedEvent<TE>>;
-            else if (typeof(TE) == typeof(IDxTheoPrice))
+            else if (typeof(IDxTheoPrice).IsAssignableFrom(type))
                 return theoPrice as List<ReceivedEvent<TE>>;
-            else if (typeof(TE) == typeof(IDxUnderlying))
+            else if (typeof(IDxUnderlying).IsAssignableFrom(type))
                 return underlying as List<ReceivedEvent<TE>>;
-            else if(typeof(TE) == typeof(IDxSeries))
+            else if (typeof(IDxSeries).IsAssignableFrom(type))
                 return series as List<ReceivedEvent<TE>>;
+            else if (typeof(IDxConfiguration).IsAssignableFrom(type))
+                return configurations as List<ReceivedEvent<TE>>;
             else
-                return null;
+                throw new ArgumentException(string.Format("Unknown event type: {0}", type));
         }
 
         public ReceivedEvent<TE> GetLastEvent<TE>()
@@ -405,6 +420,67 @@ namespace com.dxfeed.tests.tools
         {
             foreach (var s in buf)
                 AddEvent(new ReceivedEvent<IDxSeries>(buf.Symbol, buf.EventParams, s));
+        }
+
+        #endregion
+
+        #region Implementation of IDxConfigurationListener
+
+        public void OnConfiguration<TB, TE>(TB buf)
+            where TB : IDxEventBuf<TE>
+            where TE : IDxConfiguration
+        {
+            foreach (var c in buf)
+                AddEvent(new ReceivedEvent<IDxConfiguration>(buf.Symbol, buf.EventParams, c));
+        }
+
+        #endregion
+
+        #region Implementation of IDXFeedListener
+
+        public void EventsReceived(IList<IDxOrder> events)
+        {
+            foreach (var o in events)
+                AddEvent(new ReceivedEvent<IDxOrder>(o.EventSymbol, new EventParams(o.EventFlags, 0, 0), o));
+        }
+
+        public void EventsReceived(IList<IDxEventType> events)
+        {
+            foreach (var e in events)
+            {
+                EventParams eventParams = new EventParams(e is IndexedEvent ? (e as IndexedEvent).EventFlags : 0, 0, 0);
+                string symbol = e.EventSymbol.ToString();
+                if (e is IDxQuote)
+                    AddEvent(new ReceivedEvent<IDxQuote>(symbol, eventParams, e as IDxQuote));
+                else if (e is IDxTrade)
+                    AddEvent(new ReceivedEvent<IDxTrade>(symbol, eventParams, e as IDxTrade));
+                else if (e is IDxOrder)
+                    AddEvent(new ReceivedEvent<IDxOrder>(symbol, eventParams, e as IDxOrder));
+                else if (e is IDxProfile)
+                    AddEvent(new ReceivedEvent<IDxProfile>(symbol, eventParams, e as IDxProfile));
+                else if (e is IDxSummary)
+                    AddEvent(new ReceivedEvent<IDxSummary>(symbol, eventParams, e as IDxSummary));
+                else if (e is IDxTimeAndSale)
+                    AddEvent(new ReceivedEvent<IDxTimeAndSale>(symbol, eventParams, e as IDxTimeAndSale));
+                else if (e is IDxCandle)
+                    AddEvent(new ReceivedEvent<IDxCandle>(symbol, eventParams, e as IDxCandle));
+                else if (e is IDxTradeEth)
+                    AddEvent(new ReceivedEvent<IDxTradeEth>(symbol, eventParams, e as IDxTradeEth));
+                else if (e is IDxSpreadOrder)
+                    AddEvent(new ReceivedEvent<IDxSpreadOrder>(symbol, eventParams, e as IDxSpreadOrder));
+                else if (e is IDxGreeks)
+                    AddEvent(new ReceivedEvent<IDxGreeks>(symbol, eventParams, e as IDxGreeks));
+                else if (e is IDxTheoPrice)
+                    AddEvent(new ReceivedEvent<IDxTheoPrice>(symbol, eventParams, e as IDxTheoPrice));
+                else if (e is IDxUnderlying)
+                    AddEvent(new ReceivedEvent<IDxUnderlying>(symbol, eventParams, e as IDxUnderlying));
+                else if (e is IDxSeries)
+                    AddEvent(new ReceivedEvent<IDxSeries>(symbol, eventParams, e as IDxSeries));
+                else if (e is IDxConfiguration)
+                    AddEvent(new ReceivedEvent<IDxConfiguration>(symbol, eventParams, e as IDxConfiguration));
+                else
+                    throw new ArgumentException(string.Format("Unknown event type: {0}", e.GetType()));
+            }
         }
 
         #endregion

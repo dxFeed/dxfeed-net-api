@@ -29,6 +29,7 @@ namespace com.dxfeed.api
         /// <typeparam name="E">The type of events.</typeparam>
         /// <param name="eventType">The class of event types.</param>
         /// <returns>New <see cref="IDXFeedSubscription{E}"/> for a single event type.</returns>
+        /// <exception cref="InvalidOperationException">Endpoint was been closed.</exception>
         IDXFeedSubscription<E> CreateSubscription<E>() 
             where E : IDxEventType;
 
@@ -41,6 +42,7 @@ namespace com.dxfeed.api
         /// <typeparam name="E">The type of events.</typeparam>
         /// <param name="eventTypes">The classes of event types.</param>
         /// <returns>The new <see cref="IDXFeedSubscription{E}"/>.</returns>
+        /// <exception cref="InvalidOperationException">Endpoint was been closed.</exception>
         IDXFeedSubscription<E> CreateSubscription<E>(params Type[] eventTypes) 
             where E : IDxEventType;
 
@@ -54,6 +56,7 @@ namespace com.dxfeed.api
         /// </summary>
         /// <typeparam name="E">The type of event.</typeparam>
         /// <returns>New time series subscription.</returns>
+        /// <exception cref="InvalidOperationException">Endpoint was been closed.</exception>
         IDXFeedTimeSeriesSubscription<E> CreateTimeSeriesSubscription<E>() 
             where E : TimeSeriesEvent;
 
@@ -66,7 +69,8 @@ namespace com.dxfeed.api
         /// </summary>
         /// <typeparam name="E">The base type of events.</typeparam>
         /// <param name="eventTypes">The classes of event types.</param>
-        /// <returns></returns>
+        /// <returns>New time series subscription.</returns>
+        /// <exception cref="InvalidOperationException">Endpoint was been closed.</exception>
         IDXFeedTimeSeriesSubscription<E> CreateTimeSeriesSubscription<E>(params Type[] eventTypes) 
             where E : TimeSeriesEvent;
 

@@ -52,33 +52,33 @@ namespace com.dxfeed.api.util
             EventType events = EventType.None;
             foreach (Type t in types)
             {
-                if (t == typeof(IDxTrade))
+                if (typeof(IDxTrade).IsAssignableFrom(t))
                     events |= EventType.Trade;
-                else if (t == typeof(IDxQuote))
+                else if (typeof(IDxQuote).IsAssignableFrom(t))
                     events |= EventType.Quote;
-                else if (t == typeof(IDxSummary))
+                else if (typeof(IDxSummary).IsAssignableFrom(t))
                     events |= EventType.Summary;
-                else if (t == typeof(IDxProfile))
+                else if (typeof(IDxProfile).IsAssignableFrom(t))
                     events |= EventType.Profile;
-                else if (t == typeof(IDxOrder))
+                else if (typeof(IDxOrder).IsAssignableFrom(t))
                     events |= EventType.Order;
-                else if (t == typeof(IDxTimeAndSale))
+                else if (typeof(IDxTimeAndSale).IsAssignableFrom(t))
                     events |= EventType.TimeAndSale;
-                else if (t == typeof(IDxCandle))
+                else if (typeof(IDxCandle).IsAssignableFrom(t))
                     events |= EventType.Candle;
-                else if (t == typeof(IDxTradeEth))
+                else if (typeof(IDxTradeEth).IsAssignableFrom(t))
                     events |= EventType.TradeETH;
-                else if (t == typeof(IDxSpreadOrder))
+                else if (typeof(IDxSpreadOrder).IsAssignableFrom(t))
                     events |= EventType.SpreadOrder;
-                else if (t == typeof(IDxGreeks))
+                else if (typeof(IDxGreeks).IsAssignableFrom(t))
                     events |= EventType.Greeks;
-                else if (t == typeof(IDxTheoPrice))
+                else if (typeof(IDxTheoPrice).IsAssignableFrom(t))
                     events |= EventType.TheoPrice;
-                else if (t == typeof(IDxUnderlying))
+                else if (typeof(IDxUnderlying).IsAssignableFrom(t))
                     events |= EventType.Underlying;
-                else if (t == typeof(IDxSeries))
+                else if (typeof(IDxSeries).IsAssignableFrom(t))
                     events |= EventType.Series;
-                else if (t == typeof(IDxConfiguration))
+                else if (typeof(IDxConfiguration).IsAssignableFrom(t))
                     events |= EventType.Configuration;
                 else throw new ArgumentException("Unknown event type: " + t);
             }

@@ -70,6 +70,10 @@ namespace com.dxfeed.api
             if (endpoint == null)
                 throw new ArgumentNullException("endpoint");
 
+            foreach (Type t in eventTypes)
+                if (!typeof(E).IsAssignableFrom(t))
+                    throw new ArgumentException(string.Format("The type {0} is not {1}", t, typeof(E)));
+
             endpoint.OnClosing += Endpoint_OnClosing;
 
             subscriptionInstance = endpoint.Connection.CreateSubscription(

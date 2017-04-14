@@ -138,6 +138,9 @@ namespace com.dxfeed.api
         public void AttachSubscription<E>(IDXFeedSubscription<E> subscription) 
             where E : IDxEventType
         {
+            if (subscription == null)
+                throw new ArgumentNullException("subscription");
+
             if (attachedSubscriptions.Contains(subscription))
                 return;
             attachedSubscriptions.Add(subscription);
@@ -151,6 +154,9 @@ namespace com.dxfeed.api
         public void DetachSubscription<E>(IDXFeedSubscription<E> subscription) 
             where E : IDxEventType
         {
+            if (subscription == null)
+                throw new ArgumentNullException("subscription");
+
             attachedSubscriptions.Remove(subscription);
         }
 
@@ -318,6 +324,8 @@ namespace com.dxfeed.api
             CancellationToken cancellationToken)
             where E : class, LastingEvent
         {
+            if (symbols == null)
+                throw new ArgumentNullException("symbols");
             List<Task<LastingEvent>> result = new List<Task<LastingEvent>>(symbols.Count);
             foreach (object symbol in symbols)
             {
@@ -542,14 +550,22 @@ namespace com.dxfeed.api
                     throw new OperationCanceledException("Endpoint was been closed.");
                 HistoryEventsCollector<E> collector = new HistoryEventsCollector<E>(fromTime, toTime);
                 IDXFeedSubscription<E> s = CreateSnapshotSubscription<E>(fromTime, source);
-                s.AddSymbols(symbol);
                 s.AddEventListener(collector);
+                s.AddSymbols(symbol);
 
-                while (!collector.IsDone)
+                try
                 {
-                    if (endpoint.State == DXEndpointState.Closed)
-                        throw new OperationCanceledException("Endpoint was been closed.");
-                    cancellationToken.ThrowIfCancellationRequested();
+                    while (!collector.IsDone)
+                    {
+                        if (endpoint.State == DXEndpointState.Closed)
+                            throw new OperationCanceledException("Endpoint was been closed.");
+                        cancellationToken.ThrowIfCancellationRequested();
+                    }
+                }
+                finally
+                {
+                    //Note: it is necessary i.e. snapshot with similar type and symbol can be created.
+                    s.Close();
                 }
                 List<E> eventsList = collector.Events;
                 eventsList.Reverse();

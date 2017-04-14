@@ -537,6 +537,12 @@ namespace com.dxfeed.api
             }
         }
 
+        protected void Endpoint_OnClosing(object sender, EventArgs e)
+        {
+            ((IDXEndpoint)sender).OnClosing -= Endpoint_OnClosing;
+            Close();
+        }
+
         private ICollection<string> SymbolsToStringList(ICollection<object> symbols)
         {
             List<string> stringList = new List<string>();
@@ -557,12 +563,6 @@ namespace com.dxfeed.api
             if (!IsClosed)
                 subscriptionInstance.GetSymbols().All(s => symbolsSet.Add(s));
             return symbolsSet;
-        }
-
-        private void Endpoint_OnClosing(object sender, EventArgs e)
-        {
-            ((IDXEndpoint)sender).OnClosing -= Endpoint_OnClosing;
-            Close();
         }
 
     }

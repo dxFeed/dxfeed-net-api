@@ -86,6 +86,8 @@
     <Compile Include="src\tools\eventplayer\EventPlayer.cs" />
     <Compile Include="src\tools\eventplayer\IPlayedEvent.cs" />
     <Compile Include="src\tools\eventplayer\MarshalDataTypes.cs" />
+    <Compile Include="src\tools\eventplayer\PlayedCandle.cs" />
+    <Compile Include="src\tools\eventplayer\PlayedGreeks.cs" />
     <Compile Include="src\tools\eventplayer\PlayedOrder.cs" />
     <Compile Include="src\tools\eventplayer\PlayedTrade.cs" />
     <Compile Include="src\tools\OrderViewTestListener.cs" />

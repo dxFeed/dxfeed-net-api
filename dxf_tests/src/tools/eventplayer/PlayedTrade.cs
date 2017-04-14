@@ -26,11 +26,12 @@ namespace com.dxfeed.tests.tools.eventplayer
             EventSymbol = symbol;
             Time = Tools.UnixTimeToDate(time);
             ExchangeCode = exchangeCode;
-            Price = Price;
-            Size = Size;
-            Tick = Tick;
+            Price = price;
+            Size = size;
+            Tick = tick;
             Change = change;
             DayVolume = dayVolume;
+
             Params = new EventParams(0, 0, 0);
             Data = new DxTestTrade(time, exchangeCode, price, size, tick, change, dayVolume);
         }

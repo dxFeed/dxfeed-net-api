@@ -29,7 +29,7 @@ namespace com.dxfeed.tests.tools.eventplayer
         public void PlayEvents(string symbol, params IPlayedEvent[] playEventsList)
         {
             if (playEventsList == null)
-                throw new ArgumentNullException("eventsData");
+                throw new ArgumentNullException("playEventsList");
             FieldInfo nativeSubscription = typeof(DXFeedSubscription<E>).GetField("subscriptionInstance", BindingFlags.NonPublic | BindingFlags.Instance);
             if (nativeSubscription == null)
                 throw new InvalidOperationException("subscriptionInstance field not found!");
@@ -59,6 +59,58 @@ namespace com.dxfeed.tests.tools.eventplayer
                     Marshal.FreeHGlobal(dataPtr);
                     Marshal.FreeHGlobal(paramsPtr);
                 }
+            }
+        }
+
+        public void PlaySnapshot(string symbol, params IPlayedEvent[] playEventsList)
+        {
+            if (playEventsList == null)
+                throw new ArgumentNullException("playEventsList");
+            FieldInfo nativeSubscription = typeof(DXFeedSubscription<E>).GetField("subscriptionInstance", BindingFlags.NonPublic | BindingFlags.Instance);
+            if (nativeSubscription == null)
+                throw new InvalidOperationException("subscriptionInstance field not found!");
+            MethodInfo onEvent = typeof(NativeSnapshotSubscription).GetMethod("OnEvent", BindingFlags.NonPublic | BindingFlags.Instance);
+            if (onEvent == null)
+                throw new InvalidOperationException("OnEvent method not found!");
+
+            char[] symbolChars = symbol.ToCharArray();
+            IntPtr recordsPtr = IntPtr.Zero;
+            IntPtr snapshotPtr = IntPtr.Zero;
+            try
+            {
+                IntPtr nextRecordPtr = IntPtr.Zero;
+                foreach (var playedEvent in playEventsList)
+                {
+                    if (!(playedEvent is E))
+                        throw new ArgumentException("The one of played events is not " + typeof(E));
+                    var dataSize = Marshal.SizeOf(playedEvent.Data);
+                    if (recordsPtr == IntPtr.Zero)
+                    {
+                        recordsPtr = Marshal.AllocHGlobal(dataSize * playEventsList.Length);
+                        nextRecordPtr = recordsPtr;
+                    }
+                    Marshal.StructureToPtr(playedEvent.Data, nextRecordPtr, false);
+                    nextRecordPtr += dataSize;
+                }
+
+                DxTestSnapshotData snapshot;
+                snapshot.event_type = EventTypeUtil.GetEventsType(typeof(E));
+                snapshot.symbol = Marshal.UnsafeAddrOfPinnedArrayElement(symbolChars, 0);
+                snapshot.records_count = playEventsList.Length;
+                snapshot.records = recordsPtr;
+                snapshotPtr = Marshal.AllocHGlobal(Marshal.SizeOf(snapshot));
+                Marshal.StructureToPtr(snapshot, snapshotPtr, false);
+
+                onEvent.Invoke(nativeSubscription.GetValue(subscription), new object[] {
+                        snapshotPtr, IntPtr.Zero
+                    });
+            }
+            finally
+            {
+                if (recordsPtr != IntPtr.Zero)
+                    Marshal.FreeHGlobal(recordsPtr);
+                if (snapshotPtr != IntPtr.Zero)
+                    Marshal.FreeHGlobal(snapshotPtr);
             }
         }
 

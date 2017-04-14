@@ -28,7 +28,9 @@ namespace com.dxfeed.tests.tools
         IDxUnderlyingListener,
         IDxSeriesListener,
         IDxConfigurationListener,
+        IDXFeedEventListener<IDxCandle>,
         IDXFeedEventListener<IDxOrder>,
+        IDXFeedEventListener<TimeSeriesEvent>,
         IDXFeedEventListener<IDxEventType>
     {
         public class ReceivedEvent<TE>
@@ -438,10 +440,24 @@ namespace com.dxfeed.tests.tools
 
         #region Implementation of IDXFeedListener
 
+        public void EventsReceived(IList<IDxCandle> events)
+        {
+            foreach (var c in events)
+                AddEvent(new ReceivedEvent<IDxCandle>(c.EventSymbol.ToString(), new EventParams(c.EventFlags, 0, 0), c));
+        }
+
         public void EventsReceived(IList<IDxOrder> events)
         {
             foreach (var o in events)
                 AddEvent(new ReceivedEvent<IDxOrder>(o.EventSymbol, new EventParams(o.EventFlags, 0, 0), o));
+        }
+
+        public void EventsReceived(IList<TimeSeriesEvent> events)
+        {
+            List<IDxEventType> timeSeriesEvents = new List<IDxEventType>(events.Count);
+            foreach (var e in events)
+                timeSeriesEvents.Add(e);
+            EventsReceived(timeSeriesEvents);
         }
 
         public void EventsReceived(IList<IDxEventType> events)

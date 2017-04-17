@@ -109,24 +109,33 @@ namespace com.dxfeed.api
         {
             get
             {
-                return fromTime;
+                long result;
+                lock (timeLocker)
+                {
+                    result = fromTime;
+                }
+                return result;
             }
             set
             {
-                fromTime = value;
+                lock (timeLocker)
+                {
+                    fromTime = value;
 
-                ISet<object> symbols = GetSymbols();
+                    ISet<object> symbols = GetSymbols();
 
-                subscriptionInstance.Dispose();
-                subscriptionInstance = endpointInstance.Connection.CreateSubscription(
-                    EventTypeUtil.GetEventsType(EventTypes.ToArray()),
-                    fromTime,
-                    new DXFeedEventHandler<E>(eventListeners, eventListenerLocker));
-                AddSymbols(false, symbols);
+                    subscriptionInstance.Dispose();
+                    subscriptionInstance = endpointInstance.Connection.CreateSubscription(
+                        EventTypeUtil.GetEventsType(EventTypes.ToArray()),
+                        fromTime,
+                        new DXFeedEventHandler<E>(eventListeners, eventListenerLocker));
+                    AddSymbols(false, symbols.ToArray());
+                }
             }
         }
 
         private long fromTime = long.MaxValue;
         private DXEndpoint endpointInstance;
+        private object timeLocker = new object();
     }
 }

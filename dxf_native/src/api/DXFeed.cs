@@ -48,7 +48,7 @@ namespace com.dxfeed.api
         /// <param name="eventType">The class of event types.</param>
         /// <returns>New <see cref="IDXFeedSubscription{E}"/> for a single event type.</returns>
         /// <exception cref="InvalidOperationException">Endpoint was been closed.</exception>
-        public IDXFeedSubscription<E> CreateSubscription<E>() 
+        public IDXFeedSubscription<E> CreateSubscription<E>()
             where E : IDxEventType
         {
             if (endpoint.State == DXEndpointState.Closed)
@@ -68,7 +68,7 @@ namespace com.dxfeed.api
         /// <param name="eventTypes">The classes of event types.</param>
         /// <returns>The new <see cref="IDXFeedSubscription{E}"/>.</returns>
         /// <exception cref="InvalidOperationException">Endpoint was been closed.</exception>
-        public IDXFeedSubscription<E> CreateSubscription<E>(params Type[] eventTypes) 
+        public IDXFeedSubscription<E> CreateSubscription<E>(params Type[] eventTypes)
             where E : IDxEventType
         {
             if (endpoint.State == DXEndpointState.Closed)
@@ -135,7 +135,7 @@ namespace com.dxfeed.api
         /// </summary>
         /// <typeparam name="E">The type of events.</typeparam>
         /// <param name="subscription">The subscription.</param>
-        public void AttachSubscription<E>(IDXFeedSubscription<E> subscription) 
+        public void AttachSubscription<E>(IDXFeedSubscription<E> subscription)
             where E : IDxEventType
         {
             if (subscription == null)
@@ -151,7 +151,7 @@ namespace com.dxfeed.api
         ///     corresponding subscription is not attached to this feed.
         /// </summary>
         /// <param name="subscription">The subscription.</param>
-        public void DetachSubscription<E>(IDXFeedSubscription<E> subscription) 
+        public void DetachSubscription<E>(IDXFeedSubscription<E> subscription)
             where E : IDxEventType
         {
             if (subscription == null)
@@ -498,7 +498,7 @@ namespace com.dxfeed.api
         /// <typeparam name="E">The type of events.</typeparam>
         /// <param name="eventType">The class of event types.</param>
         /// <returns>New DXFeedSubscription for a single event type.</returns>
-        internal IDXFeedSubscription<E> CreateSnapshotSubscription<E>(long time, IndexedEventSource source) 
+        internal IDXFeedSubscription<E> CreateSnapshotSubscription<E>(long time, IndexedEventSource source)
             where E : IndexedEvent
         {
             IDXFeedSubscription<E> subscription = new DXFeedSubscription<E>(endpoint, time, source) as IDXFeedSubscription<E>;
@@ -564,7 +564,8 @@ namespace com.dxfeed.api
                 }
                 finally
                 {
-                    //Note: it is necessary i.e. snapshot with similar type and symbol can be created.
+                    /*Note: it is necessary i.e. new snapshot with similar type and symbol cannot 
+                    be created while this is not closed.*/
                     s.Close();
                 }
                 List<E> eventsList = collector.Events;

@@ -582,126 +582,124 @@ namespace com.dxfeed.api
         {
             //create default endpoint
             DXEndpoint.Create();
-            var symbol = "SYMAB";
+            var symbol = "SYMA";
 
-            ////try to create promise with invalid parameters
-            //Assert.Catch(typeof(ArgumentException), () =>
-            //{
-            //    try
-            //    {
-            //        DXFeed.GetInstance().GetTimeSeriesPromise<IDxCandle>(null, 0, 0, CancellationToken.None).Wait();
-            //    }
-            //    catch (AggregateException ae)
-            //    {
-            //        foreach (var inner in ae.InnerExceptions)
-            //            throw inner;
-            //    }
-            //});
+            //try to create promise with invalid parameters
+            Assert.Catch(typeof(ArgumentException), () =>
+            {
+                try
+                {
+                    DXFeed.GetInstance().GetTimeSeriesPromise<IDxGreeks>(null, 0, 0, CancellationToken.None).Wait();
+                }
+                catch (AggregateException ae)
+                {
+                    foreach (var inner in ae.InnerExceptions)
+                        throw inner;
+                }
+            });
 
-            ////try to cancel promise
-            //CancellationTokenSource cancelSource = new CancellationTokenSource();
-            //Task<List<IDxCandle>> promise = DXFeed.GetInstance().GetTimeSeriesPromise<IDxCandle>(symbol, 0, 0, cancelSource.Token);
-            //cancelSource.CancelAfter(TimeSpan.FromSeconds(2));
-            //try
-            //{
-            //    Task.WaitAll(promise);
-            //}
-            //catch (AggregateException ae)
-            //{
-            //    foreach (var inner in ae.InnerExceptions)
-            //    {
-            //        if (!(inner is OperationCanceledException))
-            //            Assert.Fail("Unexpected exception: " + inner);
-            //    }
-            //}
+            //try to cancel promise
+            CancellationTokenSource cancelSource = new CancellationTokenSource();
+            Task<List<IDxGreeks>> promise = DXFeed.GetInstance().GetTimeSeriesPromise<IDxGreeks>(symbol, 0, 0, cancelSource.Token);
+            cancelSource.CancelAfter(TimeSpan.FromSeconds(2));
+            try
+            {
+                Task.WaitAll(promise);
+            }
+            catch (AggregateException ae)
+            {
+                foreach (var inner in ae.InnerExceptions)
+                {
+                    if (!(inner is OperationCanceledException))
+                        Assert.Fail("Unexpected exception: " + inner);
+                }
+            }
 
-            ////try wait promise with timeout
-            //cancelSource = new CancellationTokenSource(TimeSpan.FromSeconds(2));
-            //promise = DXFeed.GetInstance().GetTimeSeriesPromise<IDxCandle>(symbol, 0, 0, cancelSource.Token);
-            //try
-            //{
-            //    Task.WaitAll(promise);
-            //}
-            //catch (AggregateException ae)
-            //{
-            //    foreach (var inner in ae.InnerExceptions)
-            //    {
-            //        if (!(inner is OperationCanceledException))
-            //            Assert.Fail("Unexpected exception: " + inner);
-            //    }
-            //}
+            //try wait promise with timeout
+            cancelSource = new CancellationTokenSource(TimeSpan.FromSeconds(2));
+            promise = DXFeed.GetInstance().GetTimeSeriesPromise<IDxGreeks>(symbol, 0, 0, cancelSource.Token);
+            try
+            {
+                Task.WaitAll(promise);
+            }
+            catch (AggregateException ae)
+            {
+                foreach (var inner in ae.InnerExceptions)
+                {
+                    if (!(inner is OperationCanceledException))
+                        Assert.Fail("Unexpected exception: " + inner);
+                }
+            }
 
-            ////try close endpoint while promise waiting
-            //Task closeEndpointTask = Task.Run(() =>
-            //{
-            //    Thread.Sleep(TimeSpan.FromSeconds(2));
-            //    DXEndpoint.GetInstance().Close();
-            //});
-            //promise = DXFeed.GetInstance().GetTimeSeriesPromise<IDxCandle>(symbol, 0, 0, CancellationToken.None);
-            //try
-            //{
-            //    Task.WaitAll(promise, closeEndpointTask);
-            //}
-            //catch (AggregateException ae)
-            //{
-            //    foreach (var inner in ae.InnerExceptions)
-            //    {
-            //        if (!(inner is OperationCanceledException))
-            //            Assert.Fail("Unexpected exception: " + inner);
-            //    }
-            //}
+            //try close endpoint while promise waiting
+            Task closeEndpointTask = Task.Run(() =>
+            {
+                Thread.Sleep(TimeSpan.FromSeconds(2));
+                DXEndpoint.GetInstance().Close();
+            });
+            promise = DXFeed.GetInstance().GetTimeSeriesPromise<IDxGreeks>(symbol, 0, 0, CancellationToken.None);
+            try
+            {
+                Task.WaitAll(promise, closeEndpointTask);
+            }
+            catch (AggregateException ae)
+            {
+                foreach (var inner in ae.InnerExceptions)
+                {
+                    if (!(inner is OperationCanceledException))
+                        Assert.Fail("Unexpected exception: " + inner);
+                }
+            }
 
-            ////try to get promise on closed endpoint
-            //promise = DXFeed.GetInstance().GetTimeSeriesPromise<IDxCandle>(symbol, 0, 0, CancellationToken.None);
-            //try
-            //{
-            //    Task.WaitAll(promise);
-            //}
-            //catch (AggregateException ae)
-            //{
-            //    foreach (var inner in ae.InnerExceptions)
-            //    {
-            //        if (!(inner is OperationCanceledException))
-            //            Assert.Fail("Unexpected exception: " + inner);
-            //    }
-            //}
+            //try to get promise on closed endpoint
+            promise = DXFeed.GetInstance().GetTimeSeriesPromise<IDxGreeks>(symbol, 0, 0, CancellationToken.None);
+            try
+            {
+                Task.WaitAll(promise);
+            }
+            catch (AggregateException ae)
+            {
+                foreach (var inner in ae.InnerExceptions)
+                {
+                    if (!(inner is OperationCanceledException))
+                        Assert.Fail("Unexpected exception: " + inner);
+                }
+            }
 
             //try to get last event succesfully
             DateTime date = DateTime.Now;
-            var playedCandles = new PlayedCandle[] {
-                new PlayedCandle(symbol, Tools.DateToUnixTime(date),                12, 100, 112.34, 156.78, 19.0, 143.21, 1000, 199, 10011, 10021, 5, 777, 888, 0),
-                new PlayedCandle(symbol, Tools.DateToUnixTime(date.AddMinutes(-1)), 34, 101, 212.34, 256.78, 19.0, 143.21, 1001, 299, 10012, 10022, 4, 777, 888, 0),
-                new PlayedCandle(symbol, Tools.DateToUnixTime(date.AddMinutes(-2)), 56, 102, 312.34, 356.78, 19.0, 143.21, 1002, 399, 10013, 10023, 3, 777, 888, 0),
-                new PlayedCandle(symbol, Tools.DateToUnixTime(date.AddMinutes(-3)), 78, 103, 412.34, 456.78, 19.0, 143.21, 1003, 499, 10014, 10024, 2, 777, 888, 0),
-                new PlayedCandle(symbol, Tools.DateToUnixTime(date.AddMinutes(-4)), 90, 104, 512.34, 556.78, 19.0, 143.21, 1004, 599, 10015, 10025, 1, 777, 888, 0)
+            var playedGreeks = new PlayedGreeks[] {
+                new PlayedGreeks(symbol, Tools.DateToUnixTime(date),                123, 156.789, 111, 155, 166, 177, 188, 199, 5, 0),
+                new PlayedGreeks(symbol, Tools.DateToUnixTime(date.AddMinutes(-1)), 124, 256.789, 211, 255, 266, 277, 288, 299, 4, 0),
+                new PlayedGreeks(symbol, Tools.DateToUnixTime(date.AddMinutes(-2)), 125, 356.789, 311, 355, 366, 377, 388, 399, 3, 0),
+                new PlayedGreeks(symbol, Tools.DateToUnixTime(date.AddMinutes(-3)), 126, 456.789, 411, 455, 466, 477, 488, 499, 2, 0),
+                new PlayedGreeks(symbol, Tools.DateToUnixTime(date.AddMinutes(-4)), 127, 556.789, 511, 555, 566, 577, 588, 599, 1, 0),
             };
-            var expectedCandles = new PlayedCandle[] {
-                new PlayedCandle(symbol, Tools.DateToUnixTime(date.AddMinutes(-1)), 34, 101, 212.34, 256.78, 19.0, 143.21, 1001, 299, 10012, 10022, 4, 777, 888, 0),
-                new PlayedCandle(symbol, Tools.DateToUnixTime(date.AddMinutes(-2)), 56, 102, 312.34, 356.78, 19.0, 143.21, 1002, 399, 10013, 10023, 3, 777, 888, 0),
-                new PlayedCandle(symbol, Tools.DateToUnixTime(date.AddMinutes(-3)), 78, 103, 412.34, 456.78, 19.0, 143.21, 1003, 499, 10014, 10024, 2, 777, 888, 0)
+            var expectedGreeks = new PlayedGreeks[] {
+                new PlayedGreeks(symbol, Tools.DateToUnixTime(date.AddMinutes(-1)), 124, 256.789, 211, 255, 266, 277, 288, 299, 4, 0),
+                new PlayedGreeks(symbol, Tools.DateToUnixTime(date.AddMinutes(-2)), 125, 356.789, 311, 355, 366, 377, 388, 399, 3, 0),
+                new PlayedGreeks(symbol, Tools.DateToUnixTime(date.AddMinutes(-3)), 126, 456.789, 411, 455, 466, 477, 488, 499, 2, 0)
             };
             Task eventPlayerTask = Task.Run(() =>
             {
-                Thread.Sleep(TimeSpan.FromSeconds(1));
-                EventPlayer<IDxCandle> eventPlayer = new EventPlayer<IDxCandle>(GetSubscriptionFromFeed<IDxCandle>(symbol));
-                eventPlayer.PlaySnapshot(symbol, playedCandles);
+                Thread.Sleep(TimeSpan.FromSeconds(2));
+                EventPlayer<IDxGreeks> eventPlayer = new EventPlayer<IDxGreeks>(GetSubscriptionFromFeed<IDxGreeks>(symbol));
+                eventPlayer.PlaySnapshot(symbol, playedGreeks);
             });
-            //TODO: temp
-            CancellationTokenSource cancelSource = new CancellationTokenSource();
-            //cancelSource = new CancellationTokenSource(TimeSpan.FromSeconds(10));
-            Task<List<IDxCandle>> promise = DXEndpoint.Create().Feed.GetTimeSeriesPromise<IDxCandle>(symbol, Tools.DateToUnixTime(date.AddMinutes(-3)), Tools.DateToUnixTime(date.AddMinutes(-1)), cancelSource.Token);
+            cancelSource = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+            promise = DXEndpoint.Create().Feed.GetTimeSeriesPromise<IDxGreeks>(symbol, Tools.DateToUnixTime(date.AddMinutes(-3)), Tools.DateToUnixTime(date.AddMinutes(-1)), cancelSource.Token);
             Assert.DoesNotThrow(() =>
             {
                 Task.WaitAll(promise, eventPlayerTask);
             });
 
-            var receivedCandles = promise.Result;
-            receivedCandles.Reverse();
-            Assert.AreEqual(expectedCandles.Length, receivedCandles.Count);
-            for (int i = 0; i < expectedCandles.Length; i++)
+            var receivedGreeks = promise.Result;
+            receivedGreeks.Reverse();
+            Assert.AreEqual(expectedGreeks.Length, receivedGreeks.Count);
+            for (int i = 0; i < expectedGreeks.Length; i++)
             {
-                Assert.AreEqual(symbol, receivedCandles[i].EventSymbol.ToString());
-                CompareCandles(expectedCandles[i], receivedCandles[i]);
+                Assert.AreEqual(symbol, receivedGreeks[i].EventSymbol.ToString());
+                CompareGreeks(expectedGreeks[i], receivedGreeks[i]);
             }
         }
 
@@ -793,6 +791,23 @@ namespace com.dxfeed.api
             Assert.AreEqual(playedTrade.Tick, lastTrade.Tick);
             Assert.AreEqual(playedTrade.Change, lastTrade.Change);
             Assert.AreEqual(playedTrade.DayVolume, lastTrade.DayVolume);
+        }
+
+        private void CompareGreeks(IDxGreeks playedGreek, IDxGreeks receivedGreek)
+        {
+            Assert.AreEqual(playedGreek.EventSymbol, receivedGreek.EventSymbol);
+            Assert.AreEqual(playedGreek.EventFlags, receivedGreek.EventFlags);
+            Assert.AreEqual(playedGreek.Delta, receivedGreek.Delta);
+            Assert.AreEqual(playedGreek.Gamma, receivedGreek.Gamma);
+            Assert.AreEqual(playedGreek.GreeksPrice, receivedGreek.GreeksPrice);
+            Assert.AreEqual(playedGreek.Rho, receivedGreek.Rho);
+            Assert.AreEqual(playedGreek.Sequence, receivedGreek.Sequence);
+            Assert.AreEqual(playedGreek.Theta, receivedGreek.Theta);
+            Assert.AreEqual(playedGreek.TimeStamp, receivedGreek.TimeStamp);
+            Assert.AreEqual(playedGreek.Time, receivedGreek.Time);
+            Assert.AreEqual(playedGreek.Vega, receivedGreek.Vega);
+            Assert.AreEqual(playedGreek.Volatility, receivedGreek.Volatility);
+            Assert.AreEqual(playedGreek.Index, receivedGreek.Index);
         }
 
         #endregion

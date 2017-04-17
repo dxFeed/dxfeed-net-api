@@ -703,7 +703,7 @@ namespace com.dxfeed.api
             }
         }
 
-        #region private methods
+        #region internal static methods
 
         /// <summary>
         ///     Tries to get <see cref="DXFeedSubscription{E}"/> instance from current 
@@ -719,7 +719,7 @@ namespace com.dxfeed.api
         /// <exception cref="InvalidOperationException">
         ///     Cannot access to private fileds or such subscription is not exist.
         /// </exception>
-        private DXFeedSubscription<E> GetSubscriptionFromFeed<E>(string symbol)
+        internal static DXFeedSubscription<E> GetSubscriptionFromFeed<E>(string symbol)
             where E : class, IDxEventType
         {
             FieldInfo attachedSubscriptionsInfo = typeof(DXFeed).GetField("attachedSubscriptions", BindingFlags.NonPublic | BindingFlags.Instance);
@@ -742,7 +742,7 @@ namespace com.dxfeed.api
             return subscription;
         }
 
-        private void CompareOrders(IDxOrder playedOrder, IDxOrder receivedOrder)
+        internal static void CompareOrders(IDxOrder playedOrder, IDxOrder receivedOrder)
         {
             Assert.AreEqual(playedOrder.EventSymbol, receivedOrder.EventSymbol);
             Assert.AreEqual(playedOrder.Count, receivedOrder.Count);
@@ -761,7 +761,7 @@ namespace com.dxfeed.api
             Assert.AreEqual(playedOrder.MarketMaker.ToString(), receivedOrder.MarketMaker.ToString());
         }
 
-        private void CompareCandles(IDxCandle playedCandle, IDxCandle receivedCandle)
+        internal static void CompareCandles(IDxCandle playedCandle, IDxCandle receivedCandle)
         {
             Assert.AreEqual(playedCandle.EventSymbol, receivedCandle.EventSymbol);
             Assert.AreEqual(playedCandle.Time, receivedCandle.Time);
@@ -781,7 +781,7 @@ namespace com.dxfeed.api
             Assert.AreEqual(playedCandle.EventFlags, receivedCandle.EventFlags);
         }
 
-        private void CompareTrades(IDxTrade playedTrade, IDxTrade lastTrade)
+        internal static void CompareTrades(IDxTrade playedTrade, IDxTrade lastTrade)
         {
             Assert.AreEqual(playedTrade.EventSymbol, lastTrade.EventSymbol);
             Assert.AreEqual(playedTrade.Time, lastTrade.Time);
@@ -793,7 +793,7 @@ namespace com.dxfeed.api
             Assert.AreEqual(playedTrade.DayVolume, lastTrade.DayVolume);
         }
 
-        private void CompareGreeks(IDxGreeks playedGreek, IDxGreeks receivedGreek)
+        internal static void CompareGreeks(IDxGreeks playedGreek, IDxGreeks receivedGreek)
         {
             Assert.AreEqual(playedGreek.EventSymbol, receivedGreek.EventSymbol);
             Assert.AreEqual(playedGreek.EventFlags, receivedGreek.EventFlags);

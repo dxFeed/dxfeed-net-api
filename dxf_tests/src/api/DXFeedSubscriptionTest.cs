@@ -26,7 +26,10 @@ namespace com.dxfeed.api
 
             Parallel.For(ParallelFrom, ParallelTo, i =>
             {
-                Assert.True(s.IsClosed);
+                Assert.DoesNotThrow(() =>
+                {
+                    Assert.True(s.IsClosed);
+                });
             });
 
             //try to close subscription via closing endpoint
@@ -79,7 +82,10 @@ namespace com.dxfeed.api
 
             Parallel.For(ParallelFrom, ParallelTo, i =>
             {
-                s.Close();
+                Assert.DoesNotThrow(() =>
+                {
+                    s.Close();
+                });
             });
         }
 
@@ -151,7 +157,10 @@ namespace com.dxfeed.api
 
             Parallel.For(ParallelFrom, ParallelTo, i =>
             {
-                s.Clear();
+                Assert.DoesNotThrow(() =>
+                {
+                    s.Clear();
+                });
             });
         }
 
@@ -219,7 +228,10 @@ namespace com.dxfeed.api
 
             Parallel.For(ParallelFrom, ParallelTo, i =>
             {
-                s.SetSymbols(SimulatedSymbolsSet[i % SimulatedSymbolsSet.Length]);
+                Assert.DoesNotThrow(() =>
+                {
+                    s.SetSymbols(SimulatedSymbolsSet[i % SimulatedSymbolsSet.Length]);
+                });
             });
         }
 
@@ -255,7 +267,10 @@ namespace com.dxfeed.api
 
             Parallel.For(ParallelFrom, ParallelTo, i =>
             {
-                s.AddSymbols(SimulatedSymbolsSet[i % SimulatedSymbolsSet.Length]);
+                Assert.DoesNotThrow(() =>
+                {
+                    s.AddSymbols(SimulatedSymbolsSet[i % SimulatedSymbolsSet.Length]);
+                });
             });
             foreach (var set in SimulatedSymbolsSet)
                 newSymbolSet = newSymbolSet.Concat(set).ToArray();
@@ -301,7 +316,10 @@ namespace com.dxfeed.api
             Assert.AreEqual(totalSymbolsCount, s.GetSymbols().Count);
             Parallel.For(ParallelFrom, ParallelTo, i =>
             {
-                s.RemoveSymbols(SimulatedSymbolsSet[i % SimulatedSymbolsSet.Length]);
+                Assert.DoesNotThrow(() =>
+                {
+                    s.RemoveSymbols(SimulatedSymbolsSet[i % SimulatedSymbolsSet.Length]);
+                });
             });
             Assert.AreEqual(0, s.GetSymbols().Count);
         }
@@ -322,7 +340,10 @@ namespace com.dxfeed.api
                 listenersList.Add(new EventListener());
             Parallel.For(ParallelFrom, ParallelTo, i =>
             {
-                s.AddEventListener(listenersList[i % listenersCount]);
+                Assert.DoesNotThrow(() =>
+                {
+                    s.AddEventListener(listenersList[i % listenersCount]);
+                });
             });
         }
 
@@ -346,7 +367,10 @@ namespace com.dxfeed.api
             }
             Parallel.For(ParallelFrom, ParallelTo, i =>
             {
-                s.RemoveEventListener(listenersList[i % listenersCount]);
+                Assert.DoesNotThrow(() =>
+                {
+                    s.RemoveEventListener(listenersList[i % listenersCount]);
+                });
             });
         }
 
@@ -355,10 +379,10 @@ namespace com.dxfeed.api
         private const int ParallelFrom = 0;
         private const int ParallelTo = 101;
 
-        private bool isFiresOnSubscriptionClosed = false;
-        private bool isFiresOnSymbolsAdded = false;
-        private bool isFiresOnSymbolsRemoved = false;
-        private ISet<object> updatedSymbols = null;
+        private volatile bool isFiresOnSubscriptionClosed = false;
+        private volatile bool isFiresOnSymbolsAdded = false;
+        private volatile bool isFiresOnSymbolsRemoved = false;
+        private volatile ISet<object> updatedSymbols = null;
 
         private readonly string[][] SimulatedSymbolsSet = new string[][] {
             new string[] { "SYMA", "SYMB", "SYMC" },

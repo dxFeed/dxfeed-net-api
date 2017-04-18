@@ -23,16 +23,6 @@ namespace com.dxfeed.api
     public class DXFeedSubscription<E> : IDXFeedSubscription<E>
         where E : IDxEventType
     {
-        private bool isClosedNotSync = false;
-        private object isClosedLocker = new object();
-        private object symbolsLocker = new object();
-        private IDXFeed attachedFeed = null;
-        private HashSet<Type> eventTypesSet = new HashSet<Type>();
-
-        protected IDxSubscription subscriptionInstance = null;
-        protected List<IDXFeedEventListener<E>> eventListeners = new List<IDXFeedEventListener<E>>();
-        protected object eventListenerLocker = new object();
-
         /// <summary>
         ///     Creates detached subscription for a single event type.
         /// </summary>
@@ -141,7 +131,6 @@ namespace com.dxfeed.api
                     value = isClosedNotSync;
                 }
                 return value;
-
             }
         }
 
@@ -490,6 +479,12 @@ namespace com.dxfeed.api
         /// </summary>
         public event DXFeedSubscriptionClosedEventHandler OnSubscriptionClosed;
 
+        #region protected fields and methods
+
+        protected IDxSubscription subscriptionInstance = null;
+        protected List<IDXFeedEventListener<E>> eventListeners = new List<IDXFeedEventListener<E>>();
+        protected object eventListenerLocker = new object();
+
         protected DXFeedSubscription()
         {
             eventTypesSet.Add(typeof(E));
@@ -543,6 +538,16 @@ namespace com.dxfeed.api
             Close();
         }
 
+        #endregion
+
+        #region private fields and methods
+
+        private bool isClosedNotSync = false;
+        private object isClosedLocker = new object();
+        private object symbolsLocker = new object();
+        private IDXFeed attachedFeed = null;
+        private HashSet<Type> eventTypesSet = new HashSet<Type>();
+
         private ICollection<string> SymbolsToStringList(ICollection<object> symbols)
         {
             List<string> stringList = new List<string>();
@@ -565,5 +570,6 @@ namespace com.dxfeed.api
             return symbolsSet;
         }
 
+        #endregion
     }
 }

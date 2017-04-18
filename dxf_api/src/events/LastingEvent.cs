@@ -8,7 +8,7 @@
 
 namespace com.dxfeed.api.events
 {
-    ///     <summary>
+    /// <summary>
     ///     <para>
     ///         Represents up-to-date information about some condition or state of an external 
     ///         entity that updates in real-time. For example,
@@ -36,14 +36,14 @@ namespace com.dxfeed.api.events
     ///         advantages of lasting events.
     ///         TODO: not implemented
     ///     </para>
-    ///     </summary>
-    ///     <typeparam name="T">Type of the event symbol for this event type.</typeparam>
+    /// </summary>
+    /// <typeparam name="T">Type of the event symbol for this event type.</typeparam>
     public interface LastingEvent : IDxEventType
     {
         //Note: no extra fields there
     }
 
-    ///     <summary>
+    /// <summary>
     ///     <para>
     ///         Represents up-to-date information about some condition or state of an external 
     ///         entity that updates in real-time. For example,
@@ -71,8 +71,8 @@ namespace com.dxfeed.api.events
     ///         advantages of lasting events.
     ///         TODO: not implemented
     ///     </para>
-    ///     </summary>
-    ///     <typeparam name="T">Type of the event symbol for this event type.</typeparam>
+    /// </summary>
+    /// <typeparam name="T">Type of the event symbol for this event type.</typeparam>
     public interface LastingEvent<T> : LastingEvent, IDxEventType<T>
     {
         //Note: no extra fields there

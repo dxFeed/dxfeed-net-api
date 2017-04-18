@@ -14,7 +14,6 @@ using System.Threading.Tasks;
 
 namespace com.dxfeed.api
 {
-    //TODO: comments when all methods will be implemented
     /// <summary>
     /// Main entry class for dxFeed API (read it first).
     /// </summary>

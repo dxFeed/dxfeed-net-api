@@ -101,7 +101,6 @@ namespace com.dxfeed.api
 
         /// <summary>
         /// Creates Order View subscription
-        /// Add a comment to this line
         /// </summary>
         /// <param name="listener"></param>
         /// <returns></returns>

@@ -32,9 +32,6 @@ namespace com.dxfeed.api
     /// <typeparam name="E">The type of events.</typeparam>
     public interface IDXFeedSubscription<E> where E : IDxEventType
     {
-
-        //TODO: need tests for all methods
-
         /// <summary>
         ///     Attaches subscription to the specified feed.
         /// </summary>

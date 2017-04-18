@@ -382,7 +382,7 @@ namespace com.dxfeed.api
         private volatile bool isFiresOnSubscriptionClosed = false;
         private volatile bool isFiresOnSymbolsAdded = false;
         private volatile bool isFiresOnSymbolsRemoved = false;
-        private volatile ISet<object> updatedSymbols = null;
+        private ISet<object> updatedSymbols = null;
 
         private readonly string[][] SimulatedSymbolsSet = new string[][] {
             new string[] { "SYMA", "SYMB", "SYMC" },

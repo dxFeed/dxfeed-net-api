@@ -39,6 +39,16 @@ namespace com.dxfeed.api
             {
                 DXFeed.GetInstance().CreateSubscription<IDxOrder>();
             });
+
+            //thread-safety case
+            DXEndpoint.Create();
+            Parallel.For(ParallelFrom, ParallelTo, i =>
+            {
+                Assert.DoesNotThrow(() =>
+                {
+                    DXFeed.GetInstance().CreateSubscription<IDxOrder>();
+                });
+            });
         }
 
         [Test]
@@ -84,6 +94,16 @@ namespace com.dxfeed.api
 
             Assert.AreEqual(eventListener.GetEventCount<IDxOrder>(symbol), 1);
             Assert.AreEqual(eventListener.GetEventCount<IDxTrade>(symbol), 1);
+
+            //thread-safety case
+            DXEndpoint.Create();
+            Parallel.For(ParallelFrom, ParallelTo, i =>
+            {
+                Assert.DoesNotThrow(() =>
+                {
+                    DXFeed.GetInstance().CreateSubscription<IDxEventType>(typeof(IDxOrder), typeof(IDxTrade));
+                });
+            });
         }
 
         [Test]
@@ -103,6 +123,16 @@ namespace com.dxfeed.api
             IDxCandle receivedCandle = eventListener.GetLastEvent<IDxCandle>().Event;
             Assert.AreEqual(symbol, receivedCandle.EventSymbol.ToString());
             CompareCandles(playedCandle, receivedCandle);
+
+            //thread-safety case
+            DXEndpoint.Create();
+            Parallel.For(ParallelFrom, ParallelTo, i =>
+            {
+                Assert.DoesNotThrow(() =>
+                {
+                    DXEndpoint.GetInstance().Feed.CreateTimeSeriesSubscription<IDxCandle>();
+                });
+            });
         }
 
         [Test]
@@ -140,6 +170,16 @@ namespace com.dxfeed.api
 
             Assert.AreEqual(eventListener.GetEventCount<IDxCandle>(symbol), 1);
             Assert.AreEqual(eventListener.GetEventCount<IDxGreeks>(symbol), 1);
+
+            //thread-safety case
+            DXEndpoint.Create();
+            Parallel.For(ParallelFrom, ParallelTo, i =>
+            {
+                Assert.DoesNotThrow(() =>
+                {
+                    DXFeed.GetInstance().CreateTimeSeriesSubscription<TimeSeriesEvent>(typeof(IDxCandle), typeof(IDxGreeks));
+                });
+            });
         }
 
         [Test]
@@ -165,6 +205,16 @@ namespace com.dxfeed.api
             //try to reattach another subscription
             DXFeed.GetInstance().DetachSubscription(other);
             DXFeed.GetInstance().AttachSubscription(other);
+
+            //thread-safety case
+            DXEndpoint.Create();
+            Parallel.For(ParallelFrom, ParallelTo, i =>
+            {
+                Assert.DoesNotThrow(() =>
+                {
+                    DXFeed.GetInstance().AttachSubscription(new DXFeedSubscription<IDxOrder>(DXEndpoint.GetInstance() as DXEndpoint));
+                });
+            });
         }
 
         [Test]
@@ -187,6 +237,18 @@ namespace com.dxfeed.api
             //try to detach another not attached subscription
             DXFeedSubscription<IDxOrder> other = new DXFeedSubscription<IDxOrder>(DXEndpoint.GetInstance() as DXEndpoint);
             DXFeed.GetInstance().DetachSubscription(other);
+
+            //thread-safety case
+            DXEndpoint.Create();
+            Parallel.For(ParallelFrom, ParallelTo, i =>
+            {
+                Assert.DoesNotThrow(() =>
+                {
+                    var newSubscription = new DXFeedSubscription<IDxOrder>(DXEndpoint.GetInstance() as DXEndpoint);
+                    DXFeed.GetInstance().AttachSubscription(newSubscription);
+                    DXFeed.GetInstance().DetachSubscription(newSubscription);
+                });
+            });
         }
 
         [Test]
@@ -296,6 +358,33 @@ namespace com.dxfeed.api
             IDxTrade lastTrade = promise.Result as IDxTrade;
             Assert.AreEqual(symbol, lastTrade.EventSymbol);
             CompareTrades(playedTrade, lastTrade);
+
+            //thread-safety case
+            DXEndpoint.Create();
+            List<Task> tasks = new List<Task>();
+            for (int i = 0; i < 10; i++)
+            {
+                var threadSymbol = symbol + i.ToString();
+                var threadPlayedTrade = new PlayedTrade(threadSymbol, Tools.DateToUnixTime(DateTime.Now), 'B', 123.456, 100, 123, 1.1, 2.2);
+                tasks.Add(Task.Run(() =>
+                {
+                    Thread.Sleep(TimeSpan.FromSeconds(1));
+                    var eventPlayer = new EventPlayer<IDxTrade>(GetSubscriptionFromFeed<IDxTrade>(threadSymbol));
+                    eventPlayer.PlayEvents(threadSymbol, threadPlayedTrade);
+                }));
+                var threadPromise = DXEndpoint.GetInstance().Feed
+                    .GetLastEventPromise<IDxTrade>(threadSymbol, new CancellationTokenSource(TimeSpan.FromSeconds(5)).Token)
+                    .ContinueWith((resultPromise) =>
+                {
+                    IDxTrade threadTrade = resultPromise.Result as IDxTrade;
+                    Assert.AreEqual(threadSymbol, threadTrade.EventSymbol);
+                });
+                tasks.Add(threadPromise);
+            };
+            Assert.DoesNotThrow(() =>
+            {
+                Task.WaitAll(tasks.ToArray());
+            });
         }
 
         [Test]
@@ -440,6 +529,41 @@ namespace com.dxfeed.api
                 playedTradeDictionary.Remove(lastTrade.EventSymbol);
                 CompareTrades(playedTrade, lastTrade);
             }
+
+            //thread-safety case
+            DXEndpoint.Create();
+            List<Task> threadTasks = new List<Task>();
+            for (int i = 0; i < 10; i++)
+            {
+                var threadSymbols = new string[] { symbols[0] + i.ToString(), symbols[1] + i.ToString() };
+                var threadPlayedTrades = new PlayedTrade[] {
+                    new PlayedTrade(threadSymbols[0], Tools.DateToUnixTime(DateTime.Now), 'B', 123.456, 100, 123, 1.1, 2.2),
+                    new PlayedTrade(threadSymbols[1], Tools.DateToUnixTime(DateTime.Now), 'B', 234.567, 101, 234, 3.2, 4.3)
+                };
+                HashSet<string> threadPlayedSymbols = new HashSet<string>();
+                foreach(var t in threadPlayedTrades)
+                {
+                    threadTasks.Add(Task.Run(() =>
+                    {
+                        Thread.Sleep(TimeSpan.FromSeconds(2));
+                        var eventPlayer = new EventPlayer<IDxTrade>(GetSubscriptionFromFeed<IDxTrade>(t.EventSymbol));
+                        eventPlayer.PlayEvents(t.EventSymbol, t);
+                    }));
+                    threadPlayedSymbols.Add(t.EventSymbol);
+                }
+                foreach (var p in DXEndpoint.GetInstance().Feed.GetLastEventsPromises<IDxTrade>(threadSymbols, new CancellationTokenSource(TimeSpan.FromSeconds(20)).Token))
+                {
+                    threadTasks.Add(p.ContinueWith((resultPromise) =>
+                    {
+                        IDxTrade threadTrade = resultPromise.Result as IDxTrade;
+                        Assert.True(threadPlayedSymbols.Remove(threadTrade.EventSymbol));
+                    }));
+                }
+            };
+            Assert.DoesNotThrow(() =>
+            {
+                Task.WaitAll(threadTasks.ToArray());
+            });
         }
 
         [Test]
@@ -575,6 +699,41 @@ namespace com.dxfeed.api
                 Assert.AreEqual(symbol, receivedOrders[i].EventSymbol);
                 CompareOrders(playedOrders[i], receivedOrders[i]);
             }
+
+            //thread-safety case
+            DXEndpoint.Create();
+            List<Task> tasks = new List<Task>();
+            for (int i = 0; i < 10; i++)
+            {
+                var threadSymbol = symbol + i.ToString();
+                var threadPlayedOrders = new PlayedOrder[] {
+                    new PlayedOrder(threadSymbol, 25, 0, 'A', 0x4e54560000000006, 3, Side.Buy, 100, Scope.ORDER, 0, 100, OrderSource.NTV, Tools.DateToUnixTime(date), 0, "AAAA"),
+                    new PlayedOrder(threadSymbol, 25, 0, 'A', 0x4e54560000000005, 3, Side.Buy, 100.5, Scope.ORDER, 0, 101, OrderSource.NTV, Tools.DateToUnixTime(date.AddMinutes(-1)), 0, "AAAA"),
+                    new PlayedOrder(threadSymbol, 25, 0, 'A', 0x4e54560000000004, 3, Side.Sell, 101, Scope.ORDER, 0, 102, OrderSource.NTV, Tools.DateToUnixTime(date.AddMinutes(-2)), 0, "AAAA"),
+                    new PlayedOrder(threadSymbol, 25, 0, 'A', 0x4e54560000000003, 3, Side.Buy, 100, Scope.ORDER, 0, 103, OrderSource.NTV, Tools.DateToUnixTime(date.AddMinutes(-3)), 0, "AAAA"),
+                    new PlayedOrder(threadSymbol, 25, 0, 'A', 0x4e54560000000002, 3, Side.Buy, 100.4, Scope.ORDER, 0, 104, OrderSource.NTV, Tools.DateToUnixTime(date.AddMinutes(-4)), 0, "AAAA"),
+                    new PlayedOrder(threadSymbol, 25, 0, 'A', 0x4e54560000000001, 3, Side.Buy, 100.3, Scope.ORDER, 0, 105, OrderSource.NTV, Tools.DateToUnixTime(date.AddMinutes(-5)), 0, "AAAA"),
+                    new PlayedOrder(threadSymbol, 25, 0, 'A', 0x4e54560000000000, 3, Side.Buy, 100.2, Scope.ORDER, 0, 106, OrderSource.NTV, Tools.DateToUnixTime(date.AddMinutes(-6)), 0, "AAAA")
+                };
+                tasks.Add(Task.Run(() =>
+                {
+                    Thread.Sleep(TimeSpan.FromSeconds(2));
+                    var eventPlayer = new EventPlayer<IDxOrder>(GetSubscriptionFromFeed<IDxOrder>(threadSymbol));
+                    eventPlayer.PlaySnapshot(threadSymbol, threadPlayedOrders);
+                }));
+                var threadPromise = DXEndpoint.GetInstance().Feed
+                    .GetIndexedEventsPromise<IDxOrder>(threadSymbol, OrderSource.NTV, new CancellationTokenSource(TimeSpan.FromSeconds(20)).Token)
+                    .ContinueWith((resultPromise) =>
+                    {
+                        foreach (var o in resultPromise.Result)
+                            Assert.AreEqual(threadSymbol, o.EventSymbol);
+                    });
+                tasks.Add(threadPromise);
+            };
+            Assert.DoesNotThrow(() =>
+            {
+                Task.WaitAll(tasks.ToArray());
+            });
         }
 
         [Test]
@@ -701,6 +860,39 @@ namespace com.dxfeed.api
                 Assert.AreEqual(symbol, receivedGreeks[i].EventSymbol.ToString());
                 CompareGreeks(expectedGreeks[i], receivedGreeks[i]);
             }
+
+            //thread-safety case
+            DXEndpoint.Create();
+            List<Task> tasks = new List<Task>();
+            for (int i = 0; i < 10; i++)
+            {
+                var threadSymbol = symbol + i.ToString();
+                var threadPlayedGreeks = new PlayedGreeks[] {
+                    new PlayedGreeks(symbol, Tools.DateToUnixTime(date),                123, 156.789, 111, 155, 166, 177, 188, 199, 5, 0),
+                    new PlayedGreeks(symbol, Tools.DateToUnixTime(date.AddMinutes(-1)), 124, 256.789, 211, 255, 266, 277, 288, 299, 4, 0),
+                    new PlayedGreeks(symbol, Tools.DateToUnixTime(date.AddMinutes(-2)), 125, 356.789, 311, 355, 366, 377, 388, 399, 3, 0),
+                    new PlayedGreeks(symbol, Tools.DateToUnixTime(date.AddMinutes(-3)), 126, 456.789, 411, 455, 466, 477, 488, 499, 2, 0),
+                    new PlayedGreeks(symbol, Tools.DateToUnixTime(date.AddMinutes(-4)), 127, 556.789, 511, 555, 566, 577, 588, 599, 1, 0),
+                };
+                tasks.Add(Task.Run(() =>
+                {
+                    Thread.Sleep(TimeSpan.FromSeconds(2));
+                    var eventPlayer = new EventPlayer<IDxGreeks>(GetSubscriptionFromFeed<IDxGreeks>(threadSymbol));
+                    eventPlayer.PlaySnapshot(threadSymbol, threadPlayedGreeks);
+                }));
+                var threadPromise = DXEndpoint.GetInstance().Feed
+                    .GetTimeSeriesPromise<IDxGreeks>(threadSymbol, Tools.DateToUnixTime(date.AddMinutes(-3)), Tools.DateToUnixTime(date.AddMinutes(-1)), new CancellationTokenSource(TimeSpan.FromSeconds(20)).Token)
+                    .ContinueWith((resultPromise) =>
+                    {
+                        foreach (var g in resultPromise.Result)
+                            Assert.AreEqual(threadSymbol, g.EventSymbol);
+                    });
+                tasks.Add(threadPromise);
+            };
+            Assert.DoesNotThrow(() =>
+            {
+                Task.WaitAll(tasks.ToArray());
+            });
         }
 
         #region internal static methods
@@ -728,10 +920,22 @@ namespace com.dxfeed.api
             HashSet<object> attachedSubscriptionsSet = attachedSubscriptionsInfo.GetValue(DXFeed.GetInstance()) as HashSet<object>;
             if (attachedSubscriptionsSet == null)
                 throw new InvalidOperationException("Cannot get the set of attached subscriptions!");
-            if (attachedSubscriptionsSet.Count == 0)
-                throw new InvalidOperationException("There is not attached subscriptions to feed!");
+            FieldInfo attachLockInfo = typeof(DXFeed).GetField("attachLock", BindingFlags.NonPublic | BindingFlags.Instance); ;
+            if (attachLockInfo == null)
+                throw new InvalidOperationException("attachLock field not found!");
+            object attachLocker = attachLockInfo.GetValue(DXFeed.GetInstance());
+            if (attachLocker == null)
+                throw new InvalidOperationException("Cannot get the locker of attached subscriptions!");
+
+            HashSet<object> subscriptions = null;
+            lock (attachLocker)
+            {
+                subscriptions = new HashSet<object>(attachedSubscriptionsSet);
+            }
+            if (subscriptions.Count == 0)
+                throw new InvalidOperationException("There is no attached subscriptions to feed!");
             DXFeedSubscription<E> subscription = null;
-            foreach (var s in attachedSubscriptionsSet)
+            foreach (var s in subscriptions)
             {
                 subscription = s as DXFeedSubscription<E>;
                 if (subscription != null && subscription.GetSymbols().Contains(symbol))
@@ -809,6 +1013,13 @@ namespace com.dxfeed.api
             Assert.AreEqual(playedGreek.Volatility, receivedGreek.Volatility);
             Assert.AreEqual(playedGreek.Index, receivedGreek.Index);
         }
+
+        #endregion
+
+        #region private fields and methods
+
+        private const int ParallelFrom = 0;
+        private const int ParallelTo = 101;
 
         #endregion
 

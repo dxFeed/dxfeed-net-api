@@ -56,7 +56,6 @@ namespace com.dxfeed.tests.tools.eventplayer
             this.size = size;
             fixed (char* pSource = this.source)
             {
-                //TODO: magic numbers
                 var length = Math.Min(4, source.Name.Length);
                 Marshal.Copy(source.Name.ToCharArray(), 0, (IntPtr)pSource, length);
                 pSource[length] = (char)0;

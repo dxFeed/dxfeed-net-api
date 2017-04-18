@@ -20,14 +20,6 @@ namespace com.dxfeed.api
     /// </summary>
     public class DXFeed : IDXFeed
     {
-        private DXEndpoint endpoint = null;
-        private HashSet<object> attachedSubscriptions = new HashSet<object>();
-
-        internal DXFeed(DXEndpoint endpoint)
-        {
-            this.endpoint = endpoint;
-        }
-
         /// <summary>
         ///     Returns a default application-wide singleton instance of feed. Most applications 
         ///     use only a single data-source and should rely on this method to get one.
@@ -141,9 +133,12 @@ namespace com.dxfeed.api
             if (subscription == null)
                 throw new ArgumentNullException("subscription");
 
-            if (attachedSubscriptions.Contains(subscription))
-                return;
-            attachedSubscriptions.Add(subscription);
+            lock (attachLock)
+            {
+                if (attachedSubscriptions.Contains(subscription))
+                    return;
+                attachedSubscriptions.Add(subscription);
+            }
         }
 
         /// <summary>
@@ -157,7 +152,10 @@ namespace com.dxfeed.api
             if (subscription == null)
                 throw new ArgumentNullException("subscription");
 
-            attachedSubscriptions.Remove(subscription);
+            lock (attachLock)
+            {
+                attachedSubscriptions.Remove(subscription);
+            }
         }
 
         /// <summary>
@@ -492,6 +490,15 @@ namespace com.dxfeed.api
         #region Internal methods
 
         /// <summary>
+        /// Creates new DXFeed instance.
+        /// </summary>
+        /// <param name="endpoint">The endpoint of feed.</param>
+        internal DXFeed(DXEndpoint endpoint)
+        {
+            this.endpoint = endpoint;
+        }
+
+        /// <summary>
         ///     Creates new snapshot subscription for a single event type that is attached to this feed.
         ///     This method creates new <see cref="IDXFeedSubscription{E}"/>.
         /// </summary>
@@ -508,7 +515,11 @@ namespace com.dxfeed.api
 
         #endregion
 
-        #region Private methods
+        #region Private fields and methods
+
+        private DXEndpoint endpoint = null;
+        private HashSet<object> attachedSubscriptions = new HashSet<object>();
+        private object attachLock = new object();
 
         private class HistoryEventsCollector<E> : DXFeedSnapshotCollector<E>
             where E : IndexedEvent

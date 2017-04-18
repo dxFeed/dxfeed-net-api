@@ -59,7 +59,7 @@ namespace com.dxfeed.api
         /// <summary>
         ///     Event fires when <see cref="Close()"/> method was called.
         /// </summary>
-        public event OnClosingEventHandler OnClosing;
+        public event OnEndpointClosingEventHandler OnClosing;
 
         /// <summary>
         ///     Thread-safe state getter of this endpoint.

@@ -44,7 +44,7 @@ namespace com.dxfeed.api
     /// </summary>
     /// <param name="sender"><see cref="IDXEndpoint"/> instance.</param>
     /// <param name="e">Event arguments.</param>
-    public delegate void OnClosingEventHandler(object sender, EventArgs e);
+    public delegate void OnEndpointClosingEventHandler(object sender, EventArgs e);
 
     /// <summary>
     ///     Manages network connections to DXFeed.
@@ -54,7 +54,7 @@ namespace com.dxfeed.api
         /// <summary>
         ///     Event fires when <see cref="Close()"/> method was called.
         /// </summary>
-        event OnClosingEventHandler OnClosing;
+        event OnEndpointClosingEventHandler OnClosing;
 
         /// <summary>
         ///     Thread-safe state getter of this endpoint.

@@ -281,9 +281,7 @@ namespace com.dxfeed.api
             Feed = new DXFeed(this);
         }
 
-        //private static readonly string DefaultAddress = "demo.dxfeed.com:7300";
-        //TODO: temp
-        private static readonly string DefaultAddress = "mddqa.in.devexperts.com:7400";
+        private static readonly string DefaultAddress = "demo.dxfeed.com:7300";
         private static readonly string DefaultUser = "demo";
         private static readonly string DefaultPassword = "demo";
         private static DXEndpoint endpointInstance = null;

@@ -95,7 +95,7 @@ namespace com.dxfeed.api
             var orderSubscription = DXEndpoint.Create().Feed.CreateSubscription<IDxOrder>();
             Assert.True(orderSubscription.EventTypes.SetEquals(new HashSet<Type>(new Type[] { typeof(IDxOrder) })));
 
-            ISet<Type> allTypesSet = DXEndpoint.GetEventTypes();
+            ISet<Type> allTypesSet = DXEndpoint.GetInstance().GetEventTypes();
             Type[] subscriptionTypes = allTypesSet.AsEnumerable().ToArray();
             var allTypeSubscription = DXEndpoint.GetInstance().Feed.CreateSubscription<IDxEventType>(subscriptionTypes);
             Assert.True(allTypeSubscription.EventTypes.SetEquals(allTypesSet));
@@ -109,7 +109,7 @@ namespace com.dxfeed.api
         [Test]
         public void ContainEventTypeTest()
         {
-            ISet<Type> allTypesSet = DXEndpoint.GetEventTypes();
+            ISet<Type> allTypesSet = DXEndpoint.GetInstance().GetEventTypes();
 
             var orderSubscription = DXEndpoint.Create().Feed.CreateSubscription<IDxOrder>();
             Assert.True(orderSubscription.ContainsEventType(typeof(IDxOrder)));

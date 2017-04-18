@@ -19,31 +19,6 @@ namespace com.dxfeed.api
     public class DXEndpoint : IDXEndpoint
     {
         /// <summary>
-        ///     Returns a set of all event types supported by this endpoint. The resulting set 
-        ///     cannot be modified.
-        /// </summary>
-        /// <returns>Set of all event types.</returns>
-        public static ISet<Type> GetEventTypes()
-        {
-            return new HashSet<Type>(new Type[] {
-                typeof(IDxCandle),
-                typeof(IDxConfiguration),
-                typeof(IDxGreeks),
-                typeof(IDxOrder),
-                typeof(IDxProfile),
-                typeof(IDxQuote),
-                typeof(IDxSeries),
-                typeof(IDxSpreadOrder),
-                typeof(IDxSummary),
-                typeof(IDxTheoPrice),
-                typeof(IDxTimeAndSale),
-                typeof(IDxTrade),
-                typeof(IDxTradeEth),
-                typeof(IDxUnderlying)
-            });
-        }
-
-        /// <summary>
         ///     Returns a default application-wide singleton instance of DXEndpoint with a default 
         ///     role.
         ///     Most applications use only a single data-source and should rely on this method to 
@@ -251,6 +226,31 @@ namespace com.dxfeed.api
                 assyncState = DXEndpointState.Closed;
                 UnsafeCloseConnection();
             }
+        }
+
+        /// <summary>
+        ///     Returns a set of all event types supported by this endpoint. The resulting set 
+        ///     cannot be modified.
+        /// </summary>
+        /// <returns>Set of all event types.</returns>
+        public ISet<Type> GetEventTypes()
+        {
+            return new HashSet<Type>(new Type[] {
+                typeof(IDxCandle),
+                typeof(IDxConfiguration),
+                typeof(IDxGreeks),
+                typeof(IDxOrder),
+                typeof(IDxProfile),
+                typeof(IDxQuote),
+                typeof(IDxSeries),
+                typeof(IDxSpreadOrder),
+                typeof(IDxSummary),
+                typeof(IDxTheoPrice),
+                typeof(IDxTimeAndSale),
+                typeof(IDxTrade),
+                typeof(IDxTradeEth),
+                typeof(IDxUnderlying)
+            });
         }
 
         /// <summary>

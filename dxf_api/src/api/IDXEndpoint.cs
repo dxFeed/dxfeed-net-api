@@ -7,6 +7,7 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 
 namespace com.dxfeed.api
 {
@@ -149,6 +150,13 @@ namespace com.dxfeed.api
         ///     </para>
         /// </summary>
         void Close();
+
+        /// <summary>
+        ///     Returns a set of all event types supported by this endpoint. The resulting set 
+        ///     cannot be modified.
+        /// </summary>
+        /// <returns>Set of all event types.</returns>
+        ISet<Type> GetEventTypes();
 
         /// <summary>
         ///     Returns feed that is associated with this endpoint.

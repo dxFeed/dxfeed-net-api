@@ -1,8 +1,10 @@
-﻿/// Copyright (C) 2010-2016 Devexperts LLC
-///
-/// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-/// If a copy of the MPL was not distributed with this file, You can obtain one at
-/// http://mozilla.org/MPL/2.0/.
+﻿#region License
+// Copyright (C) 2010-2016 Devexperts LLC
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at
+// http://mozilla.org/MPL/2.0/.
+#endregion
 
 using System;
 using System.Runtime.InteropServices;
@@ -276,6 +278,13 @@ namespace com.dxfeed.native.api
         internal override int dxf_get_snapshot_symbol(IntPtr snapshot, out IntPtr symbol)
         {
             return __dxf_get_snapshot_symbol(snapshot, out symbol);
+        }
+
+        [DllImport(DXFEED_DLL, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl, EntryPoint = "dxf_write_raw_data")]
+        private static extern int __dxf_write_raw_data(IntPtr connection, byte[] raw_file_name);
+        internal override int dxf_write_raw_data (IntPtr connection, byte[] raw_file_name)
+        {
+            return __dxf_write_raw_data(connection, raw_file_name);
         }
     }
 }

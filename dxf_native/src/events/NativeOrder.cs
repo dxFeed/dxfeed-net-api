@@ -6,10 +6,10 @@
 // http://mozilla.org/MPL/2.0/.
 #endregion
 
-using System.Globalization;
 using com.dxfeed.api.data;
 using com.dxfeed.api.events;
 using com.dxfeed.native.api;
+using System.Globalization;
 
 namespace com.dxfeed.native.events
 {
@@ -22,16 +22,14 @@ namespace com.dxfeed.native.events
     /// </summary>
     public class NativeOrder : NativeOrderBase, IDxOrder
     {
-        private readonly DxString marketMaker;
-
         internal unsafe NativeOrder(DxOrder* order, string symbol) : base(order, symbol)
         {
-            marketMaker = DxMarshal.ReadDxString((*order).market_maker);
+            MarketMaker = DxMarshal.ReadDxString((*order).market_maker);
         }
 
         internal NativeOrder(IDxOrder order) : base(order)
         {
-            marketMaker = order.MarketMaker;
+            MarketMaker = (DxString)order.MarketMaker.Clone();
         }
 
         public override string ToString()
@@ -48,7 +46,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public DxString MarketMaker
         {
-            get { return marketMaker; }
+            get; internal set;
         }
 
         #endregion

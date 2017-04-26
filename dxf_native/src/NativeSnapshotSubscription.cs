@@ -1,19 +1,21 @@
-﻿/// Copyright (C) 2010-2016 Devexperts LLC
-///
-/// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-/// If a copy of the MPL was not distributed with this file, You can obtain one at
-/// http://mozilla.org/MPL/2.0/.
+﻿#region License
+// Copyright (C) 2010-2016 Devexperts LLC
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at
+// http://mozilla.org/MPL/2.0/.
+#endregion
 
+using com.dxfeed.api;
+using com.dxfeed.api.candle;
+using com.dxfeed.api.events;
+using com.dxfeed.api.util;
+using com.dxfeed.native.api;
+using com.dxfeed.native.events;
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
-using com.dxfeed.api;
-using com.dxfeed.api.candle;
-using com.dxfeed.api.events;
-using com.dxfeed.native.api;
-using com.dxfeed.native.events;
-using com.dxfeed.api.util;
 
 namespace com.dxfeed.native
 {
@@ -67,6 +69,8 @@ namespace com.dxfeed.native
         {
             if (listener == null)
                 throw new ArgumentNullException("listener");
+            if ((eventType & (eventType - 1)) > 0)
+                throw new ArgumentException("Only one event type is allowed for snapshot.");
 
             connectionPtr = connection.Handler;
             this.eventType = eventType;
@@ -145,21 +149,25 @@ namespace com.dxfeed.native
         #region Implementation of IDxSubscription
 
         /// <summary>
-        /// Add symbol to subscription
-        /// It's not applicable to Candle subscription.
+        ///     Add symbol to subscription.
         /// </summary>
-        /// <param name="symbol">symbol</param>
-        /// <exception cref="ArgumentException">Invalid symbol parameter</exception>
-        /// <exception cref="InvalidOperationException">You try to add more than one symbol to snapshot subscription</exception>
-        /// <exception cref="DxException"></exception>
+        /// <param name="symbol">Symbol.</param>
+        /// <exception cref="ArgumentException">Invalid <paramref name="symbol"/> parameter.</exception>
+        /// <exception cref="InvalidOperationException">You try to add more than one symbol to snapshot subscription.</exception>
+        /// <exception cref="DxException">Internal error.</exception>
         public void AddSymbol(string symbol)
         {
+            if (string.IsNullOrWhiteSpace(symbol))
+                throw new ArgumentException("Invalid symbol parameter");
             if (snapshotPtr != InvalidSnapshot)
                 throw new InvalidOperationException("It is allowed to add only one symbol to snapshot subscription");
-            if (symbol == null || symbol.Length == 0)
-                throw new ArgumentException("Invalid symbol parameter");
-            if (eventType == EventType.Candle)
-                throw new InvalidOperationException("It's not applicable to Candle subscription.");
+
+            if ((eventType == EventType.Candle) ||
+                (eventType == EventType.None) && NativeSubscription.IsCandleSymbol(symbol))
+            {
+                AddSymbol(CandleSymbol.ValueOf(symbol));
+                return;
+            }
 
 
             byte[] sourceBytes = null;
@@ -191,13 +199,12 @@ namespace com.dxfeed.native
         }
 
         /// <summary>
-        /// Add candle symbol to subscription.
-        /// This method applies only to candle subscription. For other events it does not make sense.
+        ///     Add candle symbol to subscription.
         /// </summary>
-        /// <param name="symbol">candle symbol</param>
-        /// <exception cref="ArgumentException">Invalid symbol parameter</exception>
-        /// <exception cref="InvalidOperationException">You try to add more than one symbol to snapshot subscription</exception>
-        /// <exception cref="DxException"></exception>
+        /// <param name="symbol"><see cref="CandleSymbol"/>.</param>
+        /// <exception cref="ArgumentException">Invalid <paramref name="symbol"/> parameter.</exception>
+        /// <exception cref="InvalidOperationException">You try to add more than one symbol to snapshot subscription.</exception>
+        /// <exception cref="DxException">Internal error.</exception>
         public void AddSymbol(CandleSymbol symbol)
         {
             if (snapshotPtr != InvalidSnapshot)
@@ -242,13 +249,12 @@ namespace com.dxfeed.native
         }
 
         /// <summary>
-        /// Add multiply symbols to subscription.
-        /// It's not applicable to Candle subscription.
+        ///     Add multiply symbols to subscription.
         /// </summary>
-        /// <param name="symbols">list of symbols</param>
-        /// <exception cref="ArgumentException">Invalid symbol parameter</exception>
-        /// <exception cref="InvalidOperationException">You try to add more than one symbol to snapshot subscription</exception>
-        /// <exception cref="DxException"></exception>
+        /// <param name="symbols">List of symbols.</param>
+        /// <exception cref="ArgumentException">Invalid <paramref name="symbol"/> parameter.</exception>
+        /// <exception cref="InvalidOperationException">You try to add more than one symbol to snapshot subscription.</exception>
+        /// <exception cref="DxException">Internal error.</exception>
         public void AddSymbols(params string[] symbols)
         {
             if (symbols == null)
@@ -259,13 +265,12 @@ namespace com.dxfeed.native
         }
 
         /// <summary>
-        /// Add multiply candle symbols to subscription.
-        /// This method applies only to candle subscription. For other events it does not make sense.
+        ///     Add multiply candle symbols to subscription.
         /// </summary>
-        /// <param name="symbols">list of symbols</param>
-        /// <exception cref="ArgumentException">Invalid symbol parameter</exception>
-        /// <exception cref="InvalidOperationException">You try to add more than one symbol to snapshot subscription</exception>
-        /// <exception cref="DxException"></exception>
+        /// <param name="symbols">List of <see cref="CandleSymbol"/>.</param>
+        /// <exception cref="ArgumentException">Invalid <paramref name="symbols"/> parameter.</exception>
+        /// <exception cref="InvalidOperationException">You try to add more than one symbol to snapshot subscription.</exception>
+        /// <exception cref="DxException">Internal error.</exception>
         public void AddSymbols(params CandleSymbol[] symbols)
         {
             if (symbols == null)
@@ -276,65 +281,62 @@ namespace com.dxfeed.native
         }
 
         /// <summary>
-        /// Remove multiply symbols from subscription.
-        /// It's not applicable to Candle subscription.
-        /// 
-        /// Snapshot will be disposed if symbols contains snapshot symbol (for Snapshots only).
+        ///     <para>
+        ///         Remove multiply symbols from subscription.
+        ///     </para>
+        ///     <para>
+        ///         Snapshot will be disposed if symbols contains snapshot symbol (for Snapshots only).
+        ///     </para>
         /// </summary>
-        /// <param name="symbols">list of symbols</param>
-        /// <exception cref="ArgumentException">Invalid symbol parameter</exception>
-        /// <exception cref="DxException"></exception>
+        /// <param name="symbols">List of symbols.</param>
+        /// <exception cref="ArgumentException">Invalid <paramref name="symbols"/> parameter.</exception>
+        /// <exception cref="DxException">Internal error.</exception>
         public void RemoveSymbols(params string[] symbols)
         {
             if (symbols == null || symbols.Length == 0)
                 throw new ArgumentException("Invalid symbol parameter");
-            if (eventType == EventType.Candle)
-                throw new InvalidOperationException("It's not applicable to Candle subscription.");
             List<string> symbolList = new List<string>(symbols);
             if (symbolList.Contains(Symbol))
                 Dispose();
         }
 
         /// <summary>
-        /// Remove multiply symbols from subscription.
-        /// This method applies only to candle subscription. For other events it does not make sense.
-        /// 
-        /// Snapshot will be disposed if symbols contains snapshot symbol (for Snapshots only).
+        ///     <para>
+        ///         Remove multiply symbols from subscription.
+        ///     </para>
+        ///     <para>
+        ///         Snapshot will be disposed if symbols contains snapshot symbol (for Snapshots only).
+        ///     </para>
         /// </summary>
-        /// <param name="symbols">list of symbols</param>
-        /// <exception cref="ArgumentException">Invalid symbol parameter</exception>
-        /// <exception cref="DxException"></exception>
+        /// <param name="symbols">List of <see cref="CandleSymbol"/>.</param>
+        /// <exception cref="ArgumentException">Invalid <paramref name="symbols"/> parameter.</exception>
+        /// <exception cref="DxException">Internal error.</exception>
         public void RemoveSymbols(params CandleSymbol[] symbols)
         {
             if (symbols == null)
                 throw new ArgumentException("Invalid symbol parameter");
-            if (eventType != EventType.Candle)
-                throw new InvalidOperationException("It is allowed only for Candle subscription");
             foreach (CandleSymbol symbol in symbols)
             {
                 if (symbol == null)
                     continue;
-                if (this.Symbol.Equals(symbol.ToString()))
+                if (Symbol.Equals(symbol.ToString()))
                     Dispose();
             }
         }
 
         /// <summary>
-        /// Set multiply symbols to subscription.
-        /// It's not applicable to Candle subscription.
+        ///     Set multiply symbols to subscription.
         /// </summary>
-        /// <param name="symbols">list of symbols</param>
-        /// <exception cref="ArgumentException">Invalid symbol parameter</exception>
-        /// <exception cref="InvalidOperationException">You try to add more than one symbol to snapshot subscription</exception>
-        /// <exception cref="DxException"></exception>
+        /// <param name="symbols">List of symbols.</param>
+        /// <exception cref="ArgumentException">Invalid <paramref name="symbols"/> parameter.</exception>
+        /// <exception cref="InvalidOperationException">You try to add more than one symbol to snapshot subscription.</exception>
+        /// <exception cref="DxException">Internal error.</exception>
         public void SetSymbols(params string[] symbols)
         {
             if (symbols == null)
                 throw new ArgumentException("Invalid symbol parameter");
             if (symbols.Length != 1)
                 throw new InvalidOperationException("It is allowed to add only one symbol to snapshot subscription");
-            if (eventType == EventType.Candle)
-                throw new InvalidOperationException("It's not applicable to Candle subscription.");
 
             if (snapshotPtr != InvalidSnapshot)
                 Clear();
@@ -343,13 +345,12 @@ namespace com.dxfeed.native
         }
 
         /// <summary>
-        /// Set multiply symbols to subscription.
-        /// This method applies only to candle subscription. For other events it does not make sense.
+        ///     Set multiply symbols to subscription.
         /// </summary>
-        /// <param name="symbols">list of symbols</param>
-        /// <exception cref="ArgumentException">Invalid symbol parameter</exception>
-        /// <exception cref="InvalidOperationException">You try to add more than one symbol to snapshot subscription</exception>
-        /// <exception cref="DxException"></exception>
+        /// <param name="symbols">List of <see cref="CandleSymbol"/>.</param>
+        /// <exception cref="ArgumentException">Invalid <paramref name="symbols"/> parameter.</exception>
+        /// <exception cref="InvalidOperationException">You try to add more than one symbol to snapshot subscription.</exception>
+        /// <exception cref="DxException">Internal error.</exception>
         public void SetSymbols(params CandleSymbol[] symbols)
         {
             if (symbols == null)
@@ -366,20 +367,24 @@ namespace com.dxfeed.native
         }
 
         /// <summary>
-        /// Clear all symbols from subscription.
-        /// On snapshots call Dispose.
+        ///     <para>
+        ///         Clear all symbols from subscription.
+        ///     </para>
+        ///     <para>
+        ///         Snapshot will be <see cref="IDisposable.Dispose()"/>.
+        ///     </para>
         /// </summary>
-        /// <exception cref="DxException"></exception>
+        /// <exception cref="DxException">Internal error.</exception>
         public void Clear()
         {
             Dispose();
         }
 
         /// <summary>
-        /// Get all symbols list from subscription.
+        ///     Get all symbols from subscription.
         /// </summary>
-        /// <returns>list of subscribed symbols</returns>
-        /// <exception cref="DxException"></exception>
+        /// <returns>List of subscribed symbols.</returns>
+        /// <exception cref="DxException">Internal error.</exception>
         public IList<string> GetSymbols()
         {
             IntPtr symbolPtr;
@@ -391,12 +396,12 @@ namespace com.dxfeed.native
         }
 
         /// <summary>
-        /// Add order source to subscription.
+        ///     Add <see cref="events.OrderSource"/> to subscription.
         /// </summary>
-        /// <param name="sources">list of souces</param>
-        /// <exception cref="ArgumentException">Invalid source parameter</exception>
-        /// <exception cref="InvalidOperationException">You try to add more than one source to subscription</exception>
-        /// <exception cref="DxException"></exception>
+        /// <param name="sources">List of <see cref="events.OrderSource"/> names.</param>
+        /// <exception cref="ArgumentException">Invalid <paramref name="sources"/> parameter.</exception>
+        /// <exception cref="InvalidOperationException">You try to add more than one source to subscription.</exception>
+        /// <exception cref="DxException">Internal error.</exception>
         public void AddSource(params string[] sources)
         {
             if (eventType != EventType.Order && eventType != EventType.None)
@@ -408,12 +413,12 @@ namespace com.dxfeed.native
         }
 
         /// <summary>
-        /// Remove existing sources and set new
+        ///     Remove existing <see cref="events.OrderSource"/> from subscription and set new.
         /// </summary>
-        /// <param name="sources">list of sources</param>
-        /// <exception cref="ArgumentException">Invalid source parameter</exception>
-        /// <exception cref="InvalidOperationException">You try to add more than one source to subscription</exception>
-        /// <exception cref="DxException"></exception>
+        /// <param name="sources">List of <see cref="events.OrderSource"/> names.</param>
+        /// <exception cref="ArgumentException">Invalid <paramref name="sources"/> parameter.</exception>
+        /// <exception cref="InvalidOperationException">You try to add more than one source to subscription.</exception>
+        /// <exception cref="DxException">Internal error.</exception>
         public void SetSource(params string[] sources)
         {
             if (eventType != EventType.Order && eventType != EventType.None)

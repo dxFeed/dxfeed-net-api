@@ -1,12 +1,14 @@
-﻿/// Copyright (C) 2010-2016 Devexperts LLC
-///
-/// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-/// If a copy of the MPL was not distributed with this file, You can obtain one at
-/// http://mozilla.org/MPL/2.0/.
+﻿#region License
+// Copyright (C) 2010-2016 Devexperts LLC
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at
+// http://mozilla.org/MPL/2.0/.
+#endregion
 
-using System.Globalization;
 using com.dxfeed.api.events;
 using com.dxfeed.native.api;
+using System.Globalization;
 
 namespace com.dxfeed.native.events
 {
@@ -28,12 +30,28 @@ namespace com.dxfeed.native.events
         internal unsafe NativeTradeETH(DxTradeEth* trade, string symbol) : base(trade, symbol) { }
 
         /// <summary>
+        /// Creates copy of the trade object.
+        /// </summary>
+        /// <param name="trade">The IDxTradeEth object.</param>
+        internal NativeTradeETH(IDxTradeEth trade) : base(trade)
+        {
+            IsETH = trade.IsETH;
+        }
+
+        /// <summary>
         /// Gets or sets flag as to whether last trade was in extended trading hours.
         /// </summary>
         public bool IsETH
         {
             get; set;
         }
+
+        #region Implementation of ICloneable
+        public override object Clone()
+        {
+            return new NativeTradeETH(this);
+        }
+        #endregion
 
         public override string ToString()
         {

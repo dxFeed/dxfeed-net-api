@@ -8,6 +8,9 @@ using System;
 using com.dxfeed.api;
 using com.dxfeed.api.events;
 using com.dxfeed.native.api;
+using com.dxfeed.api.candle;
+using com.dxfeed.api.util;
+using com.dxfeed.native.events;
 
 namespace com.dxfeed.native
 {
@@ -17,8 +20,11 @@ namespace com.dxfeed.native
     public class NativeConnection : IDxConnection
     {
         private IntPtr handler = IntPtr.Zero;
-        private readonly C.dxf_conn_termination_notifier_t callback;
+        private readonly C.dxf_conn_termination_notifier_t termination_notifier;
+        private readonly C.dxf_socket_thread_creation_notifier_t creation_notifier;
         private readonly Action<IDxConnection> disconnectListener;
+        public delegate void OnCreationEventHandler(object sender, EventArgs e);
+        public event OnCreationEventHandler OnCreation;
 
         internal IntPtr Handler
         {
@@ -33,15 +39,23 @@ namespace com.dxfeed.native
         /// <exception cref="DxException"></exception>
         public NativeConnection(string address, Action<IDxConnection> disconnectListener)
         {
-            callback = OnDisconnect;
+            termination_notifier = OnNativeDisconnect;
+            creation_notifier = OnNativeCreate;
             this.disconnectListener = disconnectListener;
-            C.CheckOk(C.Instance.dxf_create_connection(address, callback, null, null, IntPtr.Zero, out handler));
+            C.CheckOk(C.Instance.dxf_create_connection(address, termination_notifier, null, null, IntPtr.Zero, out handler));
         }
 
-        private void OnDisconnect(IntPtr connection, IntPtr userData)
+        private void OnNativeDisconnect(IntPtr connection, IntPtr userData)
         {
             if (disconnectListener != null)
                 disconnectListener(this);
+        }
+
+        private int OnNativeCreate(IntPtr connection, IntPtr userData)
+        {
+            if (OnCreation != null)
+                OnCreation(this, new EventArgs());
+            return 0;
         }
 
         #region Implementation of IDxConnection
@@ -95,6 +109,23 @@ namespace com.dxfeed.native
         /// Create time event subscription.
         /// </summary>
         /// <param name="type">Event type.</param>
+        /// <param name="time">Unix time stamp (the number of milliseconds from 1.1.1970)</param>
+        /// <param name="listener">Event listener callback.</param>
+        /// <returns>Subscription object.</returns>
+        /// <exception cref="ArgumentNullException">Listener is null.</exception>
+        /// <exception cref="DxException"></exception>
+        public IDxSubscription CreateSubscription(EventType type, long time, IDxEventListener listener)
+        {
+            if (handler == IntPtr.Zero)
+                throw new NativeDxException("not connected");
+
+            return new NativeSubscription(this, type, time, listener);
+        }
+
+        /// <summary>
+        /// Create time event subscription.
+        /// </summary>
+        /// <param name="type">Event type.</param>
         /// <param name="time">Date time in the past.</param>
         /// <param name="listener">Event listener callback.</param>
         /// <returns>Subscription object.</returns>
@@ -105,7 +136,10 @@ namespace com.dxfeed.native
             if (handler == IntPtr.Zero)
                 throw new NativeDxException("not connected");
 
-            return new NativeSubscription(this, type, time, listener);
+            if (time == null)
+                return new NativeSubscription(this, type, 0L, listener);
+            else
+                return new NativeSubscription(this, type, (DateTime)time, listener);
         }
 
         /// <summary>

@@ -4,6 +4,7 @@
 /// If a copy of the MPL was not distributed with this file, You can obtain one at
 /// http://mozilla.org/MPL/2.0/.
 
+using com.dxfeed.api.events.market;
 using System;
 using System.Globalization;
 
@@ -24,7 +25,7 @@ namespace com.dxfeed.api.candle
     /// The value that this key shall be set to is equal to
     /// the corresponding {@link #toString() CandlePeriod.ToString()}
     /// </summary>
-    class CandlePeriod : ICandleSymbolAttribute
+    public class CandlePeriod : ICandleSymbolAttribute
     {
         /// <summary>
         /// The number represents default period value.

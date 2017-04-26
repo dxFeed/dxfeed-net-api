@@ -6,12 +6,12 @@
 // http://mozilla.org/MPL/2.0/.
 #endregion
 
-using System;
-using System.Globalization;
 using com.dxfeed.api.data;
 using com.dxfeed.api.events;
 using com.dxfeed.api.extras;
 using com.dxfeed.native.api;
+using System;
+using System.Globalization;
 
 namespace com.dxfeed.native.events
 {
@@ -21,15 +21,54 @@ namespace com.dxfeed.native.events
     ///   Time and Sales are intended to provide information about trades in a continuous time slice
     ///   (unlike Trade events which are supposed to provide snapshot about the current last trade).
     /// </summary>
-    public class NativeTimeAndSale : MarketEvent, IDxTimeAndSale
+    public class NativeTimeAndSale : MarketEventImpl, IDxTimeAndSale
     {
-        private readonly DxTimeAndSale ts;
-        private readonly DxString saleCond;
-
-        internal unsafe NativeTimeAndSale(DxTimeAndSale* ts, string symbol) : base(symbol)
+        internal unsafe NativeTimeAndSale(DxTimeAndSale* timeAndSale, string symbol) : base(symbol)
         {
-            this.ts = *ts;
-            saleCond = DxMarshal.ReadDxString(this.ts.exchange_sale_conditions);
+            DxTimeAndSale ts = *timeAndSale;
+
+            AgressorSide = ts.side;
+            AskPrice = ts.ask_price;
+            BidPrice = ts.bid_price;
+            EventFlags = ts.event_flags;
+            EventId = ts.event_id;
+            ExchangeCode = ts.exchange_code;
+            ExchangeSaleConditions = DxMarshal.ReadDxString(ts.exchange_sale_conditions);
+            Index = ts.index;
+            Price = ts.price;
+            Sequence = ts.sequence;
+            Size = ts.size;            
+            Time = TimeConverter.ToUtcDateTime(ts.time);
+            Type = ts.type;
+            IsCancel = ts.is_cancel;
+            IsCorrection = ts.is_correction;
+            IsTrade = ts.is_trade;
+            IsNew = ts.is_new;
+            IsSpreadLeg = ts.is_spread_leg;
+            IsValidTick = ts.is_valid_tick;
+        }
+
+        internal NativeTimeAndSale(IDxTimeAndSale ts) : base(ts.EventSymbol)
+        {
+            AgressorSide = ts.AgressorSide;
+            AskPrice = ts.AskPrice;
+            BidPrice = ts.BidPrice;
+            EventFlags = ts.EventFlags;
+            EventId = ts.EventId;
+            ExchangeCode = ts.ExchangeCode;
+            ExchangeSaleConditions = (DxString)ts.ExchangeSaleConditions.Clone();
+            Index = ts.Index;
+            Price = ts.Price;
+            Sequence = ts.Sequence;
+            Size = ts.Size;
+            Time = ts.Time;
+            Type = ts.Type;
+            IsCancel = ts.IsCancel;
+            IsCorrection = ts.IsCorrection;
+            IsTrade = ts.IsTrade;
+            IsNew = ts.IsNew;
+            IsSpreadLeg = ts.IsSpreadLeg;
+            IsValidTick = ts.IsValidTick;
         }
 
         public override string ToString()
@@ -41,6 +80,13 @@ namespace com.dxfeed.native.events
                 Price, Size, Type, EventSymbol);
         }
 
+        #region Implementation of ICloneable
+        public override object Clone()
+        {
+            return new NativeTimeAndSale(this);
+        }
+        #endregion
+
         #region Implementation of IDxTimeAndSale
 
         /// <summary>
@@ -48,7 +94,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public Side AgressorSide
         {
-            get { return ts.side; }
+            get; private set;
         }
 
         /// <summary>
@@ -56,7 +102,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public double AskPrice
         {
-            get { return ts.ask_price; }
+            get; private set;
         }
 
         /// <summary>
@@ -64,15 +110,15 @@ namespace com.dxfeed.native.events
         /// </summary>
         public double BidPrice
         {
-            get { return ts.bid_price; }
+            get; private set;
         }
 
         /// <summary>
-        ///   Returns event flags of this time and sale event.
+        /// Gets or sets event flags of this time and sale event.
         /// </summary>
         public EventFlag EventFlags
         {
-            get { return ts.event_flags; }
+            get; set;
         }
 
         /// <summary>
@@ -81,7 +127,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public long EventId
         {
-            get { return ts.event_id; }
+            get; private set;
         }
 
         /// <summary>
@@ -89,7 +135,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public char ExchangeCode
         {
-            get { return ts.exchange_code; }
+            get; private set;
         }
 
         /// <summary>
@@ -97,7 +143,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public DxString ExchangeSaleConditions
         {
-            get { return saleCond; }
+            get; private set;
         }
 
         /// <summary>
@@ -106,7 +152,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public long Index
         {
-            get { return ts.index; }
+            get; private set;
         }
 
         /// <summary>
@@ -114,7 +160,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public double Price
         {
-            get { return ts.price; }
+            get; private set;
         }
 
         /// <summary>
@@ -124,7 +170,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public int Sequence
         {
-            get { return ts.sequence; }
+            get; private set;
         }
 
         /// <summary>
@@ -132,15 +178,15 @@ namespace com.dxfeed.native.events
         /// </summary>
         public long Size
         {
-            get { return ts.size; }
+            get; private set;
         }
 
         /// <summary>
-        ///   Returns date time of the original event.
+        /// Returns UTC date and time of this event.
         /// </summary>
         public DateTime Time
         {
-            get { return TimeConverter.ToUtcDateTime(ts.time); }
+            get; private set;
         }
 
         /// <summary>
@@ -148,7 +194,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public TimeAndSaleType Type
         {
-            get { return ts.type; }
+            get; private set;
         }
 
         /// <summary>
@@ -157,7 +203,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public bool IsCancel
         {
-            get { return ts.is_cancel; }
+            get; private set;
         }
 
         /// <summary>
@@ -166,7 +212,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public bool IsCorrection
         {
-            get { return ts.is_correction; }
+            get; private set;
         }
 
         /// <summary>
@@ -174,7 +220,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public bool IsTrade
         {
-            get { return ts.is_trade; }
+            get; private set;
         }
 
         /// <summary>
@@ -183,7 +229,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public bool IsNew
         {
-            get { return ts.is_new; }
+            get; private set;
         }
 
         /// <summary>
@@ -191,7 +237,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public bool IsSpreadLeg
         {
-            get { return ts.is_spread_leg; }
+            get; private set;
         }
 
         /// <summary>
@@ -201,7 +247,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public bool IsValidTick
         {
-            get { return ts.is_valid_tick; }
+            get; private set;
         }
 
         #endregion

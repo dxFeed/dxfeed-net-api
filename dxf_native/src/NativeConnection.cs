@@ -41,6 +41,48 @@ namespace com.dxfeed.native
             C.CheckOk(C.Instance.dxf_create_connection(address, callback, null, null, IntPtr.Zero, out handler));
         }
 
+        /// <summary>
+        /// Creates new connection.
+        /// </summary>
+        /// <param name="address">Server address to connect.</param>
+        /// <param name="credential">User name and password to server access.</param>
+        /// <param name="disconnectListener">Listener will be called when the connection is interrupted.</param>
+        /// <exception cref="DxException">Create connection failed.</exception>
+        public NativeConnection(string address, System.Net.NetworkCredential credential, Action<IDxConnection> disconnectListener)
+        {
+            callback = OnDisconnect;
+            this.disconnectListener = disconnectListener;
+            C.CheckOk(C.Instance.dxf_create_connection_auth_basic(address, credential.UserName, credential.Password, callback, null, null, IntPtr.Zero, out handler));
+        }
+
+        /// <summary>
+        /// Creates new connection.
+        /// </summary>
+        /// <param name="address">Server address to connect.</param>
+        /// <param name="token">Bearer scheme token to server access.</param>
+        /// <param name="disconnectListener">Listener will be called when the connection is interrupted.</param>
+        /// <exception cref="DxException">Create connection failed.</exception>
+        public NativeConnection(string address, string token, Action<IDxConnection> disconnectListener)
+        {
+            callback = OnDisconnect;
+            this.disconnectListener = disconnectListener;
+            C.CheckOk(C.Instance.dxf_create_connection_auth_bearer(address, token, callback, null, null, IntPtr.Zero, out handler));
+        }
+
+        /// <summary>
+        /// Creates new connection.
+        /// </summary>
+        /// <param name="address">Server address to connect.</param>
+        /// <param name="authscheme">The authorization scheme.</param>
+        /// <param name="disconnectListener">Listener will be called when the connection is interrupted.</param>
+        /// <exception cref="DxException">Create connection failed.</exception>
+        public NativeConnection(string address, string authscheme, string authdata, Action<IDxConnection> disconnectListener)
+        {
+            callback = OnDisconnect;
+            this.disconnectListener = disconnectListener;
+            C.CheckOk(C.Instance.dxf_create_connection_auth_custom(address, authscheme, authdata, callback, null, null, IntPtr.Zero, out handler));
+        }
+
         private void OnDisconnect(IntPtr connection, IntPtr userData)
         {
             if (disconnectListener != null)

@@ -128,22 +128,22 @@
       <Link>DXFeed_64.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="libcrypto-41.dll">
+    <Content Include="..\lib\libcrypto-41.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="libcrypto-41_64.dll">
+    <Content Include="..\lib\libcrypto-41_64.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="libssl-43.dll">
+    <Content Include="..\lib\libssl-43.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="libssl-43_64.dll">
+    <Content Include="..\lib\libssl-43_64.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="libtls-15.dll">
+    <Content Include="..\lib\libtls-15.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="libtls-15_64.dll">
+    <Content Include="..\lib\libtls-15_64.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

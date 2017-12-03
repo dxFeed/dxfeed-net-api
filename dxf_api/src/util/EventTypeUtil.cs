@@ -38,5 +38,51 @@ namespace com.dxfeed.api.util
 
             return id;
         }
+
+        /// <summary>
+        /// Gets enum values of events type by generic class.
+        /// </summary>
+        /// <param name="types">The list of generic class represents events.</param>
+        /// <returns>Enum values of events type by generic class.</returns>
+        /// <exception cref="ArgumentException">If types element is not event class.</exception>
+        public static EventType GetEventsType(params Type[] types)
+        {
+            if (types == null)
+                throw new ArgumentNullException("types");
+            EventType events = EventType.None;
+            foreach (Type t in types)
+            {
+                if (typeof(IDxTrade).IsAssignableFrom(t))
+                    events |= EventType.Trade;
+                else if (typeof(IDxQuote).IsAssignableFrom(t))
+                    events |= EventType.Quote;
+                else if (typeof(IDxSummary).IsAssignableFrom(t))
+                    events |= EventType.Summary;
+                else if (typeof(IDxProfile).IsAssignableFrom(t))
+                    events |= EventType.Profile;
+                else if (typeof(IDxOrder).IsAssignableFrom(t))
+                    events |= EventType.Order;
+                else if (typeof(IDxTimeAndSale).IsAssignableFrom(t))
+                    events |= EventType.TimeAndSale;
+                else if (typeof(IDxCandle).IsAssignableFrom(t))
+                    events |= EventType.Candle;
+                else if (typeof(IDxTradeEth).IsAssignableFrom(t))
+                    events |= EventType.TradeETH;
+                else if (typeof(IDxSpreadOrder).IsAssignableFrom(t))
+                    events |= EventType.SpreadOrder;
+                else if (typeof(IDxGreeks).IsAssignableFrom(t))
+                    events |= EventType.Greeks;
+                else if (typeof(IDxTheoPrice).IsAssignableFrom(t))
+                    events |= EventType.TheoPrice;
+                else if (typeof(IDxUnderlying).IsAssignableFrom(t))
+                    events |= EventType.Underlying;
+                else if (typeof(IDxSeries).IsAssignableFrom(t))
+                    events |= EventType.Series;
+                else if (typeof(IDxConfiguration).IsAssignableFrom(t))
+                    events |= EventType.Configuration;
+                else throw new ArgumentException("Unknown event type: " + t);
+            }
+            return events;
+        }
     }
 }

@@ -11,7 +11,7 @@ namespace com.dxfeed.api.data
     /// <summary>
     /// Stack allocated string representation 
     /// </summary>
-    public unsafe struct DxString : IEquatable<DxString>
+    public unsafe struct DxString : IEquatable<DxString>, ICloneable
     {
         private const int SizeLimit = 15;
         private fixed char chars[SizeLimit];
@@ -134,6 +134,14 @@ namespace com.dxfeed.api.data
                 }
             }
             return hc;
+        }
+
+        public object Clone()
+        {
+            fixed (char* pChars = chars)
+            {
+                return new DxString(pChars);
+            }
         }
 
         public static bool operator ==(DxString left, string right)

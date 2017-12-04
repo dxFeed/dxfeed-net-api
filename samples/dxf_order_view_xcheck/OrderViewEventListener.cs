@@ -46,7 +46,7 @@ namespace dxf_order_view_xcheck
         {
             Dictionary<long, SimpleOrder> s = new Dictionary<long, SimpleOrder>();
             int count = 0;
-            string src = null;
+            IndexedEventSource src = null;
             string sym = "";
 
             foreach (var o in buf)
@@ -54,7 +54,7 @@ namespace dxf_order_view_xcheck
                 if (src == null)
                 {
                     src = o.Source;
-                    sym = buf.Symbol + "#" + src;
+                    sym = buf.Symbol + "#" + src.Name;
                 }
                 else if (src != o.Source)
                     Console.WriteLine("ERROR: Mixed!");

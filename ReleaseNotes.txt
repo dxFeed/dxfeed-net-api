@@ -1,0 +1,5 @@
+Version 5.1.0
++ Implement Entitlement API for C#.
++ Implement support for different connection schemes.
++ Implement support for SSL/TLS.
++ Implement simple Future/Promise API

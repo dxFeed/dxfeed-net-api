@@ -73,42 +73,64 @@
     <Content Include="..\lib\DXFeedd.dll">
       <Link>DXFeedd.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Label>ToLib</Label>
     </Content>
     <Content Include="..\lib\DXFeedd_64.dll">
       <Link>DXFeedd_64.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Label>ToLib</Label>
     </Content>
     <Content Include="..\lib\DXFeed.dll">
       <Link>DXFeed.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Label>ToLib</Label>
     </Content>
     <Content Include="..\lib\DXFeed_64.dll">
       <Link>DXFeed_64.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Label>ToLib</Label>
     </Content>
     <Content Include="..\lib\libcrypto-41.dll">
       <Link>libcrypto-41.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Label>ToLib</Label>
     </Content>
     <Content Include="..\lib\libcrypto-41_64.dll">
       <Link>libcrypto-41_64.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Label>ToLib</Label>
     </Content>
     <Content Include="..\lib\libssl-43.dll">
       <Link>libssl-43.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Label>ToLib</Label>
     </Content>
     <Content Include="..\lib\libssl-43_64.dll">
       <Link>libssl-43_64.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Label>ToLib</Label>
     </Content>
     <Content Include="..\lib\libtls-15.dll">
       <Link>libtls-15.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Label>ToLib</Label>
     </Content>
     <Content Include="..\lib\libtls-15_64.dll">
       <Link>libtls-15_64.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Label>ToLib</Label>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\COPYING.libressl">
+      <Link>COPYING.libressl</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Label>ToRoot</Label>
+    </Content>
+    <Content Include="..\ReleaseNotes.txt">
+      <Link>ReleaseNotes.txt</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Label>ToRoot</Label>
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
@@ -146,7 +168,13 @@
              Targets="CopySources" 
              Properties="OutputPath=$(MSBuildProjectDirectory)\$(OutputPath)" />
     <Copy SourceFiles="@(Content)"
+          Condition="'%(Content.Label)' == 'ToLib'"
           DestinationFiles="@(Content->'$(OutputPath)lib\%(RecursiveDir)%(Filename)%(Extension)')"
+          Retries="5"
+          SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(Content)"
+          Condition="'%(Content.Label)' == 'ToRoot'"
+          DestinationFiles="@(Content->'$(OutputPath)%(RecursiveDir)%(Filename)%(Extension)')"
           Retries="5"
           SkipUnchangedFiles="true" />
   </Target>

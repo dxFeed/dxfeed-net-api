@@ -60,5 +60,15 @@ namespace com.dxfeed.api
             var hc2 = dxStr.GetHashCode();
             Assert.True(hc1 == hc2);
         }
+
+        [Test]
+        public void TestClone()
+        {
+            var dxStr = Create("haba".ToCharArray());
+            var copy = (DxString)dxStr.Clone();
+            Assert.True(dxStr == copy);
+            dxStr = Create("haba2".ToCharArray());
+            Assert.True("haba" == copy);
+        }
     }
 }

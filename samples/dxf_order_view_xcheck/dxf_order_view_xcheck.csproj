@@ -1,0 +1,86 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{208F99E0-8C2E-4D99-BE48-FF241A60FD26}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>dxf_order_view_xcheck</RootNamespace>
+    <AssemblyName>dxf_order_view_xcheck</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="OrderViewEventListener.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\dxf_api\dxf_api.csproj">
+      <Project>{F0E087DF-6C09-42FF-90FF-A470B3391F76}</Project>
+      <Name>dxf_api</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\dxf_native\dxf_native.csproj">
+      <Project>{D56EED21-EE2C-441C-B0D5-E85F10436CEA}</Project>
+      <Name>dxf_native</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <!-- Copy sources tools -->
+  <Target Name="CopySources">
+    <ItemGroup>
+      <ProjectFile Include="$(MSBuildProjectFile)" />
+    </ItemGroup>
+    <Copy SourceFiles="@(Compile)" DestinationFiles="@(Compile->'$(OutputPath)samples\$(MSBuildProjectName)\%(RelativeDir)%(Filename)%(Extension)')" Retries="5" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(ProjectFile)" DestinationFiles="$(OutputPath)samples\$(MSBuildProjectName)\%(RecursiveDir)%(Filename)%(Extension)" Retries="5" SkipUnchangedFiles="true" />
+  </Target>
+  <!-- Update project version tools -->
+  <Import Project="$(MSBuildExtensionsPath)\ExtensionPack\4.0\MSBuild.ExtensionPack.tasks" Condition="Exists('$(MSBuildExtensionsPath)\ExtensionPack\4.0\MSBuild.ExtensionPack.tasks')" />
+  <Target Name="UpdateVersion">
+    <ItemGroup>
+      <AssemblyInfoFiles Include="$(MSBuildProjectDirectory)\Properties\AssemblyInfo.cs" />
+    </ItemGroup>
+    <AssemblyInfo AssemblyInfoFiles="@(AssemblyInfoFiles)" AssemblyVersion="$(AssemblyVersion)" AssemblyFileVersion="$(AssemblyVersion)" />
+  </Target>
+</Project>

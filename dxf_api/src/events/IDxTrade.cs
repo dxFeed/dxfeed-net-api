@@ -12,6 +12,7 @@ namespace com.dxfeed.api.events
     /// It represents the most recent information that is available about the regular last trade price on
     /// the market at any given moment of time.
     /// </summary>
+    [EventTypeAttribute("Trade")]
     public interface IDxTrade : IDxTradeBase
     {
         //Note: no extra fields in this interface.

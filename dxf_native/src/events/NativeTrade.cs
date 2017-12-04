@@ -1,12 +1,14 @@
-﻿/// Copyright (C) 2010-2016 Devexperts LLC
-///
-/// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-/// If a copy of the MPL was not distributed with this file, You can obtain one at
-/// http://mozilla.org/MPL/2.0/.
+﻿#region License
+// Copyright (C) 2010-2016 Devexperts LLC
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at
+// http://mozilla.org/MPL/2.0/.
+#endregion
 
-using System.Globalization;
 using com.dxfeed.api.events;
 using com.dxfeed.native.api;
+using System.Globalization;
 
 namespace com.dxfeed.native.events
 {
@@ -24,6 +26,19 @@ namespace com.dxfeed.native.events
         /// <param name="trade">Native DxTrade object.</param>
         /// <param name="symbol">The event symbol.</param>
         internal unsafe NativeTrade(DxTrade* trade, string symbol) : base(trade, symbol) { }
+
+        /// <summary>
+        /// Creates copy of trade object.
+        /// </summary>
+        /// <param name="trade">The IDxTrade object.</param>
+        internal NativeTrade(IDxTrade trade) : base(trade) { }
+
+        #region Implementation of ICloneable
+        public override object Clone()
+        {
+            return new NativeTrade(this);
+        }
+        #endregion
 
         public override string ToString()
         {

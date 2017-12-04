@@ -1,14 +1,16 @@
-﻿/// Copyright (C) 2010-2016 Devexperts LLC
-///
-/// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-/// If a copy of the MPL was not distributed with this file, You can obtain one at
-/// http://mozilla.org/MPL/2.0/.
+﻿#region License
+// Copyright (C) 2010-2016 Devexperts LLC
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at
+// http://mozilla.org/MPL/2.0/.
+#endregion
 
-using System;
-using System.Globalization;
 using com.dxfeed.api.events;
 using com.dxfeed.api.extras;
 using com.dxfeed.native.api;
+using System;
+using System.Globalization;
 
 namespace com.dxfeed.native.events
 {
@@ -17,14 +19,45 @@ namespace com.dxfeed.native.events
     /// It represents the most recent information that is available about the corresponding
     /// values on the market at any given moment of time.
     /// </summary>
-    public class NativeGreeks : MarketEvent, IDxGreeks
+    public class NativeGreeks : MarketEventImpl, IDxGreeks
     {
-        private readonly DxGreeks grks;
+
         private static readonly int maxSequence = (1 << 22) - 1;
 
-        internal unsafe NativeGreeks(DxGreeks* grks, string symbol) : base(symbol)
+        internal unsafe NativeGreeks(DxGreeks* g, string symbol) : base(symbol)
         {
-            this.grks = *grks;
+            DxGreeks greeks = *g;
+
+            EventFlags = greeks.event_flags;
+
+            Delta = greeks.delta;
+            Gamma = greeks.gamma;
+            GreeksPrice = greeks.greeks_price;
+            Rho = greeks.rho;
+            Sequence = greeks.sequence;
+            Theta = greeks.theta;
+            TimeStamp =  greeks.time;
+            Time = TimeConverter.ToUtcDateTime(TimeStamp);
+            Vega = greeks.vega;
+            Volatility = greeks.volatility;
+            Index = greeks.index;
+        }
+
+        internal NativeGreeks(IDxGreeks greeks) : base(greeks.EventSymbol)
+        {
+            EventFlags = greeks.EventFlags;
+
+            Delta = greeks.Delta;
+            Gamma = greeks.Gamma;
+            GreeksPrice = greeks.GreeksPrice;
+            Rho = greeks.Rho;
+            Sequence = greeks.Sequence;
+            Theta = greeks.Theta;
+            TimeStamp = greeks.TimeStamp;
+            Time = TimeConverter.ToUtcDateTime(TimeStamp);
+            Vega = greeks.Vega;
+            Volatility = greeks.Volatility;
+            Index = greeks.Index;
         }
 
         public override string ToString()
@@ -35,6 +68,13 @@ namespace com.dxfeed.native.events
                 EventSymbol, Time, Sequence, GreeksPrice, Volatility, Delta, Gamma, Theta, Rho, Vega, Index);
         }
 
+        #region Implementation of ICloneable
+        public override object Clone()
+        {
+            return new NativeGreeks(this);
+        }
+        #endregion
+
         #region Implementation of IDxGreeks
 
         /// <summary>
@@ -43,7 +83,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public double Delta
         {
-            get { return grks.delta; }
+            get; private set;
         }
 
         /// <summary>
@@ -52,7 +92,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public double Gamma
         {
-            get { return grks.gamma; }
+            get; private set;
         }
 
         /// <summary>
@@ -60,7 +100,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public double GreeksPrice
         {
-            get { return grks.greeks_price; }
+            get; private set;
         }
 
         /// <summary>
@@ -77,7 +117,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public double Rho
         {
-            get { return grks.rho; }
+            get; private set;
         }
 
         /// <summary>
@@ -87,7 +127,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public int Sequence
         {
-            get { return grks.sequence; }
+            get; private set;
         }
 
         /// <summary>
@@ -96,15 +136,24 @@ namespace com.dxfeed.native.events
         /// </summary>
         public double Theta
         {
-            get { return grks.theta; }
+            get; private set;
         }
 
         /// <summary>
-        /// Returns date time of this event.
+        /// Returns timestamp of this event.
+        /// The timestamp is in milliseconds from midnight, January 1, 1970 UTC.
+        /// </summary>
+        public long TimeStamp
+        {
+            get; private set;
+        }
+
+        /// <summary>
+        /// Returns UTC date and time of this event.
         /// </summary>
         public DateTime Time
         {
-            get { return TimeConverter.ToUtcDateTime(grks.time); }
+            get; private set;
         }
 
         /// <summary>
@@ -113,7 +162,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public double Vega
         {
-            get { return grks.vega; }
+            get; private set;
         }
 
         /// <summary>
@@ -121,7 +170,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public double Volatility
         {
-            get { return grks.volatility; }
+            get; private set;
         }
 
         /// <summary>
@@ -130,7 +179,24 @@ namespace com.dxfeed.native.events
         /// </summary>
         public long Index
         {
-            get { return grks.index; }
+            get; private set;
+        }
+
+        /// <summary>
+        /// Gets transactional event flags.
+        /// See "Event Flags" section from <see cref="IndexedEvent"/>.
+        /// </summary>
+        public EventFlag EventFlags
+        {
+            get; set;
+        }
+
+        public IndexedEventSource Source
+        {
+            get
+            {
+                return IndexedEventSource.DEFAULT;
+            }
         }
 
         #endregion

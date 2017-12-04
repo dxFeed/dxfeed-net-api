@@ -1,12 +1,14 @@
-﻿/// Copyright (C) 2010-2016 Devexperts LLC
-///
-/// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-/// If a copy of the MPL was not distributed with this file, You can obtain one at
-/// http://mozilla.org/MPL/2.0/.
+﻿#region License
+// Copyright (C) 2010-2016 Devexperts LLC
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at
+// http://mozilla.org/MPL/2.0/.
+#endregion
 
-using System.Globalization;
 using com.dxfeed.api.events;
 using com.dxfeed.native.api;
+using System.Globalization;
 
 namespace com.dxfeed.native.events
 {
@@ -15,13 +17,40 @@ namespace com.dxfeed.native.events
     /// It represents the most recent information that is available about the trading session 
     /// in the market at any given moment of time. 
     /// </summary>
-    public class NativeSummary : MarketEvent, IDxSummary
+    public class NativeSummary : MarketEventImpl, IDxSummary
     {
-        private readonly DxSummary summary;
-
-        internal unsafe NativeSummary(DxSummary* summary, string symbol) : base(symbol)
+        internal unsafe NativeSummary(DxSummary* s, string symbol) : base(symbol)
         {
-            this.summary = *summary;
+            DxSummary summary = *s;
+
+            DayId = summary.day_id;
+            DayOpenPrice = summary.day_open_price;
+            DayHighPrice = summary.day_high_price;
+            DayLowPrice = summary.day_low_price;
+            DayClosePrice = summary.day_close_price;
+            PrevDayId = summary.prev_day_id;
+            PrevDayClosePrice = summary.prev_day_close_price;
+            OpenInterest = summary.open_interest;
+            Flags = summary.flags;
+            ExchangeCode = summary.exchange_code;
+            DayClosePriceType = summary.day_close_price_type;
+            PrevDayClosePriceType = summary.prev_day_close_price_type;
+        }
+
+        internal NativeSummary(IDxSummary summary) : base(summary.EventSymbol)
+        {
+            DayId = summary.DayId;
+            DayOpenPrice = summary.DayOpenPrice;
+            DayHighPrice = summary.DayHighPrice;
+            DayLowPrice = summary.DayLowPrice;
+            DayClosePrice = summary.DayClosePrice;
+            PrevDayId = summary.PrevDayId;
+            PrevDayClosePrice = summary.PrevDayClosePrice;
+            OpenInterest = summary.OpenInterest;
+            Flags = summary.Flags;
+            ExchangeCode = summary.ExchangeCode;
+            DayClosePriceType = summary.DayClosePriceType;
+            PrevDayClosePriceType = summary.PrevDayClosePriceType;
         }
 
         public override string ToString()
@@ -36,6 +65,13 @@ namespace com.dxfeed.native.events
                 Flags, ExchangeCode, EventSymbol, DayClosePriceType, PrevDayClosePriceType);
         }
 
+        #region Implementation of ICloneable
+        public override object Clone()
+        {
+            return new NativeSummary(this);
+        }
+        #endregion
+
         #region Implementation of IDxSummary
 
         /// <summary>
@@ -44,7 +80,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public int DayId
         {
-            get { return summary.day_id; }
+            get; private set;
         }
 
         /// <summary>
@@ -52,7 +88,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public double DayOpenPrice
         {
-            get { return summary.day_open_price; }
+            get; private set;
         }
 
         /// <summary>
@@ -60,7 +96,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public double DayHighPrice
         {
-            get { return summary.day_high_price; }
+            get; private set;
         }
 
         /// <summary>
@@ -68,7 +104,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public double DayLowPrice
         {
-            get { return summary.day_low_price; }
+            get; private set;
         }
 
         /// <summary>
@@ -76,7 +112,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public double DayClosePrice
         {
-            get { return summary.day_close_price; }
+            get; private set;
         }
 
         /// <summary>
@@ -85,7 +121,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public int PrevDayId
         {
-            get { return summary.prev_day_id; }
+            get; private set;
         }
 
         /// <summary>
@@ -93,7 +129,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public double PrevDayClosePrice
         {
-            get { return summary.prev_day_close_price; }
+            get; private set;
         }
 
         /// <summary>
@@ -101,7 +137,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public long OpenInterest
         {
-            get { return summary.open_interest; }
+            get; private set;
         }
 
         /// <summary>
@@ -116,7 +152,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public long Flags
         {
-            get { return summary.flags; }
+            get; private set;
         }
 
         /// <summary>
@@ -124,7 +160,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public char ExchangeCode
         {
-            get { return summary.exchange_code; }
+            get; private set;
         }
 
         /// <summary>
@@ -132,7 +168,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public PriceType DayClosePriceType
         {
-            get { return summary.day_close_price_type; }
+            get; private set;
         }
 
         /// <summary>
@@ -140,7 +176,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public PriceType PrevDayClosePriceType
         {
-            get { return summary.prev_day_close_price_type; }
+            get; private set;
         }
 
         #endregion

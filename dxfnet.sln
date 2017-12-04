@@ -1,6 +1,8 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dxf_native", "dxf_native\dxf_native.csproj", "{D56EED21-EE2C-441C-B0D5-E85F10436CEA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dxf_api", "dxf_api\dxf_api.csproj", "{F0E087DF-6C09-42FF-90FF-A470B3391F76}"
@@ -31,6 +33,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dxf_order_view_sample", "samples\dxf_order_view_sample\dxf_order_view_sample.csproj", "{632C4E8E-8697-4D38-BBB5-D79A3617A7A1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dxf_read_write_raw_data_sample", "samples\dxf_read_write_raw_data_sample\dxf_read_write_raw_data_sample.csproj", "{7B032113-9A20-499A-9231-B3D6261DB01C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dxf_order_view_xcheck", "samples\dxf_order_view_xcheck\dxf_order_view_xcheck.csproj", "{208F99E0-8C2E-4D99-BE48-FF241A60FD26}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dxf_promises_sample", "samples\dxf_promises_sample\dxf_promises_sample.csproj", "{83FF50AF-8F5F-49EA-BB68-2329F9E5DB65}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -85,6 +91,17 @@ Global
 		{7B032113-9A20-499A-9231-B3D6261DB01C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7B032113-9A20-499A-9231-B3D6261DB01C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7B032113-9A20-499A-9231-B3D6261DB01C}.Release|Any CPU.Build.0 = Release|Any CPU
+<<<<<<< HEAD
+		{208F99E0-8C2E-4D99-BE48-FF241A60FD26}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{208F99E0-8C2E-4D99-BE48-FF241A60FD26}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{208F99E0-8C2E-4D99-BE48-FF241A60FD26}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{208F99E0-8C2E-4D99-BE48-FF241A60FD26}.Release|Any CPU.Build.0 = Release|Any CPU
+=======
+		{83FF50AF-8F5F-49EA-BB68-2329F9E5DB65}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{83FF50AF-8F5F-49EA-BB68-2329F9E5DB65}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{83FF50AF-8F5F-49EA-BB68-2329F9E5DB65}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{83FF50AF-8F5F-49EA-BB68-2329F9E5DB65}.Release|Any CPU.Build.0 = Release|Any CPU
+>>>>>>> feature-DXFC-59
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -98,5 +115,10 @@ Global
 		{27844D1F-5982-4761-B807-AAE549CF6448} = {4C3AA050-1D5F-43C7-90B1-95D04B6763C8}
 		{632C4E8E-8697-4D38-BBB5-D79A3617A7A1} = {4C3AA050-1D5F-43C7-90B1-95D04B6763C8}
 		{7B032113-9A20-499A-9231-B3D6261DB01C} = {4C3AA050-1D5F-43C7-90B1-95D04B6763C8}
+<<<<<<< HEAD
+		{208F99E0-8C2E-4D99-BE48-FF241A60FD26} = {4C3AA050-1D5F-43C7-90B1-95D04B6763C8}
+=======
+		{83FF50AF-8F5F-49EA-BB68-2329F9E5DB65} = {4C3AA050-1D5F-43C7-90B1-95D04B6763C8}
+>>>>>>> feature-DXFC-59
 	EndGlobalSection
 EndGlobal

@@ -14,7 +14,8 @@ namespace com.dxfeed.api.events
     /// It represents the most recent information that is available about the best quote on
     /// the market at any given moment of time.
     /// </summary>
-    public interface IDxQuote : IDxMarketEvent
+    [EventTypeAttribute("Quote")]
+    public interface IDxQuote : IDxMarketEvent, LastingEvent<string>
     {
         /// <summary>
         /// Returns date time of the last bid change.

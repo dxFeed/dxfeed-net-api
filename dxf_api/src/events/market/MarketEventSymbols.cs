@@ -1,12 +1,15 @@
-﻿/// Copyright (C) 2010-2016 Devexperts LLC
-///
-/// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-/// If a copy of the MPL was not distributed with this file, You can obtain one at
-/// http://mozilla.org/MPL/2.0/.
+﻿#region License
+// Copyright (C) 2010-2016 Devexperts LLC
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at
+// http://mozilla.org/MPL/2.0/.
+#endregion
 
+using com.dxfeed.api.candle;
 using System;
 
-namespace com.dxfeed.api.candle
+namespace com.dxfeed.api.events.market
 {
     /// <summary>
     ///  Helper class to compose and parse symbols for market events.
@@ -32,7 +35,7 @@ namespace com.dxfeed.api.candle
     /// </ul>
     /// The methods in this class always maintain attribute keys in alphabetic order.
     /// </summary>
-    class MarketEventSymbols
+    public class MarketEventSymbols
     {
         private static readonly char EXCHANGE_SEPARATOR = '&';
         private static readonly char ATTRIBUTES_OPEN = '{';
@@ -180,6 +183,21 @@ namespace com.dxfeed.api.candle
             if (symbol == null)
                 return null;
             return RemoveAttributeInternal(symbol, GetLengthWithoutAttributesInternal(symbol), key);
+        }
+
+        /// <summary>
+        ///     Validates symbolObj is not <c>null</c> and is <c>string</c> or <see cref="CandleSymbol"/> 
+        ///     object.
+        /// </summary>
+        /// <param name="symbolObj">Object to validate for symbol.</param>
+        /// <exception cref="ArgumentException">The symbolObj is not one of <c>string</c> or <see cref="CandleSymbol"/>.</exception>
+        /// <exception cref="ArgumentNullException">The symbolObj is <c>null</c>.</exception>
+        public static void ValidateSymbol(object symbolObj)
+        {
+            if (symbolObj == null)
+                throw new ArgumentNullException("Symbol object is null.");
+            if (!(symbolObj is string) && !(symbolObj is CandleSymbol))
+                throw new ArgumentException("Symbol object must be a string or CandleSymbol object.");
         }
 
         private static bool HasExchangeCodeInternal(string symbol, int length)

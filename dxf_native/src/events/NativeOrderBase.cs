@@ -6,12 +6,12 @@
 // http://mozilla.org/MPL/2.0/.
 #endregion
 
-using System;
-using System.Globalization;
 using com.dxfeed.api.data;
 using com.dxfeed.api.events;
 using com.dxfeed.api.extras;
 using com.dxfeed.native.api;
+using System;
+using System.Globalization;
 
 namespace com.dxfeed.native.events
 {
@@ -21,53 +21,61 @@ namespace com.dxfeed.native.events
     ///   The collection of order events of a symbol represents the most recent information that is
     ///   available about orders on the market at any given moment of time.
     /// </summary>
-    public class NativeOrderBase : MarketEvent, IDxOrderBase
+    public class NativeOrderBase : MarketEventImpl, IDxOrderBase
     {
-        private DxOrder order;
-        private readonly OrderSource source;
-
-        internal unsafe NativeOrderBase(DxOrder* order, string symbol) : base(symbol)
+        internal unsafe NativeOrderBase(DxOrder* o, string symbol) : base(symbol)
         {
-            this.order = *order;
+            DxOrder order = *o;
 
-            fixed (char* charPtr = this.order.source)
-            {
-                source = OrderSource.ValueOf(new string(charPtr));
-            }
+            Count = order.count;
+            EventFlags = order.event_flags;
+            ExchangeCode = order.exchange_code;
+            Index = order.index;
+            Level = order.level;
+            Side = order.side;
+            Price = order.price;
+            Scope = Scope.ValueOf(order.scope);
+            Sequence = order.sequence;
+            Size = order.size;
+            Time = TimeConverter.ToUtcDateTime(order.time);
+            Source = OrderSource.ValueOf(new string(order.source));
+            TimeSequence = order.time_sequence;
         }
 
-        internal unsafe NativeOrderBase(DxSpreadOrder* order, string symbol) : base(symbol)
+        internal unsafe NativeOrderBase(DxSpreadOrder* o, string symbol) : base(symbol)
         {
-            this.order.count = order->count;
-            this.order.event_flags = order->event_flags;
-            this.order.exchange_code = order->exchange_code;
-            this.order.index = order->index;
-            this.order.level = order->level;
-            this.order.side = order->side;
-            this.order.price = order->price;
-            this.order.scope = order->scope;
-            this.order.sequence = order->sequence;
-            this.order.size = order->size;
-            source = OrderSource.ValueOf(new string(order->source));
-            this.order.time = order->time;
-            this.order.time_sequence = order->time_sequence;
+            DxSpreadOrder order = *o;
+
+            Count = order.count;
+            EventFlags = order.event_flags;
+            ExchangeCode = order.exchange_code;
+            Index = order.index;
+            Level = order.level;
+            Side = order.side;
+            Price = order.price;
+            Scope = Scope.ValueOf(order.scope);
+            Sequence = order.sequence;
+            Size = order.size;
+            Time = TimeConverter.ToUtcDateTime(order.time);
+            Source = OrderSource.ValueOf(new string(order.source));
+            TimeSequence = order.time_sequence;
         }
 
-        internal NativeOrderBase(IDxOrder order) : base(order.EventSymbol)
+        internal NativeOrderBase(IDxOrderBase order) : base(order.EventSymbol)
         {
-            this.order.count = order.Count;
-            this.order.event_flags = order.EventFlags;
-            this.order.exchange_code = order.ExchangeCode;
-            this.order.index = order.Index;
-            this.order.level = order.Level;
-            this.order.side = order.Side;
-            this.order.price = order.Price;
-            this.order.scope = order.Scope.Code;
-            this.order.sequence = order.Sequence;
-            this.order.size = order.Size;
-            source = order.Source;
-            this.order.time = TimeConverter.ToUnixTime(order.Time);
-            this.order.time_sequence = order.TimeSequence;
+            Count = order.Count;
+            EventFlags = order.EventFlags;
+            ExchangeCode = order.ExchangeCode;
+            Index = order.Index;
+            Level = order.Level;
+            Side = order.Side;
+            Price = order.Price;
+            Scope = Scope.ValueOf(order.Scope.Code);
+            Sequence = order.Sequence;
+            Size = order.Size;
+            Time = order.Time;
+            Source = OrderSource.ValueOf(order.Source.Name);
+            TimeSequence = order.TimeSequence;
         }
 
         public override string ToString()
@@ -79,6 +87,13 @@ namespace com.dxfeed.native.events
                 Scope, Count);
         }
 
+        #region Implementation of ICloneable
+        public override object Clone()
+        {
+            return new NativeOrderBase(this);
+        }
+        #endregion
+
         #region Implementation of IDxOrderBase
 
         /// <summary>
@@ -86,8 +101,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public int Count
         {
-            get { return order.count; }
-            internal set { order.count = value; }
+            get; internal set;
         }
 
         /// <summary>
@@ -95,7 +109,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public EventFlag EventFlags
         {
-            get { return order.event_flags; }
+            get; set;
         }
 
         /// <summary>
@@ -103,8 +117,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public char ExchangeCode
         {
-            get { return order.exchange_code; }
-            internal set { order.exchange_code = value; }
+            get; internal set;
         }
 
         /// <summary>
@@ -112,7 +125,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public long Index
         {
-            get { return order.index; }
+            get; internal set;
         }
 
         /// <summary>
@@ -121,7 +134,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public int Level
         {
-            get { return order.level; }
+            get; internal set;
         }
 
         /// <summary>
@@ -129,7 +142,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public Side Side
         {
-            get { return order.side; }
+            get; internal set;
         }
 
         /// <summary>
@@ -137,8 +150,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public double Price
         {
-            get { return order.price; }
-            internal set { order.price = value; }
+            get; internal set;
         }
 
         /// <summary>
@@ -146,7 +158,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public Scope Scope
         {
-            get { return Scope.ValueOf(order.scope); }
+            get; internal set;
         }
 
         /// <summary>
@@ -155,8 +167,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public int Sequence
         {
-            get { return order.sequence; }
-            internal set { order.sequence = value; }
+            get; internal set;
         }
 
         /// <summary>
@@ -164,16 +175,15 @@ namespace com.dxfeed.native.events
         /// </summary>
         public long Size
         {
-            get { return order.size; }
-            internal set { order.size = value; }
+            get; internal set;
         }
 
         /// <summary>
         ///   Returns source of this event.
         /// </summary>
-        public OrderSource Source
+        public IndexedEventSource Source
         {
-            get { return source; }
+            get; internal set;
         }
 
         /// <summary>
@@ -181,8 +191,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public DateTime Time
         {
-            get { return TimeConverter.ToUtcDateTime(order.time); }
-            internal set { order.time = TimeConverter.ToUnixTime(value); }
+            get; internal set;
         }
 
         /// <summary>
@@ -191,7 +200,7 @@ namespace com.dxfeed.native.events
         /// </summary>
         public long TimeSequence
         {
-            get { return order.time_sequence; }
+            get; internal set;
         }
 
         #endregion

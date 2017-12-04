@@ -36,7 +36,8 @@ namespace com.dxfeed.api.events
     ///   Time and Sales are intended to provide information about trades in a continuous time slice
     ///   (unlike Trade events which are supposed to provide snapshot about the current last trade).
     /// </summary>
-    public interface IDxTimeAndSale : IDxMarketEvent
+    [EventTypeAttribute("TimeAndSale")]
+    public interface IDxTimeAndSale : IDxMarketEvent, TimeSeriesEvent<string>
     {
         /// <summary>
         ///   Returns aggressor side of this time and sale event.
@@ -56,10 +57,6 @@ namespace com.dxfeed.api.events
         /// </summary>
         long EventId { get; }
         /// <summary>
-        ///   Returns event flags of this time and sale event.
-        /// </summary>
-        EventFlag EventFlags { get; }
-        /// <summary>
         ///   Returns exchange code of this time and sale event.
         /// </summary>
         char ExchangeCode { get; }
@@ -67,11 +64,6 @@ namespace com.dxfeed.api.events
         ///   Returns sale conditions provided for this event by data feed.
         /// </summary>
         DxString ExchangeSaleConditions { get; }
-        /// <summary>
-        ///   Returns unique per-symbol index of this time and sale event.
-        ///   Time and sale index is composed of Time and Sequence.
-        /// </summary>
-        long Index { get; }
         /// <summary>
         ///   Returns price of this time and sale event.
         /// </summary>
@@ -86,10 +78,6 @@ namespace com.dxfeed.api.events
         ///   Returns size of this time and sale event.
         /// </summary>
         long Size { get; }
-        /// <summary>
-        ///   Returns date time of the original event.
-        /// </summary>
-        DateTime Time { get; }
         /// <summary>
         ///   Returns type of this time and sale event.
         /// </summary>

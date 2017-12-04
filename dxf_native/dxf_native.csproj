@@ -72,13 +72,20 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="src\api\C.cs" />
-    <Compile Include="src\api\C32.cs" />
-    <Compile Include="src\api\CDataTypes.cs" />
-    <Compile Include="src\api\C64.cs" />
+    <Compile Include="src\api\DXFeedEventHandler.cs" />
+    <Compile Include="src\api\DXFeedTimeSeriesSubscription.cs" />
+    <Compile Include="src\native\C.cs" />
+    <Compile Include="src\native\C32.cs" />
+    <Compile Include="src\native\CDataTypes.cs" />
+    <Compile Include="src\native\C64.cs" />
+    <Compile Include="src\api\DXFeedSnapshotCollector.cs" />
+    <Compile Include="src\api\DXFeedLastingEventsCollector.cs" />
     <Compile Include="src\EventBuffer.cs" />
+    <Compile Include="src\api\DXEndpoint.cs" />
+    <Compile Include="src\api\DXFeed.cs" />
+    <Compile Include="src\api\DXFeedSubscription.cs" />
     <Compile Include="src\events\DxMarshal.cs" />
-    <Compile Include="src\events\MarketEvent.cs" />
+    <Compile Include="src\events\MarketEventImpl.cs" />
     <Compile Include="src\events\NativeCandle.cs" />
     <Compile Include="src\events\NativeEventBuffer.cs" />
     <Compile Include="src\events\NativeGreeks.cs" />

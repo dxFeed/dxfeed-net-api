@@ -17,7 +17,8 @@ namespace com.dxfeed.api.events
     /// option price can be estimated on real-time changes of the underlying price
     /// in the vicinity.
     /// </summary>
-    public interface IDxTheoPrice : IDxMarketEvent
+    [EventTypeAttribute("TheoPrice")]
+    public interface IDxTheoPrice : IDxMarketEvent, LastingEvent<string>
     {
         /// <summary>
         /// Returns date time of the last theo price computation.

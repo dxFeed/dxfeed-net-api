@@ -14,6 +14,7 @@ namespace com.dxfeed.api.events
     /// It represents the most recent information that is available about ETH last trade on 
     /// the market at any given moment of time.
     /// </summary>
+    [EventTypeAttribute("TradeETH")]
     public interface IDxTradeEth : IDxTradeBase
     {
         /// <summary>

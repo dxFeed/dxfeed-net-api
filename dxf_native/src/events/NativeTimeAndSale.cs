@@ -37,8 +37,9 @@ namespace com.dxfeed.native.events
             Index = ts.index;
             Price = ts.price;
             Sequence = ts.sequence;
-            Size = ts.size;            
-            Time = TimeConverter.ToUtcDateTime(ts.time);
+            Size = ts.size;
+            TimeStamp = ts.time;
+            Time = TimeConverter.ToUtcDateTime(TimeStamp);
             Type = ts.type;
             IsCancel = ts.is_cancel;
             IsCorrection = ts.is_correction;
@@ -61,6 +62,7 @@ namespace com.dxfeed.native.events
             Price = ts.Price;
             Sequence = ts.Sequence;
             Size = ts.Size;
+            TimeStamp = ts.TimeStamp;
             Time = ts.Time;
             Type = ts.Type;
             IsCancel = ts.IsCancel;
@@ -182,6 +184,15 @@ namespace com.dxfeed.native.events
         }
 
         /// <summary>
+        /// Returns timestamp of this event.
+        /// The timestamp is in milliseconds from midnight, January 1, 1970 UTC.
+        /// </summary>
+        public long TimeStamp
+        {
+            get; private set;
+        }
+
+        /// <summary>
         /// Returns UTC date and time of this event.
         /// </summary>
         public DateTime Time
@@ -248,6 +259,14 @@ namespace com.dxfeed.native.events
         public bool IsValidTick
         {
             get; private set;
+        }
+
+        public IndexedEventSource Source
+        {
+            get
+            {
+                return IndexedEventSource.DEFAULT;
+            }
         }
 
         #endregion

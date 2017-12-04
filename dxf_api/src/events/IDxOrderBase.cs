@@ -6,8 +6,8 @@
 // http://mozilla.org/MPL/2.0/.
 #endregion
 
-using System;
 using com.dxfeed.api.data;
+using System;
 
 namespace com.dxfeed.api.events
 {
@@ -17,24 +17,16 @@ namespace com.dxfeed.api.events
     ///   The collection of order events of a symbol represents the most recent information that is
     ///   available about orders on the market at any given moment of time.
     /// </summary>
-    public interface IDxOrderBase : IDxMarketEvent
+    public interface IDxOrderBase : IDxMarketEvent, IndexedEvent<string>
     {
         /// <summary>
         ///   Returns number of individual orders in this aggregate order.
         /// </summary>
         int Count { get; }
         /// <summary>
-        ///   Returns event flags.
-        /// </summary>
-        EventFlag EventFlags { get; }
-        /// <summary>
         ///   Returns exchange code of this order.
         /// </summary>
         char ExchangeCode { get; }
-        /// <summary>
-        ///   Returns unique per-symbol index of this order. Index is non-negative.
-        /// </summary>
-        long Index { get; }
         /// <summary>
         ///   Returns detail level of this order.
         ///   Deprecated use Scope instead.
@@ -61,10 +53,6 @@ namespace com.dxfeed.api.events
         ///   Returns size of this order.
         /// </summary>
         long Size { get; }
-        /// <summary>
-        ///   Returns source of this event.
-        /// </summary>
-        OrderSource Source { get; }
         /// <summary>
         /// Returns date time of this order.
         /// </summary>

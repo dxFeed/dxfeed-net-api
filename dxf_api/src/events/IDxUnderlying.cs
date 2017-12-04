@@ -12,7 +12,8 @@ namespace com.dxfeed.api.events
     /// represents the most recent information that is available about the corresponding
     /// values on the market at any given moment of time.
     /// </summary>
-    public interface IDxUnderlying : IDxMarketEvent
+    [EventTypeAttribute("Underlying")]
+    public interface IDxUnderlying : IDxMarketEvent, LastingEvent<string>
     {
         /// <summary>
         /// Returns 30-day implied volatility for this underlying based on VIX methodology.

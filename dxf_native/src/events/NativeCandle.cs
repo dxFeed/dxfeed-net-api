@@ -28,8 +28,10 @@ namespace com.dxfeed.native.events
         {
             DxCandle candle = *c;
             EventSymbol = CandleSymbol.ValueOf(symbol);
+            EventFlags = candle.event_flags;
 
-            Time = candle.time;
+            TimeStamp = candle.time;
+            Time = TimeConverter.ToUtcDateTime(TimeStamp);
             Sequence = candle.sequence;
             Count = candle.count;
             Open = candle.open;
@@ -40,7 +42,7 @@ namespace com.dxfeed.native.events
             VWAP = candle.vwap;
             BidVolume = candle.bid_volume;
             AskVolume = candle.ask_volume;
-            DateTime = TimeConverter.ToUtcDateTime(Time);
+            DateTime = TimeConverter.ToUtcDateTime(TimeStamp);
             Index = candle.index;
             ImpVolatility = candle.imp_volatility;
             OpenInterest = candle.open_interest;
@@ -49,8 +51,10 @@ namespace com.dxfeed.native.events
         internal NativeCandle(IDxCandle candle)
         {
             EventSymbol = CandleSymbol.ValueOf(candle.EventSymbol.ToString());
+            EventFlags = candle.EventFlags;
 
-            Time = candle.Time;
+            TimeStamp = candle.TimeStamp;
+            Time = TimeConverter.ToUtcDateTime(TimeStamp);
             Sequence = candle.Sequence;
             Count = candle.Count;
             Open = candle.Open;
@@ -61,7 +65,7 @@ namespace com.dxfeed.native.events
             VWAP = candle.VWAP;
             BidVolume = candle.BidVolume;
             AskVolume = candle.AskVolume;
-            DateTime = TimeConverter.ToUtcDateTime(Time);
+            DateTime = TimeConverter.ToUtcDateTime(TimeStamp);
             Index = candle.Index;
             ImpVolatility = candle.ImpVolatility;
             OpenInterest = candle.OpenInterest;
@@ -91,7 +95,15 @@ namespace com.dxfeed.native.events
         /// Returns timestamp of this event.
         /// The timestamp is in milliseconds from midnight, January 1, 1970 UTC.
         /// </summary>
-        public long Time
+        public long TimeStamp
+        {
+            get; private set;
+        }
+
+        /// <summary>
+        /// Returns UTC date and time of this event.
+        /// </summary>
+        public DateTime Time
         {
             get; private set;
         }
@@ -181,6 +193,7 @@ namespace com.dxfeed.native.events
         /// <summary>
         /// Returns date time of the candle.
         /// </summary>
+        [Obsolete("DateTime is deprecated, please use Time instead.")]
         public DateTime DateTime
         {
             get; private set;
@@ -219,11 +232,28 @@ namespace com.dxfeed.native.events
             get; private set;
         }
 
+        /// <summary>
+        ///     Gets transactional event flags.
+        ///     See "Event Flags" section from <see cref="IndexedEvent"/>.
+        /// </summary>
+        public EventFlag EventFlags
+        {
+            get; set;
+        }
+
         object IDxEventType.EventSymbol
         {
             get
             {
                 return EventSymbol;
+            }
+        }
+
+        public IndexedEventSource Source
+        {
+            get
+            {
+                return IndexedEventSource.DEFAULT;
             }
         }
 

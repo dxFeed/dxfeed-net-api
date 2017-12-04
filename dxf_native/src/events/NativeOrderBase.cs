@@ -181,7 +181,7 @@ namespace com.dxfeed.native.events
         /// <summary>
         ///   Returns source of this event.
         /// </summary>
-        public OrderSource Source
+        public IndexedEventSource Source
         {
             get; internal set;
         }

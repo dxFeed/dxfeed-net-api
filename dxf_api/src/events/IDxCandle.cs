@@ -1,8 +1,10 @@
-﻿/// Copyright (C) 2010-2016 Devexperts LLC
-///
-/// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-/// If a copy of the MPL was not distributed with this file, You can obtain one at
-/// http://mozilla.org/MPL/2.0/.
+﻿#region License
+// Copyright (C) 2010-2016 Devexperts LLC
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at
+// http://mozilla.org/MPL/2.0/.
+#endregion
 
 using com.dxfeed.api.candle;
 using System;
@@ -16,13 +18,9 @@ namespace com.dxfeed.api.events
     /// from the specified CandleSession with further details of aggregation provided by 
     /// CandleAlignment.
     /// </summary>
-    public interface IDxCandle : IDxEventType<CandleSymbol>
+    [EventTypeAttribute("Candle")]
+    public interface IDxCandle : TimeSeriesEvent<CandleSymbol>, LastingEvent<CandleSymbol>
     {
-        /// <summary>
-        /// Returns timestamp of the candle in milliseconds.
-        /// Time is measured in milliseconds between the current time and midnight, January 1, 1970 UTC.
-        /// </summary>
-        long Time { get; }
         /// <summary>
         /// Returns sequence number of this event to distinguish events that have the same
         /// Time. This sequence number does not have to be unique and does not need to be 
@@ -68,12 +66,8 @@ namespace com.dxfeed.api.events
         /// <summary>
         /// Returns date time of the candle.
         /// </summary>
+        [Obsolete("DateTime is deprecated, please use Time instead.")]
         DateTime DateTime { get; }
-        /// <summary>
-        /// Returns unique per-symbol index of this candle event.
-        /// Candle index is composed of Time and Sequence.
-        /// </summary>
-        long Index { get; }
         /// <summary>
         /// Returns open interest.
         /// </summary>

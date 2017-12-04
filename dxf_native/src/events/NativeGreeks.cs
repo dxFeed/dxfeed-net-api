@@ -28,13 +28,16 @@ namespace com.dxfeed.native.events
         {
             DxGreeks greeks = *g;
 
+            EventFlags = greeks.event_flags;
+
             Delta = greeks.delta;
             Gamma = greeks.gamma;
             GreeksPrice = greeks.greeks_price;
             Rho = greeks.rho;
             Sequence = greeks.sequence;
             Theta = greeks.theta;
-            Time = TimeConverter.ToUtcDateTime(greeks.time);
+            TimeStamp =  greeks.time;
+            Time = TimeConverter.ToUtcDateTime(TimeStamp);
             Vega = greeks.vega;
             Volatility = greeks.volatility;
             Index = greeks.index;
@@ -42,6 +45,7 @@ namespace com.dxfeed.native.events
 
         internal NativeGreeks(IDxGreeks greeks) : base(greeks.EventSymbol)
         {
+            EventFlags = greeks.EventFlags;
 
             Delta = greeks.Delta;
             Gamma = greeks.Gamma;
@@ -49,7 +53,8 @@ namespace com.dxfeed.native.events
             Rho = greeks.Rho;
             Sequence = greeks.Sequence;
             Theta = greeks.Theta;
-            Time = greeks.Time;
+            TimeStamp = greeks.TimeStamp;
+            Time = TimeConverter.ToUtcDateTime(TimeStamp);
             Vega = greeks.Vega;
             Volatility = greeks.Volatility;
             Index = greeks.Index;
@@ -135,6 +140,15 @@ namespace com.dxfeed.native.events
         }
 
         /// <summary>
+        /// Returns timestamp of this event.
+        /// The timestamp is in milliseconds from midnight, January 1, 1970 UTC.
+        /// </summary>
+        public long TimeStamp
+        {
+            get; private set;
+        }
+
+        /// <summary>
         /// Returns UTC date and time of this event.
         /// </summary>
         public DateTime Time
@@ -166,6 +180,23 @@ namespace com.dxfeed.native.events
         public long Index
         {
             get; private set;
+        }
+
+        /// <summary>
+        /// Gets transactional event flags.
+        /// See "Event Flags" section from <see cref="IndexedEvent"/>.
+        /// </summary>
+        public EventFlag EventFlags
+        {
+            get; set;
+        }
+
+        public IndexedEventSource Source
+        {
+            get
+            {
+                return IndexedEventSource.DEFAULT;
+            }
         }
 
         #endregion

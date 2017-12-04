@@ -33,6 +33,7 @@ namespace com.dxfeed.native.events
             Sequence = s.sequence;
             Volatility = s.volatility;
             Index = s.index;
+            EventFlags = s.event_flags;
         }
 
         internal NativeSeries(IDxSeries s) : base(s.EventSymbol)
@@ -45,6 +46,7 @@ namespace com.dxfeed.native.events
             Sequence = s.Sequence;
             Volatility = s.Volatility;
             Index = s.Index;
+            EventFlags = s.EventFlags;
         }
 
         public override string ToString()
@@ -133,6 +135,23 @@ namespace com.dxfeed.native.events
         public long Index
         {
             get; private set;
+        }
+
+        /// <summary>
+        /// Gets transactional event flags.
+        /// See "Event Flags" section from <see cref="IndexedEvent"/>.
+        /// </summary>
+        public EventFlag EventFlags
+        {
+            get; set;
+        }
+
+        public IndexedEventSource Source
+        {
+            get
+            {
+                return IndexedEventSource.DEFAULT;
+            }
         }
 
         #endregion

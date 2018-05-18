@@ -6,6 +6,7 @@
 using System;
 using NUnit.Framework;
 using com.dxfeed.api.candle;
+using com.dxfeed.api.data;
 using com.dxfeed.api.events;
 using com.dxfeed.native;
 using com.dxfeed.tests.tools;
@@ -16,7 +17,7 @@ namespace com.dxfeed.api
     /// <summary>
     /// This class creates all possible subscriptions and just wait events. It
     /// is specified for make package operation.
-    /// 
+    ///
     /// </summary>
     [TestFixture]
     public class FullTest
@@ -92,7 +93,7 @@ namespace com.dxfeed.api
 
             private SnapshotCase[] snapshotCases = null;
 
-            public SnapshotCollection(NativeConnection connection, 
+            public SnapshotCollection(NativeConnection connection,
                 IDxSnapshotListener listener, SnapshotCase[] snapshotCases)
             {
                 this.snapshotCases = snapshotCases;
@@ -162,12 +163,12 @@ namespace com.dxfeed.api
                 if (snapshotCase.SnapshotType != typeof(TE))
                     continue;
                 if (snapshotCase.SnapshotType == typeof(IDxOrder))
-                    Console.WriteLine("    symbol {0}#{1}: data count: {2}", 
-                        snapshotCase.Symbol, snapshotCase.Source, 
+                    Console.WriteLine("    symbol {0}#{1}: data count: {2}",
+                        snapshotCase.Symbol, snapshotCase.Source,
                         listener.GetSnapshotsCount<IDxOrder>(snapshotCase.Symbol));
                 else if (snapshotCase.SnapshotType == typeof(IDxCandle))
                     Console.WriteLine("    symbol {0}: data count: {1}",
-                        snapshotCase.Symbol, 
+                        snapshotCase.Symbol,
                         listener.GetSnapshotsCount<IDxCandle>(snapshotCase.Symbol));
             }
         }
@@ -176,7 +177,7 @@ namespace com.dxfeed.api
         {
             Console.WriteLine(string.Format("OrderViews, count: {0}", listener.GetOrderViewsCount()));
             foreach (string symbol in symbols)
-                Console.WriteLine("    symbol {0}: snapshot size: {1}, updates size: {2}", 
+                Console.WriteLine("    symbol {0}: snapshot size: {1}, updates size: {2}",
                     symbol, listener.GetOrderViewEventsCount(symbol), listener.GetOrderViewUpdatesCount(symbol));
         }
 
@@ -186,8 +187,8 @@ namespace com.dxfeed.api
             TestListener eventListener = new TestListener(eventsTimeout, eventsSleepTime, IsConnected);
             SnapshotTestListener snapshotListener = new SnapshotTestListener(eventsTimeout, eventsSleepTime, IsConnected);
             OrderViewTestListener orderViewListener = new OrderViewTestListener(eventsTimeout, eventsSleepTime, IsConnected);
-            EventType events = EventType.Order | EventType.Profile | 
-                EventType.Quote | EventType.Summary | EventType.TimeAndSale | 
+            EventType events = EventType.Order | EventType.Profile |
+                EventType.Quote | EventType.Summary | EventType.TimeAndSale |
                 EventType.Trade;
             using (var con = new NativeConnection(address, OnDisconnect))
             {

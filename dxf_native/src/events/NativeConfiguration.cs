@@ -7,6 +7,7 @@
 #endregion
 
 using com.dxfeed.api.events;
+using com.dxfeed.api.data;
 using com.dxfeed.native.api;
 using System;
 using System.Globalization;
@@ -21,18 +22,25 @@ namespace com.dxfeed.native.events
         internal unsafe NativeConfiguration(DxConfiguration* configuration, string symbol) : base(symbol)
         {
             DxConfiguration c = *configuration;
-            Attachment = DxMarshal.ReadDxString(c.string_object).ToString();
+            Version = c.version;
+            Attachment = DxMarshal.ReadDxString(c.string_object);
         }
 
-        internal NativeConfiguration(IDxConfiguration configuration) : base(configuration.EventSymbol)
+        internal NativeConfiguration(IDxConfiguration c) : base(c.EventSymbol)
         {
-            Attachment = (ICloneable)configuration.Attachment.Clone();
+            Version = c.Version;
+            Attachment = (DxString)c.Attachment.Clone();
         }
 
         public override string ToString()
         {
-            return string.Format(CultureInfo.InvariantCulture, "Configuration: {{{0}, Object: '{1}'}}",
-                EventSymbol, Attachment);
+            return string.Format(CultureInfo.InvariantCulture,
+                "Configuration: {{{0}, "          +
+                "Version: {1}, Attachment: '{2}'" +
+                "}}",
+                EventSymbol,
+                Version, Attachment
+            );
         }
 
         #region Implementation of ICloneable
@@ -46,13 +54,13 @@ namespace com.dxfeed.native.events
 
         #region Implementation of IDxConfiguration
 
+        /// Returns version.
+        /// </summary>
+        public int Version { get; private set; }
         /// <summary>
         /// Returns attachment.
         /// </summary>
-        public ICloneable Attachment
-        {
-            get; private set;
-        }
+        public DxString Attachment { get; private set; }
 
         #endregion
 

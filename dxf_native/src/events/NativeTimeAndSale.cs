@@ -16,7 +16,7 @@ using System.Globalization;
 namespace com.dxfeed.native.events
 {
     /// <summary>
-    ///   Time and Sale represents a trade (or other market event with price, e.g. market open/close 
+    ///   Time and Sale represents a trade (or other market event with price, e.g. market open/close
     ///   price, etc).
     ///   Time and Sales are intended to provide information about trades in a continuous time slice
     ///   (unlike Trade events which are supposed to provide snapshot about the current last trade).
@@ -27,59 +27,76 @@ namespace com.dxfeed.native.events
         {
             DxTimeAndSale ts = *timeAndSale;
 
-            AgressorSide = ts.side;
-            AskPrice = ts.ask_price;
-            BidPrice = ts.bid_price;
             EventFlags = ts.event_flags;
-            EventId = ts.event_id;
-            ExchangeCode = ts.exchange_code;
-            ExchangeSaleConditions = DxMarshal.ReadDxString(ts.exchange_sale_conditions);
             Index = ts.index;
+            Time = TimeConverter.ToUtcDateTime(ts.time);
+            ExchangeCode = ts.exchange_code;
             Price = ts.price;
-            Sequence = ts.sequence;
             Size = ts.size;
-            TimeStamp = ts.time;
-            Time = TimeConverter.ToUtcDateTime(TimeStamp);
+            BidPrice = ts.bid_price;
+            AskPrice = ts.ask_price;
+            ExchangeSaleConditions = DxMarshal.ReadDxString(ts.exchange_sale_conditions);
+            Buyer = DxMarshal.ReadDxString(ts.buyer);
+            Seller = DxMarshal.ReadDxString(ts.seller);
+            AgressorSide = ts.side;
             Type = ts.type;
-            IsCancel = ts.is_cancel;
-            IsCorrection = ts.is_correction;
-            IsTrade = ts.is_trade;
-            IsNew = ts.is_new;
-            IsSpreadLeg = ts.is_spread_leg;
             IsValidTick = ts.is_valid_tick;
+            IsETHTrade = ts.is_eth_trade;
+            TradeThroughExempt = ts.trade_through_exempt;
+            IsSpreadLeg = ts.is_spread_leg;
+            RawFlags = ts.raw_flags;
         }
 
         internal NativeTimeAndSale(IDxTimeAndSale ts) : base(ts.EventSymbol)
         {
-            AgressorSide = ts.AgressorSide;
-            AskPrice = ts.AskPrice;
-            BidPrice = ts.BidPrice;
             EventFlags = ts.EventFlags;
-            EventId = ts.EventId;
-            ExchangeCode = ts.ExchangeCode;
-            ExchangeSaleConditions = (DxString)ts.ExchangeSaleConditions.Clone();
             Index = ts.Index;
-            Price = ts.Price;
-            Sequence = ts.Sequence;
-            Size = ts.Size;
-            TimeStamp = ts.TimeStamp;
             Time = ts.Time;
+            ExchangeCode = ts.ExchangeCode;
+            Price = ts.Price;
+            Size = ts.Size;
+            BidPrice = ts.BidPrice;
+            AskPrice = ts.AskPrice;
+            ExchangeSaleConditions = (DxString)ts.ExchangeSaleConditions.Clone();
+            Buyer = (DxString)ts.Buyer.Clone();
+            Seller = (DxString)ts.Seller.Clone();
+            AgressorSide = ts.AgressorSide;
             Type = ts.Type;
-            IsCancel = ts.IsCancel;
-            IsCorrection = ts.IsCorrection;
-            IsTrade = ts.IsTrade;
-            IsNew = ts.IsNew;
-            IsSpreadLeg = ts.IsSpreadLeg;
             IsValidTick = ts.IsValidTick;
+            IsETHTrade = ts.IsETHTrade;
+            TradeThroughExempt = ts.TradeThroughExempt;
+            IsSpreadLeg = ts.IsSpreadLeg;
+            RawFlags = ts.RawFlags;
         }
 
         public override string ToString()
         {
-            return string.Format(CultureInfo.InvariantCulture, "TimeAndSale: {{{10}, " +
-                "EventId: {0:x4}, Time: {1:o}, ExchangeCode: '{2}', Ask: {3}, Bid: {4}, " +
-                "ExchangeSaleConditions: '{5}', IsTrade: {6}, Price: {7}, Size: {8}, Type: {9}}}",
-                EventId, Time, ExchangeCode, AskPrice, BidPrice, ExchangeSaleConditions, IsTrade,
-                Price, Size, Type, EventSymbol);
+            return string.Format(CultureInfo.InvariantCulture,
+                "TimeAndSale: {{{0}, "                                                  +
+                "EventFlags: 0x{1:x2}, Index: {2:x16}, "                                +
+                "Time: {3:o}, "                                                         +
+                "ExchangeCode: {4}, ExchangeSaleConditions: '{5}', "                    +
+                "Price: {6}, Size: {7}, "                                               +
+                "BidPrice: {8}, AskPrice: {9}, "                                        +
+                "Buyer: '{10}', Seller: '{11}', "                                       +
+                "AggressorSide: {12}, "                                                 +
+                "Type: {13}, "                                                          +
+                "IsValidTick: {14}, IsETHTrade: {15}, IsSpreadLeg: {16}, TTE: '{17}', " +
+                "RawFlags: {18:x8}"                                                     +
+                "}}",
+                EventSymbol,
+                EventFlags, Index,
+                Time,
+                ExchangeCode, ExchangeSaleConditions.ToString(),
+                Price, Size,
+                BidPrice, AskPrice,
+                Buyer.ToString(), Seller.ToString(),
+                AgressorSide,
+                Type,
+                IsValidTick, IsETHTrade, IsSpreadLeg, TradeThroughExempt,
+                RawFlags
+
+            );
         }
 
         #region Implementation of ICloneable
@@ -92,182 +109,105 @@ namespace com.dxfeed.native.events
         #region Implementation of IDxTimeAndSale
 
         /// <summary>
-        ///   Returns aggressor side of this time and sale event.
+        ///     Returns source of this event.
         /// </summary>
-        public Side AgressorSide
-        {
-            get; private set;
-        }
-
+        /// <returns>Source of this event.</returns>
+        public IndexedEventSource Source { get { return IndexedEventSource.DEFAULT; }  }
         /// <summary>
-        ///   Returns the current ask price on the market when this time and sale event had occurred.
+        ///    Gets or sets transactional event flags.
+        ///    See "Event Flags" section from <see cref="IndexedEvent"/>.
         /// </summary>
-        public double AskPrice
-        {
-            get; private set;
-        }
-
+        public EventFlag EventFlags { get; set; }
         /// <summary>
-        ///   Returns the current bid price on the market when this time and sale event had occurred.
+        ///     Gets unique per-symbol index of this event.
         /// </summary>
-        public double BidPrice
-        {
-            get; private set;
-        }
-
-        /// <summary>
-        /// Gets or sets event flags of this time and sale event.
-        /// </summary>
-        public EventFlag EventFlags
-        {
-            get; set;
-        }
-
-        /// <summary>
-        ///   Returns unique per-symbol index of this time and sale event.
-        ///   Deprecated Use Index
-        /// </summary>
-        public long EventId
-        {
-            get; private set;
-        }
-
-        /// <summary>
-        ///   Returns exchange code of this time and sale event.
-        /// </summary>
-        public char ExchangeCode
-        {
-            get; private set;
-        }
-
-        /// <summary>
-        ///   Returns sale conditions provided for this event by data feed.
-        /// </summary>
-        public DxString ExchangeSaleConditions
-        {
-            get; private set;
-        }
-
-        /// <summary>
-        ///   Returns unique per-symbol index of this time and sale event.
-        ///   Time and sale index is composed of Time and Sequence.
-        /// </summary>
-        public long Index
-        {
-            get; private set;
-        }
-
-        /// <summary>
-        ///   Returns price of this time and sale event.
-        /// </summary>
-        public double Price
-        {
-            get; private set;
-        }
-
-        /// <summary>
-        ///   Returns sequence number of this event to distinguish events that have the same
-        ///   Time. This sequence number does not have to be unique and does not need to be 
-        ///   sequential.
-        /// </summary>
-        public int Sequence
-        {
-            get; private set;
-        }
-
-        /// <summary>
-        ///   Returns size of this time and sale event.
-        /// </summary>
-        public long Size
-        {
-            get; private set;
-        }
-
+        public long Index { get; private set; }
         /// <summary>
         /// Returns timestamp of this event.
         /// The timestamp is in milliseconds from midnight, January 1, 1970 UTC.
         /// </summary>
-        public long TimeStamp
-        {
-            get; private set;
-        }
-
+        public long TimeStamp { get { return TimeConverter.ToUnixTime(Time); } }
         /// <summary>
         /// Returns UTC date and time of this event.
         /// </summary>
-        public DateTime Time
-        {
-            get; private set;
-        }
-
+        public DateTime Time { get; private set; }
+        /// <summary>
+        ///   Returns exchange code of this time and sale event.
+        /// </summary>
+        public char ExchangeCode { get; private set; }
+        /// <summary>
+        ///   Returns price of this time and sale event.
+        /// </summary>
+        public double Price { get; private set; }
+        /// <summary>
+        ///   Returns size of this time and sale event.
+        /// </summary>
+        public long Size { get; private set; }
+        /// <summary>
+        ///   Returns the current bid price on the market when this time and sale event had occurred.
+        /// </summary>
+        public double BidPrice { get; private set; }
+        /// <summary>
+        ///   Returns the current ask price on the market when this time and sale event had occurred.
+        /// </summary>
+        public double AskPrice { get; private set; }
+        /// <summary>
+        ///   Returns sale conditions provided for this event by data feed.
+        /// </summary>
+        public DxString ExchangeSaleConditions { get; private set; }
+        /// <summary>
+        /// Returns implementation-specific raw bit flags value
+        /// </summary>
+        public int RawFlags { get; private set; }
+        /// <summary>
+        ///   MMID of buyer (availible not for all markets).
+        /// </summary>
+        public DxString Buyer { get; private set; }
+        /// <summary>
+        ///   MMID of seller (availible not for all markets).
+        /// </summary>
+        public DxString Seller { get; private set; }
+        /// <summary>
+        ///   Returns aggressor side of this time and sale event.
+        /// </summary>
+        public Side AgressorSide { get; private set; }
         /// <summary>
         ///   Returns type of this time and sale event.
         /// </summary>
-        public TimeAndSaleType Type
-        {
-            get; private set;
-        }
-
+        public TimeAndSaleType Type { get; private set; }
         /// <summary>
         ///   Returns whether this is a cancellation of a previous event.
         ///   It is false for newly created time and sale event.
         /// </summary>
-        public bool IsCancel
-        {
-            get; private set;
-        }
-
+        public bool IsCancel { get { return Type == TimeAndSaleType.Cancel; } }
         /// <summary>
         ///   Returns whether this is a correction of a previous event.
         ///   It is false for newly created time and sale event.
         /// </summary>
-        public bool IsCorrection
-        {
-            get; private set;
-        }
-
-        /// <summary>
-        ///   Returns whether this event represents an extended trading hours sale.
-        /// </summary>
-        public bool IsTrade
-        {
-            get; private set;
-        }
-
+        public bool IsCorrection { get { return Type == TimeAndSaleType.Correction; } }
         /// <summary>
         ///   Returns whether this is a new event (not cancellation or correction).
         ///   It is true for newly created time and sale event.
         /// </summary>
-        public bool IsNew
-        {
-            get; private set;
-        }
-
-        /// <summary>
-        ///   Returns whether this event represents a spread leg.
-        /// </summary>
-        public bool IsSpreadLeg
-        {
-            get; private set;
-        }
-
+        public bool IsNew { get { return Type == TimeAndSaleType.New; } }
         /// <summary>
         ///   Returns whether this event represents a valid intraday tick.
         ///   Note, that a correction for a previously distributed valid tick represents a new valid tick itself,
         ///   but a cancellation of a previous valid tick does not.
         /// </summary>
-        public bool IsValidTick
-        {
-            get; private set;
-        }
-
-        public IndexedEventSource Source
-        {
-            get
-            {
-                return IndexedEventSource.DEFAULT;
-            }
-        }
+        public bool IsValidTick { get; private set; }
+        /// <summary>
+        ///   Returns whether this event represents an extended trading hours sale.
+        /// </summary>
+        public bool IsETHTrade { get; private set; }
+        /// <summary>
+        ///   Returns TradeThroughExempt flag of this time and sale event.
+        /// </summary>
+        public char TradeThroughExempt { get; private set; }
+        /// <summary>
+        ///   Returns whether this event represents a spread leg.
+        /// </summary>
+        public bool IsSpreadLeg { get; private set; }
 
         #endregion
     }

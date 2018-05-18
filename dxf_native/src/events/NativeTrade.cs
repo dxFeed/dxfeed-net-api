@@ -25,13 +25,19 @@ namespace com.dxfeed.native.events
         /// </summary>
         /// <param name="trade">Native DxTrade object.</param>
         /// <param name="symbol">The event symbol.</param>
-        internal unsafe NativeTrade(DxTrade* trade, string symbol) : base(trade, symbol) { }
+        internal unsafe NativeTrade(DxTrade* trade, string symbol) : base(trade, symbol)
+        {
+            Change = (*trade).change;
+        }
 
         /// <summary>
         /// Creates copy of trade object.
         /// </summary>
         /// <param name="trade">The IDxTrade object.</param>
-        internal NativeTrade(IDxTrade trade) : base(trade) { }
+        internal NativeTrade(IDxTrade trade) : base(trade)
+        {
+            Change = trade.Change;
+        }
 
         #region Implementation of ICloneable
         public override object Clone()
@@ -40,10 +46,17 @@ namespace com.dxfeed.native.events
         }
         #endregion
 
+        #region Implementation of IDxTrade
+        /// <summary>
+        /// Returns price change of the last trade, if availiable.
+        /// </summary>
+        public double Change { get; private set; }
+        #endregion
+
         public override string ToString()
         {
-            return string.Format(CultureInfo.InvariantCulture, "Trade {{{0}, {1}}}",
-                EventSymbol, base.ToString());
+            return string.Format(CultureInfo.InvariantCulture, "Trade {{{0}, {1}, Change: {2}}}",
+                EventSymbol, base.ToString(), Change);
         }
     }
 }

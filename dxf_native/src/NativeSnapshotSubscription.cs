@@ -8,7 +8,7 @@
 
 using com.dxfeed.api;
 using com.dxfeed.api.candle;
-using com.dxfeed.api.events;
+using com.dxfeed.api.data;
 using com.dxfeed.api.util;
 using com.dxfeed.native.api;
 using com.dxfeed.native.events;
@@ -45,7 +45,7 @@ namespace com.dxfeed.native
         /// <param name="time">Milliseconds time in the past.</param>
         /// <param name="listener">Snapshot events listener.</param>
         /// <exception cref="ArgumentNullException">Listener is invalid.</exception>
-        public NativeSnapshotSubscription(NativeConnection connection, long time, 
+        public NativeSnapshotSubscription(NativeConnection connection, long time,
             IDxSnapshotListener listener)
         {
             if (listener == null)

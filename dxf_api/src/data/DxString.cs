@@ -9,7 +9,7 @@ using System;
 namespace com.dxfeed.api.data
 {
     /// <summary>
-    /// Stack allocated string representation 
+    /// Stack allocated string representation
     /// </summary>
     public unsafe struct DxString : IEquatable<DxString>, ICloneable
     {

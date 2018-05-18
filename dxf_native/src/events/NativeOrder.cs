@@ -24,7 +24,7 @@ namespace com.dxfeed.native.events
     {
         internal unsafe NativeOrder(DxOrder* order, string symbol) : base(order, symbol)
         {
-            MarketMaker = DxMarshal.ReadDxString((*order).market_maker);
+            MarketMaker = DxMarshal.ReadDxString((*order).mm_or_ss);
         }
 
         internal NativeOrder(IDxOrder order) : base(order)
@@ -44,10 +44,7 @@ namespace com.dxfeed.native.events
         ///   Returns market maker or other aggregate identifier of this order.
         ///   This value is defined for Scope.AGGREGATE and Scope.ORDER orders.
         /// </summary>
-        public DxString MarketMaker
-        {
-            get; internal set;
-        }
+        public DxString MarketMaker { get; private set; }
 
         #endregion
     }

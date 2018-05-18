@@ -25,44 +25,44 @@ namespace com.dxfeed.tests.tools.eventplayer
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
     internal unsafe struct DxTestOrder
     {
-        internal int count;
         internal EventFlag event_flags;
-        internal char exchange_code;
         internal long index;
-        internal int level;
-        internal Side side;
-        internal double price;
-        internal int scope;
-        internal int sequence;
-        internal long size;
-        internal fixed char source[5]; //string
         internal long time;
-        internal long time_sequence;
-        internal IntPtr market_maker; //string
+        internal int time_nanos;
+        internal int sequence;
+        internal double price;
+        internal int size;
+        internal int count;
+        internal Scope scope;
+        internal Side side;
+        internal char exchange_code;
+        internal fixed char source[5];
+        internal IntPtr mm_or_ss; // String
 
-        internal DxTestOrder(int count, EventFlag event_flags, char exchange_code, long index, 
-            int level, Side side, double price, Scope scope, int sequence, long size, 
-            IndexedEventSource source, long time, long time_sequence, IntPtr market_maker)
+        internal DxTestOrder(EventFlag event_flags, long index,
+            long time, int time_nanos, int sequence,
+            double price, int size, int count,
+            Scope scope, Side side, char exchange_code,
+            IndexedEventSource source, IntPtr mm_or_ss)
         {
-            this.count = count;
             this.event_flags = event_flags;
-            this.exchange_code = exchange_code;
             this.index = index;
-            this.level = level;
-            this.side = side;
-            this.price = price;
-            this.scope = scope.Code;
+            this.time = time;
+            this.time_nanos = time_nanos;
             this.sequence = sequence;
+            this.price = price;
             this.size = size;
+            this.count = count;
+            this.scope = scope;
+            this.side = side;
+            this.exchange_code = exchange_code;
             fixed (char* pSource = this.source)
             {
                 var length = Math.Min(4, source.Name.Length);
                 Marshal.Copy(source.Name.ToCharArray(), 0, (IntPtr)pSource, length);
                 pSource[length] = (char)0;
             }
-            this.time = time;
-            this.time_sequence = time_sequence;
-            this.market_maker = market_maker;
+            this.mm_or_ss = mm_or_ss;
         }
     }
 
@@ -71,23 +71,43 @@ namespace com.dxfeed.tests.tools.eventplayer
     internal struct DxTestTrade
     {
         internal long time;
+        internal int sequence;
+        internal int time_nanos;
         internal char exchange_code;
         internal double price;
-        internal long size;
-        internal long tick;
+        internal int size;
+        /* This field is absent in TradeETH */
+        internal int tick;
+        /* This field is absent in TradeETH */
         internal double change;
+        internal int raw_flags;
         internal double day_volume;
+        internal double day_turnover;
+        internal Direction direction;
+        internal bool is_eth;
 
-        internal DxTestTrade(long time, char exchange_code, double price, long size, long tick, 
-            double change, double day_volume)
+
+        internal DxTestTrade(long time, int sequence, int time_nanos,
+                                char exchange_code,
+                                double price, int size,
+                                int tick, double change,
+                                int raw_flags,
+                                double day_volume, double day_turnover,
+                                Direction direction, bool is_eth)
         {
             this.time = time;
+            this.sequence = sequence;
+            this.time_nanos = time_nanos;
             this.exchange_code = exchange_code;
             this.price = price;
             this.size = size;
             this.tick = tick;
             this.change = change;
+            this.raw_flags = raw_flags;
             this.day_volume = day_volume;
+            this.day_turnover = day_turnover;
+            this.direction = direction;
+            this.is_eth = is_eth;
         }
     }
 
@@ -95,6 +115,8 @@ namespace com.dxfeed.tests.tools.eventplayer
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
     internal struct DxTestCandle
     {
+        internal EventFlag event_flags;
+        internal long index;
         internal long time;
         internal int sequence;
         internal double count;
@@ -106,16 +128,17 @@ namespace com.dxfeed.tests.tools.eventplayer
         internal double vwap;
         internal double bid_volume;
         internal double ask_volume;
-        internal long index;
-        internal long open_interest;
+        internal int open_interest;
         internal double imp_volatility;
-        internal EventFlag event_flags;
 
-        internal DxTestCandle(long time, int sequence, double count, double open, double high, 
-            double low, double close, double volume, double vwap, double bid_volume, 
-            double ask_volume, long index, long open_interest, double imp_volatility, 
-            EventFlag event_flags)
+        internal DxTestCandle(EventFlag event_flags, long index, long time, int sequence,
+                                double count,
+                                double open, double high, double low, double close, double volume,
+                                double vwap, double bid_volume, double ask_volume,
+                                int open_interest, double imp_volatility)
         {
+            this.event_flags = event_flags;
+            this.index = index;
             this.time = time;
             this.sequence = sequence;
             this.count = count;
@@ -127,10 +150,8 @@ namespace com.dxfeed.tests.tools.eventplayer
             this.vwap = vwap;
             this.bid_volume = bid_volume;
             this.ask_volume = ask_volume;
-            this.index = index;
             this.open_interest = open_interest;
             this.imp_volatility = imp_volatility;
-            this.event_flags = event_flags;
         }
     }
 
@@ -138,33 +159,31 @@ namespace com.dxfeed.tests.tools.eventplayer
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
     internal struct DxTestGreeks
     {
+        internal EventFlag event_flags;
+        internal long index;
         internal long time;
-        internal int sequence;
-        internal double greeks_price;
+        internal double price;
         internal double volatility;
         internal double delta;
         internal double gamma;
         internal double theta;
         internal double rho;
         internal double vega;
-        internal long index;
-        internal EventFlag event_flags;
 
-        internal DxTestGreeks(long time, int sequence, double greeks_price, double volatility, 
-            double delta, double gamma, double theta, double rho, double vega, long index, 
-            EventFlag event_flags)
+        internal DxTestGreeks(EventFlag event_flags, long index, long time,
+                                double price, double volatility,
+                                double delta, double gamma, double theta, double rho, double vega)
         {
+            this.event_flags = event_flags;
+            this.index = index;
             this.time = time;
-            this.sequence = sequence;
-            this.greeks_price = greeks_price;
+            this.price = price;
             this.volatility = volatility;
             this.delta = delta;
             this.gamma = gamma;
             this.theta = theta;
             this.rho = rho;
             this.vega = vega;
-            this.index = index;
-            this.event_flags = event_flags;
         }
     }
 

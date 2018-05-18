@@ -9,9 +9,9 @@ using com.dxfeed.api.events;
 
 namespace com.dxfeed.api.extras
 {
-    public class EventPrinter : 
-        IDxFeedListener, 
-        IDxTradeEthListener,
+    public class EventPrinter :
+        IDxFeedListener,
+        IDxTradeETHListener,
         IDxSpreadOrderListener,
         IDxCandleListener,
         IDxGreeksListener,
@@ -74,9 +74,9 @@ namespace com.dxfeed.api.extras
 
         #region Implementation of IDxTradeEthListener
 
-        public void OnTradeEth<TB, TE>(TB buf)
+        public void OnTradeETH<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
-            where TE : IDxTradeEth
+            where TE : IDxTradeETH
         {
             foreach (var te in buf)
                 Console.WriteLine(string.Format("{0} {1}", buf.Symbol, te));

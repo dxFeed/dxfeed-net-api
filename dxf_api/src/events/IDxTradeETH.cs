@@ -11,15 +11,11 @@ namespace com.dxfeed.api.events
     /// trading hours and the extended hours day volume.
     /// This event is defined only for symbols (typically stocks and ETFs) with a designated
     /// extended trading hours (ETH, pre market and post market trading sessions).
-    /// It represents the most recent information that is available about ETH last trade on 
+    /// It represents the most recent information that is available about ETH last trade on
     /// the market at any given moment of time.
     /// </summary>
     [EventTypeAttribute("TradeETH")]
-    public interface IDxTradeEth : IDxTradeBase
+    public interface IDxTradeETH : IDxTradeBase
     {
-        /// <summary>
-        /// Gets or sets flag as to whether last trade was in extended trading hours.
-        /// </summary>
-        bool IsETH { get; set; }
     }
 }

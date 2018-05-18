@@ -76,8 +76,8 @@ namespace com.dxfeed.api.candle
         }
 
         /// <summary>
-        /// Returns full string representation of this candle alignment. It is 
-        /// contains attribute key and its value. 
+        /// Returns full string representation of this candle alignment. It is
+        /// contains attribute key and its value.
         /// The full string representation of {@link #MIDNIGHT} is "a=m"
         /// </summary>
         /// <returns></returns>
@@ -124,7 +124,7 @@ namespace com.dxfeed.api.candle
         /// Parses string representation of candle alignment into object.
         /// Any string that was returned by {@link #toString()} can be parsed
         /// and case is ignored for parsing.
-        /// 
+        ///
         /// </summary>
         /// <param name="s">string representation of candle alignment.</param>
         /// <returns>candle alignment</returns>

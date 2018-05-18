@@ -31,7 +31,7 @@ namespace com.dxfeed.util
 
         /// <summary>
         /// Returns TimePeriod represented with a given string.
-        /// 
+        ///
         /// Allowable format is ISO8601 duration, but there are some simplifications and modifications available:
         /// Letters are case insensitive.
         /// Letters "P" and "T" can be omitted.

@@ -179,7 +179,7 @@ namespace com.dxfeed.api.candle
             /// Parses string representation of candle alignment into object.
             /// Any string that was returned by {@link #toString()} can be parsed
             /// and case is ignored for parsing.
-            /// 
+            ///
             /// </summary>
             /// <param name="s">string representation of candle alignment.</param>
             /// <returns>candle alignment</returns>

@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
+# Visual Studio Express 14 for Windows Desktop
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dxf_native", "dxf_native\dxf_native.csproj", "{D56EED21-EE2C-441C-B0D5-E85F10436CEA}"
@@ -37,6 +37,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dxf_order_view_xcheck", "samples\dxf_order_view_xcheck\dxf_order_view_xcheck.csproj", "{208F99E0-8C2E-4D99-BE48-FF241A60FD26}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dxf_promises_sample", "samples\dxf_promises_sample\dxf_promises_sample.csproj", "{83FF50AF-8F5F-49EA-BB68-2329F9E5DB65}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dxf_simple_order_book_sample", "samples\dxf_simple_order_book\dxf_simple_order_book_sample.csproj", "{09611981-0C4C-4AEB-946C-F771BCD47FA6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -99,6 +101,10 @@ Global
 		{83FF50AF-8F5F-49EA-BB68-2329F9E5DB65}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{83FF50AF-8F5F-49EA-BB68-2329F9E5DB65}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{83FF50AF-8F5F-49EA-BB68-2329F9E5DB65}.Release|Any CPU.Build.0 = Release|Any CPU
+		{09611981-0C4C-4AEB-946C-F771BCD47FA6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{09611981-0C4C-4AEB-946C-F771BCD47FA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{09611981-0C4C-4AEB-946C-F771BCD47FA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{09611981-0C4C-4AEB-946C-F771BCD47FA6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -114,5 +120,6 @@ Global
 		{7B032113-9A20-499A-9231-B3D6261DB01C} = {4C3AA050-1D5F-43C7-90B1-95D04B6763C8}
 		{208F99E0-8C2E-4D99-BE48-FF241A60FD26} = {4C3AA050-1D5F-43C7-90B1-95D04B6763C8}
 		{83FF50AF-8F5F-49EA-BB68-2329F9E5DB65} = {4C3AA050-1D5F-43C7-90B1-95D04B6763C8}
+		{09611981-0C4C-4AEB-946C-F771BCD47FA6} = {4C3AA050-1D5F-43C7-90B1-95D04B6763C8}
 	EndGlobalSection
 EndGlobal

@@ -10,16 +10,16 @@ namespace com.dxfeed.api.events
 {
     /// <summary>
     ///     <para>
-    ///         Represents up-to-date information about some condition or state of an external 
+    ///         Represents up-to-date information about some condition or state of an external
     ///         entity that updates in real-time. For example,
-    ///         a <see cref="IDxQuote"/> is an up-to-date information about best bid and best 
+    ///         a <see cref="IDxQuote"/> is an up-to-date information about best bid and best
     ///         offer for a specific symbol.
     ///     </para>
     ///
     ///     <para>
-    ///         Lasting events are conflated for each symbol. Last event for each symbol is always 
-    ///         delivered to event listeners on subscription, but intermediate (next-to-last) 
-    ///         events are not queued anywhere, they are simply discarded as stale events. More 
+    ///         Lasting events are conflated for each symbol. Last event for each symbol is always
+    ///         delivered to event listeners on subscription, but intermediate (next-to-last)
+    ///         events are not queued anywhere, they are simply discarded as stale events. More
     ///         recent events represent an up-to-date information about some external entity.
     ///     </para>
     ///
@@ -45,16 +45,16 @@ namespace com.dxfeed.api.events
 
     /// <summary>
     ///     <para>
-    ///         Represents up-to-date information about some condition or state of an external 
+    ///         Represents up-to-date information about some condition or state of an external
     ///         entity that updates in real-time. For example,
-    ///         a <see cref="IDxQuote"/> is an up-to-date information about best bid and best 
+    ///         a <see cref="IDxQuote"/> is an up-to-date information about best bid and best
     ///         offer for a specific symbol.
     ///     </para>
     ///
     ///     <para>
-    ///         Lasting events are conflated for each symbol. Last event for each symbol is always 
-    ///         delivered to event listeners on subscription, but intermediate (next-to-last) 
-    ///         events are not queued anywhere, they are simply discarded as stale events. More 
+    ///         Lasting events are conflated for each symbol. Last event for each symbol is always
+    ///         delivered to event listeners on subscription, but intermediate (next-to-last)
+    ///         events are not queued anywhere, they are simply discarded as stale events. More
     ///         recent events represent an up-to-date information about some external entity.
     ///     </para>
     ///

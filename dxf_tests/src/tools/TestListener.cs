@@ -21,7 +21,7 @@ namespace com.dxfeed.tests.tools
     public class TestListener :
         IDxFeedListener,
         IDxCandleListener,
-        IDxTradeEthListener,
+        IDxTradeETHListener,
         IDxSpreadOrderListener,
         IDxGreeksListener,
         IDxTheoPriceListener,
@@ -59,7 +59,7 @@ namespace com.dxfeed.tests.tools
         List<ReceivedEvent<IDxSummary>> summaries = new List<ReceivedEvent<IDxSummary>>();
         List<ReceivedEvent<IDxTimeAndSale>> timesAndSales = new List<ReceivedEvent<IDxTimeAndSale>>();
         List<ReceivedEvent<IDxCandle>> candles = new List<ReceivedEvent<IDxCandle>>();
-        List<ReceivedEvent<IDxTradeEth>> tradesEth = new List<ReceivedEvent<IDxTradeEth>>();
+        List<ReceivedEvent<IDxTradeETH>> tradesETH = new List<ReceivedEvent<IDxTradeETH>>();
         List<ReceivedEvent<IDxSpreadOrder>> spreadOrders = new List<ReceivedEvent<IDxSpreadOrder>>();
         List<ReceivedEvent<IDxGreeks>> greeks = new List<ReceivedEvent<IDxGreeks>>();
         List<ReceivedEvent<IDxTheoPrice>> theoPrice = new List<ReceivedEvent<IDxTheoPrice>>();
@@ -100,8 +100,8 @@ namespace com.dxfeed.tests.tools
                 return timesAndSales as List<ReceivedEvent<TE>>;
             else if (typeof(IDxCandle).IsAssignableFrom(type))
                 return candles as List<ReceivedEvent<TE>>;
-            else if (typeof(IDxTradeEth).IsAssignableFrom(type))
-                return tradesEth as List<ReceivedEvent<TE>>;
+            else if (typeof(IDxTradeETH).IsAssignableFrom(type))
+                return tradesETH as List<ReceivedEvent<TE>>;
             else if (typeof(IDxSpreadOrder).IsAssignableFrom(type))
                 return spreadOrders as List<ReceivedEvent<TE>>;
             else if (typeof(IDxGreeks).IsAssignableFrom(type))
@@ -342,14 +342,14 @@ namespace com.dxfeed.tests.tools
 
         #endregion
 
-        #region Implementation of IDxTradeEthListener
+        #region Implementation of IDxTradeETHListener
 
-        public void OnTradeEth<TB, TE>(TB buf)
+        public void OnTradeETH<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
-            where TE : IDxTradeEth
+            where TE : IDxTradeETH
         {
             foreach (var te in buf)
-                AddEvent(new ReceivedEvent<IDxTradeEth>(buf.Symbol, buf.EventParams, te));
+                AddEvent(new ReceivedEvent<IDxTradeETH>(buf.Symbol, buf.EventParams, te));
         }
 
         #endregion
@@ -480,8 +480,8 @@ namespace com.dxfeed.tests.tools
                     AddEvent(new ReceivedEvent<IDxTimeAndSale>(symbol, eventParams, e as IDxTimeAndSale));
                 else if (e is IDxCandle)
                     AddEvent(new ReceivedEvent<IDxCandle>(symbol, eventParams, e as IDxCandle));
-                else if (e is IDxTradeEth)
-                    AddEvent(new ReceivedEvent<IDxTradeEth>(symbol, eventParams, e as IDxTradeEth));
+                else if (e is IDxTradeETH)
+                    AddEvent(new ReceivedEvent<IDxTradeETH>(symbol, eventParams, e as IDxTradeETH));
                 else if (e is IDxSpreadOrder)
                     AddEvent(new ReceivedEvent<IDxSpreadOrder>(symbol, eventParams, e as IDxSpreadOrder));
                 else if (e is IDxGreeks)

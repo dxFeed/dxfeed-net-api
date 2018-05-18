@@ -35,18 +35,18 @@
   <!--Project reference format
     <ProjectReference Include="relative-path-to-csproj-file">
       <Name>project-name</Name>
-      <Label>BuildPublish|BuildNoPublish</Label> 
+      <Label>BuildPublish|BuildNoPublish</Label>
     </ProjectReference>
-    
+
     Label BuildPublish - perform building project and copy source files to outputpath
     Label BuildNoPublish - perform building project but NOT copy source files to outputpath
-    
+
     Note: reference project must support the next targets: Build, Clean, UpdateVersion, CopySources
   -->
   <ItemGroup>
     <ProjectReference Include="..\dxf_api\dxf_api.csproj">
       <Name>dxf_api</Name>
-      <Label>BuildPublish</Label> 
+      <Label>BuildPublish</Label>
     </ProjectReference>
     <ProjectReference Include="..\dxf_native\dxf_native.csproj">
       <Name>dxf_native</Name>
@@ -164,8 +164,8 @@
     <ItemGroup>
       <ToPublish Include="@(ProjectReference)" Condition="'%(Label)' == 'BuildPublish'" />
     </ItemGroup>
-    <MSBuild Projects="@(ToPublish)" 
-             Targets="CopySources" 
+    <MSBuild Projects="@(ToPublish)"
+             Targets="CopySources"
              Properties="OutputPath=$(MSBuildProjectDirectory)\$(OutputPath)" />
     <Copy SourceFiles="@(Content)"
           Condition="'%(Content.Label)' == 'ToLib'"

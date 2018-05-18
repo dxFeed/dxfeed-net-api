@@ -7,7 +7,7 @@
 #endregion
 
 using System;
-using com.dxfeed.api.events;
+using com.dxfeed.api.data;
 
 namespace com.dxfeed.api
 {

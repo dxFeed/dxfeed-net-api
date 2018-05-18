@@ -5,6 +5,7 @@
 /// http://mozilla.org/MPL/2.0/.
 
 using com.dxfeed.api.events;
+using com.dxfeed.api.data;
 using System;
 
 namespace com.dxfeed.api.util
@@ -22,7 +23,7 @@ namespace com.dxfeed.api.util
         /// <exception cref="InvalidOperationException">Event type is empty or contains several flags.</exception>
         /// <returns>Event id, accepting by C API.</returns>
         public static int GetEventId(EventType eventType)
-        {            
+        {
             uint eventTypeValue = (uint)eventType;
             if (eventType == 0)
                 throw new InvalidOperationException("Empty event type.");
@@ -66,10 +67,6 @@ namespace com.dxfeed.api.util
                     events |= EventType.TimeAndSale;
                 else if (typeof(IDxCandle).IsAssignableFrom(t))
                     events |= EventType.Candle;
-                else if (typeof(IDxTradeEth).IsAssignableFrom(t))
-                    events |= EventType.TradeETH;
-                else if (typeof(IDxSpreadOrder).IsAssignableFrom(t))
-                    events |= EventType.SpreadOrder;
                 else if (typeof(IDxGreeks).IsAssignableFrom(t))
                     events |= EventType.Greeks;
                 else if (typeof(IDxTheoPrice).IsAssignableFrom(t))

@@ -93,7 +93,7 @@ namespace com.dxfeed.api
             }
 
             Assert.AreEqual(profilesFromHttp.Count, profilesFromFile.Count);
-            /* NOTE: Next commented code may not performed if current instrument 
+            /* NOTE: Next commented code may not performed if current instrument
                format was extended with new. */
             //for (int i = 0; i < profilesFromHttp.Count; i++) {
             //    Assert.AreEqual(profilesFromHttp[i], profilesFromFile[i]);

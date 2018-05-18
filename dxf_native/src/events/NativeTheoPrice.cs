@@ -29,102 +29,86 @@ namespace com.dxfeed.native.events
         {
             DxTheoPrice tp = *theoPrice;
 
-            TheoDelta = tp.theo_delta;
-            TheoDividend = tp.theo_dividend;
-            TheoGamma = tp.theo_gamma;
-            TheoInterest = tp.theo_interest;
-            TheoPrice = tp.theo_price;
-            TheoTime = TimeConverter.ToUtcDateTime(tp.theo_time);
-            TheoUnderlyingPrice = tp.theo_underlying_price;
+            Time = TimeConverter.ToUtcDateTime(tp.time);
+            Price = tp.price;
+            UnderlyingPrice = tp.underlying_price;
+            Delta = tp.delta;
+            Gamma = tp.gamma;
+            Dividend = tp.dividend;
+            Interest = tp.interest;
         }
 
         internal NativeTheoPrice(IDxTheoPrice tp) : base(tp.EventSymbol)
         {
-            TheoDelta = tp.TheoDelta;
-            TheoDividend = tp.TheoDividend;
-            TheoGamma = tp.TheoGamma;
-            TheoInterest = tp.TheoInterest;
-            TheoPrice = tp.TheoPrice;
-            TheoTime = TheoTime;
-            TheoUnderlyingPrice = tp.TheoUnderlyingPrice;
+            Time = tp.Time;
+            Price = tp.Price;
+            UnderlyingPrice = tp.UnderlyingPrice;
+            Delta = tp.Delta;
+            Gamma = tp.Gamma;
+            Dividend = tp.Dividend;
+            Interest = tp.Interest;
         }
 
         public override string ToString()
         {
-            return string.Format(CultureInfo.InvariantCulture, "TheoPrice: {{{0}, " +
-                "TheoTime: {1:o}, TheoPrice: {2}, TheoUnderlyingPrice: {3}, " +
-                "TheoDelta: {4}, TheoGamma: {5}, TheoDividend: {6}, TheoInterest: {7}}}",
-                EventSymbol, TheoTime, TheoPrice, TheoUnderlyingPrice, TheoDelta, TheoGamma, TheoDividend, TheoInterest);
+            return string.Format(CultureInfo.InvariantCulture,
+                "TheoPrice: {{{0}, "                 +
+                "Time: {1:o}, "                      +
+                "Price: {2}, UnderlyingPrice: {3}, " +
+                "Delta: {4}, Gamma: {5}, "           +
+                "Dividend: {6}, nterest: {7}"        +
+                "}}",
+                EventSymbol,
+                Time,
+                Price, UnderlyingPrice,
+                Delta, Gamma,
+                Dividend, Interest
+            );
         }
 
         #region Implementation of ICloneable
+
         public override object Clone()
         {
             return new NativeTheoPrice(this);
         }
+
         #endregion
 
         #region Implementation of IDxTheoPrice
 
         /// <summary>
+        /// Returns date time of the last theo price computation.
+        /// </summary>
+        public DateTime Time { get; private set; }
+        /// <summary>
+        /// Returns theoretical option price.
+        /// </summary>
+        public double Price { get; private set; }
+        /// <summary>
+        /// Returns underlying price at the time of theo price computation.
+        /// </summary>
+        public double UnderlyingPrice { get; private set; }
+        /// <summary>
         /// Returns delta of the theoretical price.
         /// Delta is the first derivative of the theoretical price by the underlying price.
         /// </summary>
-        public double TheoDelta
-        {
-            get; private set;
-        }
-
-        /// <summary>
-        /// Returns implied simple dividend return of the corresponding option series.
-        /// See the model section for an explanation this simple dividend return \(Q(\tau)\).
-        /// </summary>
-        public double TheoDividend
-        {
-            get; private set;
-        }
-
+        public double Delta { get; private set; }
         /// <summary>
         /// Returns gamma of the theoretical price.
         /// Gamma is the second derivative of the theoretical price by the underlying price.
         /// </summary>
-        public double TheoGamma
-        {
-            get; private set;
-        }
-
+        public double Gamma { get; private set; }
+        /// <summary>
+        /// Returns implied simple dividend return of the corresponding option series.
+        /// See the model section for an explanation this simple dividend return \(Q(\tau)\).
+        /// </summary>
+        public double Dividend { get; private set; }
         /// <summary>
         /// Returns implied simple interest return of the corresponding option series.
         /// See the model section for an explanation this simple interest return \(R(\tau)\).
         /// </summary>
-        public double TheoInterest
-        {
-            get; private set;
-        }
-
-        /// <summary>
-        /// Returns underlying price at the time of theo price computation.
-        /// </summary>
-        public double TheoPrice
-        {
-            get; private set;
-        }
-
-        /// <summary>
-        /// Returns date time of the last theo price computation.
-        /// </summary>
-        public DateTime TheoTime
-        {
-            get; private set;
-        }
-
-        /// <summary>
-        /// Returns underlying price at the time of theo price computation.
-        /// </summary>
-        public double TheoUnderlyingPrice
-        {
-            get; private set;
-        }
+        public double Interest { get; private set; }
 
         #endregion
     }

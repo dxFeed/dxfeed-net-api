@@ -23,34 +23,34 @@ namespace com.dxfeed.api.events
         /// <summary>
         /// Returns date time of the last theo price computation.
         /// </summary>
-        DateTime TheoTime { get; }
+        DateTime Time { get; }
         /// <summary>
         /// Returns theoretical option price.
         /// </summary>
-        double TheoPrice { get; }
+        double Price { get; }
         /// <summary>
         /// Returns underlying price at the time of theo price computation.
         /// </summary>
-        double TheoUnderlyingPrice { get; }
+        double UnderlyingPrice { get; }
         /// <summary>
         /// Returns delta of the theoretical price.
         /// Delta is the first derivative of the theoretical price by the underlying price.
         /// </summary>
-        double TheoDelta { get; }
+        double Delta { get; }
         /// <summary>
         /// Returns gamma of the theoretical price.
         /// Gamma is the second derivative of the theoretical price by the underlying price.
         /// </summary>
-        double TheoGamma { get; }
+        double Gamma { get; }
         /// <summary>
         /// Returns implied simple dividend return of the corresponding option series.
         /// See the model section for an explanation this simple dividend return \(Q(\tau)\).
         /// </summary>
-        double TheoDividend { get; }
+        double Dividend { get; }
         /// <summary>
         /// Returns implied simple interest return of the corresponding option series.
         /// See the model section for an explanation this simple interest return \(R(\tau)\).
         /// </summary>
-        double TheoInterest { get; }
+        double Interest { get; }
     }
 }

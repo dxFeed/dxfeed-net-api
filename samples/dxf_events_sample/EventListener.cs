@@ -13,9 +13,9 @@ namespace dxf_events_sample
     /// <summary>
     /// Events listener
     /// </summary>
-    public class EventListener : 
-        IDxFeedListener, 
-        IDxTradeEthListener, 
+    public class EventListener :
+        IDxFeedListener,
+        IDxTradeETHListener,
         IDxSpreadOrderListener,
         IDxGreeksListener,
         IDxTheoPriceListener,
@@ -117,7 +117,7 @@ namespace dxf_events_sample
 
         #endregion
 
-        #region Implementation of IDxTradeEthListener
+        #region Implementation of IDxTradeETHListener
 
         /// <summary>
         /// On TradeETH event received.
@@ -125,9 +125,9 @@ namespace dxf_events_sample
         /// <typeparam name="TB">Event buffer type.</typeparam>
         /// <typeparam name="TE">Event type.</typeparam>
         /// <param name="buf">Event buffer object.</param>
-        public void OnTradeEth<TB, TE>(TB buf)
+        public void OnTradeETH<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
-            where TE : IDxTradeEth
+            where TE : IDxTradeETH
         {
             foreach (var te in buf)
                 Console.WriteLine(string.Format("{0} {1}", buf.Symbol, te));

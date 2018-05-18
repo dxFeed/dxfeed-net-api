@@ -17,7 +17,7 @@ namespace com.dxfeed.api.extras
             return offset.AddMilliseconds(utcMillis);
         }
 
-        public static int ToUnixTime(DateTime time)
+        public static long ToUnixTime(DateTime time)
         {
             return (time - offset).Milliseconds;
         }

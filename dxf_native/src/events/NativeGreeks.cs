@@ -8,6 +8,7 @@
 
 using com.dxfeed.api.events;
 using com.dxfeed.api.extras;
+using com.dxfeed.api.data;
 using com.dxfeed.native.api;
 using System;
 using System.Globalization;
@@ -22,182 +23,124 @@ namespace com.dxfeed.native.events
     public class NativeGreeks : MarketEventImpl, IDxGreeks
     {
 
-        private static readonly int maxSequence = (1 << 22) - 1;
-
         internal unsafe NativeGreeks(DxGreeks* g, string symbol) : base(symbol)
         {
             DxGreeks greeks = *g;
 
             EventFlags = greeks.event_flags;
-
+            Index = greeks.index;
+            Time = TimeConverter.ToUtcDateTime(greeks.time);
+            Price = greeks.price;
+            Volatility = greeks.volatility;
             Delta = greeks.delta;
             Gamma = greeks.gamma;
-            GreeksPrice = greeks.greeks_price;
             Rho = greeks.rho;
-            Sequence = greeks.sequence;
             Theta = greeks.theta;
-            TimeStamp =  greeks.time;
-            Time = TimeConverter.ToUtcDateTime(TimeStamp);
             Vega = greeks.vega;
-            Volatility = greeks.volatility;
-            Index = greeks.index;
         }
 
         internal NativeGreeks(IDxGreeks greeks) : base(greeks.EventSymbol)
         {
             EventFlags = greeks.EventFlags;
 
+            EventFlags = greeks.EventFlags;
+            Index = greeks.Index;
+            Time = greeks.Time;
+            Price = greeks.Price;
+            Volatility = greeks.Volatility;
             Delta = greeks.Delta;
             Gamma = greeks.Gamma;
-            GreeksPrice = greeks.GreeksPrice;
             Rho = greeks.Rho;
-            Sequence = greeks.Sequence;
             Theta = greeks.Theta;
-            TimeStamp = greeks.TimeStamp;
-            Time = TimeConverter.ToUtcDateTime(TimeStamp);
             Vega = greeks.Vega;
-            Volatility = greeks.Volatility;
-            Index = greeks.Index;
         }
 
         public override string ToString()
         {
-            return string.Format(CultureInfo.InvariantCulture, "Greeks: {{{0}, " +
-                "Time: {1:o}, Sequence: {2}, GreekPrice: {3}, Volatility: {4}, " +
-                "Delta: {5}, Gamma: {6}, Theta: {7}, Rho: {8}, Vega: {9}, Index: {10}}}",
-                EventSymbol, Time, Sequence, GreeksPrice, Volatility, Delta, Gamma, Theta, Rho, Vega, Index);
+            return string.Format(CultureInfo.InvariantCulture,
+                "Greeks: {{{0}, "                        +
+                "EventFlags: 0x{1:x2}, Index: {2:x16}, " +
+                "Time: {3:o}, "                          +
+                "Price: {4}, Volatility: {5}, "          +
+                "Delta: {6}, Gamma: {7}, Rho: {8}, "     +
+                "Theta: {9}, Vega: {10}"                 +
+                "}}",
+                EventSymbol,
+                EventFlags, Index,
+                Time,
+                Price, Volatility,
+                Delta, Gamma, Rho,
+                Theta, Vega
+            );
         }
 
         #region Implementation of ICloneable
+
         public override object Clone()
         {
             return new NativeGreeks(this);
         }
+
         #endregion
 
         #region Implementation of IDxGreeks
 
         /// <summary>
-        /// Return option delta.
-        /// Delta is the first derivative of an option price by an underlying price.
+        ///     Returns source of this event.
         /// </summary>
-        public double Delta
-        {
-            get; private set;
-        }
-
+        /// <returns>Source of this event.</returns>
+        public IndexedEventSource Source { get { return IndexedEventSource.DEFAULT; }  }
         /// <summary>
-        /// Returns option gamma.
-        /// Gamma is the second derivative of an option price by an underlying price.
+        ///    Gets or sets transactional event flags.
+        ///    See "Event Flags" section from <see cref="IndexedEvent"/>.
         /// </summary>
-        public double Gamma
-        {
-            get; private set;
-        }
-
+        public EventFlag EventFlags { get; set; }
         /// <summary>
-        /// Returns option market price.
+        ///     Gets unique per-symbol index of this event.
         /// </summary>
-        public double GreeksPrice
-        {
-            get; private set;
-        }
-
-        /// <summary>
-        /// Maximum allowed sequence value. Constant field value.
-        /// </summary>
-        public int MaxSequence
-        {
-            get { return maxSequence; }
-        }
-
-        /// <summary>
-        /// Returns option rho.
-        /// Rho is the first derivative of an option price by percentage interest rate.
-        /// </summary>
-        public double Rho
-        {
-            get; private set;
-        }
-
-        /// <summary>
-        /// Returns sequence number of this event to distinguish events that have the same time.
-        /// This sequence number does not have to be unique and does not need to be sequential.
-        /// Sequence can range from 0 to MaxSequence.
-        /// </summary>
-        public int Sequence
-        {
-            get; private set;
-        }
-
-        /// <summary>
-        /// Returns option theta.
-        /// Theta is the first derivative of an option price by a number of days to expiration.
-        /// </summary>
-        public double Theta
-        {
-            get; private set;
-        }
-
+        public long Index { get; private set; }
         /// <summary>
         /// Returns timestamp of this event.
         /// The timestamp is in milliseconds from midnight, January 1, 1970 UTC.
         /// </summary>
-        public long TimeStamp
-        {
-            get; private set;
-        }
-
+        public long TimeStamp { get { return TimeConverter.ToUnixTime(Time); } }
         /// <summary>
         /// Returns UTC date and time of this event.
         /// </summary>
-        public DateTime Time
-        {
-            get; private set;
-        }
-
+        public DateTime Time { get; private set; }
+        /// <summary>
+        /// Returns option market price.
+        /// </summary>
+        public double Price { get; private set; }
+        /// <summary>
+        /// Returns Black-Scholes implied volatility of the option.
+        /// </summary>
+        public double Volatility { get; private set; }
+        /// <summary>
+        /// Return option delta.
+        /// Delta is the first derivative of an option price by an underlying price.
+        /// </summary>
+        public double Delta { get; private set; }
+        /// <summary>
+        /// Returns option gamma.
+        /// Gamma is the second derivative of an option price by an underlying price.
+        /// </summary>
+        public double Gamma { get; private set; }
+        /// <summary>
+        /// Returns option theta.
+        /// Theta is the first derivative of an option price by a number of days to expiration.
+        /// </summary>
+        public double Theta { get; private set; }
+        /// <summary>
+        /// Returns option rho.
+        /// Rho is the first derivative of an option price by percentage interest rate.
+        /// </summary>
+        public double Rho { get; private set; }
         /// <summary>
         /// Returns option vega.
         /// Vega is the first derivative of an option price by percentage volatility.
         /// </summary>
-        public double Vega
-        {
-            get; private set;
-        }
-
-        /// <summary>
-        /// Returns Black-Scholes implied volatility of the option.
-        /// </summary>
-        public double Volatility
-        {
-            get; private set;
-        }
-
-        /// <summary>
-        /// Returns unique per-symbol index of this event.
-        /// The index is composed of Time and Sequence.
-        /// </summary>
-        public long Index
-        {
-            get; private set;
-        }
-
-        /// <summary>
-        /// Gets transactional event flags.
-        /// See "Event Flags" section from <see cref="IndexedEvent"/>.
-        /// </summary>
-        public EventFlag EventFlags
-        {
-            get; set;
-        }
-
-        public IndexedEventSource Source
-        {
-            get
-            {
-                return IndexedEventSource.DEFAULT;
-            }
-        }
+        public double Vega { get; private set; }
 
         #endregion
     }

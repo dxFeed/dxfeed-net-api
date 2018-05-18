@@ -12,7 +12,7 @@ namespace com.dxfeed.api
 {
     /// <summary>
     ///     <para>
-    ///         Extends <see cref="IDXFeedSubscription{E}"/> to conveniently subscribe to 
+    ///         Extends <see cref="IDXFeedSubscription{E}"/> to conveniently subscribe to
     ///         time-series of events for a set of symbols and event types.
     ///     </para>
     ///     <para>
@@ -36,7 +36,7 @@ namespace com.dxfeed.api
     ///         Threads and locks.
     ///     </para>
     ///     <para>
-    ///         This class is thread-safe and can be used concurrently from multiple threads 
+    ///         This class is thread-safe and can be used concurrently from multiple threads
     ///         without external synchronization.
     ///     </para>
     /// </summary>
@@ -45,7 +45,7 @@ namespace com.dxfeed.api
         where E : TimeSeriesEvent
     {
         /// <summary>
-        ///     Gets or sets the earliest timestamp from which time-series of events shall be 
+        ///     Gets or sets the earliest timestamp from which time-series of events shall be
         ///     received.
         ///     The timestamp is in milliseconds from midnight, January 1, 1970 UTC.
         /// </summary>

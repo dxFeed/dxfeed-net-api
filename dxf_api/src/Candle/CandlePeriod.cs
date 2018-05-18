@@ -194,7 +194,7 @@ namespace com.dxfeed.api.candle
         /// <returns>aggregation period object.</returns>
         /// <exception cref="ArgumentNullException">s is null</exception>
         /// <exception cref="FormatException">s does not represent a number in a valid format.</exception>
-        /// <exception cref="OverflowException">s represents a number that is less than System.Double.MinValue or greater 
+        /// <exception cref="OverflowException">s represents a number that is less than System.Double.MinValue or greater
         /// than System.Double.MaxValue.</exception>
         public static CandlePeriod Parse(string s)
         {

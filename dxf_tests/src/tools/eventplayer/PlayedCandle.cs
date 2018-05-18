@@ -1,4 +1,5 @@
 ﻿using com.dxfeed.api;
+using com.dxfeed.api.data;
 using com.dxfeed.api.candle;
 using com.dxfeed.api.events;
 using System;
@@ -29,7 +30,7 @@ namespace com.dxfeed.tests.tools.eventplayer
         /// <param name="openInterest"></param>
         /// <param name="impVolatility"></param>
         /// <param name="eventFlags"></param>
-        internal PlayedCandle(string symbol, long time, int sequence, double count, double open, 
+        internal PlayedCandle(string symbol, long time, int sequence, double count, double open,
             double high, double low, double close, double volume, double vwap, double bidVolume,
             double askVolume, long index, long openInterest, double impVolatility,
             EventFlag eventFlags)
@@ -55,7 +56,7 @@ namespace com.dxfeed.tests.tools.eventplayer
             OpenInterest = openInterest;
 
             Params = new EventParams(EventFlags, ((ulong)time << 32) + (uint)sequence, 0);
-            Data = new DxTestCandle(time, sequence, count, open, high, low, close, volume, vwap, bidVolume, askVolume, index, openInterest, impVolatility, eventFlags);
+            Data = new DxTestCandle(eventFlags, index, time, sequence, count, open, high, low, close, volume, vwap, bidVolume, askVolume, (int)openInterest, impVolatility);
         }
 
         /// <summary>
@@ -85,7 +86,7 @@ namespace com.dxfeed.tests.tools.eventplayer
             OpenInterest = candle.OpenInterest;
 
             Params = new EventParams(EventFlags, ((ulong)TimeStamp << 32) + (uint)Sequence, 0);
-            Data = new DxTestCandle(TimeStamp, Sequence, Count, Open, High, Low, Close, Volume, VWAP, BidVolume, AskVolume, Index, OpenInterest, ImpVolatility, EventFlags);
+            Data = new DxTestCandle(EventFlags, Index, Tools.DateToUnixTime(Time), Sequence, Count, Open, High, Low, Close, Volume, VWAP, BidVolume, AskVolume, (int)OpenInterest, ImpVolatility);
         }
 
         public double AskVolume

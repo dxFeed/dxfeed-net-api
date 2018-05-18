@@ -9,8 +9,8 @@ using System.Runtime.InteropServices;
 namespace com.dxfeed.tests.tools.eventplayer
 {
     /// <summary>
-    ///     Provides sending events manually through native subscription instance. 
-    ///     This class uses Reflection to get access to native subscription and C data types 
+    ///     Provides sending events manually through native subscription instance.
+    ///     This class uses Reflection to get access to native subscription and C data types
     ///     struct model.
     /// </summary>
     /// <typeparam name="E">The type of played events.</typeparam>

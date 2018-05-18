@@ -7,6 +7,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using NUnit.Framework;
+using com.dxfeed.api.data;
 using com.dxfeed.api.candle;
 using com.dxfeed.api.events;
 using com.dxfeed.native;

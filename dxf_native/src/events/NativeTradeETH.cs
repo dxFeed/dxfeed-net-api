@@ -17,34 +17,23 @@ namespace com.dxfeed.native.events
     /// trading hours and the extended hours day volume.
     /// This event is defined only for symbols (typically stocks and ETFs) with a designated
     /// extended trading hours (ETH, pre market and post market trading sessions).
-    /// It represents the most recent information that is available about ETH last trade on 
+    /// It represents the most recent information that is available about ETH last trade on
     /// the market at any given moment of time.
     /// </summary>
-    public class NativeTradeETH : NativeTradeBase, IDxTradeEth
+    public class NativeTradeETH : NativeTradeBase, IDxTradeETH
     {
         /// <summary>
         /// Creates new trade with the specified event symbol.
         /// </summary>
         /// <param name="trade">Native DxTrade object.</param>
         /// <param name="symbol">The event symbol.</param>
-        internal unsafe NativeTradeETH(DxTradeEth* trade, string symbol) : base(trade, symbol) { }
+        internal unsafe NativeTradeETH(DxTrade* trade, string symbol) : base(trade, symbol) {}
 
         /// <summary>
-        /// Creates copy of the trade object.
+        /// Creates copy of trade object.
         /// </summary>
-        /// <param name="trade">The IDxTradeEth object.</param>
-        internal NativeTradeETH(IDxTradeEth trade) : base(trade)
-        {
-            IsETH = trade.IsETH;
-        }
-
-        /// <summary>
-        /// Gets or sets flag as to whether last trade was in extended trading hours.
-        /// </summary>
-        public bool IsETH
-        {
-            get; set;
-        }
+        /// <param name="trade">The IDxTrade object.</param>
+        internal NativeTradeETH(IDxTradeETH trade) : base(trade) {}
 
         #region Implementation of ICloneable
         public override object Clone()
@@ -53,10 +42,13 @@ namespace com.dxfeed.native.events
         }
         #endregion
 
+        #region Implementation of IDxTradeETH
+        #endregion
+
         public override string ToString()
         {
-            return string.Format(CultureInfo.InvariantCulture, "TradeETH {{{0}, {1}, eth: {2}}}",
-                EventSymbol, base.ToString(), IsETH);
+            return string.Format(CultureInfo.InvariantCulture, "TradeETH {{{0}, {1}}}",
+                EventSymbol, base.ToString());
         }
     }
 }

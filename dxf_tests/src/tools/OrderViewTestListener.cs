@@ -15,8 +15,8 @@ namespace com.dxfeed.tests.tools
     /// <summary>
     /// Order view listener class for tests.
     /// Allow to get any parameters from received order view and transfer to test method.
-    /// 
-    /// WARNING: this handler do not differ order snapshot by source sequence, 
+    ///
+    /// WARNING: this handler do not differ order snapshot by source sequence,
     /// i.e. "Order#NTV&DEX AAPL" and "Order#DEX&DEA AAPL" is the same snapshots
     /// </summary>
     public class OrderViewTestListener : IDxOrderViewListener

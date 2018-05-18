@@ -9,12 +9,12 @@ namespace com.dxfeed.api
     /// <summary>
     /// Interface provides receiving events
     /// </summary>
-    public interface IDxFeedListener : 
-        IDxQuoteListener, 
-        IDxTradeListener, 
-        IDxOrderListener, 
-        IDxProfileListener, 
-        IDxFundamentalListener, 
+    public interface IDxFeedListener :
+        IDxQuoteListener,
+        IDxTradeListener,
+        IDxOrderListener,
+        IDxProfileListener,
+        IDxFundamentalListener,
         IDxTimeAndSaleListener
     {
         //Note: no extra methods in this interface.

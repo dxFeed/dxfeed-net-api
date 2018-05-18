@@ -795,7 +795,7 @@ namespace com.dxfeed.ipf
         /// <pre>
         ///     &lt;VALUE> ::= &lt;empty> | &lt;LIST>
         ///     &lt;LIST> ::= &lt;INCREMENT> | &lt;RANGE> &lt;semicolon> &lt;space> &lt;LIST>
-        ///     &lt;RANGE> ::= &lt;INCREMENT> &lt;space> &lt;UPPER_LIMIT> 
+        ///     &lt;RANGE> ::= &lt;INCREMENT> &lt;space> &lt;UPPER_LIMIT>
         /// </pre>
         /// the list shall be sorted by &lt;UPPER_LIMIT>.
         /// Example: "0.25", "0.01 3; 0.05".
@@ -812,7 +812,7 @@ namespace com.dxfeed.ipf
         /// <pre>
         ///     &lt;VALUE> ::= &lt;empty> | &lt;LIST>
         ///     &lt;LIST> ::= &lt;INCREMENT> | &lt;RANGE> &lt;semicolon> &lt;space> &lt;LIST>
-        ///     &lt;RANGE> ::= &lt;INCREMENT> &lt;space> &lt;UPPER_LIMIT> 
+        ///     &lt;RANGE> ::= &lt;INCREMENT> &lt;space> &lt;UPPER_LIMIT>
         /// </pre>
         /// the list shall be sorted by &lt;UPPER_LIMIT>.
         /// Example: "0.25", "0.01 3; 0.05".

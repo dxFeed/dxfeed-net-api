@@ -24,67 +24,60 @@ namespace com.dxfeed.native.events
         {
             DxUnderlying u = *underlying;
 
-            BackVolatility = u.back_volatility;
-            FrontVolatility = u.front_volatility;
-            PutCallRatio = u.put_call_ratio;
             Volatility = u.volatility;
+            FrontVolatility = u.front_volatility;
+            BackVolatility = u.back_volatility;
+            PutCallRatio = u.put_call_ratio;
         }
 
         internal NativeUnderlying(IDxUnderlying u) : base(u.EventSymbol)
         {
-            BackVolatility = u.BackVolatility;
-            FrontVolatility = u.FrontVolatility;
-            PutCallRatio = u.PutCallRatio;
             Volatility = u.Volatility;
+            FrontVolatility = u.FrontVolatility;
+            BackVolatility = u.BackVolatility;
+            PutCallRatio = u.PutCallRatio;
         }
 
         public override string ToString()
         {
-            return string.Format(CultureInfo.InvariantCulture, "Underlying: {{{0}, " +
-                "Volatility: {1}, FrontVolatility: {2}, BackVolatility: {3}, PutCallRatio: {4}}}",
-                EventSymbol, Volatility, FrontVolatility, BackVolatility, PutCallRatio);
+            return string.Format(CultureInfo.InvariantCulture,
+                "Underlying: {{{0}, "                     +
+                "Volatility: {1}, FrontVolatility: {2}, " +
+                "BackVolatility: {3}, PutCallRatio: {4}"  +
+                "}}",
+                EventSymbol,
+                Volatility, FrontVolatility,
+                BackVolatility, PutCallRatio
+            );
         }
 
         #region Implementation of ICloneable
+
         public override object Clone()
         {
             return new NativeUnderlying(this);
         }
+
         #endregion
 
         #region Implementation of IDxUnderlying
 
         /// <summary>
-        /// Returns back month implied volatility for this underlying based on VIX methodology.
+        /// Returns 30-day implied volatility for this underlying based on VIX methodology.
         /// </summary>
-        public double BackVolatility
-        {
-            get; private set;
-        }
-
+        public double Volatility { get; private set; }
         /// <summary>
         /// Returns front month implied volatility for this underlying based on VIX methodology.
         /// </summary>
-        public double FrontVolatility
-        {
-            get; private set;
-        }
-
+        public double FrontVolatility { get; private set; }
+        /// <summary>
+        /// Returns back month implied volatility for this underlying based on VIX methodology.
+        /// </summary>
+        public double BackVolatility { get; private set; }
         /// <summary>
         /// Returns ratio of put traded volume to call traded volume for a day.
         /// </summary>
-        public double PutCallRatio
-        {
-            get; private set;
-        }
-
-        /// <summary>
-        /// Returns 30-day implied volatility for this underlying based on VIX methodology.
-        /// </summary>
-        public double Volatility
-        {
-            get; private set;
-        }
+        public double PutCallRatio { get; private set; }
 
         #endregion
     }

@@ -30,14 +30,14 @@ namespace com.dxfeed.util
         /// 14 significant digits and at most 14 digits after decimal point.
         /// When x is integer, NaN or infinity, then x is returned
         /// (this method does not round big integers to powers of 10).
-        /// 
+        ///
         /// <p>For example, suppose you have 1 dollar and 10 cents and you pay 20 cent.
         /// You should keep 90 cents.However, the following expression is <b>false</b> in Java:
         /// <pre>1.1 - 0.2 == 0.9</pre>
         /// because both 1.1 and 0.2 do not have precise representations in {@code double}.
         /// To make this comparison work, you have to use {@code roundDecimal} method:
         /// <pre>roundDecimal(1.1 - 0.2) == 0.9</pre>
-        /// 
+        ///
         /// <p>As a general rule, you should use {@code roundDecimal} after any operation
         /// (addition, subtraction, multiplication, division) on two decimal numbers if you
         /// know that the result is a decimal with at most 14 significant digits and at most

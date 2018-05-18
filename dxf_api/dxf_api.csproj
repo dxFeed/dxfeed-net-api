@@ -93,7 +93,6 @@
     <Compile Include="src\events\IndexedEventSource.cs" />
     <Compile Include="src\events\market\MarketEventSymbols.cs" />
     <Compile Include="src\data\Direction.cs" />
-    <Compile Include="src\data\DxString.cs" />
     <Compile Include="src\data\PriceType.cs" />
     <Compile Include="src\data\Scope.cs" />
     <Compile Include="src\data\ShortSaleRestriction.cs" />

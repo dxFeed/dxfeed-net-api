@@ -120,10 +120,5 @@ namespace com.dxfeed.native.events
         {
             return new NativeConfiguration((DxConfiguration*)IntPtr.Add(head, offset * CONFIGURATION_SIZE), symbol);
         }
-
-        public static DxString ReadDxString(IntPtr ptr)
-        {
-            return new DxString((char*)ptr.ToPointer());
-        }
     }
 }

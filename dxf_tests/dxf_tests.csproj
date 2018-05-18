@@ -77,7 +77,6 @@
     <Compile Include="src\api\DXFeedSubscriptionTest.cs" />
     <Compile Include="src\api\DXFeedTest.cs" />
     <Compile Include="src\api\DXFeedTimeSeriesSubscriptionTest.cs" />
-    <Compile Include="src\api\DxStringTest.cs" />
     <Compile Include="src\api\FullTest.cs" />
     <Compile Include="src\api\InstrumentProfileLiveTest.cs" />
     <Compile Include="src\api\InstrumentProfileTest.cs" />

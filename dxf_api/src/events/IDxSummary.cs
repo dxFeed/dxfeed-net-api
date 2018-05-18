@@ -14,7 +14,7 @@ namespace com.dxfeed.api.events
     /// in the market at any given moment of time.
     /// </summary>
     [EventTypeAttribute("Summary")]
-    public interface IDxSummary : IDxMarketEvent, LastingEvent<string>
+    public interface IDxSummary : IDxMarketEvent, IDxLastingEvent<string>
     {
         /// <summary>
         /// Returns identifier of the day that this summary represents.

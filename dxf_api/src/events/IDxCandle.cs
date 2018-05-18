@@ -19,7 +19,7 @@ namespace com.dxfeed.api.events
     /// CandleAlignment.
     /// </summary>
     [EventTypeAttribute("Candle")]
-    public interface IDxCandle : TimeSeriesEvent<CandleSymbol>, LastingEvent<CandleSymbol>
+    public interface IDxCandle : IDxTimeSeriesEvent<CandleSymbol>, IDxLastingEvent<CandleSymbol>
     {
         /// <summary>
         /// Returns sequence number of this event to distinguish events that have the same

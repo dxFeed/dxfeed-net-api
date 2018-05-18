@@ -30,7 +30,7 @@ namespace com.dxfeed.tests.tools
         IDxConfigurationListener,
         IDXFeedEventListener<IDxCandle>,
         IDXFeedEventListener<IDxOrder>,
-        IDXFeedEventListener<TimeSeriesEvent>,
+        IDXFeedEventListener<IDxTimeSeriesEvent>,
         IDXFeedEventListener<IDxEventType>
     {
         public class ReceivedEvent<TE>
@@ -452,7 +452,7 @@ namespace com.dxfeed.tests.tools
                 AddEvent(new ReceivedEvent<IDxOrder>(o.EventSymbol, new EventParams(o.EventFlags, 0, 0), o));
         }
 
-        public void EventsReceived(IList<TimeSeriesEvent> events)
+        public void EventsReceived(IList<IDxTimeSeriesEvent> events)
         {
             List<IDxEventType> timeSeriesEvents = new List<IDxEventType>(events.Count);
             foreach (var e in events)
@@ -464,7 +464,7 @@ namespace com.dxfeed.tests.tools
         {
             foreach (var e in events)
             {
-                EventParams eventParams = new EventParams(e is IndexedEvent ? (e as IndexedEvent).EventFlags : 0, 0, 0);
+                EventParams eventParams = new EventParams(e is IDxIndexedEvent ? (e as IDxIndexedEvent).EventFlags : 0, 0, 0);
                 string symbol = e.EventSymbol.ToString();
                 if (e is IDxQuote)
                     AddEvent(new ReceivedEvent<IDxQuote>(symbol, eventParams, e as IDxQuote));

@@ -16,7 +16,7 @@ namespace com.dxfeed.api
     ///         time-series of events for a set of symbols and event types.
     ///     </para>
     ///     <para>
-    ///         Only events that implement <see cref="TimeSeriesEvent{T}"/> interface can be
+    ///         Only events that implement <see cref="IDxTimeSeriesEvent{T}"/> interface can be
     ///         subscribed to with <see cref="IDXFeedTimeSeriesSubscription{E}"/>.
     ///     </para>
     ///     <para>
@@ -42,7 +42,7 @@ namespace com.dxfeed.api
     /// </summary>
     /// <typeparam name="E">The type of events.</typeparam>
     public interface IDXFeedTimeSeriesSubscription<E> : IDXFeedSubscription<E>
-        where E : TimeSeriesEvent
+        where E : IDxTimeSeriesEvent
     {
         /// <summary>
         ///     Gets or sets the earliest timestamp from which time-series of events shall be

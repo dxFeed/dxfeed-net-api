@@ -14,7 +14,7 @@ namespace com.dxfeed.api.events
     /// values on the market at any given moment of time.
     /// </summary>
     [EventTypeAttribute("Greeks")]
-    public interface IDxGreeks : IDxMarketEvent, TimeSeriesEvent<string>, LastingEvent<string>
+    public interface IDxGreeks : IDxMarketEvent, IDxTimeSeriesEvent<string>, IDxLastingEvent<string>
     {
         /// <summary>
         /// Returns option market price.

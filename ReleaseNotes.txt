@@ -1,3 +1,11 @@
+Version 5.2.0
++ All events are sunchronized with C API and Java API
+  Many small changes in field names.
++ Some utility data is moved to com.dxfeed.api.data namespace,
+  please include it as needed.
++ All Event-type related interfaces are renamed with IDx
+  prefix for uniformity.
+
 Version 5.1.0
 + Implement Entitlement API for C#.
 + Implement support for different connection schemes.

@@ -57,7 +57,7 @@ namespace com.dxfeed.api
         /// <returns>New time series subscription.</returns>
         /// <exception cref="InvalidOperationException">Endpoint was been closed.</exception>
         IDXFeedTimeSeriesSubscription<E> CreateTimeSeriesSubscription<E>()
-            where E : TimeSeriesEvent;
+            where E : IDxTimeSeriesEvent;
 
         /// <summary>
         ///     Creates new time series subscription for multiple event types that is attached to
@@ -71,7 +71,7 @@ namespace com.dxfeed.api
         /// <returns>New time series subscription.</returns>
         /// <exception cref="InvalidOperationException">Endpoint was been closed.</exception>
         IDXFeedTimeSeriesSubscription<E> CreateTimeSeriesSubscription<E>(params Type[] eventTypes)
-            where E : TimeSeriesEvent;
+            where E : IDxTimeSeriesEvent;
 
         /// <summary>
         ///     <para>
@@ -101,7 +101,7 @@ namespace com.dxfeed.api
 
         /// <summary>
         ///     Requests the last event for the specified event type and symbol.
-        ///     This method works only for event types that implement <see cref="LastingEvent"/>
+        ///     This method works only for event types that implement <see cref="IDxLastingEvent"/>
         ///     marker interface.
         ///     This method requests the data from the the uplink data provider, creates new event
         ///     of the specified event type <c>E</c>, and completes the resulting promise with
@@ -168,12 +168,12 @@ namespace com.dxfeed.api
         ///     The <paramref name="symbol"/> symbol is not one of string or <see cref= "CandleSymbol"/>.
         /// </exception >
         /// <exception cref="ArgumentNullException">The <paramref name="symbol"/> is null.</exception>
-        Task<LastingEvent> GetLastEventPromise<E>(object symbol, CancellationToken cancellationToken)
-            where E : class, LastingEvent;
+        Task<IDxLastingEvent> GetLastEventPromise<E>(object symbol, CancellationToken cancellationToken)
+            where E : class, IDxLastingEvent;
 
         /// <summary>
         ///     Requests the last events for the specified event type and a collection of symbols.
-        ///     This method works only for event types that implement <see cref="LastingEvent"/>
+        ///     This method works only for event types that implement <see cref="IDxLastingEvent"/>
         ///     marker interface.
         ///     This method requests the data from the the uplink data provider, creates new
         ///     events of the specified event type <c>E</c>, and completes the resulting promises
@@ -237,18 +237,18 @@ namespace com.dxfeed.api
         ///     The one of <paramref name="symbols"/> is not <c>string</c> or <see cref="CandleSymbol"/>.
         /// </exception>
         /// <exception cref="ArgumentNullException">The one of <paramref name="symbols"/> is <c>null</c>.</exception>
-        List<Task<LastingEvent>> GetLastEventsPromises<E>(ICollection<object> symbols,
+        List<Task<IDxLastingEvent>> GetLastEventsPromises<E>(ICollection<object> symbols,
             CancellationToken cancellationToken)
-            where E : class, LastingEvent;
+            where E : class, IDxLastingEvent;
 
         /// <summary>
         ///     Requests a list of indexed events for the specified event type, symbol, and source.
-        ///     This method works only for event types that implement <see cref="IndexedEvent"/>
+        ///     This method works only for event types that implement <see cref="IDxIndexedEvent"/>
         ///     interface.
         ///     This method requests the data from the the uplink data provider, creates a list of
         ///     events of the specified event type <c>E</c>, and completes the resulting promise
         ///     with this list.
-        ///     The events are ordered by <see cref="IndexedEvent.Index"/> in the list.
+        ///     The events are ordered by <see cref="IDxIndexedEvent.Index"/> in the list.
         /// </summary>
         /// <remarks>
         ///     <para>
@@ -288,7 +288,7 @@ namespace com.dxfeed.api
         ///     </para>
         ///     <para>
         ///         This method completes promise only when a consistent snapshot of time series has
-        ///         been received from the data feed. The <see cref="IndexedEvent.EventFlags"/>
+        ///         been received from the data feed. The <see cref="IDxIndexedEvent.EventFlags"/>
         ///         property of the events in the resulting list is always zero.
         ///     </para>
         ///     <para>
@@ -312,17 +312,17 @@ namespace com.dxfeed.api
         /// </exception>
         Task<List<E>> GetIndexedEventsPromise<E>(object symbol, IndexedEventSource source,
             CancellationToken cancellationToken)
-            where E : IndexedEvent;
+            where E : IDxIndexedEvent;
 
         /// <summary>
         ///     Requests time series of events for the specified event type, symbol, and a range
         ///     of time.
-        ///     This method works only for event types that implement <see cref="TimeSeriesEvent"/>
+        ///     This method works only for event types that implement <see cref="IDxTimeSeriesEvent"/>
         ///     interface.
         ///     This method requests the data from the the uplink data provider, creates a list of
         ///     events of the specified event type <c>E</c>, and completes the resulting promise
         ///     with this list.
-        ///     The events are ordered by <see cref="TimeSeriesEvent.Time"/> in the list.
+        ///     The events are ordered by <see cref="IDxTimeSeriesEvent.Time"/> in the list.
         /// </summary>
         /// <remarks>
         ///     <para>
@@ -355,7 +355,7 @@ namespace com.dxfeed.api
         ///     </para>
         ///     <para>
         ///         This method completes promise only when a consistent snapshot of time series
-        ///         has been received from the data feed. The <see cref="IndexedEvent.EventFlags"/>
+        ///         has been received from the data feed. The <see cref="IDxIndexedEvent.EventFlags"/>
         ///         property of the events in the resulting list is always zero.
         ///     </para>
         ///     <para>
@@ -369,10 +369,10 @@ namespace com.dxfeed.api
         /// <typeparam name="E">The event type.</typeparam>
         /// <param name="symbol">The symbol.</param>
         /// <param name="fromTime">
-        ///     The time, inclusive, to request events from <see cref="TimeSeriesEvent.Time"/>.
+        ///     The time, inclusive, to request events from <see cref="IDxTimeSeriesEvent.Time"/>.
         /// </param>
         /// <param name="toTime">
-        ///     The time, inclusive, to request events to <see cref="TimeSeriesEvent.Time"/>.
+        ///     The time, inclusive, to request events to <see cref="IDxTimeSeriesEvent.Time"/>.
         ///     Use <see cref="long.MaxValue"/> to retrieve events without an upper limit on time.
         /// </param>
         /// <param name="cancellationToken">The task cancellation token.</param>
@@ -383,6 +383,6 @@ namespace com.dxfeed.api
         /// <exception cref="ArgumentNullException">The <paramref name="symbol"/> is null.</exception>
         Task<List<E>> GetTimeSeriesPromise<E>(object symbol, long fromTime, long toTime,
             CancellationToken cancellationToken)
-            where E : TimeSeriesEvent;
+            where E : IDxTimeSeriesEvent;
     }
 }

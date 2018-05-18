@@ -104,12 +104,12 @@
     <Compile Include="src\events\IDxEventType.cs" />
     <Compile Include="src\events\IDxGreeks.cs" />
     <Compile Include="src\events\IDxConfiguration.cs" />
-    <Compile Include="src\events\LastingEvent.cs" />
+    <Compile Include="src\events\IDxLastingEvent.cs" />
     <Compile Include="src\events\IDxSeries.cs" />
     <Compile Include="src\events\IDxSpreadOrder.cs" />
     <Compile Include="src\events\IDxTheoPrice.cs" />
     <Compile Include="src\events\IDxUnderlying.cs" />
-    <Compile Include="src\events\IndexedEvent.cs" />
+    <Compile Include="src\events\IDxIndexedEvent.cs" />
     <Compile Include="src\events\OrderSource.cs" />
     <Compile Include="src\events\IDxMarketEvent.cs" />
     <Compile Include="src\events\EventTypeAttribute.cs" />
@@ -117,7 +117,7 @@
     <Compile Include="src\events\IDxCandle.cs" />
     <Compile Include="src\events\IDxOrderBase.cs" />
     <Compile Include="src\events\IDxTradeBase.cs" />
-    <Compile Include="src\events\TimeSeriesEvent.cs" />
+    <Compile Include="src\events\IDxTimeSeriesEvent.cs" />
     <Compile Include="src\extras\EventPrinter.cs" />
     <Compile Include="src\extras\TimeConverter.cs" />
     <Compile Include="src\listeners\event\IDxCandleListener.cs" />

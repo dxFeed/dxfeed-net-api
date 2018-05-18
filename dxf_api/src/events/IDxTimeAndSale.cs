@@ -18,7 +18,7 @@ namespace com.dxfeed.api.events
     ///   (unlike Trade events which are supposed to provide snapshot about the current last trade).
     /// </summary>
     [EventTypeAttribute("TimeAndSale")]
-    public interface IDxTimeAndSale : IDxMarketEvent, TimeSeriesEvent<string>
+    public interface IDxTimeAndSale : IDxMarketEvent, IDxTimeSeriesEvent<string>
     {
         /// <summary>
         ///   Returns exchange code of this time and sale event.

@@ -38,7 +38,7 @@ namespace com.dxfeed.api.events
     ///     </para>
     /// </summary>
     /// <typeparam name="T">Type of the event symbol for this event type.</typeparam>
-    public interface LastingEvent : IDxEventType
+    public interface IDxLastingEvent : IDxEventType
     {
         //Note: no extra fields there
     }
@@ -73,7 +73,7 @@ namespace com.dxfeed.api.events
     ///     </para>
     /// </summary>
     /// <typeparam name="T">Type of the event symbol for this event type.</typeparam>
-    public interface LastingEvent<T> : LastingEvent, IDxEventType<T>
+    public interface IDxLastingEvent<T> : IDxLastingEvent, IDxEventType<T>
     {
         //Note: no extra fields there
     }

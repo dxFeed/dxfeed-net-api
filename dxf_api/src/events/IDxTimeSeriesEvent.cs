@@ -23,32 +23,32 @@ namespace com.dxfeed.api.events
     ///     <para>
     ///         Time-series events can be used with <see cref="IDXFeedTimeSeriesSubscription{E}"/>
     ///         to receive a time-series history of past events. Time-series events
-    ///         are conflated based on unique <see cref="IndexedEvent.Index"/> for each symbol.
+    ///         are conflated based on unique <see cref="IDxIndexedEvent.Index"/> for each symbol.
     ///         Last indexed event for each symbol and index is always
     ///         delivered to event listeners on subscription, but intermediate (next-to-last)
     ///         events for each symbol+index pair are not queued anywhere, they are simply
     ///         discarded as stale events.
     ///     </para>
     ///     <para>
-    ///         Timestamp of an event is available via <see cref="TimeSeriesEvent.TimeStamp"/>
+    ///         Timestamp of an event is available via <see cref="IDxTimeSeriesEvent.TimeStamp"/>
     ///         property with a millisecond precision. Some events may happen multiple times per
     ///         millisecond.
-    ///         In this case they have the same <see cref="TimeSeriesEvent.TimeStamp"/>, but
-    ///         different <see cref="IndexedEvent.Index"/>. An ordering of
-    ///         <see cref="IndexedEvent.Index"/> is the same as an ordering of
-    ///         <see cref="TimeSeriesEvent.TimeStamp"/>. That is, an collection of time-series
-    ///         events that is ordered by <see cref="IndexedEvent.Index"/> is ascending order will
-    ///         be also ordered by <see cref="TimeSeriesEvent.TimeStamp"/> in ascending order.
+    ///         In this case they have the same <see cref="IDxTimeSeriesEvent.TimeStamp"/>, but
+    ///         different <see cref="IDxIndexedEvent.Index"/>. An ordering of
+    ///         <see cref="IDxIndexedEvent.Index"/> is the same as an ordering of
+    ///         <see cref="IDxTimeSeriesEvent.TimeStamp"/>. That is, an collection of time-series
+    ///         events that is ordered by <see cref="IDxIndexedEvent.Index"/> is ascending order will
+    ///         be also ordered by <see cref="IDxTimeSeriesEvent.TimeStamp"/> in ascending order.
     ///     </para>
     ///     <para>
-    ///         Time-series events are a more specific subtype of <see cref="IndexedEvent"/>.
+    ///         Time-series events are a more specific subtype of <see cref="IDxIndexedEvent"/>.
     ///         All general documentation and Event Flags section, in particular,
     ///         applies to time-series events. However, the time-series events never come from
-    ///         multiple sources for the same symbol and their <see cref="IndexedEvent.Source"/>
+    ///         multiple sources for the same symbol and their <see cref="IDxIndexedEvent.Source"/>
     ///         is always <see cref="IndexedEventSource.DEFAULT"/>.
     ///     </para>
     ///     <para>
-    ///         Unlike a general <see cref="IndexedEvent"/> that is subscribed to via
+    ///         Unlike a general <see cref="IDxIndexedEvent"/> that is subscribed to via
     ///         <see cref="IDXFeedSubscription{E}"/> using a plain symbol to receive all events
     ///         for all indices, time-series events are typically subscribed to using
     ///         {@link TimeSeriesSubscriptionSymbol} class to specific time range of the
@@ -58,14 +58,14 @@ namespace com.dxfeed.api.events
     ///     <para>
     ///         {@link TimeSeriesEventModel} class handles all the snapshot and transaction logic
     ///         and conveniently represents a list of current time-series events ordered by their
-    ///         <see cref="TimeSeriesEvent.TimeStamp"/>.
+    ///         <see cref="IDxTimeSeriesEvent.TimeStamp"/>.
     ///         It relies on the code of {@link AbstractIndexedEventModel} to handle this logic.
     ///         Use the source code of {@link AbstractIndexedEventModel} for clarification on
     ///         transactions and snapshot logic.
     ///     </para>
     ///     <para>
     ///         Classes that implement this interface may also implement
-    ///         <see cref="LastingEvent"/> interface, which makes it possible to
+    ///         <see cref="IDxLastingEvent"/> interface, which makes it possible to
     ///         use {@link DXFeed#getLastEvent(LastingEvent) DXFeed.getLastEvent} method to
     ///         retrieve the last event for the corresponding symbol.
     ///     </para>
@@ -78,26 +78,26 @@ namespace com.dxfeed.api.events
     ///         requested time range has to be published first.
     ///     </para>
     ///     <para>
-    ///         A snapshot is published in the descending order of <see cref="IndexedEvent.Index"/>
+    ///         A snapshot is published in the descending order of <see cref="IDxIndexedEvent.Index"/>
     ///         (which is the same as the descending order of
-    ///         <see cref="TimeSeriesEvent.TimeStamp"/>), starting with
+    ///         <see cref="IDxTimeSeriesEvent.TimeStamp"/>), starting with
     ///         an event with the largest index and marking it with <see cref="EventFlag.SnapshotBegin"/>
-    ///         bit in <see cref="IndexedEvent.EventFlags"/>.
-    ///         All other event follow with default, zero <see cref="IndexedEvent.EventFlags"/>.
+    ///         bit in <see cref="IDxIndexedEvent.EventFlags"/>.
+    ///         All other event follow with default, zero <see cref="IDxIndexedEvent.EventFlags"/>.
     ///         If there is no actual event at the time that was specified in subscription
     ///         <see cref="IDXFeedTimeSeriesSubscription{E}.FromTimeStamp"/> property, then event
     ///         with the corresponding time has to be created anyway and published. To distinguish
     ///         it from the actual event, it has to be marked with <see cref="EventFlag.RemoveEvent"/>
-    ///         bit in <see cref="IndexedEvent.EventFlags"/>.
+    ///         bit in <see cref="IDxIndexedEvent.EventFlags"/>.
     ///         <see cref="EventFlag.SnapshotEnd"/> bit in this event's
-    ///         <see cref="IndexedEvent.EventFlags"/> is optional during publishing. It will be
+    ///         <see cref="IDxIndexedEvent.EventFlags"/> is optional during publishing. It will be
     ///         properly set on receiving end anyway. Note, that publishing any event with time
     ///         that is below subscription <see cref="IDXFeedTimeSeriesSubscription{E}.FromTimeStamp"/>
     ///         also works as a legal indicator for the end of the snapshot.
     ///     </para>
     ///     <para>
     ///         Both <see cref="IDxTimeAndSale"/> and <see cref="IDxCandle"/> time-series events
-    ///         define a sequence property that is mixed into an <see cref="IndexedEvent.Index"/>
+    ///         define a sequence property that is mixed into an <see cref="IDxIndexedEvent.Index"/>
     ///         property. It provides a way to distinguish different events at the same time.
     ///         For a snapshot end event the sequence has to be left at its default zero value. It
     ///         means, that if there is an actual event to be published at subscription
@@ -107,7 +107,7 @@ namespace com.dxfeed.api.events
     ///         still required.
     ///     </para>
     /// </remarks>
-    public interface TimeSeriesEvent : IndexedEvent
+    public interface IDxTimeSeriesEvent : IDxIndexedEvent
     {
         /// <summary>
         /// Returns timestamp of this event.
@@ -134,32 +134,32 @@ namespace com.dxfeed.api.events
     ///     <para>
     ///         Time-series events can be used with <see cref="IDXFeedTimeSeriesSubscription{E}"/>
     ///         to receive a time-series history of past events. Time-series events
-    ///         are conflated based on unique <see cref="IndexedEvent.Index"/> for each symbol.
+    ///         are conflated based on unique <see cref="IDxIndexedEvent.Index"/> for each symbol.
     ///         Last indexed event for each symbol and index is always
     ///         delivered to event listeners on subscription, but intermediate (next-to-last)
     ///         events for each symbol+index pair are not queued anywhere, they are simply
     ///         discarded as stale events.
     ///     </para>
     ///     <para>
-    ///         Timestamp of an event is available via <see cref="TimeSeriesEvent.TimeStamp"/>
+    ///         Timestamp of an event is available via <see cref="IDxTimeSeriesEvent.TimeStamp"/>
     ///         property with a millisecond precision. Some events may happen multiple times per
     ///         millisecond.
-    ///         In this case they have the same <see cref="TimeSeriesEvent.TimeStamp"/>, but
-    ///         different <see cref="IndexedEvent.Index"/>. An ordering of
-    ///         <see cref="IndexedEvent.Index"/> is the same as an ordering of
-    ///         <see cref="TimeSeriesEvent.TimeStamp"/>. That is, an collection of time-series
-    ///         events that is ordered by <see cref="IndexedEvent.Index"/> is ascending order will
-    ///         be also ordered by <see cref="TimeSeriesEvent.TimeStamp"/> in ascending order.
+    ///         In this case they have the same <see cref="IDxTimeSeriesEvent.TimeStamp"/>, but
+    ///         different <see cref="IDxIndexedEvent.Index"/>. An ordering of
+    ///         <see cref="IDxIndexedEvent.Index"/> is the same as an ordering of
+    ///         <see cref="IDxTimeSeriesEvent.TimeStamp"/>. That is, an collection of time-series
+    ///         events that is ordered by <see cref="IDxIndexedEvent.Index"/> is ascending order will
+    ///         be also ordered by <see cref="IDxTimeSeriesEvent.TimeStamp"/> in ascending order.
     ///     </para>
     ///     <para>
-    ///         Time-series events are a more specific subtype of <see cref="IndexedEvent"/>.
+    ///         Time-series events are a more specific subtype of <see cref="IDxIndexedEvent"/>.
     ///         All general documentation and Event Flags section, in particular,
     ///         applies to time-series events. However, the time-series events never come from
-    ///         multiple sources for the same symbol and their <see cref="IndexedEvent.Source"/>
+    ///         multiple sources for the same symbol and their <see cref="IDxIndexedEvent.Source"/>
     ///         is always <see cref="IndexedEventSource.DEFAULT"/>.
     ///     </para>
     ///     <para>
-    ///         Unlike a general <see cref="IndexedEvent"/> that is subscribed to via
+    ///         Unlike a general <see cref="IDxIndexedEvent"/> that is subscribed to via
     ///         <see cref="IDXFeedSubscription{E}"/> using a plain symbol to receive all events
     ///         for all indices, time-series events are typically subscribed to using
     ///         {@link TimeSeriesSubscriptionSymbol} class to specific time range of the
@@ -169,14 +169,14 @@ namespace com.dxfeed.api.events
     ///     <para>
     ///         {@link TimeSeriesEventModel} class handles all the snapshot and transaction logic
     ///         and conveniently represents a list of current time-series events ordered by their
-    ///         <see cref="TimeSeriesEvent.TimeStamp"/>.
+    ///         <see cref="IDxTimeSeriesEvent.TimeStamp"/>.
     ///         It relies on the code of {@link AbstractIndexedEventModel} to handle this logic.
     ///         Use the source code of {@link AbstractIndexedEventModel} for clarification on
     ///         transactions and snapshot logic.
     ///     </para>
     ///     <para>
     ///         Classes that implement this interface may also implement
-    ///         <see cref="LastingEvent"/> interface, which makes it possible to
+    ///         <see cref="IDxLastingEvent"/> interface, which makes it possible to
     ///         use {@link DXFeed#getLastEvent(LastingEvent) DXFeed.getLastEvent} method to
     ///         retrieve the last event for the corresponding symbol.
     ///     </para>
@@ -189,26 +189,26 @@ namespace com.dxfeed.api.events
     ///         requested time range has to be published first.
     ///     </para>
     ///     <para>
-    ///         A snapshot is published in the descending order of <see cref="IndexedEvent.Index"/>
+    ///         A snapshot is published in the descending order of <see cref="IDxIndexedEvent.Index"/>
     ///         (which is the same as the descending order of
-    ///         <see cref="TimeSeriesEvent.TimeStamp"/>), starting with
+    ///         <see cref="IDxTimeSeriesEvent.TimeStamp"/>), starting with
     ///         an event with the largest index and marking it with <see cref="EventFlag.SnapshotBegin"/>
-    ///         bit in <see cref="IndexedEvent.EventFlags"/>.
-    ///         All other event follow with default, zero <see cref="IndexedEvent.EventFlags"/>.
+    ///         bit in <see cref="IDxIndexedEvent.EventFlags"/>.
+    ///         All other event follow with default, zero <see cref="IDxIndexedEvent.EventFlags"/>.
     ///         If there is no actual event at the time that was specified in subscription
     ///         <see cref="IDXFeedTimeSeriesSubscription{E}.FromTimeStamp"/> property, then event
     ///         with the corresponding time has to be created anyway and published. To distinguish
     ///         it from the actual event, it has to be marked with <see cref="EventFlag.RemoveEvent"/>
-    ///         bit in <see cref="IndexedEvent.EventFlags"/>.
+    ///         bit in <see cref="IDxIndexedEvent.EventFlags"/>.
     ///         <see cref="EventFlag.SnapshotEnd"/> bit in this event's
-    ///         <see cref="IndexedEvent.EventFlags"/> is optional during publishing. It will be
+    ///         <see cref="IDxIndexedEvent.EventFlags"/> is optional during publishing. It will be
     ///         properly set on receiving end anyway. Note, that publishing any event with time
     ///         that is below subscription <see cref="IDXFeedTimeSeriesSubscription{E}.FromTimeStamp"/>
     ///         also works as a legal indicator for the end of the snapshot.
     ///     </para>
     ///     <para>
     ///         Both <see cref="IDxTimeAndSale"/> and <see cref="IDxCandle"/> time-series events
-    ///         define a sequence property that is mixed into an <see cref="IndexedEvent.Index"/>
+    ///         define a sequence property that is mixed into an <see cref="IDxIndexedEvent.Index"/>
     ///         property. It provides a way to distinguish different events at the same time.
     ///         For a snapshot end event the sequence has to be left at its default zero value. It
     ///         means, that if there is an actual event to be published at subscription
@@ -219,7 +219,7 @@ namespace com.dxfeed.api.events
     ///     </para>
     /// </remarks>
     /// <typeparam name="T">Type of the event symbol for this event type.</typeparam>
-    public interface TimeSeriesEvent<T> : TimeSeriesEvent, IndexedEvent<T>
+    public interface IDxTimeSeriesEvent<T> : IDxTimeSeriesEvent, IDxIndexedEvent<T>
     {
         //Note: no-extra fields here
     }

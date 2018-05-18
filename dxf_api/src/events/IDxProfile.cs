@@ -15,7 +15,7 @@ namespace com.dxfeed.api.events
     /// on the market at any given moment of time.
     /// </summary>
     [EventTypeAttribute("Profile")]
-    public interface IDxProfile : IDxMarketEvent, LastingEvent<string>
+    public interface IDxProfile : IDxMarketEvent, IDxLastingEvent<string>
     {
         /// <summary>
         /// Returns Beta of the security instrument.

@@ -65,11 +65,11 @@ namespace com.dxfeed.api
             });
             Assert.Catch(typeof(ArgumentException), () =>
             {
-                DXFeed.GetInstance().CreateSubscription<IndexedEvent>(typeof(IDxCandle), typeof(IDxQuote));
+                DXFeed.GetInstance().CreateSubscription<IDxIndexedEvent>(typeof(IDxCandle), typeof(IDxQuote));
             });
             Assert.Catch(typeof(ArgumentException), () =>
             {
-                DXFeed.GetInstance().CreateSubscription<LastingEvent>(typeof(IDxOrder), typeof(IDxQuote));
+                DXFeed.GetInstance().CreateSubscription<IDxLastingEvent>(typeof(IDxOrder), typeof(IDxQuote));
             });
             Assert.Catch(typeof(ArgumentException), () =>
             {
@@ -145,24 +145,24 @@ namespace com.dxfeed.api
             //all attempts to create subscription in this block must be failed with exception
             Assert.Catch(typeof(ArgumentException), () =>
             {
-                DXFeed.GetInstance().CreateTimeSeriesSubscription<TimeSeriesEvent>(typeof(IDxCandle), typeof(IDxQuote));
+                DXFeed.GetInstance().CreateTimeSeriesSubscription<IDxTimeSeriesEvent>(typeof(IDxCandle), typeof(IDxQuote));
             });
             Assert.Catch(typeof(ArgumentException), () =>
             {
-                DXFeed.GetInstance().CreateTimeSeriesSubscription<TimeSeriesEvent>(typeof(IDxOrder), typeof(IDxQuote));
+                DXFeed.GetInstance().CreateTimeSeriesSubscription<IDxTimeSeriesEvent>(typeof(IDxOrder), typeof(IDxQuote));
             });
             Assert.Catch(typeof(ArgumentException), () =>
             {
-                DXFeed.GetInstance().CreateTimeSeriesSubscription<TimeSeriesEvent>(typeof(string));
+                DXFeed.GetInstance().CreateTimeSeriesSubscription<IDxTimeSeriesEvent>(typeof(string));
             });
 
             var symbol = "SYMA";
-            var s = DXFeed.GetInstance().CreateTimeSeriesSubscription<TimeSeriesEvent>(typeof(IDxCandle), typeof(IDxGreeks));
+            var s = DXFeed.GetInstance().CreateTimeSeriesSubscription<IDxTimeSeriesEvent>(typeof(IDxCandle), typeof(IDxGreeks));
             s.AddSymbols(symbol);
             TestListener eventListener = new TestListener();
             s.AddEventListener(eventListener);
 
-            EventPlayer<TimeSeriesEvent> eventPlayer = new EventPlayer<TimeSeriesEvent>(s as DXFeedSubscription<TimeSeriesEvent>);
+            EventPlayer<IDxTimeSeriesEvent> eventPlayer = new EventPlayer<IDxTimeSeriesEvent>(s as DXFeedSubscription<IDxTimeSeriesEvent>);
             var playedCandle = new PlayedCandle(symbol, Tools.DateToUnixTime(DateTime.Now), 123, 100, 12.34, 56.78, 9.0, 43.21, 1000, 999, 1001, 1002, 1, 777, 888, EventFlag.RemoveSymbol);
             eventPlayer.PlayEvents(symbol, playedCandle);
             var playedGreeks = new PlayedGreeks(symbol, EventFlag.RemoveSymbol, 1, Tools.DateToUnixTime(DateTime.Now), 456.789, 11, 555, 666, 777, 888, 999);
@@ -177,7 +177,7 @@ namespace com.dxfeed.api
             {
                 Assert.DoesNotThrow(() =>
                 {
-                    DXFeed.GetInstance().CreateTimeSeriesSubscription<TimeSeriesEvent>(typeof(IDxCandle), typeof(IDxGreeks));
+                    DXFeed.GetInstance().CreateTimeSeriesSubscription<IDxTimeSeriesEvent>(typeof(IDxCandle), typeof(IDxGreeks));
                 });
             });
         }
@@ -274,7 +274,7 @@ namespace com.dxfeed.api
 
             //try to cancel promise
             CancellationTokenSource cancelSource = new CancellationTokenSource();
-            Task<LastingEvent> promise = DXFeed.GetInstance().GetLastEventPromise<IDxTrade>(symbol, cancelSource.Token);
+            Task<IDxLastingEvent> promise = DXFeed.GetInstance().GetLastEventPromise<IDxTrade>(symbol, cancelSource.Token);
             cancelSource.CancelAfter(TimeSpan.FromSeconds(2));
             try
             {
@@ -422,7 +422,7 @@ namespace com.dxfeed.api
 
             //try to cancel promise
             CancellationTokenSource cancelSource = new CancellationTokenSource();
-            List<Task<LastingEvent>> promises = DXFeed.GetInstance().GetLastEventsPromises<IDxTrade>(symbols, cancelSource.Token);
+            List<Task<IDxLastingEvent>> promises = DXFeed.GetInstance().GetLastEventsPromises<IDxTrade>(symbols, cancelSource.Token);
             cancelSource.CancelAfter(TimeSpan.FromSeconds(2));
             try
             {

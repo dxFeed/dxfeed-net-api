@@ -17,7 +17,7 @@ namespace com.dxfeed.api.events
     ///   The collection of order events of a symbol represents the most recent information that is
     ///   available about orders on the market at any given moment of time.
     /// </summary>
-    public interface IDxOrderBase : IDxMarketEvent, IndexedEvent<string>
+    public interface IDxOrderBase : IDxMarketEvent, IDxIndexedEvent<string>
     {
         /// <summary>
         ///  Returns date time of this order.

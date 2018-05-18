@@ -18,7 +18,7 @@ namespace com.dxfeed.api.events
     /// in the vicinity.
     /// </summary>
     [EventTypeAttribute("TheoPrice")]
-    public interface IDxTheoPrice : IDxMarketEvent, LastingEvent<string>
+    public interface IDxTheoPrice : IDxMarketEvent, IDxLastingEvent<string>
     {
         /// <summary>
         /// Returns date time of the last theo price computation.

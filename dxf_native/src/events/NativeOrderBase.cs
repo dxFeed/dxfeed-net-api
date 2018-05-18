@@ -93,7 +93,7 @@ namespace com.dxfeed.native.events
 
         /// <summary>
         ///    Gets or sets transactional event flags.
-        ///    See "Event Flags" section from <see cref="IndexedEvent"/>.
+        ///    See "Event Flags" section from <see cref="IDxIndexedEvent"/>.
         /// </summary>
         public EventFlag EventFlags { get; set; }
 

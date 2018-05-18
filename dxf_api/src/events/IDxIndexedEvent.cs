@@ -18,12 +18,12 @@ namespace com.dxfeed.api.events
     ///     orders are active for each symbol at any given moment in time.
     ///     <see cref="IDxCandle"/> represent snapshots of aggregate information
     ///     about trading over a specific time period and there are multiple periods available.
-    ///     The <see cref="IDxCandle"/> is also an example of <see cref="TimeSeriesEvent"/> that
+    ///     The <see cref="IDxCandle"/> is also an example of <see cref="IDxTimeSeriesEvent"/> that
     ///     is a more specific event type.
     /// </summary>
     /// <remarks>
     ///     <para>
-    ///          Index for each event is available via <see cref="IndexedEvent.Index"/> property.
+    ///          Index for each event is available via <see cref="IDxIndexedEvent.Index"/> property.
     ///          Indexed events retain information about multiple events per symbol based on the
     ///          event index and are conflated based on the event index. Last indexed event for
     ///          each symbol and index is always delivered to event listeners on subscription, but
@@ -38,17 +38,17 @@ namespace com.dxfeed.api.events
     ///          Some indexed event sources provide a consistent view of a set of events for a
     ///          given symbol. Their updates may incorporate multiple changes that have to be
     ///          processed at the same time. The corresponding information is carried in
-    ///          <see cref="IndexedEvent.EventFlags"/> property.
+    ///          <see cref="IDxIndexedEvent.EventFlags"/> property.
     ///          Some indexed events, like <see cref="IDxOrder"/>, support multiple sources of
     ///          information for the same symbol. The event source is available via
-    ///          <see cref="IndexedEvent.Source"/> property.
-    ///          The value of <see cref="IndexedEvent.Source"/> property is always
+    ///          <see cref="IDxIndexedEvent.Source"/> property.
+    ///          The value of <see cref="IDxIndexedEvent.Source"/> property is always
     ///          <see cref="IndexedEventSource.DEFAULT"/> for time-series events and other
     ///          singe-sourced events like <see cref="IDxSeries"/>, that do not support this
     ///          feature.
     ///     </para>
     ///     <para>
-    ///          The value of <see cref="IndexedEvent.EventFlags"/> property has several
+    ///          The value of <see cref="IDxIndexedEvent.EventFlags"/> property has several
     ///          significant bits that are packed into an integer in the following way:
     ///     </para>
     ///     <para>31    ...          4    3    2    1    0</para>
@@ -58,9 +58,9 @@ namespace com.dxfeed.api.events
     ///     <para>
     ///          Each source updates its transactional state using these bits separately.
     ///          The state of each source has to be tracked separately in a map for each source.
-    ///          However, event <see cref="IndexedEvent.Index"/> is unique across the sources.
+    ///          However, event <see cref="IDxIndexedEvent.Index"/> is unique across the sources.
     ///          This is achieved by allocating an event-specific number of most significant bits
-    ///          of <see cref="IndexedEvent.Index"/> for use as a <see cref="IndexedEvent.Source"/>
+    ///          of <see cref="IDxIndexedEvent.Index"/> for use as a <see cref="IDxIndexedEvent.Source"/>
     ///          <see cref="IndexedEventSource.Id"/>.
     ///     </para>
     ///     <para>
@@ -69,7 +69,7 @@ namespace com.dxfeed.api.events
     ///          following piece of code:
     ///     </para>
     ///     <para>
-    ///          <c>bool txPending = (<see cref="IndexedEvent.EventFlags"/> &amp; <see cref="EventFlag.TxPending"/>) != 0;</c>
+    ///          <c>bool txPending = (<see cref="IDxIndexedEvent.EventFlags"/> &amp; <see cref="EventFlag.TxPending"/>) != 0;</c>
     ///     </para>
     ///     <para>
     ///          When <c>txPending</c> is <c>true</c> it means, that an ongoing transaction update
@@ -83,14 +83,14 @@ namespace com.dxfeed.api.events
     ///          that that the event with the corresponding index has to be removed.
     ///     </para>
     ///     <para>
-    ///          <c>bool removeEvent = (<see cref="IndexedEvent.EventFlags"/> &amp; <see cref="EventFlag.RemoveEvent"/>) != 0;</c>
+    ///          <c>bool removeEvent = (<see cref="IDxIndexedEvent.EventFlags"/> &amp; <see cref="EventFlag.RemoveEvent"/>) != 0;</c>
     ///     </para>
     ///     <para>
     ///          <c>SB</c> (bit 2) - <see cref="EventFlag.SnapshotBegin"/> is used to
     ///          indicate when the loading of a snapshot starts.
     ///     </para>
     ///     <para>
-    ///          <c>bool snapshotBegin = (<see cref="IndexedEvent.EventFlags"/> &amp; <see cref="EventFlag.SnapshotBegin"/>) != 0;</c>
+    ///          <c>bool snapshotBegin = (<see cref="IDxIndexedEvent.EventFlags"/> &amp; <see cref="EventFlag.SnapshotBegin"/>) != 0;</c>
     ///     </para>
     ///     <para>
     ///          Snapshot load starts on new subscription and the first indexed event that arrives
@@ -105,8 +105,8 @@ namespace com.dxfeed.api.events
     ///          indicate the end of a snapshot.
     ///     </para>
     ///     <para>
-    ///          <c> bool snapshotEnd = (<see cref="IndexedEvent.EventFlags"/> &amp; <see cref="EventFlag.SnapshotEnd"/>) != 0;</c>
-    ///          <c> bool snapshotSnip = (<see cref="IndexedEvent.EventFlags"/> &amp; <see cref="EventFlag.SnapshotSnip"/>) != 0;</c>
+    ///          <c> bool snapshotEnd = (<see cref="IDxIndexedEvent.EventFlags"/> &amp; <see cref="EventFlag.SnapshotEnd"/>) != 0;</c>
+    ///          <c> bool snapshotSnip = (<see cref="IDxIndexedEvent.EventFlags"/> &amp; <see cref="EventFlag.SnapshotSnip"/>) != 0;</c>
     ///     </para>
     ///     <para>
     ///          The last event of a snapshot is marked with either <c>snapshotEnd</c> or
@@ -129,7 +129,7 @@ namespace com.dxfeed.api.events
     ///          <c>true</c>.
     ///      </para>
     /// </remarks>
-    public interface IndexedEvent : IDxEventType
+    public interface IDxIndexedEvent : IDxEventType
     {
 
         /// <summary>
@@ -140,7 +140,7 @@ namespace com.dxfeed.api.events
 
         /// <summary>
         ///    Gets or sets transactional event flags.
-        ///    See "Event Flags" section from <see cref="IndexedEvent"/>.
+        ///    See "Event Flags" section from <see cref="IDxIndexedEvent"/>.
         /// </summary>
         EventFlag EventFlags { get; set; }
 
@@ -158,12 +158,12 @@ namespace com.dxfeed.api.events
     ///     orders are active for each symbol at any given moment in time.
     ///     <see cref="IDxCandle"/> represent snapshots of aggregate information
     ///     about trading over a specific time period and there are multiple periods available.
-    ///     The <see cref="IDxCandle"/> is also an example of <see cref="TimeSeriesEvent"/> that
+    ///     The <see cref="IDxCandle"/> is also an example of <see cref="IDxTimeSeriesEvent"/> that
     ///     is a more specific event type.
     /// </summary>
     /// <remarks>
     ///     <para>
-    ///          Index for each event is available via <see cref="IndexedEvent.Index"/> property.
+    ///          Index for each event is available via <see cref="IDxIndexedEvent.Index"/> property.
     ///          Indexed events retain information about multiple events per symbol based on the
     ///          event index and are conflated based on the event index. Last indexed event for
     ///          each symbol and index is always delivered to event listeners on subscription, but
@@ -178,17 +178,17 @@ namespace com.dxfeed.api.events
     ///          Some indexed event sources provide a consistent view of a set of events for a
     ///          given symbol. Their updates may incorporate multiple changes that have to be
     ///          processed at the same time. The corresponding information is carried in
-    ///          <see cref="IndexedEvent.EventFlags"/> property.
+    ///          <see cref="IDxIndexedEvent.EventFlags"/> property.
     ///          Some indexed events, like <see cref="IDxOrder"/>, support multiple sources of
     ///          information for the same symbol. The event source is available via
-    ///          <see cref="IndexedEvent.Source"/> property.
-    ///          The value of <see cref="IndexedEvent.Source"/> property is always
+    ///          <see cref="IDxIndexedEvent.Source"/> property.
+    ///          The value of <see cref="IDxIndexedEvent.Source"/> property is always
     ///          <see cref="IndexedEventSource.DEFAULT"/> for time-series events and other
     ///          singe-sourced events like <see cref="IDxSeries"/>, that do not support this
     ///          feature.
     ///     </para>
     ///     <para>
-    ///          The value of <see cref="IndexedEvent.EventFlags"/> property has several
+    ///          The value of <see cref="IDxIndexedEvent.EventFlags"/> property has several
     ///          significant bits that are packed into an integer in the following way:
     ///     </para>
     ///     <para>31    ...          4    3    2    1    0</para>
@@ -198,9 +198,9 @@ namespace com.dxfeed.api.events
     ///     <para>
     ///          Each source updates its transactional state using these bits separately.
     ///          The state of each source has to be tracked separately in a map for each source.
-    ///          However, event <see cref="IndexedEvent.Index"/> is unique across the sources.
+    ///          However, event <see cref="IDxIndexedEvent.Index"/> is unique across the sources.
     ///          This is achieved by allocating an event-specific number of most significant bits
-    ///          of <see cref="IndexedEvent.Index"/> for use as a <see cref="IndexedEvent.Source"/>
+    ///          of <see cref="IDxIndexedEvent.Index"/> for use as a <see cref="IDxIndexedEvent.Source"/>
     ///          <see cref="IndexedEventSource.Id"/>.
     ///     </para>
     ///     <para>
@@ -209,7 +209,7 @@ namespace com.dxfeed.api.events
     ///          following piece of code:
     ///     </para>
     ///     <para>
-    ///          <c>bool txPending = (<see cref="IndexedEvent.EventFlags"/> &amp; <see cref="EventFlag.TxPending"/>) != 0;</c>
+    ///          <c>bool txPending = (<see cref="IDxIndexedEvent.EventFlags"/> &amp; <see cref="EventFlag.TxPending"/>) != 0;</c>
     ///     </para>
     ///     <para>
     ///          When <c>txPending</c> is <c>true</c> it means, that an ongoing transaction update
@@ -223,14 +223,14 @@ namespace com.dxfeed.api.events
     ///          that that the event with the corresponding index has to be removed.
     ///     </para>
     ///     <para>
-    ///          <c>bool removeEvent = (<see cref="IndexedEvent.EventFlags"/> &amp; <see cref="EventFlag.RemoveEvent"/>) != 0;</c>
+    ///          <c>bool removeEvent = (<see cref="IDxIndexedEvent.EventFlags"/> &amp; <see cref="EventFlag.RemoveEvent"/>) != 0;</c>
     ///     </para>
     ///     <para>
     ///          <c>SB</c> (bit 2) - <see cref="EventFlag.SnapshotBegin"/> is used to
     ///          indicate when the loading of a snapshot starts.
     ///     </para>
     ///     <para>
-    ///          <c>bool snapshotBegin = (<see cref="IndexedEvent.EventFlags"/> &amp; <see cref="EventFlag.SnapshotBegin"/>) != 0;</c>
+    ///          <c>bool snapshotBegin = (<see cref="IDxIndexedEvent.EventFlags"/> &amp; <see cref="EventFlag.SnapshotBegin"/>) != 0;</c>
     ///     </para>
     ///     <para>
     ///          Snapshot load starts on new subscription and the first indexed event that arrives
@@ -245,8 +245,8 @@ namespace com.dxfeed.api.events
     ///          indicate the end of a snapshot.
     ///     </para>
     ///     <para>
-    ///          <c> bool snapshotEnd = (<see cref="IndexedEvent.EventFlags"/> &amp; <see cref="EventFlag.SnapshotEnd"/>) != 0;</c>
-    ///          <c> bool snapshotSnip = (<see cref="IndexedEvent.EventFlags"/> &amp; <see cref="EventFlag.SnapshotSnip"/>) != 0;</c>
+    ///          <c> bool snapshotEnd = (<see cref="IDxIndexedEvent.EventFlags"/> &amp; <see cref="EventFlag.SnapshotEnd"/>) != 0;</c>
+    ///          <c> bool snapshotSnip = (<see cref="IDxIndexedEvent.EventFlags"/> &amp; <see cref="EventFlag.SnapshotSnip"/>) != 0;</c>
     ///     </para>
     ///     <para>
     ///          The last event of a snapshot is marked with either <c>snapshotEnd</c> or
@@ -270,7 +270,7 @@ namespace com.dxfeed.api.events
     ///      </para>
     /// </remarks>
     /// <typeparam name="T">Type of the event symbol for this event type.</typeparam>
-    public interface IndexedEvent<T> : IndexedEvent, IDxEventType<T>
+    public interface IDxIndexedEvent<T> : IDxIndexedEvent, IDxEventType<T>
     {
         //Note: no extra fields
     }

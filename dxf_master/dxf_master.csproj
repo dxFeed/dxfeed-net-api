@@ -68,6 +68,38 @@
       <Name>dxf_snapshot_sample</Name>
       <Label>BuildPublish</Label>
     </ProjectReference>
+    <ProjectReference Include="..\samples\dxf_instrument_profile_live_sample\dxf_instrument_profile_live_sample.csproj">
+      <Name>dxf_instrument_profile_live_sample</Name>
+      <Label>BuildPublish</Label>
+    </ProjectReference>
+    <ProjectReference Include="..\samples\dxf_instrument_profile_sample\dxf_instrument_profile_sample.csproj">
+      <Name>dxf_instrument_profile_sample</Name>
+      <Label>BuildPublish</Label>
+    </ProjectReference>
+    <ProjectReference Include="..\samples\dxf_option_chain_sample\dxf_option_chain_sample.csproj">
+      <Name>dxf_option_chain_sample</Name>
+      <Label>BuildPublish</Label>
+    </ProjectReference>
+    <ProjectReference Include="..\samples\dxf_order_view_sample\dxf_order_view_sample.csproj">
+      <Name>dxf_order_view_sample</Name>
+      <Label>BuildPublish</Label>
+    </ProjectReference>
+    <ProjectReference Include="..\samples\dxf_order_view_xcheck\dxf_order_view_xcheck.csproj">
+      <Name>dxf_order_view_xcheck</Name>
+      <Label>BuildPublish</Label>
+    </ProjectReference>
+    <ProjectReference Include="..\samples\dxf_promises_sample\dxf_promises_sample.csproj">
+      <Name>dxf_promises_sample</Name>
+      <Label>BuildPublish</Label>
+    </ProjectReference>
+    <ProjectReference Include="..\samples\dxf_read_write_raw_data_sample\dxf_read_write_raw_data_sample.csproj">
+      <Name>dxf_read_write_raw_data_sample</Name>
+      <Label>BuildPublish</Label>
+    </ProjectReference>
+    <ProjectReference Include="..\samples\dxf_simple_order_book\dxf_simple_order_book_sample.csproj">
+      <Name>dxf_simple_order_book_sample</Name>
+      <Label>BuildPublish</Label>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="..\lib\DXFeedd.dll">

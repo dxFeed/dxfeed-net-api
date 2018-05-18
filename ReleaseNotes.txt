@@ -6,6 +6,7 @@ Version 5.2.0
 + All Event-type related interfaces are renamed with IDx
   prefix for uniformity.
 + Get rid of DxString, uses normal string everywhere.
++ Add all samples to package.
 
 Version 5.1.0
 + Implement Entitlement API for C#.

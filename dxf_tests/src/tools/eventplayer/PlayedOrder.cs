@@ -12,52 +12,34 @@ namespace com.dxfeed.tests.tools.eventplayer
     internal class PlayedOrder : IPlayedEvent<DxTestOrder>, IDxOrder
     {
 
-        /// <summary>
-        ///     Creates Order events via all parameters.
-        /// </summary>
-        /// <param name="symbol"></param>
-        /// <param name="count"></param>
-        /// <param name="eventFlags"></param>
-        /// <param name="exchangeCode"></param>
-        /// <param name="index"></param>
-        /// <param name="level"></param>
-        /// <param name="side"></param>
-        /// <param name="price"></param>
-        /// <param name="scope"></param>
-        /// <param name="sequence"></param>
-        /// <param name="size"></param>
-        /// <param name="source"></param>
-        /// <param name="time"></param>
-        /// <param name="timeSequence"></param>
-        /// <param name="marketMaker"></param>
-        internal unsafe PlayedOrder(string symbol, int count, EventFlag eventFlags, 
-            char exchangeCode, long index, int level, Side side, double price, Scope scope, 
-            int sequence, long size, IndexedEventSource source, long time, long timeSequence, 
-            string marketMaker)
+        internal unsafe PlayedOrder(string symbol, EventFlag event_flags, long index,
+            long time, int time_nanos, int sequence,
+            double price, int size, int count,
+            Scope scope, Side side, char exchange_code,
+            IndexedEventSource source, string mm)
         {
-            EventSymbol = symbol;
-            Count = count;
-            EventFlags = eventFlags;
-            ExchangeCode = exchangeCode;
-            Index = index;
-            Level = level;
-            Side = side;
-            Price = price;
-            Scope = Scope.ValueOf(scope.Code);
-            Sequence = sequence;
-            Size = size;
-            Time = Tools.UnixTimeToDate(time);
-            Source = OrderSource.ValueOf(source.Name);
-            TimeSequence = timeSequence;
-            fixed (char* pMarketMaker = marketMaker.ToCharArray())
+            this.EventSymbol = symbol;
+            this.EventFlags = event_flags;
+            this.Index = index;
+            this.Time = Tools.UnixTimeToDate(time);
+            this.TimeNanoPart = time_nanos;
+            this.Sequence = sequence;
+            this.Price = price;
+            this.Size = size;
+            this.Count = count;
+            this.Scope = scope;
+            this.Side = side;
+            this.ExchangeCode = exchange_code;
+            this.Source = source;
+            fixed (char* pMarketMaker = mm.ToCharArray())
             {
-                MarketMaker = new DxString(pMarketMaker);
+                this.MarketMaker = new string(pMarketMaker);
             }
 
-            marketMakerCharArray = marketMaker.ToCharArray();
+            marketMakerCharArray = mm.ToCharArray();
             IntPtr marketMakerCharsPtr = Marshal.UnsafeAddrOfPinnedArrayElement(marketMakerCharArray, 0);
             Params = new EventParams(EventFlags, (ulong)Index, 0);
-            Data = new DxTestOrder(count, eventFlags, exchangeCode, index, level, side, price, scope, sequence, size, source, time, timeSequence, marketMakerCharsPtr);
+            Data = new DxTestOrder(event_flags, index, time, time_nanos, sequence, price, size, count, scope, side, exchange_code, source, marketMakerCharsPtr);
         }
 
         /// <summary>
@@ -66,26 +48,25 @@ namespace com.dxfeed.tests.tools.eventplayer
         /// <param name="order">Other Order object.</param>
         internal PlayedOrder(IDxOrder order)
         {
-            EventSymbol = order.EventSymbol;
-            Count = order.Count;
-            EventFlags = order.EventFlags;
-            ExchangeCode = order.ExchangeCode;
-            Index = order.Index;
-            Level = order.Level;
-            Side = order.Side;
-            Price = order.Price;
-            Scope = Scope.ValueOf(order.Scope.Code);
-            Sequence = order.Sequence;
-            Size = order.Size;
-            Time = order.Time;
-            Source = OrderSource.ValueOf(order.Source.Name);
-            TimeSequence = order.TimeSequence;
-            MarketMaker = (DxString)order.MarketMaker.Clone();
+            this.EventSymbol = order.EventSymbol;
+            this.EventFlags = order.EventFlags;
+            this.Index = order.Index;
+            this.Time = order.Time;
+            this.TimeNanoPart = order.TimeNanoPart;
+            this.Sequence = order.Sequence;
+            this.Price = order.Price;
+            this.Size = order.Size;
+            this.Count = order.Count;
+            this.Scope = order.Scope;
+            this.Side = order.Side;
+            this.ExchangeCode = order.ExchangeCode;
+            this.Source = order.Source;
+            this.MarketMaker = order.MarketMaker;
 
             marketMakerCharArray = MarketMaker.ToString().ToCharArray();
             IntPtr marketMakerCharsPtr = Marshal.UnsafeAddrOfPinnedArrayElement(marketMakerCharArray, 0);
             Params = new EventParams(EventFlags, (ulong)Index, 0);
-            Data = new DxTestOrder(Count, EventFlags, ExchangeCode, Index, Level, Side, Price, Scope, Sequence, Size, Source, Tools.DateToUnixTime(Time), TimeSequence, marketMakerCharsPtr);
+            Data = new DxTestOrder(EventFlags, Index, Tools.DateToUnixTime(Time), TimeNanoPart, Sequence, Price, (int)Size, Count, Scope, Side, ExchangeCode, Source, marketMakerCharsPtr);
         }
 
         public int Count
@@ -118,12 +99,7 @@ namespace com.dxfeed.tests.tools.eventplayer
             get; private set;
         }
 
-        public int Level
-        {
-            get; private set;
-        }
-
-        public DxString MarketMaker
+        public string MarketMaker
         {
             get; private set;
         }
@@ -168,7 +144,7 @@ namespace com.dxfeed.tests.tools.eventplayer
             get; private set;
         }
 
-        public long TimeSequence
+        public int TimeNanoPart
         {
             get; private set;
         }

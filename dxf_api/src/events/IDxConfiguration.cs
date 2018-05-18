@@ -6,6 +6,7 @@
 // http://mozilla.org/MPL/2.0/.
 #endregion
 
+using com.dxfeed.api.data;
 using System;
 
 namespace com.dxfeed.api.events
@@ -16,8 +17,12 @@ namespace com.dxfeed.api.events
     public interface IDxConfiguration : IDxMarketEvent
     {
         /// <summary>
+        /// Returns version.
+        /// </summary>
+        int Version { get; }
+        /// <summary>
         /// Returns attachment.
         /// </summary>
-        ICloneable Attachment { get; }
+        string Attachment { get; }
     }
 }

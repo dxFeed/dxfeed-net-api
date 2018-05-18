@@ -6,6 +6,7 @@
 
 using System;
 using com.dxfeed.api;
+using com.dxfeed.api.data;
 using com.dxfeed.api.events;
 using com.dxfeed.native;
 
@@ -36,7 +37,7 @@ namespace dxf_events_sample
                     "where\n" +
                     "    host:port - address of dxfeed server (demo.dxfeed.com:7300)\n" +
                     "    event     - any of the {Profile,Order,Quote,Trade,TimeAndSale,Summary,\n" +
-                    "                TradeETH,SpreadOrder,Greeks,TheoPrice,Underlying,Series,\n" + 
+                    "                TradeETH,SpreadOrder,Greeks,TheoPrice,Underlying,Series,\n" +
                     "                Configuration}\n" +
                     "    symbol    - IBM, MSFT, ...\n\n" +
                     "    date      - date of time series event in the format YYYY-MM-DD (optional)\n" +
@@ -65,7 +66,7 @@ namespace dxf_events_sample
                 NativeTools.InitializeLogging("log.log", true, true);
                 using (var con = new NativeConnection(address, OnDisconnect))
                 {
-                    using (var s = args.Length > DateIndex 
+                    using (var s = args.Length > DateIndex
                         ? con.CreateSubscription(events, DateTime.Parse(args[DateIndex]), new EventListener())
                         : con.CreateSubscription(events, new EventListener()))
                     {

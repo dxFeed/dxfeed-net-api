@@ -1,4 +1,5 @@
-﻿using com.dxfeed.api.events;
+﻿using com.dxfeed.api.data;
+using com.dxfeed.api.events;
 using com.dxfeed.tests.tools;
 using com.dxfeed.tests.tools.eventplayer;
 using NUnit.Framework;

@@ -6,6 +6,7 @@
 
 using System;
 using com.dxfeed.api;
+using com.dxfeed.api.data;
 using com.dxfeed.api.candle;
 using com.dxfeed.api.events;
 using com.dxfeed.native;
@@ -68,7 +69,7 @@ namespace dxf_snapshot_sample
 
             EventType eventType;
             if (!Enum.TryParse(args[eventIndex], true, out eventType) ||
-                eventType != EventType.Order && eventType != EventType.Candle && 
+                eventType != EventType.Order && eventType != EventType.Candle &&
                 eventType != EventType.TimeAndSale && eventType != EventType.SpreadOrder &&
                 eventType != EventType.Greeks && eventType != EventType.Series)
             {

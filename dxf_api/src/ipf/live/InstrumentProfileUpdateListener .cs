@@ -14,8 +14,8 @@ namespace com.dxfeed.ipf.live
     public interface InstrumentProfileUpdateListener
     {
         /// <summary>
-        /// This method is invoked when a set of instrument profiles in the underlying 
-        /// InstrumentProfileCollector changes. Each instance of the listeners receive the same 
+        /// This method is invoked when a set of instrument profiles in the underlying
+        /// InstrumentProfileCollector changes. Each instance of the listeners receive the same
         /// instance of instruments iterator on every invocation of this method.The instruments
         /// iterator used right here or stored and accessed from a different thread.
         ///

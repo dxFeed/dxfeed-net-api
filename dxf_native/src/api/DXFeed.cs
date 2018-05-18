@@ -21,7 +21,7 @@ namespace com.dxfeed.api
     public class DXFeed : IDXFeed
     {
         /// <summary>
-        ///     Returns a default application-wide singleton instance of feed. Most applications 
+        ///     Returns a default application-wide singleton instance of feed. Most applications
         ///     use only a single data-source and should rely on this method to get one.
         /// </summary>
         /// <returns>Singleton instance of feed.</returns>
@@ -53,7 +53,7 @@ namespace com.dxfeed.api
         /// <summary>
         ///     Creates new subscription for multiple event types that is attached to this feed.
         ///     For a single event type use <see cref="CreateSubscription{E}"/>.
-        ///     This method creates new <see cref="IDXFeedSubscription{E}"/> and invokes 
+        ///     This method creates new <see cref="IDXFeedSubscription{E}"/> and invokes
         ///     <see cref="AttachSubscription{E}(IDXFeedSubscription{E})"/>.
         /// </summary>
         /// <typeparam name="E">The type of events.</typeparam>
@@ -71,18 +71,18 @@ namespace com.dxfeed.api
         }
 
         /// <summary>
-        ///     Creates new time series subscription for a single event type that is attached to 
+        ///     Creates new time series subscription for a single event type that is attached to
         ///     this feed.
         ///     For multiple event types in one subscription use
         ///     <see cref="CreateTimeSeriesSubscription{E}(Type[])"/>.
-        ///     This method creates new <see cref="IDXFeedTimeSeriesSubscription{E}"/> and invokes 
+        ///     This method creates new <see cref="IDXFeedTimeSeriesSubscription{E}"/> and invokes
         ///     <see cref="AttachSubscription{E}(IDXFeedSubscription{E})"/>.
         /// </summary>
         /// <typeparam name="E">The type of event.</typeparam>
         /// <returns>New time series subscription.</returns>
         /// <exception cref="InvalidOperationException">Endpoint was been closed.</exception>
         public IDXFeedTimeSeriesSubscription<E> CreateTimeSeriesSubscription<E>()
-            where E : TimeSeriesEvent
+            where E : IDxTimeSeriesEvent
         {
             if (endpoint.State == DXEndpointState.Closed)
                 throw new InvalidOperationException("Endpoint was been closed.");
@@ -92,10 +92,10 @@ namespace com.dxfeed.api
         }
 
         /// <summary>
-        ///     Creates new time series subscription for multiple event types that is attached to 
+        ///     Creates new time series subscription for multiple event types that is attached to
         ///     this feed.
         ///     For a single event type use <see cref="CreateTimeSeriesSubscription{E}"/>.
-        ///     This method creates new <see cref="IDXFeedTimeSeriesSubscription{E}"/> and invokes 
+        ///     This method creates new <see cref="IDXFeedTimeSeriesSubscription{E}"/> and invokes
         ///     <see cref="AttachSubscription{E}(IDXFeedSubscription{E})"/>.
         /// </summary>
         /// <typeparam name="E">The base type of events.</typeparam>
@@ -103,7 +103,7 @@ namespace com.dxfeed.api
         /// <returns>New time series subscription.</returns>
         /// <exception cref="InvalidOperationException">Endpoint was been closed.</exception>
         public IDXFeedTimeSeriesSubscription<E> CreateTimeSeriesSubscription<E>(params Type[] eventTypes)
-            where E : TimeSeriesEvent
+            where E : IDxTimeSeriesEvent
         {
             if (endpoint.State == DXEndpointState.Closed)
                 throw new InvalidOperationException("Endpoint was been closed.");
@@ -118,10 +118,10 @@ namespace com.dxfeed.api
         ///         corresponding subscription is already attached to this feed.
         ///     </para>
         ///     <para>
-        ///         This feed publishes data to the attached subscription. 
-        ///         Application can attach <see cref="IDXFeedEventListener{E}"/> via 
-        ///         <see cref="IDXFeedSubscription{E}.AddEventListener(IDXFeedEventListener{E})"/> 
-        ///         to get notified about data changes and can change its data subscription via 
+        ///         This feed publishes data to the attached subscription.
+        ///         Application can attach <see cref="IDXFeedEventListener{E}"/> via
+        ///         <see cref="IDXFeedSubscription{E}.AddEventListener(IDXFeedEventListener{E})"/>
+        ///         to get notified about data changes and can change its data subscription via
         ///         <see cref="IDXFeedSubscription{E}"/> methods.
         ///     </para>
         /// </summary>
@@ -160,10 +160,10 @@ namespace com.dxfeed.api
 
         /// <summary>
         ///     Requests the last event for the specified event type and symbol.
-        ///     This method works only for event types that implement <see cref="LastingEvent"/> 
+        ///     This method works only for event types that implement <see cref="IDxLastingEvent"/>
         ///     marker interface.
-        ///     This method requests the data from the the uplink data provider, creates new event 
-        ///     of the specified event type <c>E</c>, and completes the resulting promise with 
+        ///     This method requests the data from the the uplink data provider, creates new event
+        ///     of the specified event type <c>E</c>, and completes the resulting promise with
         ///     this event.
         /// </summary>
         /// <remarks>
@@ -172,34 +172,34 @@ namespace com.dxfeed.api
         ///         Use <see cref="DXFeedSubscription{E}"/> if you need event updates in real time.
         ///     </para>
         ///     <para>
-        ///         The promise is <see cref="TaskStatus.Canceled"/> when the the underlying 
+        ///         The promise is <see cref="TaskStatus.Canceled"/> when the the underlying
         ///         <see cref="DXEndpoint"/> is <see cref="DXEndpoint.Close()"/>.
-        ///         If the event is not available for any transient reason (no subscription, no 
-        ///         connection to uplink, etc), then the resulting promise completes when the issue 
+        ///         If the event is not available for any transient reason (no subscription, no
+        ///         connection to uplink, etc), then the resulting promise completes when the issue
         ///         is resolved, which may involve an arbitrarily long wait.
-        ///         Use <see cref="CancellationTokenSource"/> class constructors and methods to 
+        ///         Use <see cref="CancellationTokenSource"/> class constructors and methods to
         ///         specify timeout while waiting for promise to complete.
         ///         If the event is permanently not available (not supported), then the promise
         ///         completes exceptionally with <see cref="AggregateException"/>.
         ///     </para>
         ///     <para>
-        ///         There is a bulk version of this method that works much faster for a single event 
-        ///         type and multiple symbols. 
+        ///         There is a bulk version of this method that works much faster for a single event
+        ///         type and multiple symbols.
         ///         See <see cref="GetLastEventsPromises{E}(ICollection{object}, CancellationToken)"/>.
         ///     </para>
         ///     <para>
-        ///         Note, that this method does not work when <see cref="DXEndpoint"/> was created 
-        ///         with {@link DXEndpoint.Role#STREAM_FEED STREAM_FEED} role (promise completes 
+        ///         Note, that this method does not work when <see cref="DXEndpoint"/> was created
+        ///         with {@link DXEndpoint.Role#STREAM_FEED STREAM_FEED} role (promise completes
         ///         exceptionally).
         ///     </para>
         ///     <para>Threads</para>
         ///     <para>
-        ///         Use <see cref="Task.ContinueWith(Action{Task})"/> method on the resulting 
+        ///         Use <see cref="Task.ContinueWith(Action{Task})"/> method on the resulting
         ///         promise to receive notification when the promise becomes done.
         ///     </para>
         /// </remarks>
         /// <example>
-        ///     Use the following pattern of code to acquire multiple events (either for multiple 
+        ///     Use the following pattern of code to acquire multiple events (either for multiple
         ///     symbols and/or multiple events) and wait with a single timeout for all of them:
         ///     <code>
         ///         List&lt;Task&lt;LastingEvent&gt;&gt; promises = new List&lt;Task&lt;LastingEvent&gt;&gt;();
@@ -223,13 +223,13 @@ namespace com.dxfeed.api
         /// <param name="symbol">The symbol.</param>
         /// <param name="cancellationToken">The task cancellation token.</param>
         /// <returns>The promise for the result of the request.</returns>
-        /// <exception cref="ArgumentException"> 
+        /// <exception cref="ArgumentException">
         ///     The <paramref name="symbol"/> symbol is not one of string or <see cref= "CandleSymbol"/>.
         /// </exception >
         /// <exception cref="ArgumentNullException">The <paramref name="symbol"/> is null.</exception>
-        public async Task<LastingEvent> GetLastEventPromise<E>(object symbol,
+        public async Task<IDxLastingEvent> GetLastEventPromise<E>(object symbol,
             CancellationToken cancellationToken)
-            where E : class, LastingEvent
+            where E : class, IDxLastingEvent
         {
 
             MarketEventSymbols.ValidateSymbol(symbol);
@@ -254,47 +254,47 @@ namespace com.dxfeed.api
 
         /// <summary>
         ///     Requests the last events for the specified event type and a collection of symbols.
-        ///     This method works only for event types that implement <see cref="LastingEvent"/> 
+        ///     This method works only for event types that implement <see cref="IDxLastingEvent"/>
         ///     marker interface.
-        ///     This method requests the data from the the uplink data provider, creates new 
-        ///     events of the specified event type <c>E</c>, and completes the resulting promises 
+        ///     This method requests the data from the the uplink data provider, creates new
+        ///     events of the specified event type <c>E</c>, and completes the resulting promises
         ///     with these events.
         /// </summary>
         /// <remarks>
         ///     <para>
-        ///         This is a bulk version of <see cref="GetLastEventPromise{E}(object, CancellationToken)"/> 
+        ///         This is a bulk version of <see cref="GetLastEventPromise{E}(object, CancellationToken)"/>
         ///         method.
         ///     </para>
         ///     <para>
-        ///         The promise is <see cref="TaskStatus.Canceled"/> when the the underlying 
+        ///         The promise is <see cref="TaskStatus.Canceled"/> when the the underlying
         ///         <see cref="DXEndpoint"/> is <see cref="DXEndpoint.Close()"/>.
-        ///         If the event is not available for any transient reason (no subscription, no 
-        ///         connection to uplink, etc), then the resulting promise completes when the 
+        ///         If the event is not available for any transient reason (no subscription, no
+        ///         connection to uplink, etc), then the resulting promise completes when the
         ///         issue is resolved, which may involve an arbitrarily long wait.
-        ///         Use <see cref="CancellationTokenSource"/> class constructors and methods to 
+        ///         Use <see cref="CancellationTokenSource"/> class constructors and methods to
         ///         specify timeout while waiting for promise to complete.
         ///         If the event is permanently not available (not supported), then the promise
         ///         completes exceptionally with <see cref="AggregateException"/>.
         ///     </para>
         ///     <para>
-        ///         Note, that this method does not work when <see cref="DXEndpoint"/>  was created 
-        ///         with {@link DXEndpoint.Role#STREAM_FEED STREAM_FEED} role (promise completes 
+        ///         Note, that this method does not work when <see cref="DXEndpoint"/>  was created
+        ///         with {@link DXEndpoint.Role#STREAM_FEED STREAM_FEED} role (promise completes
         ///         exceptionally).
         ///     </para>
         ///     <para>
         ///         Threads
         ///     </para>
         ///     <para>
-        ///         Use <see cref="Task.ContinueWith(Action{Task})"/> method on the resulting 
+        ///         Use <see cref="Task.ContinueWith(Action{Task})"/> method on the resulting
         ///         promise to receive notification when the promise becomes done.
         ///     </para>
         /// </remarks>
         /// <example>
-        ///     Use the following pattern of code to acquire multiple events (either for multiple 
+        ///     Use the following pattern of code to acquire multiple events (either for multiple
         ///     symbols and/or multiple events) and wait with a single timeout for all of them:
         ///     <code>
         ///         List&lt;Task&lt;LastingEvent&gt;&gt; promises = feed.GetLastEventsPromises&lt;IDxTrade&gt;(
-        ///             symbols, 
+        ///             symbols,
         ///             new CancellationTokenSource(TimeSpan.FromSeconds(5)).Token);
         ///         // combine the list of promises into one with Task utility method and wait
         ///         try
@@ -314,17 +314,17 @@ namespace com.dxfeed.api
         /// <param name="symbols">The collection of symbols.</param>
         /// <param name="cancellationToken">The task cancellation token.</param>
         /// <returns>The list of promises for the result of the requests, one item in list per symbol.</returns>
-        /// <exception cref="ArgumentException"> 
+        /// <exception cref="ArgumentException">
         ///     The one of <paramref name="symbols"/> is not <c>string</c> or <see cref="CandleSymbol"/>.
         /// </exception>
         /// <exception cref="ArgumentNullException">The one of <paramref name="symbols"/> is <c>null</c>.</exception>
-        public List<Task<LastingEvent>> GetLastEventsPromises<E>(ICollection<object> symbols,
+        public List<Task<IDxLastingEvent>> GetLastEventsPromises<E>(ICollection<object> symbols,
             CancellationToken cancellationToken)
-            where E : class, LastingEvent
+            where E : class, IDxLastingEvent
         {
             if (symbols == null)
                 throw new ArgumentNullException("symbols");
-            List<Task<LastingEvent>> result = new List<Task<LastingEvent>>(symbols.Count);
+            List<Task<IDxLastingEvent>> result = new List<Task<IDxLastingEvent>>(symbols.Count);
             foreach (object symbol in symbols)
             {
                 result.Add(GetLastEventPromise<E>(symbol, cancellationToken));
@@ -334,59 +334,59 @@ namespace com.dxfeed.api
 
         /// <summary>
         ///     Requests a list of indexed events for the specified event type, symbol, and source.
-        ///     This method works only for event types that implement <see cref="IndexedEvent"/> 
+        ///     This method works only for event types that implement <see cref="IDxIndexedEvent"/>
         ///     interface.
-        ///     This method requests the data from the the uplink data provider, creates a list of 
-        ///     events of the specified event type <c>E</c>, and completes the resulting promise 
+        ///     This method requests the data from the the uplink data provider, creates a list of
+        ///     events of the specified event type <c>E</c>, and completes the resulting promise
         ///     with this list.
-        ///     The events are ordered by <see cref="IndexedEvent.Index"/> in the list.
+        ///     The events are ordered by <see cref="IDxIndexedEvent.Index"/> in the list.
         /// </summary>
         /// <remarks>
         ///     <para>
         ///         This method is designed for retrieval of a snapshot only.
-        ///         Use <see cref="IDxConnection.CreateSnapshotSubscription(EventType, long, IDxSnapshotListener)"/> 
+        ///         Use <see cref="IDxConnection.CreateSnapshotSubscription(EventType, long, IDxSnapshotListener)"/>
         ///         if you need a list of time-series events that updates in real time.
         ///     </para>
         ///     <para>
-        ///         The promise is <see cref="TaskStatus.Canceled"/> when the the underlying 
+        ///         The promise is <see cref="TaskStatus.Canceled"/> when the the underlying
         ///         <see cref="DXEndpoint"/> is <see cref="DXEndpoint.Close()"/>.
-        ///         If the event is not available for any transient reason (no subscription, no 
-        ///         connection to uplink, etc), then the resulting promise completes when the 
+        ///         If the event is not available for any transient reason (no subscription, no
+        ///         connection to uplink, etc), then the resulting promise completes when the
         ///         issue is resolved, which may involve an arbitrarily long wait.
-        ///         Use <see cref="CancellationTokenSource"/> class constructors and methods to 
+        ///         Use <see cref="CancellationTokenSource"/> class constructors and methods to
         ///         specify timeout while waiting for promise to complete.
         ///         If the event is permanently not available (not supported), then the promise
         ///         completes exceptionally with <see cref="AggregateException"/>.
         ///     </para>
         ///     <para>
-        ///         Note, that this method does not work when <see cref="DXEndpoint"/>  was created 
-        ///         with {@link DXEndpoint.Role#STREAM_FEED STREAM_FEED} role (promise completes 
+        ///         Note, that this method does not work when <see cref="DXEndpoint"/>  was created
+        ///         with {@link DXEndpoint.Role#STREAM_FEED STREAM_FEED} role (promise completes
         ///         exceptionally).
         ///     </para>
         ///     <para>
         ///         Event source
         ///     </para>
         ///     <para>
-        ///         Use the <see cref="IndexedEventSource.DEFAULT"/> value for <c>source</c> with 
-        ///         events that do not have multiple sources (like <see cref="IDxSeries"/>). For 
-        ///         events with multiple sources (like <see cref="IDxOrder"/> and <see cref="IDxSpreadOrder"/>), 
+        ///         Use the <see cref="IndexedEventSource.DEFAULT"/> value for <c>source</c> with
+        ///         events that do not have multiple sources (like <see cref="IDxSeries"/>). For
+        ///         events with multiple sources (like <see cref="IDxOrder"/> and <see cref="IDxSpreadOrder"/>),
         ///         use an even-specific source class (for example, <see cref="OrderSource"/>).
-        ///         This method does not support synthetic sources of orders (orders that are 
+        ///         This method does not support synthetic sources of orders (orders that are
         ///         automatically generated from <see cref="IDxQuote"/> events).
         ///     </para>
         ///     <para>
         ///         Event flags and consistent snapshot
         ///     </para>
         ///     <para>
-        ///         This method completes promise only when a consistent snapshot of time series has 
-        ///         been received from the data feed. The <see cref="IndexedEvent.EventFlags"/> 
+        ///         This method completes promise only when a consistent snapshot of time series has
+        ///         been received from the data feed. The <see cref="IDxIndexedEvent.EventFlags"/>
         ///         property of the events in the resulting list is always zero.
         ///     </para>
         ///     <para>
         ///         Threads
         ///     </para>
         ///     <para>
-        ///         Use <see cref="Task.ContinueWith(Action{Task})"/> method on the resulting 
+        ///         Use <see cref="Task.ContinueWith(Action{Task})"/> method on the resulting
         ///         promise to receive notification when the promise becomes done.
         ///     </para>
         /// </remarks>
@@ -395,7 +395,7 @@ namespace com.dxfeed.api
         /// <param name="source">The source.</param>
         /// <param name="cancellationToken">The task cancellation token.</param>
         /// <returns>The promise for the result of the request.</returns>
-        /// <exception cref="ArgumentException"> 
+        /// <exception cref="ArgumentException">
         ///     The <paramref name="symbol"/> symbol is not one of string or <see cref= "CandleSymbol"/>.
         /// </exception >
         /// <exception cref="ArgumentNullException">
@@ -403,7 +403,7 @@ namespace com.dxfeed.api
         /// </exception>
         public async Task<List<E>> GetIndexedEventsPromise<E>(object symbol,
             IndexedEventSource source, CancellationToken cancellationToken)
-            where E : IndexedEvent
+            where E : IDxIndexedEvent
         {
             MarketEventSymbols.ValidateSymbol(symbol);
             if (source == null)
@@ -412,75 +412,75 @@ namespace com.dxfeed.api
         }
 
         /// <summary>
-        ///     Requests time series of events for the specified event type, symbol, and a range 
+        ///     Requests time series of events for the specified event type, symbol, and a range
         ///     of time.
-        ///     This method works only for event types that implement <see cref="TimeSeriesEvent"/> 
+        ///     This method works only for event types that implement <see cref="IDxTimeSeriesEvent"/>
         ///     interface.
-        ///     This method requests the data from the the uplink data provider, creates a list of 
-        ///     events of the specified event type <c>E</c>, and completes the resulting promise 
+        ///     This method requests the data from the the uplink data provider, creates a list of
+        ///     events of the specified event type <c>E</c>, and completes the resulting promise
         ///     with this list.
-        ///     The events are ordered by <see cref="TimeSeriesEvent.Time"/> in the list.
+        ///     The events are ordered by <see cref="IDxTimeSeriesEvent.Time"/> in the list.
         /// </summary>
         /// <remarks>
         ///     <para>
         ///         This method is designed for retrieval of a snapshot only.
-        ///         Use <see cref="IDxConnection.CreateSnapshotSubscription(EventType, long, IDxSnapshotListener)"/> 
+        ///         Use <see cref="IDxConnection.CreateSnapshotSubscription(EventType, long, IDxSnapshotListener)"/>
         ///         if you need a list of time-series events that updates in real time.
         ///     </para>
         ///     <para>
-        ///         The range and depth of events that are available with this service is typically 
+        ///         The range and depth of events that are available with this service is typically
         ///         constrained by upstream data provider.
         ///     </para>
         ///     <para>
-        ///         The promise is <see cref="TaskStatus.Canceled"/> when the the underlying 
+        ///         The promise is <see cref="TaskStatus.Canceled"/> when the the underlying
         ///         <see cref="DXEndpoint"/> is <see cref="DXEndpoint.Close()"/>.
-        ///         If the event is not available for any transient reason (no subscription, no 
-        ///         connection to uplink, etc), then the resulting promise completes when the 
+        ///         If the event is not available for any transient reason (no subscription, no
+        ///         connection to uplink, etc), then the resulting promise completes when the
         ///         issue is resolved, which may involve an arbitrarily long wait.
-        ///         Use <see cref="CancellationTokenSource"/> class constructors and methods to 
+        ///         Use <see cref="CancellationTokenSource"/> class constructors and methods to
         ///         specify timeout while waiting for promise to complete.
         ///         If the event is permanently not available (not supported), then the promise
         ///         completes exceptionally with <see cref="AggregateException"/>.
         ///     </para>
         ///     <para>
-        ///         Note, that this method does not work when <see cref="DXEndpoint"/>  was created 
-        ///         with {@link DXEndpoint.Role#STREAM_FEED STREAM_FEED} role (promise completes 
+        ///         Note, that this method does not work when <see cref="DXEndpoint"/>  was created
+        ///         with {@link DXEndpoint.Role#STREAM_FEED STREAM_FEED} role (promise completes
         ///         exceptionally).
         ///     </para>
         ///     <para>
         ///         Event flags
         ///     </para>
         ///     <para>
-        ///         This method completes promise only when a consistent snapshot of time series 
-        ///         has been received from the data feed. The <see cref="IndexedEvent.EventFlags"/> 
+        ///         This method completes promise only when a consistent snapshot of time series
+        ///         has been received from the data feed. The <see cref="IDxIndexedEvent.EventFlags"/>
         ///         property of the events in the resulting list is always zero.
         ///     </para>
         ///     <para>
         ///         Threads
         ///     </para>
         ///     <para>
-        ///         Use <see cref="Task.ContinueWith(Action{Task})"/> method on the resulting 
+        ///         Use <see cref="Task.ContinueWith(Action{Task})"/> method on the resulting
         ///         promise to receive notification when the promise becomes done.
         ///     </para>
         /// </remarks>
         /// <typeparam name="E">The event type.</typeparam>
         /// <param name="symbol">The symbol.</param>
         /// <param name="fromTime">
-        ///     The time, inclusive, to request events from <see cref="TimeSeriesEvent.Time"/>.
+        ///     The time, inclusive, to request events from <see cref="IDxTimeSeriesEvent.Time"/>.
         /// </param>
         /// <param name="toTime">
-        ///     The time, inclusive, to request events to <see cref="TimeSeriesEvent.Time"/>.
+        ///     The time, inclusive, to request events to <see cref="IDxTimeSeriesEvent.Time"/>.
         ///     Use <see cref="long.MaxValue"/> to retrieve events without an upper limit on time.
         /// </param>
         /// <param name="cancellationToken">The task cancellation token.</param>
         /// <returns>The promise for the result of the request.</returns>
-        /// <exception cref="ArgumentException"> 
+        /// <exception cref="ArgumentException">
         ///     The <paramref name="symbol"/> symbol is not one of string or <see cref= "CandleSymbol"/>.
         /// </exception >
         /// <exception cref="ArgumentNullException">The <paramref name="symbol"/> is null.</exception>
         public async Task<List<E>> GetTimeSeriesPromise<E>(object symbol, long fromTime,
             long toTime, CancellationToken cancellationToken)
-            where E : TimeSeriesEvent
+            where E : IDxTimeSeriesEvent
         {
             MarketEventSymbols.ValidateSymbol(symbol);
             return await FetchOrSubscribeFromHistory<E>(symbol, fromTime, toTime,
@@ -506,7 +506,7 @@ namespace com.dxfeed.api
         /// <param name="eventType">The class of event types.</param>
         /// <returns>New DXFeedSubscription for a single event type.</returns>
         internal IDXFeedSubscription<E> CreateSnapshotSubscription<E>(long time, IndexedEventSource source)
-            where E : IndexedEvent
+            where E : IDxIndexedEvent
         {
             IDXFeedSubscription<E> subscription = new DXFeedSubscription<E>(endpoint, time, source) as IDXFeedSubscription<E>;
             subscription.Attach(this);
@@ -522,7 +522,7 @@ namespace com.dxfeed.api
         private object attachLock = new object();
 
         private class HistoryEventsCollector<E> : DXFeedSnapshotCollector<E>
-            where E : IndexedEvent
+            where E : IDxIndexedEvent
         {
             private long fromTime;
             private long toTime;
@@ -538,7 +538,7 @@ namespace com.dxfeed.api
                 IList<E> result = new List<E>();
                 foreach (E e in events)
                 {
-                    long time = e is TimeSeriesEvent ? (e as TimeSeriesEvent).TimeStamp : 0;
+                    long time = e is IDxTimeSeriesEvent ? (e as IDxTimeSeriesEvent).TimeStamp : 0;
                     if (time >= fromTime && time <= toTime)
                     {
                         e.EventFlags = 0;
@@ -551,7 +551,7 @@ namespace com.dxfeed.api
 
         private async Task<List<E>> FetchOrSubscribeFromHistory<E>(object symbol, long fromTime,
             long toTime, IndexedEventSource source, CancellationToken cancellationToken)
-            where E : IndexedEvent
+            where E : IDxIndexedEvent
         {
             MarketEventSymbols.ValidateSymbol(symbol);
 
@@ -575,7 +575,7 @@ namespace com.dxfeed.api
                 }
                 finally
                 {
-                    /*Note: it is necessary i.e. new snapshot with similar type and symbol cannot 
+                    /*Note: it is necessary i.e. new snapshot with similar type and symbol cannot
                     be created while this is not closed.*/
                     s.Close();
                 }

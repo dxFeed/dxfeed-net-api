@@ -14,21 +14,21 @@ using System.Text;
 namespace com.dxfeed.master.tools
 {
     /// <summary>
-    /// This class modifies the copy of solution file by filtering required 
+    /// This class modifies the copy of solution file by filtering required
     /// projects.
-    /// The source solution file (.sln) specifies by ParamSource command line 
+    /// The source solution file (.sln) specifies by ParamSource command line
     /// parameter and not modified while program working.
-    /// If you want filter projects in resulting solution file specify the 
-    /// list through ParamProjects command line parameter.If ParamProjects 
+    /// If you want filter projects in resulting solution file specify the
+    /// list through ParamProjects command line parameter.If ParamProjects
     /// is empty all projects from source solution will be included into
     /// output solution file.
-    /// Overall exclude project list configures with ParamExclude command line 
+    /// Overall exclude project list configures with ParamExclude command line
     /// parameter.
     /// The output file or directory specified with ParamOut.
     /// </summary>
     public class SolutionManager
     {
-        private static readonly string AssemblyLocationPath = 
+        private static readonly string AssemblyLocationPath =
             Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         private static readonly string TemplatesLocationPath = Path.Combine(
             AssemblyLocationPath, "Templates");
@@ -48,20 +48,20 @@ namespace com.dxfeed.master.tools
         /// </summary>
         private const string ParamSource = "/source:";
         /// <summary>
-        /// The list of include projects - the list of project names separated 
+        /// The list of include projects - the list of project names separated
         /// with SubParamSeparator without spaces and other signs.
         /// </summary>
         private const string ParamProjects = "/projects:";
         /// <summary>
-        /// The list of eXclude projects - the list of project names separated 
+        /// The list of eXclude projects - the list of project names separated
         /// with SubParamSeparator without spaces and other signs.
         /// </summary>
         private const string ParamExclude = "/exclude:";
         /// <summary>
         /// The path to output solution file or directory. If parameter is empty
-        /// the result solution file will be located in assembly directory with 
-        /// the same name as source solution file. If you specify by this 
-        /// parameter the output directory the source solution file name will be 
+        /// the result solution file will be located in assembly directory with
+        /// the same name as source solution file. If you specify by this
+        /// parameter the output directory the source solution file name will be
         /// used.
         /// </summary>
         private const string ParamOut = "/out:";

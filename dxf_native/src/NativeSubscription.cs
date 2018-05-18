@@ -11,6 +11,7 @@ using System.Text;
 using com.dxfeed.api;
 using com.dxfeed.api.candle;
 using com.dxfeed.api.events;
+using com.dxfeed.api.data;
 using com.dxfeed.native.api;
 using com.dxfeed.native.events;
 using com.dxfeed.api.events.market;
@@ -177,9 +178,9 @@ namespace com.dxfeed.native
                         (eventListener as IDxCandleListener).OnCandle<NativeEventBuffer<NativeCandle>, NativeCandle>(cBuf);
                     break;
                 case EventType.TradeETH:
-                    var teBuf = NativeBufferFactory.CreateTradeEthBuf(symbol, data, dataCount, nativeEventParams);
-                    if (eventListener is IDxTradeEthListener)
-                        (eventListener as IDxTradeEthListener).OnTradeEth<NativeEventBuffer<NativeTradeETH>, NativeTradeETH>(teBuf);
+                    var teBuf = NativeBufferFactory.CreateTradeETHBuf(symbol, data, dataCount, nativeEventParams);
+                    if (eventListener is IDxTradeETHListener)
+                        (eventListener as IDxTradeETHListener).OnTradeETH<NativeEventBuffer<NativeTradeETH>, NativeTradeETH>(teBuf);
                     break;
                 case EventType.SpreadOrder:
                     var spreadOrderBuf = NativeBufferFactory.CreateSpreadOrderBuf(symbol, data, dataCount, nativeEventParams);

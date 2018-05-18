@@ -13,7 +13,7 @@ namespace com.dxfeed.native.events
     /// <summary>
     /// Abstract base class for all market events. All market events are objects that
     /// extend this class. Market event classes are simple beans with setters and getters
-    /// for their properties and minimal business logic. All market events have EventSymbol 
+    /// for their properties and minimal business logic. All market events have EventSymbol
     /// property that is defined by this class.
     /// </summary>
     public abstract class MarketEventImpl : IDxMarketEvent

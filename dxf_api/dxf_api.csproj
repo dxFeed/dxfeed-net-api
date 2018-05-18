@@ -87,32 +87,36 @@
     <Compile Include="src\candle\CandleSymbolAttributes.cs" />
     <Compile Include="src\candle\CandleType.cs" />
     <Compile Include="src\candle\ICandleSymbolAttribute.cs" />
+    <Compile Include="src\data\EventFlag.cs" />
+    <Compile Include="src\data\EventType.cs" />
+    <Compile Include="src\events\IDxTradeETH.cs" />
     <Compile Include="src\events\IndexedEventSource.cs" />
     <Compile Include="src\events\market\MarketEventSymbols.cs" />
-    <Compile Include="src\data\DxString.cs" />
+    <Compile Include="src\data\Direction.cs" />
+    <Compile Include="src\data\PriceType.cs" />
+    <Compile Include="src\data\Scope.cs" />
+    <Compile Include="src\data\ShortSaleRestriction.cs" />
     <Compile Include="src\data\Side.cs" />
+    <Compile Include="src\data\TimeAndSaleType.cs" />
+    <Compile Include="src\data\TradingStatus.cs" />
     <Compile Include="src\DxException.cs" />
     <Compile Include="src\events\IDxEventType.cs" />
     <Compile Include="src\events\IDxGreeks.cs" />
     <Compile Include="src\events\IDxConfiguration.cs" />
-    <Compile Include="src\events\LastingEvent.cs" />
+    <Compile Include="src\events\IDxLastingEvent.cs" />
     <Compile Include="src\events\IDxSeries.cs" />
     <Compile Include="src\events\IDxSpreadOrder.cs" />
     <Compile Include="src\events\IDxTheoPrice.cs" />
     <Compile Include="src\events\IDxUnderlying.cs" />
-    <Compile Include="src\events\IndexedEvent.cs" />
+    <Compile Include="src\events\IDxIndexedEvent.cs" />
     <Compile Include="src\events\OrderSource.cs" />
-    <Compile Include="src\events\PriceType.cs" />
-    <Compile Include="src\events\Scope.cs" />
     <Compile Include="src\events\IDxMarketEvent.cs" />
     <Compile Include="src\events\EventTypeAttribute.cs" />
-    <Compile Include="src\events\EventFlag.cs" />
     <Compile Include="src\events\EventParams.cs" />
     <Compile Include="src\events\IDxCandle.cs" />
     <Compile Include="src\events\IDxOrderBase.cs" />
-    <Compile Include="src\events\IDxTradeETH.cs" />
     <Compile Include="src\events\IDxTradeBase.cs" />
-    <Compile Include="src\events\TimeSeriesEvent.cs" />
+    <Compile Include="src\events\IDxTimeSeriesEvent.cs" />
     <Compile Include="src\extras\EventPrinter.cs" />
     <Compile Include="src\extras\TimeConverter.cs" />
     <Compile Include="src\listeners\event\IDxCandleListener.cs" />
@@ -127,10 +131,8 @@
     <Compile Include="src\listeners\event\IDxTimeAndSaleListener.cs" />
     <Compile Include="src\listeners\event\IDxQuoteListener.cs" />
     <Compile Include="src\listeners\event\IDxFeedListener.cs" />
-    <Compile Include="src\events\EventType.cs" />
     <Compile Include="src\events\IDxEventBuf.cs" />
     <Compile Include="src\events\IDxSummary.cs" />
-    <Compile Include="src\events\IDxMarketMaker.cs" />
     <Compile Include="src\events\IDxOrder.cs" />
     <Compile Include="src\events\IDxProfile.cs" />
     <Compile Include="src\events\IDxQuote.cs" />
@@ -180,7 +182,7 @@
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>

@@ -37,7 +37,7 @@ namespace com.dxfeed.ipf.live
     ///             }
     ///         }
     ///     }
-    /// 
+    ///
     ///     class Program {
     ///         static void Main(string[] args) {
     ///             string address = "<host>:<port>";

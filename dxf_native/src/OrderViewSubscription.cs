@@ -9,6 +9,7 @@
 using System;
 using System.Collections.Generic;
 using com.dxfeed.api;
+using com.dxfeed.api.data;
 using com.dxfeed.api.candle;
 using com.dxfeed.api.events;
 using com.dxfeed.api.extras;
@@ -82,7 +83,7 @@ namespace com.dxfeed.native
         /// </summary>
         private IDictionary<string, OrderViewState> orderViewStates = new Dictionary<string, OrderViewState>();
 
-        private const string AddSymbolBeforeSourceErrorText = @"You must configure subscription 
+        private const string AddSymbolBeforeSourceErrorText = @"You must configure subscription
             with AddSource or SetSource before calling this method.";
         private const string AddCandleSymbolErrorText = "Candle symbols is not allowed for OrderViewSubscription.";
 
@@ -550,7 +551,7 @@ namespace com.dxfeed.native
                     }
                 }
 
-                if ((buf.EventParams.Flags.HasFlag(EventFlag.SnapshotEnd) || buf.EventParams.Flags.HasFlag(EventFlag.SnapshotSnip)) 
+                if ((buf.EventParams.Flags.HasFlag(EventFlag.SnapshotEnd) || buf.EventParams.Flags.HasFlag(EventFlag.SnapshotSnip))
                     && !buf.EventParams.Flags.HasFlag(EventFlag.TxPending))
                 {
                     SnapshotEndFlagReceived<TB, TE>(buf);

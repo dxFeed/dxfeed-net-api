@@ -246,7 +246,7 @@ namespace com.dxfeed.api.candle
         }
 
         /// <summary>
-        /// Returns full string representation of this symbol. In this case 
+        /// Returns full string representation of this symbol. In this case
         /// default attributes are not ignored.
         /// </summary>
         /// <returns>String representation of this symbol.</returns>

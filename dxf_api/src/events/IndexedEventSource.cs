@@ -11,7 +11,7 @@ namespace com.dxfeed.api.events
     public class IndexedEventSource
     {
         /// <summary>
-        ///     The default source with zero <see cref="Id"/> for all events that do not support 
+        ///     The default source with zero <see cref="Id"/> for all events that do not support
         ///     multiple sources.
         /// </summary>
         public static readonly IndexedEventSource DEFAULT = new IndexedEventSource(0, "DEFAULT");
@@ -43,7 +43,7 @@ namespace com.dxfeed.api.events
 
         /// <summary>
         ///     Indicates whether some other indexed event source has the same id.
-        ///     Return <c>true</c> if this object is the same id as the obj argument; <c>false</c> 
+        ///     Return <c>true</c> if this object is the same id as the obj argument; <c>false</c>
         ///     otherwise.
         /// </summary>
         /// <param name="obj">Other object.</param>

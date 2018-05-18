@@ -35,18 +35,18 @@
   <!--Project reference format
     <ProjectReference Include="relative-path-to-csproj-file">
       <Name>project-name</Name>
-      <Label>BuildPublish|BuildNoPublish</Label> 
+      <Label>BuildPublish|BuildNoPublish</Label>
     </ProjectReference>
-    
+
     Label BuildPublish - perform building project and copy source files to outputpath
     Label BuildNoPublish - perform building project but NOT copy source files to outputpath
-    
+
     Note: reference project must support the next targets: Build, Clean, UpdateVersion, CopySources
   -->
   <ItemGroup>
     <ProjectReference Include="..\dxf_api\dxf_api.csproj">
       <Name>dxf_api</Name>
-      <Label>BuildPublish</Label> 
+      <Label>BuildPublish</Label>
     </ProjectReference>
     <ProjectReference Include="..\dxf_native\dxf_native.csproj">
       <Name>dxf_native</Name>
@@ -66,6 +66,38 @@
     </ProjectReference>
     <ProjectReference Include="..\samples\dxf_snapshot_sample\dxf_snapshot_sample.csproj">
       <Name>dxf_snapshot_sample</Name>
+      <Label>BuildPublish</Label>
+    </ProjectReference>
+    <ProjectReference Include="..\samples\dxf_instrument_profile_live_sample\dxf_instrument_profile_live_sample.csproj">
+      <Name>dxf_instrument_profile_live_sample</Name>
+      <Label>BuildPublish</Label>
+    </ProjectReference>
+    <ProjectReference Include="..\samples\dxf_instrument_profile_sample\dxf_instrument_profile_sample.csproj">
+      <Name>dxf_instrument_profile_sample</Name>
+      <Label>BuildPublish</Label>
+    </ProjectReference>
+    <ProjectReference Include="..\samples\dxf_option_chain_sample\dxf_option_chain_sample.csproj">
+      <Name>dxf_option_chain_sample</Name>
+      <Label>BuildPublish</Label>
+    </ProjectReference>
+    <ProjectReference Include="..\samples\dxf_order_view_sample\dxf_order_view_sample.csproj">
+      <Name>dxf_order_view_sample</Name>
+      <Label>BuildPublish</Label>
+    </ProjectReference>
+    <ProjectReference Include="..\samples\dxf_order_view_xcheck\dxf_order_view_xcheck.csproj">
+      <Name>dxf_order_view_xcheck</Name>
+      <Label>BuildPublish</Label>
+    </ProjectReference>
+    <ProjectReference Include="..\samples\dxf_promises_sample\dxf_promises_sample.csproj">
+      <Name>dxf_promises_sample</Name>
+      <Label>BuildPublish</Label>
+    </ProjectReference>
+    <ProjectReference Include="..\samples\dxf_read_write_raw_data_sample\dxf_read_write_raw_data_sample.csproj">
+      <Name>dxf_read_write_raw_data_sample</Name>
+      <Label>BuildPublish</Label>
+    </ProjectReference>
+    <ProjectReference Include="..\samples\dxf_simple_order_book\dxf_simple_order_book_sample.csproj">
+      <Name>dxf_simple_order_book_sample</Name>
       <Label>BuildPublish</Label>
     </ProjectReference>
   </ItemGroup>
@@ -164,8 +196,8 @@
     <ItemGroup>
       <ToPublish Include="@(ProjectReference)" Condition="'%(Label)' == 'BuildPublish'" />
     </ItemGroup>
-    <MSBuild Projects="@(ToPublish)" 
-             Targets="CopySources" 
+    <MSBuild Projects="@(ToPublish)"
+             Targets="CopySources"
              Properties="OutputPath=$(MSBuildProjectDirectory)\$(OutputPath)" />
     <Copy SourceFiles="@(Content)"
           Condition="'%(Content.Label)' == 'ToLib'"

@@ -6,6 +6,8 @@
 
 using System;
 
+using com.dxfeed.api.data;
+
 namespace com.dxfeed.api.events
 {
     /// <summary>
@@ -38,7 +40,7 @@ namespace com.dxfeed.api.events
 
         /// <summary>
         /// The 64 bit unsigned decimal representing unique id in subscription
-        /// for snapshot object. This value is generated in C API using 
+        /// for snapshot object. This value is generated in C API using
         /// record_info_id, symbol and source.
         ///
         /// Snapshot key format:

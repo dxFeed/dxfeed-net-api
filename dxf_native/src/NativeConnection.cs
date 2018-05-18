@@ -10,6 +10,7 @@ using System;
 using System.Text;
 using com.dxfeed.api;
 using com.dxfeed.api.events;
+using com.dxfeed.api.data;
 using com.dxfeed.native.api;
 using com.dxfeed.api.candle;
 using com.dxfeed.api.util;
@@ -226,7 +227,7 @@ namespace com.dxfeed.native
         /// <param name="listener">snapshot listener callback</param>
         /// <returns>subscription object</returns>
         /// <exception cref="DxException"></exception>
-        public IDxSubscription CreateSnapshotSubscription(EventType eventType, Int64 time, 
+        public IDxSubscription CreateSnapshotSubscription(EventType eventType, Int64 time,
             IDxSnapshotListener listener)
         {
             if (handler == IntPtr.Zero)
@@ -243,7 +244,7 @@ namespace com.dxfeed.native
         /// <param name="listener">snapshot listener callback</param>
         /// <returns>subscription object</returns>
         /// <exception cref="DxException"></exception>
-        public IDxSubscription CreateSnapshotSubscription(EventType eventType, DateTime? time, 
+        public IDxSubscription CreateSnapshotSubscription(EventType eventType, DateTime? time,
             IDxSnapshotListener listener)
         {
             if (handler == IntPtr.Zero)

@@ -8,6 +8,7 @@
 
 using System;
 using com.dxfeed.api;
+using com.dxfeed.api.data;
 using com.dxfeed.api.events;
 using com.dxfeed.native;
 

@@ -17,11 +17,11 @@ namespace com.dxfeed.tests.tools
     /// <summary>
     /// Snapshots listener class for tests.
     /// Allow to get any parameters from received snapshots and transfer to test method.
-    /// 
-    /// WARNING: this handler do not differ order snapshot by source, 
+    ///
+    /// WARNING: this handler do not differ order snapshot by source,
     /// i.e. "Order#NTV AAPL" and "Order#DEX AAPL" is the same snapshots
     /// </summary>
-    public class SnapshotTestListener : 
+    public class SnapshotTestListener :
         IDxOrderSnapshotListener,
         IDxCandleSnapshotListener,
         IDxTimeAndSaleSnapshotListener,
@@ -33,7 +33,7 @@ namespace com.dxfeed.tests.tools
         {
             List<TE> events;
 
-            public ReceivedSnapshot(DxString symbol, IList<TE> events)
+            public ReceivedSnapshot(string symbol, IList<TE> events)
             {
                 Symbol = symbol.ToString();
                 this.events = new List<TE>(events);

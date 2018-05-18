@@ -19,9 +19,9 @@ namespace com.dxfeed.api
     public class DXEndpoint : IDXEndpoint
     {
         /// <summary>
-        ///     Returns a default application-wide singleton instance of DXEndpoint with a default 
+        ///     Returns a default application-wide singleton instance of DXEndpoint with a default
         ///     role.
-        ///     Most applications use only a single data-source and should rely on this method to 
+        ///     Most applications use only a single data-source and should rely on this method to
         ///     get one.
         /// </summary>
         /// <returns>Instance of DXEndpoint with a default role.</returns>
@@ -119,11 +119,11 @@ namespace com.dxfeed.api
 
         /// <summary>
         ///     <para>
-        ///         Connects to the specified remove address. Previously established connections 
+        ///         Connects to the specified remove address. Previously established connections
         ///         are closed if the new address is different from the old one.
-        ///         This method does nothing if address does not change or if this endpoint is 
+        ///         This method does nothing if address does not change or if this endpoint is
         ///         <see cref="DXEndpointState.Closed"/>.
-        ///         The endpoint <see cref="State"/> immediately becomes 
+        ///         The endpoint <see cref="State"/> immediately becomes
         ///         <see cref="DXEndpointState.Connecting"/> otherwise.
         ///     </para>
         ///     <para>
@@ -143,14 +143,14 @@ namespace com.dxfeed.api
         ///         </item>
         ///         <item>
         ///             <description>
-        ///                 <c>:port</c> to listen for a TCP/IP connection with a plain socket 
+        ///                 <c>:port</c> to listen for a TCP/IP connection with a plain socket
         ///                 connector (good for up to a few hundred of connections).
         ///             </description>
         ///         </item>
         ///     </list>
         ///     <para>
-        ///         For premium services access credentials must be configured before invocation of 
-        ///         <c>Connect</c> method using <see cref="User(string)"/> and 
+        ///         For premium services access credentials must be configured before invocation of
+        ///         <c>Connect</c> method using <see cref="User(string)"/> and
         ///         <see cref="Password(string)"/> methods.
         ///     </para>
         /// </summary>
@@ -183,11 +183,11 @@ namespace com.dxfeed.api
         ///     <para>
         ///         Terminates all remote network connections.
         ///         This method does nothing if this endpoint is <see cref="DXEndpointState.Closed"/>.
-        ///         The endpoint <see cref="State"/> immediately becomes 
+        ///         The endpoint <see cref="State"/> immediately becomes
         ///         <see cref="DXEndpointState.NotConnected"/> otherwise.
         ///     </para>
         ///     <para>
-        ///         This method does not release all resources that are associated with this 
+        ///         This method does not release all resources that are associated with this
         ///         endpoint.
         ///         Use <see cref="Close()"/> method to release all resources.
         ///     </para>
@@ -229,7 +229,7 @@ namespace com.dxfeed.api
         }
 
         /// <summary>
-        ///     Returns a set of all event types supported by this endpoint. The resulting set 
+        ///     Returns a set of all event types supported by this endpoint. The resulting set
         ///     cannot be modified.
         /// </summary>
         /// <returns>Set of all event types.</returns>
@@ -248,7 +248,7 @@ namespace com.dxfeed.api
                 typeof(IDxTheoPrice),
                 typeof(IDxTimeAndSale),
                 typeof(IDxTrade),
-                typeof(IDxTradeEth),
+                typeof(IDxTrade),
                 typeof(IDxUnderlying)
             });
         }

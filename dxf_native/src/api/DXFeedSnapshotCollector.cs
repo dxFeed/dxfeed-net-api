@@ -17,8 +17,8 @@ namespace com.dxfeed.api
     ///         Collector of snapshot events.
     ///     </para>
     ///     <para>
-    ///         It is also listener of snapshot events that stores all events into list. Events 
-    ///         are updated with snapshot. You can get events list at any time. This class 
+    ///         It is also listener of snapshot events that stores all events into list. Events
+    ///         are updated with snapshot. You can get events list at any time. This class
     ///         supports only one snapshot.
     ///     </para>
     /// </summary>

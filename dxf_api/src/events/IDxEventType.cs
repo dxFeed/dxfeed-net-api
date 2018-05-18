@@ -20,8 +20,8 @@ namespace com.dxfeed.api.events
     ///     <para>
     ///         Event types are plain objects that follow bean naming convention with
     ///         getters and setters for their properties.
-    ///         All event types are serializable, because they are transferred over network from 
-    ///         publishers to data feed consumers. However, they are using custom serialization 
+    ///         All event types are serializable, because they are transferred over network from
+    ///         publishers to data feed consumers. However, they are using custom serialization
     ///         format for this purpose.
     ///     </para>
     /// </summary>
@@ -43,8 +43,8 @@ namespace com.dxfeed.api.events
     ///     <para>
     ///         Event types are plain objects that follow bean naming convention with
     ///         getters and setters for their properties.
-    ///         All event types are serializable, because they are transferred over network from 
-    ///         publishers to data feed consumers. However, they are using custom serialization 
+    ///         All event types are serializable, because they are transferred over network from
+    ///         publishers to data feed consumers. However, they are using custom serialization
     ///         format for this purpose.
     ///     </para>
     /// </summary>

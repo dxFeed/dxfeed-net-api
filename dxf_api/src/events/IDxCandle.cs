@@ -14,16 +14,16 @@ namespace com.dxfeed.api.events
     /// <summary>
     /// Candle event with open, high, low, close prices and other information
     /// for a specific period.Candles are build with a specified CandlePeriod using
-    /// a specified CandlePrice type with a data taken from the specified CandleExchange 
-    /// from the specified CandleSession with further details of aggregation provided by 
+    /// a specified CandlePrice type with a data taken from the specified CandleExchange
+    /// from the specified CandleSession with further details of aggregation provided by
     /// CandleAlignment.
     /// </summary>
     [EventTypeAttribute("Candle")]
-    public interface IDxCandle : TimeSeriesEvent<CandleSymbol>, LastingEvent<CandleSymbol>
+    public interface IDxCandle : IDxTimeSeriesEvent<CandleSymbol>, IDxLastingEvent<CandleSymbol>
     {
         /// <summary>
         /// Returns sequence number of this event to distinguish events that have the same
-        /// Time. This sequence number does not have to be unique and does not need to be 
+        /// Time. This sequence number does not have to be unique and does not need to be
         /// sequential.
         /// </summary>
         int Sequence { get; }
@@ -63,11 +63,6 @@ namespace com.dxfeed.api.events
         /// Returns ask volume in this candle.
         /// </summary>
         double AskVolume { get; }
-        /// <summary>
-        /// Returns date time of the candle.
-        /// </summary>
-        [Obsolete("DateTime is deprecated, please use Time instead.")]
-        DateTime DateTime { get; }
         /// <summary>
         /// Returns open interest.
         /// </summary>

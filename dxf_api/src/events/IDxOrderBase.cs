@@ -17,50 +17,44 @@ namespace com.dxfeed.api.events
     ///   The collection of order events of a symbol represents the most recent information that is
     ///   available about orders on the market at any given moment of time.
     /// </summary>
-    public interface IDxOrderBase : IDxMarketEvent, IndexedEvent<string>
+    public interface IDxOrderBase : IDxMarketEvent, IDxIndexedEvent<string>
     {
         /// <summary>
-        ///   Returns number of individual orders in this aggregate order.
+        ///  Returns date time of this order.
         /// </summary>
-        int Count { get; }
+        DateTime Time { get; }
         /// <summary>
-        ///   Returns exchange code of this order.
+        ///  Returns microseconds and nanoseconds time part of the last trade.
         /// </summary>
-        char ExchangeCode { get; }
-        /// <summary>
-        ///   Returns detail level of this order.
-        ///   Deprecated use Scope instead.
-        /// </summary>
-        int Level { get; }
-        /// <summary>
-        ///   Returns side of this order.
-        /// </summary>
-        Side Side { get; }
-        /// <summary>
-        ///   Returns price of this order.
-        /// </summary>
-        double Price { get; }
-        /// <summary>
-        ///   Returns scope of this order.
-        /// </summary>
-        Scope Scope { get; }
+        int TimeNanoPart { get; }
         /// <summary>
         ///   Returns sequence number of this order to distinguish orders that have the same Time.
         ///   This sequence number does not have to be unique and does not need to be sequential.
         /// </summary>
         int Sequence { get; }
         /// <summary>
+        ///   Returns price of this order.
+        /// </summary>
+        double Price { get; }
+        /// <summary>
         ///   Returns size of this order.
         /// </summary>
         long Size { get; }
         /// <summary>
-        /// Returns date time of this order.
+        ///   Returns number of individual orders in this aggregate order.
         /// </summary>
-        DateTime Time { get; }
+        int Count { get; }
         /// <summary>
-        ///   Returns time and sequence of this order packaged into single long value.
-        ///   This method is intended for efficient order time priority comparison.
+        ///   Returns scope of this order.
         /// </summary>
-        long TimeSequence { get; }
+        Scope Scope { get; }
+        /// <summary>
+        ///   Returns side of this order.
+        /// </summary>
+        Side Side { get; }
+        /// <summary>
+        ///   Returns exchange code of this order.
+        /// </summary>
+        char ExchangeCode { get; }
     }
 }

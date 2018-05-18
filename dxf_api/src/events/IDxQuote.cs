@@ -15,10 +15,30 @@ namespace com.dxfeed.api.events
     /// the market at any given moment of time.
     /// </summary>
     [EventTypeAttribute("Quote")]
-    public interface IDxQuote : IDxMarketEvent, LastingEvent<string>
+    public interface IDxQuote : IDxMarketEvent, IDxLastingEvent<string>
     {
         /// <summary>
-        /// Returns date time of the last bid change.
+        /// Returns time of the last bid or ask change.
+        /// This method is the same as max(getBidTime(), getAskTime())
+        /// Note, that unlike bid/ask times, that are transmitted over network in a second-precision, this
+        /// time is transmitted up to a millisecond and even nano-second precision (see getTimeNanoPart())
+        /// if it is enabled on server side.
+        /// </summary>
+        DateTime Time { get; }
+        /// <summary>
+        /// Returns sequence number of this quote to distinguish quotes that have the same
+        /// time. This sequence number does not have to be unique and
+        /// does not need to be sequential.
+        /// </summary>
+        int Sequence { get; }
+        /// <summary>
+        /// Returns microseconds and nanoseconds part of time of the last bid or ask change.
+        /// </summary>
+        int TimeNanoPart { get; }
+        /// <summary>
+        /// Returns time of the last bid change.
+        /// This time is always transmitted with seconds precision, so the result of this method
+        /// is usually a multiple of 1000.
         /// </summary>
         DateTime BidTime { get; }
         /// <summary>
@@ -35,6 +55,8 @@ namespace com.dxfeed.api.events
         long BidSize { get; }
         /// <summary>
         /// Returns date time of the last ask change.
+        /// This time is always transmitted with seconds precision, so the result of this method
+        /// is usually a multiple of 1000.
         /// </summary>
         DateTime AskTime { get; }
         /// <summary>

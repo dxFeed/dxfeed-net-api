@@ -1,4 +1,5 @@
 ﻿using com.dxfeed.api;
+using com.dxfeed.api.data;
 using com.dxfeed.api.events;
 using System;
 
@@ -9,42 +10,25 @@ namespace com.dxfeed.tests.tools.eventplayer
     /// </summary>
     internal class PlayedGreeks : IPlayedEvent<DxTestGreeks>, IDxGreeks
     {
-        /// <summary>
-        ///     Creates Greeks events via all parameters.
-        /// </summary>
-        /// <param name="symbol"></param>
-        /// <param name="time"></param>
-        /// <param name="sequence"></param>
-        /// <param name="greeksPrice"></param>
-        /// <param name="volatility"></param>
-        /// <param name="delta"></param>
-        /// <param name="gamma"></param>
-        /// <param name="theta"></param>
-        /// <param name="rho"></param>
-        /// <param name="vega"></param>
-        /// <param name="index"></param>
-        /// <param name="eventFlags"></param>
-        internal PlayedGreeks(string symbol, long time, int sequence, double greeksPrice, 
-            double volatility, double delta, double gamma, double theta, double rho, double vega, 
-            long index, EventFlag eventFlags)
+        internal PlayedGreeks(string symbol, EventFlag event_flags, long index, long time,
+                                double price, double volatility,
+                                double delta, double gamma, double theta, double rho, double vega)
         {
             EventSymbol = symbol;
-            EventFlags = eventFlags;
+            EventFlags = event_flags;
 
             Delta = delta;
             Gamma = gamma;
-            GreeksPrice = greeksPrice;
+            Price = price;
             Rho = rho;
-            Sequence = sequence;
             Theta = theta;
-            TimeStamp = time;
-            Time = Tools.UnixTimeToDate(TimeStamp);
+            Time = Tools.UnixTimeToDate(time);
             Vega = vega;
             Volatility = volatility;
             Index = index;
 
-            Params = new EventParams(EventFlags, ((ulong)TimeStamp << 32) + (uint)Sequence, 0);
-            Data = new DxTestGreeks(TimeStamp, Sequence, GreeksPrice, Volatility, Delta, Gamma, Theta, Rho, Vega, Index, EventFlags);
+            Params = new EventParams(EventFlags, ((ulong)time << 32), 0);
+            Data = new DxTestGreeks(event_flags, index, time, price, volatility, delta, gamma, theta, rho, vega);
         }
 
         /// <summary>
@@ -58,18 +42,16 @@ namespace com.dxfeed.tests.tools.eventplayer
 
             Delta = greeks.Delta;
             Gamma = greeks.Gamma;
-            GreeksPrice = greeks.GreeksPrice;
+            Price = greeks.Price;
             Rho = greeks.Rho;
-            Sequence = greeks.Sequence;
             Theta = greeks.Theta;
-            TimeStamp = greeks.TimeStamp;
-            Time = Tools.UnixTimeToDate(TimeStamp);
+            Time = greeks.Time;
             Vega = greeks.Vega;
             Volatility = greeks.Volatility;
             Index = greeks.Index;
 
-            Params = new EventParams(EventFlags, ((ulong)TimeStamp << 32) + (uint)Sequence, 0);
-            Data = new DxTestGreeks(TimeStamp, Sequence, GreeksPrice, Volatility, Delta, Gamma, Theta, Rho, Vega, Index, EventFlags);
+            Params = new EventParams(EventFlags, ((ulong)TimeStamp << 32), 0);
+            Data = new DxTestGreeks(EventFlags, Index, Tools.DateToUnixTime(Time), Price, Volatility, Delta, Gamma, Theta, Rho, Vega);
         }
 
         public DxTestGreeks Data
@@ -97,17 +79,12 @@ namespace com.dxfeed.tests.tools.eventplayer
             get; private set;
         }
 
-        public double GreeksPrice
+        public double Price
         {
             get; private set;
         }
 
         public long Index
-        {
-            get; private set;
-        }
-
-        public int MaxSequence
         {
             get; private set;
         }
@@ -147,7 +124,7 @@ namespace com.dxfeed.tests.tools.eventplayer
 
         public long TimeStamp
         {
-            get; private set;
+            get { return Tools.DateToUnixTime(Time); }
         }
 
         public double Vega

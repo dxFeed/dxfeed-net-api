@@ -16,11 +16,11 @@ namespace com.dxfeed.api
 {
     /// <summary>
     ///     <para>
-    ///         Extends <see cref="IDXFeedSubscription{E}"/> to conveniently subscribe to 
+    ///         Extends <see cref="IDXFeedSubscription{E}"/> to conveniently subscribe to
     ///         time-series of events for a set of symbols and event types.
     ///     </para>
     ///     <para>
-    ///         Only events that implement <see cref="TimeSeriesEvent{T}"/> interface can be
+    ///         Only events that implement <see cref="IDxTimeSeriesEvent{T}"/> interface can be
     ///         subscribed to with <see cref="IDXFeedTimeSeriesSubscription{E}"/>.
     ///     </para>
     ///     <para>
@@ -40,13 +40,13 @@ namespace com.dxfeed.api
     ///         Threads and locks.
     ///     </para>
     ///     <para>
-    ///         This class is thread-safe and can be used concurrently from multiple threads 
+    ///         This class is thread-safe and can be used concurrently from multiple threads
     ///         without external synchronization.
     ///     </para>
     /// </summary>
     /// <typeparam name="E">The type of events.</typeparam>
     public class DXFeedTimeSeriesSubscription<E> : DXFeedSubscription<E>, IDXFeedTimeSeriesSubscription<E>
-        where E : TimeSeriesEvent
+        where E : IDxTimeSeriesEvent
     {
         /// <summary>
         ///     Creates detached time-series subscription for a single event type.
@@ -78,7 +78,7 @@ namespace com.dxfeed.api
         ///     If <paramref name="endpoint"/> or <paramref name="eventTypes"/> is null.
         /// </exception>
         /// <exception cref="ArgumentException">
-        ///     If <paramref name="eventTypes"/> are empty or any type of 
+        ///     If <paramref name="eventTypes"/> are empty or any type of
         ///     <paramref name="eventTypes"/> is not event class.
         /// </exception>
         /// <exception cref="DxException">Internal error.</exception>
@@ -101,7 +101,7 @@ namespace com.dxfeed.api
         }
 
         /// <summary>
-        ///     Gets or sets the earliest timestamp from which time-series of events shall be 
+        ///     Gets or sets the earliest timestamp from which time-series of events shall be
         ///     received.
         ///     The timestamp is in milliseconds from midnight, January 1, 1970 UTC.
         /// </summary>

@@ -14,22 +14,12 @@ namespace com.dxfeed.api.events
     /// values on the market at any given moment of time.
     /// </summary>
     [EventTypeAttribute("Greeks")]
-    public interface IDxGreeks : IDxMarketEvent, TimeSeriesEvent<string>, LastingEvent<string>
+    public interface IDxGreeks : IDxMarketEvent, IDxTimeSeriesEvent<string>, IDxLastingEvent<string>
     {
-        /// <summary>
-        /// Maximum allowed sequence value. Constant field value.
-        /// </summary>
-        int MaxSequence { get; }
-        /// <summary>
-        /// Returns sequence number of this event to distinguish events that have the same time.
-        /// This sequence number does not have to be unique and does not need to be sequential.
-        /// Sequence can range from 0 to MaxSequence.
-        /// </summary>
-        int Sequence { get; }
         /// <summary>
         /// Returns option market price.
         /// </summary>
-        double GreeksPrice { get; }
+        double Price { get; }
         /// <summary>
         /// Returns Black-Scholes implied volatility of the option.
         /// </summary>

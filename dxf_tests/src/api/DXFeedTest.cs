@@ -23,7 +23,7 @@ namespace com.dxfeed.api
             TestListener eventListener = new TestListener();
             s.AddEventListener(eventListener);
 
-            var playedOrder = new PlayedOrder(symbol, 25, 0, 'A', 0x4e54560000000006, 3, Side.Buy, 0, Scope.ORDER, 0, 100, OrderSource.NTV, 0, 0, "AAAA");
+            var playedOrder = new PlayedOrder(symbol, 0, 0x4e54560000000006, 0, 0, 0, 0, 100, 25, Scope.Order, Side.Buy, 'A', OrderSource.NTV, "AAAA");
 
             EventPlayer<IDxOrder> eventPlayer = new EventPlayer<IDxOrder>(s as DXFeedSubscription<IDxOrder>);
             eventPlayer.PlayEvents(symbol, playedOrder);
@@ -65,11 +65,11 @@ namespace com.dxfeed.api
             });
             Assert.Catch(typeof(ArgumentException), () =>
             {
-                DXFeed.GetInstance().CreateSubscription<IndexedEvent>(typeof(IDxCandle), typeof(IDxQuote));
+                DXFeed.GetInstance().CreateSubscription<IDxIndexedEvent>(typeof(IDxCandle), typeof(IDxQuote));
             });
             Assert.Catch(typeof(ArgumentException), () =>
             {
-                DXFeed.GetInstance().CreateSubscription<LastingEvent>(typeof(IDxOrder), typeof(IDxQuote));
+                DXFeed.GetInstance().CreateSubscription<IDxLastingEvent>(typeof(IDxOrder), typeof(IDxQuote));
             });
             Assert.Catch(typeof(ArgumentException), () =>
             {
@@ -87,9 +87,9 @@ namespace com.dxfeed.api
             s.AddEventListener(eventListener);
 
             EventPlayer<IDxEventType> eventPlayer = new EventPlayer<IDxEventType>(s as DXFeedSubscription<IDxEventType>);
-            var playedOrder = new PlayedOrder(symbol, 25, 0, 'A', 0x4e54560000000006, 3, Side.Buy, 0, Scope.ORDER, 0, 100, OrderSource.NTV, 0, 0, "AAAA");
+            var playedOrder = new PlayedOrder(symbol, 0, 0x4e54560000000006, 0, 0, 0, 0, 100, 25, Scope.Order, Side.Buy, 'A', OrderSource.NTV, "AAAA");
             eventPlayer.PlayEvents(symbol, playedOrder);
-            var playedTrade = new PlayedTrade(symbol, 0, 'B', 123.456, 100, 123, 1.1, 2.2);
+            var playedTrade = new PlayedTrade(symbol, 0, 0, 0, 'B', 123.456,  100, 123, 1.1, 0, 2.2, 0.0, Direction.Undefined, false);
             eventPlayer.PlayEvents(symbol, playedTrade);
 
             Assert.AreEqual(eventListener.GetEventCount<IDxOrder>(symbol), 1);
@@ -145,27 +145,27 @@ namespace com.dxfeed.api
             //all attempts to create subscription in this block must be failed with exception
             Assert.Catch(typeof(ArgumentException), () =>
             {
-                DXFeed.GetInstance().CreateTimeSeriesSubscription<TimeSeriesEvent>(typeof(IDxCandle), typeof(IDxQuote));
+                DXFeed.GetInstance().CreateTimeSeriesSubscription<IDxTimeSeriesEvent>(typeof(IDxCandle), typeof(IDxQuote));
             });
             Assert.Catch(typeof(ArgumentException), () =>
             {
-                DXFeed.GetInstance().CreateTimeSeriesSubscription<TimeSeriesEvent>(typeof(IDxOrder), typeof(IDxQuote));
+                DXFeed.GetInstance().CreateTimeSeriesSubscription<IDxTimeSeriesEvent>(typeof(IDxOrder), typeof(IDxQuote));
             });
             Assert.Catch(typeof(ArgumentException), () =>
             {
-                DXFeed.GetInstance().CreateTimeSeriesSubscription<TimeSeriesEvent>(typeof(string));
+                DXFeed.GetInstance().CreateTimeSeriesSubscription<IDxTimeSeriesEvent>(typeof(string));
             });
 
             var symbol = "SYMA";
-            var s = DXFeed.GetInstance().CreateTimeSeriesSubscription<TimeSeriesEvent>(typeof(IDxCandle), typeof(IDxGreeks));
+            var s = DXFeed.GetInstance().CreateTimeSeriesSubscription<IDxTimeSeriesEvent>(typeof(IDxCandle), typeof(IDxGreeks));
             s.AddSymbols(symbol);
             TestListener eventListener = new TestListener();
             s.AddEventListener(eventListener);
 
-            EventPlayer<TimeSeriesEvent> eventPlayer = new EventPlayer<TimeSeriesEvent>(s as DXFeedSubscription<TimeSeriesEvent>);
+            EventPlayer<IDxTimeSeriesEvent> eventPlayer = new EventPlayer<IDxTimeSeriesEvent>(s as DXFeedSubscription<IDxTimeSeriesEvent>);
             var playedCandle = new PlayedCandle(symbol, Tools.DateToUnixTime(DateTime.Now), 123, 100, 12.34, 56.78, 9.0, 43.21, 1000, 999, 1001, 1002, 1, 777, 888, EventFlag.RemoveSymbol);
             eventPlayer.PlayEvents(symbol, playedCandle);
-            var playedGreeks = new PlayedGreeks(symbol, Tools.DateToUnixTime(DateTime.Now), 123, 456.789, 11, 555, 666, 777, 888, 999, 1, EventFlag.RemoveSymbol);
+            var playedGreeks = new PlayedGreeks(symbol, EventFlag.RemoveSymbol, 1, Tools.DateToUnixTime(DateTime.Now), 456.789, 11, 555, 666, 777, 888, 999);
             eventPlayer.PlayEvents(symbol, playedGreeks);
 
             Assert.AreEqual(eventListener.GetEventCount<IDxCandle>(symbol), 1);
@@ -177,7 +177,7 @@ namespace com.dxfeed.api
             {
                 Assert.DoesNotThrow(() =>
                 {
-                    DXFeed.GetInstance().CreateTimeSeriesSubscription<TimeSeriesEvent>(typeof(IDxCandle), typeof(IDxGreeks));
+                    DXFeed.GetInstance().CreateTimeSeriesSubscription<IDxTimeSeriesEvent>(typeof(IDxCandle), typeof(IDxGreeks));
                 });
             });
         }
@@ -274,7 +274,7 @@ namespace com.dxfeed.api
 
             //try to cancel promise
             CancellationTokenSource cancelSource = new CancellationTokenSource();
-            Task<LastingEvent> promise = DXFeed.GetInstance().GetLastEventPromise<IDxTrade>(symbol, cancelSource.Token);
+            Task<IDxLastingEvent> promise = DXFeed.GetInstance().GetLastEventPromise<IDxTrade>(symbol, cancelSource.Token);
             cancelSource.CancelAfter(TimeSpan.FromSeconds(2));
             try
             {
@@ -341,7 +341,7 @@ namespace com.dxfeed.api
             }
 
             //try to get last event succesfully
-            var playedTrade = new PlayedTrade(symbol, Tools.DateToUnixTime(DateTime.Now), 'B', 123.456, 100, 123, 1.1, 2.2);
+            var playedTrade = new PlayedTrade(symbol, Tools.DateToUnixTime(DateTime.Now), 0, 0, 'B', 123.456,  100, 123, 1.1, 0, 2.2, 0.0, Direction.Undefined, false);
             Task eventPlayerTask = Task.Run(() =>
             {
                 Thread.Sleep(TimeSpan.FromSeconds(1));
@@ -365,7 +365,7 @@ namespace com.dxfeed.api
             for (int i = 0; i < 10; i++)
             {
                 var threadSymbol = symbol + i.ToString();
-                var threadPlayedTrade = new PlayedTrade(threadSymbol, Tools.DateToUnixTime(DateTime.Now), 'B', 123.456, 100, 123, 1.1, 2.2);
+                var threadPlayedTrade = new PlayedTrade(threadSymbol, Tools.DateToUnixTime(DateTime.Now), 0, 0, 'B', 123.456,  100, 123, 1.1, 0, 2.2, 0.0, Direction.Undefined, false);
                 tasks.Add(Task.Run(() =>
                 {
                     Thread.Sleep(TimeSpan.FromSeconds(1));
@@ -422,7 +422,7 @@ namespace com.dxfeed.api
 
             //try to cancel promise
             CancellationTokenSource cancelSource = new CancellationTokenSource();
-            List<Task<LastingEvent>> promises = DXFeed.GetInstance().GetLastEventsPromises<IDxTrade>(symbols, cancelSource.Token);
+            List<Task<IDxLastingEvent>> promises = DXFeed.GetInstance().GetLastEventsPromises<IDxTrade>(symbols, cancelSource.Token);
             cancelSource.CancelAfter(TimeSpan.FromSeconds(2));
             try
             {
@@ -495,8 +495,8 @@ namespace com.dxfeed.api
 
             //try to get last event succesfully
             var playedTrades = new PlayedTrade[] {
-                new PlayedTrade(symbols[0], Tools.DateToUnixTime(DateTime.Now), 'B', 123.456, 100, 123, 1.1, 2.2),
-                new PlayedTrade(symbols[1], Tools.DateToUnixTime(DateTime.Now), 'B', 234.567, 101, 234, 3.2, 4.3)
+                new PlayedTrade(symbols[0], Tools.DateToUnixTime(DateTime.Now), 0, 0, 'B', 123.456,  100, 123, 1.1, 0, 2.2, 0.0, Direction.Undefined, false),
+                new PlayedTrade(symbols[1], Tools.DateToUnixTime(DateTime.Now), 0, 0, 'B', 234.567,  101, 234, 3.2, 0, 4.3, 0.0, Direction.Undefined, false)
             };
             Task eventPlayerTask = Task.Run(() =>
             {
@@ -537,8 +537,8 @@ namespace com.dxfeed.api
             {
                 var threadSymbols = new string[] { symbols[0] + i.ToString(), symbols[1] + i.ToString() };
                 var threadPlayedTrades = new PlayedTrade[] {
-                    new PlayedTrade(threadSymbols[0], Tools.DateToUnixTime(DateTime.Now), 'B', 123.456, 100, 123, 1.1, 2.2),
-                    new PlayedTrade(threadSymbols[1], Tools.DateToUnixTime(DateTime.Now), 'B', 234.567, 101, 234, 3.2, 4.3)
+                    new PlayedTrade(threadSymbols[0], Tools.DateToUnixTime(DateTime.Now), 0, 0, 'B', 123.456,  100, 123, 1.1, 0, 2.2, 0.0, Direction.Undefined, false),
+                    new PlayedTrade(threadSymbols[1], Tools.DateToUnixTime(DateTime.Now), 0, 0, 'B', 234.567,  101, 234, 3.2, 0, 4.3, 0.0, Direction.Undefined, false)
                 };
                 HashSet<string> threadPlayedSymbols = new HashSet<string>();
                 foreach(var t in threadPlayedTrades)
@@ -670,13 +670,13 @@ namespace com.dxfeed.api
             //try to get last event succesfully
             DateTime date = DateTime.Now;
             var playedOrders = new PlayedOrder[] {
-                new PlayedOrder(symbol, 25, 0, 'A', 0x4e54560000000006, 3, Side.Buy, 100, Scope.ORDER, 0, 100, OrderSource.NTV, Tools.DateToUnixTime(date), 0, "AAAA"),
-                new PlayedOrder(symbol, 25, 0, 'A', 0x4e54560000000005, 3, Side.Buy, 100.5, Scope.ORDER, 0, 101, OrderSource.NTV, Tools.DateToUnixTime(date.AddMinutes(-1)), 0, "AAAA"),
-                new PlayedOrder(symbol, 25, 0, 'A', 0x4e54560000000004, 3, Side.Sell, 101, Scope.ORDER, 0, 102, OrderSource.NTV, Tools.DateToUnixTime(date.AddMinutes(-2)), 0, "AAAA"),
-                new PlayedOrder(symbol, 25, 0, 'A', 0x4e54560000000003, 3, Side.Buy, 100, Scope.ORDER, 0, 103, OrderSource.NTV, Tools.DateToUnixTime(date.AddMinutes(-3)), 0, "AAAA"),
-                new PlayedOrder(symbol, 25, 0, 'A', 0x4e54560000000002, 3, Side.Buy, 100.4, Scope.ORDER, 0, 104, OrderSource.NTV, Tools.DateToUnixTime(date.AddMinutes(-4)), 0, "AAAA"),
-                new PlayedOrder(symbol, 25, 0, 'A', 0x4e54560000000001, 3, Side.Buy, 100.3, Scope.ORDER, 0, 105, OrderSource.NTV, Tools.DateToUnixTime(date.AddMinutes(-5)), 0, "AAAA"),
-                new PlayedOrder(symbol, 25, 0, 'A', 0x4e54560000000000, 3, Side.Buy, 100.2, Scope.ORDER, 0, 106, OrderSource.NTV, Tools.DateToUnixTime(date.AddMinutes(-6)), 0, "AAAA")
+                new PlayedOrder(symbol, 0, 0x4e54560000000006, Tools.DateToUnixTime(date), 0, 0, 100, 100, 25, Scope.Order, Side.Buy, 'A', OrderSource.NTV, "AAAA"),
+                new PlayedOrder(symbol, 0, 0x4e54560000000005, Tools.DateToUnixTime(date.AddMinutes(-1)), 0, 0, 100.5, 101, 25, Scope.Order, Side.Buy, 'A', OrderSource.NTV, "AAAA"),
+                new PlayedOrder(symbol, 0, 0x4e54560000000004, Tools.DateToUnixTime(date.AddMinutes(-2)), 0, 0, 101, 102, 25, Scope.Order, Side.Sell, 'A', OrderSource.NTV, "AAAA"),
+                new PlayedOrder(symbol, 0, 0x4e54560000000003, Tools.DateToUnixTime(date.AddMinutes(-3)), 0, 0, 100, 103, 25, Scope.Order, Side.Buy, 'A', OrderSource.NTV, "AAAA"),
+                new PlayedOrder(symbol, 0, 0x4e54560000000002, Tools.DateToUnixTime(date.AddMinutes(-4)), 0, 0, 100.4, 104, 25, Scope.Order, Side.Buy, 'A', OrderSource.NTV, "AAAA"),
+                new PlayedOrder(symbol, 0, 0x4e54560000000001, Tools.DateToUnixTime(date.AddMinutes(-5)), 0, 0, 100.3, 105, 25, Scope.Order, Side.Buy, 'A', OrderSource.NTV, "AAAA"),
+                new PlayedOrder(symbol, 0, 0x4e54560000000000, Tools.DateToUnixTime(date.AddMinutes(-6)), 0, 0, 100.2, 106, 25, Scope.Order, Side.Buy, 'A', OrderSource.NTV, "AAAA")
             };
             Task eventPlayerTask = Task.Run(() =>
             {
@@ -707,13 +707,13 @@ namespace com.dxfeed.api
             {
                 var threadSymbol = symbol + i.ToString();
                 var threadPlayedOrders = new PlayedOrder[] {
-                    new PlayedOrder(threadSymbol, 25, 0, 'A', 0x4e54560000000006, 3, Side.Buy, 100, Scope.ORDER, 0, 100, OrderSource.NTV, Tools.DateToUnixTime(date), 0, "AAAA"),
-                    new PlayedOrder(threadSymbol, 25, 0, 'A', 0x4e54560000000005, 3, Side.Buy, 100.5, Scope.ORDER, 0, 101, OrderSource.NTV, Tools.DateToUnixTime(date.AddMinutes(-1)), 0, "AAAA"),
-                    new PlayedOrder(threadSymbol, 25, 0, 'A', 0x4e54560000000004, 3, Side.Sell, 101, Scope.ORDER, 0, 102, OrderSource.NTV, Tools.DateToUnixTime(date.AddMinutes(-2)), 0, "AAAA"),
-                    new PlayedOrder(threadSymbol, 25, 0, 'A', 0x4e54560000000003, 3, Side.Buy, 100, Scope.ORDER, 0, 103, OrderSource.NTV, Tools.DateToUnixTime(date.AddMinutes(-3)), 0, "AAAA"),
-                    new PlayedOrder(threadSymbol, 25, 0, 'A', 0x4e54560000000002, 3, Side.Buy, 100.4, Scope.ORDER, 0, 104, OrderSource.NTV, Tools.DateToUnixTime(date.AddMinutes(-4)), 0, "AAAA"),
-                    new PlayedOrder(threadSymbol, 25, 0, 'A', 0x4e54560000000001, 3, Side.Buy, 100.3, Scope.ORDER, 0, 105, OrderSource.NTV, Tools.DateToUnixTime(date.AddMinutes(-5)), 0, "AAAA"),
-                    new PlayedOrder(threadSymbol, 25, 0, 'A', 0x4e54560000000000, 3, Side.Buy, 100.2, Scope.ORDER, 0, 106, OrderSource.NTV, Tools.DateToUnixTime(date.AddMinutes(-6)), 0, "AAAA")
+                    new PlayedOrder(threadSymbol, 0, 0x4e54560000000006, Tools.DateToUnixTime(date), 0, 0, 100, 100, 25, Scope.Order, Side.Buy, 'A', OrderSource.NTV, "AAAA"),
+                    new PlayedOrder(threadSymbol, 0, 0x4e54560000000005, Tools.DateToUnixTime(date.AddMinutes(-1)), 0, 0, 100.5, 101, 25, Scope.Order, Side.Buy, 'A', OrderSource.NTV, "AAAA"),
+                    new PlayedOrder(threadSymbol, 0, 0x4e54560000000004, Tools.DateToUnixTime(date.AddMinutes(-2)), 0, 0, 101, 102, 25, Scope.Order, Side.Sell, 'A', OrderSource.NTV, "AAAA"),
+                    new PlayedOrder(threadSymbol, 0, 0x4e54560000000003, Tools.DateToUnixTime(date.AddMinutes(-3)), 0, 0, 100, 103, 25, Scope.Order, Side.Buy, 'A', OrderSource.NTV, "AAAA"),
+                    new PlayedOrder(threadSymbol, 0, 0x4e54560000000002, Tools.DateToUnixTime(date.AddMinutes(-4)), 0, 0, 100.4, 104, 25, Scope.Order, Side.Buy, 'A', OrderSource.NTV, "AAAA"),
+                    new PlayedOrder(threadSymbol, 0, 0x4e54560000000001, Tools.DateToUnixTime(date.AddMinutes(-5)), 0, 0, 100.3, 105, 25, Scope.Order, Side.Buy, 'A', OrderSource.NTV, "AAAA"),
+                    new PlayedOrder(threadSymbol, 0, 0x4e54560000000000, Tools.DateToUnixTime(date.AddMinutes(-6)), 0, 0, 100.2, 106, 25, Scope.Order, Side.Buy, 'A', OrderSource.NTV, "AAAA")
                 };
                 tasks.Add(Task.Run(() =>
                 {
@@ -828,16 +828,16 @@ namespace com.dxfeed.api
             //try to get last event succesfully
             DateTime date = DateTime.Now;
             var playedGreeks = new PlayedGreeks[] {
-                new PlayedGreeks(symbol, Tools.DateToUnixTime(date),                123, 156.789, 111, 155, 166, 177, 188, 199, 5, 0),
-                new PlayedGreeks(symbol, Tools.DateToUnixTime(date.AddMinutes(-1)), 124, 256.789, 211, 255, 266, 277, 288, 299, 4, 0),
-                new PlayedGreeks(symbol, Tools.DateToUnixTime(date.AddMinutes(-2)), 125, 356.789, 311, 355, 366, 377, 388, 399, 3, 0),
-                new PlayedGreeks(symbol, Tools.DateToUnixTime(date.AddMinutes(-3)), 126, 456.789, 411, 455, 466, 477, 488, 499, 2, 0),
-                new PlayedGreeks(symbol, Tools.DateToUnixTime(date.AddMinutes(-4)), 127, 556.789, 511, 555, 566, 577, 588, 599, 1, 0),
+                new PlayedGreeks(symbol, 0, 5, Tools.DateToUnixTime(date), 156.789, 111, 155, 166, 177, 188, 199),
+                new PlayedGreeks(symbol, 0, 4, Tools.DateToUnixTime(date.AddMinutes(-1)), 256.789, 211, 255, 266, 277, 288, 299),
+                new PlayedGreeks(symbol, 0, 3, Tools.DateToUnixTime(date.AddMinutes(-2)), 356.789, 311, 355, 366, 377, 388, 399),
+                new PlayedGreeks(symbol, 0, 2, Tools.DateToUnixTime(date.AddMinutes(-3)), 456.789, 411, 455, 466, 477, 488, 499),
+                new PlayedGreeks(symbol, 0, 1, Tools.DateToUnixTime(date.AddMinutes(-4)), 556.789, 511, 555, 566, 577, 588, 599),
             };
             var expectedGreeks = new PlayedGreeks[] {
-                new PlayedGreeks(symbol, Tools.DateToUnixTime(date.AddMinutes(-1)), 124, 256.789, 211, 255, 266, 277, 288, 299, 4, 0),
-                new PlayedGreeks(symbol, Tools.DateToUnixTime(date.AddMinutes(-2)), 125, 356.789, 311, 355, 366, 377, 388, 399, 3, 0),
-                new PlayedGreeks(symbol, Tools.DateToUnixTime(date.AddMinutes(-3)), 126, 456.789, 411, 455, 466, 477, 488, 499, 2, 0)
+                new PlayedGreeks(symbol, 0, 4, Tools.DateToUnixTime(date.AddMinutes(-1)), 256.789, 211, 255, 266, 277, 288, 299),
+                new PlayedGreeks(symbol, 0, 3, Tools.DateToUnixTime(date.AddMinutes(-2)), 356.789, 311, 355, 366, 377, 388, 399),
+                new PlayedGreeks(symbol, 0, 2, Tools.DateToUnixTime(date.AddMinutes(-3)), 456.789, 411, 455, 466, 477, 488, 499)
             };
             Task eventPlayerTask = Task.Run(() =>
             {
@@ -868,11 +868,11 @@ namespace com.dxfeed.api
             {
                 var threadSymbol = symbol + i.ToString();
                 var threadPlayedGreeks = new PlayedGreeks[] {
-                    new PlayedGreeks(symbol, Tools.DateToUnixTime(date),                123, 156.789, 111, 155, 166, 177, 188, 199, 5, 0),
-                    new PlayedGreeks(symbol, Tools.DateToUnixTime(date.AddMinutes(-1)), 124, 256.789, 211, 255, 266, 277, 288, 299, 4, 0),
-                    new PlayedGreeks(symbol, Tools.DateToUnixTime(date.AddMinutes(-2)), 125, 356.789, 311, 355, 366, 377, 388, 399, 3, 0),
-                    new PlayedGreeks(symbol, Tools.DateToUnixTime(date.AddMinutes(-3)), 126, 456.789, 411, 455, 466, 477, 488, 499, 2, 0),
-                    new PlayedGreeks(symbol, Tools.DateToUnixTime(date.AddMinutes(-4)), 127, 556.789, 511, 555, 566, 577, 588, 599, 1, 0),
+                    new PlayedGreeks(symbol, 0, 5, Tools.DateToUnixTime(date), 156.789, 111, 155, 166, 177, 188, 199),
+                    new PlayedGreeks(symbol, 0, 4, Tools.DateToUnixTime(date.AddMinutes(-1)), 256.789, 211, 255, 266, 277, 288, 299),
+                    new PlayedGreeks(symbol, 0, 3, Tools.DateToUnixTime(date.AddMinutes(-2)), 356.789, 311, 355, 366, 377, 388, 399),
+                    new PlayedGreeks(symbol, 0, 2, Tools.DateToUnixTime(date.AddMinutes(-3)), 456.789, 411, 455, 466, 477, 488, 499),
+                    new PlayedGreeks(symbol, 0, 1, Tools.DateToUnixTime(date.AddMinutes(-4)), 556.789, 511, 555, 566, 577, 588, 599),
                 };
                 tasks.Add(Task.Run(() =>
                 {
@@ -898,9 +898,9 @@ namespace com.dxfeed.api
         #region internal static methods
 
         /// <summary>
-        ///     Tries to get <see cref="DXFeedSubscription{E}"/> instance from current 
-        ///     <see cref="DXFeed"/>. This method uses reflection to get access to private 
-        ///     hashset of attached subscriptions. This methods returns first finded subscription 
+        ///     Tries to get <see cref="DXFeedSubscription{E}"/> instance from current
+        ///     <see cref="DXFeed"/>. This method uses reflection to get access to private
+        ///     hashset of attached subscriptions. This methods returns first finded subscription
         ///     of type E that contains <paramref name="symbol"/>.
         /// </summary>
         /// <typeparam name="E">Event type.</typeparam>
@@ -953,7 +953,6 @@ namespace com.dxfeed.api
             Assert.AreEqual(playedOrder.EventFlags, receivedOrder.EventFlags);
             Assert.AreEqual(playedOrder.ExchangeCode, receivedOrder.ExchangeCode);
             Assert.AreEqual(playedOrder.Index, receivedOrder.Index);
-            Assert.AreEqual(playedOrder.Level, receivedOrder.Level);
             Assert.AreEqual(playedOrder.Side, receivedOrder.Side);
             Assert.AreEqual(playedOrder.Price, receivedOrder.Price);
             Assert.AreEqual(playedOrder.Scope, receivedOrder.Scope);
@@ -961,7 +960,7 @@ namespace com.dxfeed.api
             Assert.AreEqual(playedOrder.Size, receivedOrder.Size);
             Assert.AreEqual(playedOrder.Source, receivedOrder.Source);
             Assert.AreEqual(playedOrder.Time, receivedOrder.Time);
-            Assert.AreEqual(playedOrder.TimeSequence, receivedOrder.TimeSequence);
+            Assert.AreEqual(playedOrder.TimeNanoPart, receivedOrder.TimeNanoPart);
             Assert.AreEqual(playedOrder.MarketMaker.ToString(), receivedOrder.MarketMaker.ToString());
         }
 
@@ -992,7 +991,6 @@ namespace com.dxfeed.api
             Assert.AreEqual(playedTrade.ExchangeCode, lastTrade.ExchangeCode);
             Assert.AreEqual(playedTrade.Price, lastTrade.Price);
             Assert.AreEqual(playedTrade.Size, lastTrade.Size);
-            Assert.AreEqual(playedTrade.Tick, lastTrade.Tick);
             Assert.AreEqual(playedTrade.Change, lastTrade.Change);
             Assert.AreEqual(playedTrade.DayVolume, lastTrade.DayVolume);
         }
@@ -1003,9 +1001,8 @@ namespace com.dxfeed.api
             Assert.AreEqual(playedGreek.EventFlags, receivedGreek.EventFlags);
             Assert.AreEqual(playedGreek.Delta, receivedGreek.Delta);
             Assert.AreEqual(playedGreek.Gamma, receivedGreek.Gamma);
-            Assert.AreEqual(playedGreek.GreeksPrice, receivedGreek.GreeksPrice);
+            Assert.AreEqual(playedGreek.Price, receivedGreek.Price);
             Assert.AreEqual(playedGreek.Rho, receivedGreek.Rho);
-            Assert.AreEqual(playedGreek.Sequence, receivedGreek.Sequence);
             Assert.AreEqual(playedGreek.Theta, receivedGreek.Theta);
             Assert.AreEqual(playedGreek.TimeStamp, receivedGreek.TimeStamp);
             Assert.AreEqual(playedGreek.Time, receivedGreek.Time);

@@ -6,6 +6,7 @@
 // http://mozilla.org/MPL/2.0/.
 #endregion
 
+using com.dxfeed.api.data;
 using com.dxfeed.api.events;
 using com.dxfeed.native.api;
 using System;
@@ -25,37 +26,45 @@ namespace com.dxfeed.native.events
         {
             DxSeries s = *series;
 
-            Dividend = s.dividend;
-            Expiration = s.expiration;
-            ForwardPrice = s.forward_price;
-            Interest = s.interest;
-            PutCallRatio = s.put_call_ratio;
-            Sequence = s.sequence;
-            Volatility = s.volatility;
-            Index = s.index;
             EventFlags = s.event_flags;
+            Index = s.index;
+            Expiration = s.expiration;
+            Volatility = s.volatility;
+            PutCallRatio = s.put_call_ratio;
+            ForwardPrice = s.forward_price;
+            Dividend = s.dividend;
+            Interest = s.interest;
         }
 
         internal NativeSeries(IDxSeries s) : base(s.EventSymbol)
         {
-            Dividend = s.Dividend;
-            Expiration = s.Expiration;
-            ForwardPrice = s.ForwardPrice;
-            Interest = s.Interest;
-            PutCallRatio = s.PutCallRatio;
-            Sequence = s.Sequence;
-            Volatility = s.Volatility;
-            Index = s.Index;
             EventFlags = s.EventFlags;
+            Index = s.Index;
+            Expiration = s.Expiration;
+            Volatility = s.Volatility;
+            PutCallRatio = s.PutCallRatio;
+            ForwardPrice = s.ForwardPrice;
+            Dividend = s.Dividend;
+            Interest = s.Interest;
         }
 
         public override string ToString()
         {
-            return string.Format(CultureInfo.InvariantCulture, "Series: {{{0}, " +
-                "Expiration: {1}, Sequence: {2}, Volatility: {3}, " +
-                "PutCallRatio: {4}, ForwardPrice: {5}, Dividend: {6}, Interest: {7}, Index: {8}}}",
-                EventSymbol, Expiration, Sequence, Volatility, PutCallRatio,
-                ForwardPrice, Dividend, Interest, Index);
+            return string.Format(CultureInfo.InvariantCulture,
+                "Series: {{{0}, "                        +
+                "EventFlags: 0x{1:x2}, Index: {2:x16}, " +
+                "Expiration: {3}, "                      +
+                "Volatility: {4}, PutCallRatio: {5}, "   +
+                "ForwardPrice: {6}, "                    +
+                "Dividend: {7}, Interest: {8}"           +
+                 "}}",
+                EventSymbol,
+                EventFlags, Index,
+                Expiration,
+                Volatility, PutCallRatio,
+                ForwardPrice,
+                Dividend, Interest
+            );
         }
 
         #region Implementation of ICloneable
@@ -68,91 +77,52 @@ namespace com.dxfeed.native.events
         #region Implementation of IDxSeries
 
         /// <summary>
-        /// Returns implied simple dividend return of the corresponding option series.
-        /// See the model section for an explanation this simple dividend return \( Q(\tau) \).
+        ///     Returns source of this event.
         /// </summary>
-        public double Dividend
-        {
-            get; private set;
-        }
-
+        /// <returns>Source of this event.</returns>
+        public IndexedEventSource Source { get { return IndexedEventSource.DEFAULT; }  }
+        /// <summary>
+        ///    Gets or sets transactional event flags.
+        ///    See "Event Flags" section from <see cref="IDxIndexedEvent"/>.
+        /// </summary>
+        public EventFlag EventFlags { get; set; }
+        /// <summary>
+        ///     Gets unique per-symbol index of this event.
+        /// </summary>
+        public long Index { get; private set; }
         /// <summary>
         /// Returns day id of expiration.
-        /// Example: DayUtil.GetDayIdByYearMonthDay(20090117). Most significant
+        /// Example: DayUtil.getDayIdByYearMonthDay(20090117). Most significant
         /// 32 bits of Index contain day id of expiration, so changing Index also
         /// changes day id of expiration.
         /// </summary>
-        public int Expiration
-        {
-            get; private set;
-        }
-
+        public int Expiration { get; private set; }
+        /// <summary>
+        /// Returns sequence of this series
+        /// </summary>
+        public int Sequence { get; private set; }
+        /// <summary>
+        /// Returns ratio of put traded volume to call traded volume for a day.
+        /// </summary>
+        public double Volatility { get; private set; }
+        /// <summary>
+        /// Returns ratio of put traded volume to call traded volume for a day.
+        /// </summary>
+        public double PutCallRatio { get; private set; }
         /// <summary>
         /// Returns implied forward price for this option series.
         /// </summary>
-        public double ForwardPrice
-        {
-            get; private set;
-        }
-
+        public double ForwardPrice { get; private set; }
+        /// <summary>
+        /// Returns implied simple dividend return of the corresponding option series.
+        /// See the model section for an explanation this simple dividend return \( Q(\tau) \).
+        /// </summary>
+        public double Dividend { get; private set; }
         /// <summary>
         /// Returns implied simple interest return of the corresponding option series.
         /// See the model section for an explanation this simple interest return \( R(\tau) \).
         /// </summary>
-        public double Interest
-        {
-            get; private set;
-        }
-
-        /// <summary>
-        /// Returns ratio of put traded volume to call traded volume for a day.
-        /// </summary>
-        public double PutCallRatio
-        {
-            get; private set;
-        }
-
-        /// <summary>
-        /// Returns sequence of this series
-        /// </summary>
-        public int Sequence
-        {
-            get; private set;
-        }
-
-        /// <summary>
-        /// Returns ratio of put traded volume to call traded volume for a day.
-        /// </summary>
-        public double Volatility
-        {
-            get; private set;
-        }
-
-        /// <summary>
-        /// Returns unique per-symbol index of this series.
-        /// Most significant 32 bits of index contain Expiration value and Sequence.
-        /// </summary>
-        public long Index
-        {
-            get; private set;
-        }
-
-        /// <summary>
-        /// Gets transactional event flags.
-        /// See "Event Flags" section from <see cref="IndexedEvent"/>.
-        /// </summary>
-        public EventFlag EventFlags
-        {
-            get; set;
-        }
-
-        public IndexedEventSource Source
-        {
-            get
-            {
-                return IndexedEventSource.DEFAULT;
-            }
-        }
+        public double Interest { get; private set; }
 
         #endregion
     }

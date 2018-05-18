@@ -74,6 +74,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="src\api\DXFeedEventHandler.cs" />
     <Compile Include="src\api\DXFeedTimeSeriesSubscription.cs" />
+    <Compile Include="src\events\NativeSpreadOrder.cs" />
     <Compile Include="src\native\C.cs" />
     <Compile Include="src\native\C32.cs" />
     <Compile Include="src\native\CDataTypes.cs" />
@@ -91,18 +92,16 @@
     <Compile Include="src\events\NativeGreeks.cs" />
     <Compile Include="src\events\NativeConfiguration.cs" />
     <Compile Include="src\events\NativeSeries.cs" />
-    <Compile Include="src\events\NativeSpreadOrder.cs" />
     <Compile Include="src\events\NativeOrderBase.cs" />
     <Compile Include="src\events\NativeSummary.cs" />
-    <Compile Include="src\events\NativeMarketMaker.cs" />
     <Compile Include="src\events\NativeOrder.cs" />
     <Compile Include="src\events\NativeProfile.cs" />
     <Compile Include="src\events\NativeQuote.cs" />
     <Compile Include="src\events\NativeTheoPrice.cs" />
     <Compile Include="src\events\NativeTimeAndSale.cs" />
-    <Compile Include="src\events\NativeTradeETH.cs" />
     <Compile Include="src\events\NativeTradeBase.cs" />
     <Compile Include="src\events\NativeTrade.cs" />
+    <Compile Include="src\events\NativeTradeETH.cs" />
     <Compile Include="src\events\NativeUnderlying.cs" />
     <Compile Include="src\NativeConnection.cs" />
     <Compile Include="src\NativeDxException.cs" />
@@ -161,7 +160,7 @@
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>

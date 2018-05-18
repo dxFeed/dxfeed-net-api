@@ -9,6 +9,7 @@
 using System;
 using System.Runtime.InteropServices;
 using com.dxfeed.api.events;
+using com.dxfeed.api.data;
 
 namespace com.dxfeed.native.api
 {

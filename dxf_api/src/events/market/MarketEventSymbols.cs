@@ -130,7 +130,7 @@ namespace com.dxfeed.api.events.market
         /// Returns value of the attribute with the specified key.
         /// The result is {@code null} if attribute with the specified key is not found.
         /// The result is {@code null} if symbol is {@code null}.
-        /// 
+        ///
         /// </summary>
         /// <param name="symbol">symbol</param>
         /// <param name="key">attribute key</param>
@@ -148,7 +148,7 @@ namespace com.dxfeed.api.events.market
         /// <summary>
         /// Changes value of one attribute value while leaving exchange code and other attributes intact.
         /// The {@code null} symbol is interpreted as empty one by this method..
-        /// 
+        ///
         /// </summary>
         /// <param name="symbol">old symbol</param>
         /// <param name="key">attribute key</param>
@@ -170,7 +170,7 @@ namespace com.dxfeed.api.events.market
         /// <summary>
         /// Removes one attribute with the specified key while leaving exchange code and other attributes intact.
         /// The result is {@code null} if symbol is {@code null}.
-        /// 
+        ///
         /// </summary>
         /// <param name="symbol">old symbol</param>
         /// <param name="key">attribute key</param>
@@ -186,7 +186,7 @@ namespace com.dxfeed.api.events.market
         }
 
         /// <summary>
-        ///     Validates symbolObj is not <c>null</c> and is <c>string</c> or <see cref="CandleSymbol"/> 
+        ///     Validates symbolObj is not <c>null</c> and is <c>string</c> or <see cref="CandleSymbol"/>
         ///     object.
         /// </summary>
         /// <param name="symbolObj">Object to validate for symbol.</param>

@@ -51,7 +51,7 @@ namespace com.dxfeed.api
         ///     If <paramref name="endpoint"/> or <paramref name="eventTypes"/> is null.
         /// </exception>
         /// <exception cref="ArgumentException">
-        ///     If <paramref name="eventTypes"/> are empty or any type of 
+        ///     If <paramref name="eventTypes"/> are empty or any type of
         ///     <paramref name="eventTypes"/> is not event class.
         /// </exception>
         /// <exception cref="DxException">Internal error.</exception>
@@ -136,15 +136,15 @@ namespace com.dxfeed.api
 
         /// <summary>
         ///     <para>
-        ///         Closes this subscription and makes it permanently detached. 
-        ///         This method notifies attached <see cref="IDXFeed"/> by invoking 
-        ///         <see cref="Detach(IDXFeed)"/> and <see cref="IDXFeed.DetachSubscription{E}(IDXFeedSubscription{E})"/> 
-        ///         methods while holding the lock for this subscription. This method clears lists 
-        ///         of all installed event listeners and subscription change listeners and makes 
+        ///         Closes this subscription and makes it permanently detached.
+        ///         This method notifies attached <see cref="IDXFeed"/> by invoking
+        ///         <see cref="Detach(IDXFeed)"/> and <see cref="IDXFeed.DetachSubscription{E}(IDXFeedSubscription{E})"/>
+        ///         methods while holding the lock for this subscription. This method clears lists
+        ///         of all installed event listeners and subscription change listeners and makes
         ///         sure that no more listeners can be added.
         ///     </para>
         ///     <para>
-        ///         This method ensures that subscription can be safely garbage-collected when all 
+        ///         This method ensures that subscription can be safely garbage-collected when all
         ///         outside references to it are lost.
         ///     </para>
         /// </summary>
@@ -195,7 +195,7 @@ namespace com.dxfeed.api
         ///         Implementation notes.
         ///     </para>
         ///     <para>
-        ///         This method notifies all subscribed <see cref="OnSymbolsRemoved"/> events on 
+        ///         This method notifies all subscribed <see cref="OnSymbolsRemoved"/> events on
         ///         clear symbols from this subscription.
         ///     </para>
         /// </summary>
@@ -211,11 +211,11 @@ namespace com.dxfeed.api
         }
 
         /// <summary>
-        ///     Returns a set of subscribed symbols. The resulting set cannot be modified. The 
-        ///     contents of the resulting set are undefined if the set of symbols is changed after 
-        ///     invocation of this method, but the resulting set is safe for concurrent reads from 
-        ///     any threads. The resulting set maybe either a snapshot of the set of the subscribed 
-        ///     symbols at the time of invocation or a weakly consistent view of the set. 
+        ///     Returns a set of subscribed symbols. The resulting set cannot be modified. The
+        ///     contents of the resulting set are undefined if the set of symbols is changed after
+        ///     invocation of this method, but the resulting set is safe for concurrent reads from
+        ///     any threads. The resulting set maybe either a snapshot of the set of the subscribed
+        ///     symbols at the time of invocation or a weakly consistent view of the set.
         /// </summary>
         /// <returns>Set of subscribed symbols.</returns>
         public ISet<object> GetSymbols()
@@ -230,7 +230,7 @@ namespace com.dxfeed.api
 
         /// <summary>
         ///     <para>
-        ///         Changes the set of subscribed symbols so that it contains just the symbols from 
+        ///         Changes the set of subscribed symbols so that it contains just the symbols from
         ///         the specified collection.
         ///         To conveniently set subscription for just one or few symbols you can use
         ///         <see cref="SetSymbols(object[])"/> method.
@@ -241,7 +241,7 @@ namespace com.dxfeed.api
         ///         Implementation notes.
         ///     </para>
         ///     <para>
-        ///         This method notifies all subscribed <see cref="OnSymbolsAdded"/> and 
+        ///         This method notifies all subscribed <see cref="OnSymbolsAdded"/> and
         ///         <see cref="OnSymbolsRemoved"/> events on symbols changing for this subscription.
         ///     </para>
         /// </summary>
@@ -262,7 +262,7 @@ namespace com.dxfeed.api
 
         /// <summary>
         ///     <para>
-        ///         Changes the set of subscribed symbols so that it contains just the symbols from 
+        ///         Changes the set of subscribed symbols so that it contains just the symbols from
         ///         the specified array.
         ///         This is a convenience method to set subscription to one or few symbols at a time.
         ///         When setting subscription to multiple symbols at once it is preferable to use
@@ -274,7 +274,7 @@ namespace com.dxfeed.api
         ///         Implementation notes.
         ///     </para>
         ///     <para>
-        ///         This method notifies all subscribed <see cref="OnSymbolsAdded"/> and 
+        ///         This method notifies all subscribed <see cref="OnSymbolsAdded"/> and
         ///         <see cref="OnSymbolsRemoved"/> events on symbols changing for this subscription.
         ///     </para>
         /// </summary>
@@ -305,7 +305,7 @@ namespace com.dxfeed.api
         ///         Implementation notes.
         ///     </para>
         ///     <para>
-        ///         This method notifies all subscribed <see cref="OnSymbolsAdded"/> events on 
+        ///         This method notifies all subscribed <see cref="OnSymbolsAdded"/> events on
         ///         symbols changing for this subscription.
         ///     </para>
         /// </summary>
@@ -330,7 +330,7 @@ namespace com.dxfeed.api
         ///         Implementation notes.
         ///     </para>
         ///     <para>
-        ///         This method notifies all subscribed <see cref="OnSymbolsAdded"/> events on 
+        ///         This method notifies all subscribed <see cref="OnSymbolsAdded"/> events on
         ///         symbols changing for this subscription.
         ///     </para>
         /// </summary>
@@ -354,7 +354,7 @@ namespace com.dxfeed.api
         ///         Implementation notes.
         ///     </para>
         ///     <para>
-        ///         This method notifies all subscribed <see cref="OnSymbolsAdded"/> events on 
+        ///         This method notifies all subscribed <see cref="OnSymbolsAdded"/> events on
         ///         symbols changing for this subscription.
         ///     </para>
         /// </summary>
@@ -382,7 +382,7 @@ namespace com.dxfeed.api
         ///         Implementation notes.
         ///     </para>
         ///     <para>
-        ///         This method notifies all subscribed <see cref="OnSymbolsRemoved"/> events on 
+        ///         This method notifies all subscribed <see cref="OnSymbolsRemoved"/> events on
         ///         symbols changing for this subscription.
         ///     </para>
         /// </summary>
@@ -411,7 +411,7 @@ namespace com.dxfeed.api
         ///         Implementation notes.
         ///     </para>
         ///     <para>
-        ///         This method notifies all subscribed <see cref="OnSymbolsRemoved"/> events on 
+        ///         This method notifies all subscribed <see cref="OnSymbolsRemoved"/> events on
         ///         symbols changing for this subscription.
         ///     </para>
         /// </summary>
@@ -508,9 +508,9 @@ namespace com.dxfeed.api
         ///         Implementation notes.
         ///     </para>
         ///     <para>
-        ///         This method notifies all subscribed <see cref="OnSymbolsAdded"/> events on 
-        ///         symbols changing for this subscription. The <c>false</c> value of 
-        ///         <paramref name="callUpdateEvent"/> disables calling any symbols update events 
+        ///         This method notifies all subscribed <see cref="OnSymbolsAdded"/> events on
+        ///         symbols changing for this subscription. The <c>false</c> value of
+        ///         <paramref name="callUpdateEvent"/> disables calling any symbols update events
         ///         for this method.
         ///     </para>
         /// </summary>

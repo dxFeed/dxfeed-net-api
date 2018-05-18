@@ -11,7 +11,7 @@ namespace com.dxfeed.api
     /// <summary>
     /// Interface provides receiving TradeETH events.
     /// </summary>
-    public interface IDxTradeEthListener: IDxEventListener
+    public interface IDxTradeETHListener: IDxEventListener
     {
         /// <summary>
         /// On TradeETH event received.
@@ -19,8 +19,8 @@ namespace com.dxfeed.api
         /// <typeparam name="TB">Event buffer type.</typeparam>
         /// <typeparam name="TE">Event type.</typeparam>
         /// <param name="buf">Event buffer object.</param>
-        void OnTradeEth<TB, TE>(TB buf)
+        void OnTradeETH<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
-            where TE : IDxTradeEth;
+            where TE : IDxTradeETH;
     }
 }

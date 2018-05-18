@@ -13,9 +13,9 @@ using System.Collections.Generic;
 namespace com.dxfeed.api
 {
     /// <summary>
-    ///     The universal event listener class for handling all native events. It is aggregates 
+    ///     The universal event listener class for handling all native events. It is aggregates
     ///     as simple as snapshots events and calls <see cref="IDXFeedEventListener{E}"/> from
-    ///     list. This class used as event listener converter from native events wrapper to 
+    ///     list. This class used as event listener converter from native events wrapper to
     ///     high-level event listener.
     /// </summary>
     /// <typeparam name="E">The type of event.</typeparam>
@@ -31,7 +31,7 @@ namespace com.dxfeed.api
         IDxTheoPriceListener,
         IDxTimeAndSaleListener,
         IDxTradeListener,
-        IDxTradeEthListener,
+        IDxTradeETHListener,
         IDxUnderlyingListener,
         IDxConfigurationListener,
         IDxOrderSnapshotListener,
@@ -219,11 +219,11 @@ namespace com.dxfeed.api
 
         #region Implementation of IDxTradeEth
 
-        public void OnTradeEth<TB, TE>(TB buf)
+        public void OnTradeETH<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
-            where TE : IDxTradeEth
+            where TE : IDxTradeETH
         {
-            if (!subscriptionType.IsAssignableFrom(typeof(IDxTradeEth)))
+            if (!subscriptionType.IsAssignableFrom(typeof(IDxTrade)))
                 return;
             List<E> events = new List<E>();
             foreach (var item in buf)

@@ -27,181 +27,118 @@ namespace com.dxfeed.native.events
         {
             DxOrder order = *o;
 
-            Count = order.count;
             EventFlags = order.event_flags;
-            ExchangeCode = order.exchange_code;
             Index = order.index;
-            Level = order.level;
-            Side = order.side;
-            Price = order.price;
-            Scope = Scope.ValueOf(order.scope);
-            Sequence = order.sequence;
-            Size = order.size;
             Time = TimeConverter.ToUtcDateTime(order.time);
-            Source = OrderSource.ValueOf(new string(order.source));
-            TimeSequence = order.time_sequence;
-        }
-
-        internal unsafe NativeOrderBase(DxSpreadOrder* o, string symbol) : base(symbol)
-        {
-            DxSpreadOrder order = *o;
-
+            TimeNanoPart = order.time_nanos;
+            Sequence = order.sequence;
+            Price = order.price;
+            Size = order.size;
             Count = order.count;
-            EventFlags = order.event_flags;
-            ExchangeCode = order.exchange_code;
-            Index = order.index;
-            Level = order.level;
+            Scope = order.scope;
             Side = order.side;
-            Price = order.price;
-            Scope = Scope.ValueOf(order.scope);
-            Sequence = order.sequence;
-            Size = order.size;
-            Time = TimeConverter.ToUtcDateTime(order.time);
+            ExchangeCode = order.exchange_code;
             Source = OrderSource.ValueOf(new string(order.source));
-            TimeSequence = order.time_sequence;
         }
 
         internal NativeOrderBase(IDxOrderBase order) : base(order.EventSymbol)
         {
-            Count = order.Count;
             EventFlags = order.EventFlags;
-            ExchangeCode = order.ExchangeCode;
             Index = order.Index;
-            Level = order.Level;
-            Side = order.Side;
-            Price = order.Price;
-            Scope = Scope.ValueOf(order.Scope.Code);
-            Sequence = order.Sequence;
-            Size = order.Size;
             Time = order.Time;
-            Source = OrderSource.ValueOf(order.Source.Name);
-            TimeSequence = order.TimeSequence;
+            TimeNanoPart = order.TimeNanoPart;
+            Sequence = order.Sequence;
+            Price = order.Price;
+            Size = order.Size;
+            Count = order.Count;
+            Scope = order.Scope;
+            Side = order.Side;
+            ExchangeCode = order.ExchangeCode;
+            Source = order.Source;
         }
 
         public override string ToString()
         {
-            return string.Format(CultureInfo.InvariantCulture, "{1}, {7}@{6}, " +
-                "Index: {0:x4}, Level: {2}, Time: {3:o}, Sequence: {4}, ExchangeCode: '{5}', " +
-                "Source: '{8}', EventFlags: 0x{9:X}, Scope: {10}, Count: {11}",
-                Index, Side, Level, Time, Sequence, ExchangeCode, Price, Size, Source, EventFlags, 
-                Scope, Count);
+            return string.Format(CultureInfo.InvariantCulture,
+                "Source: {0}, "                                   +
+                "EventFlags: 0x{1:x2}, Index: {2:x16}, "          +
+                "Time: {3:o}, TimeNanoPart: {4}, Sequence: {5}, " +
+                "Price: {6}, Size: {7}, Count: {8}, "             +
+                "Scope: {9}, Side: {10}, "                        +
+                "ExchangeCode: {11}",
+                Source,
+                EventFlags, Index,
+                Time, TimeNanoPart, Sequence,
+                Price, Size, Count,
+                Scope, Side,
+                ExchangeCode
+            );
         }
 
         #region Implementation of ICloneable
+
         public override object Clone()
         {
             return new NativeOrderBase(this);
         }
+
         #endregion
 
         #region Implementation of IDxOrderBase
 
         /// <summary>
-        ///   Returns number of individual orders in this aggregate order.
+        ///     Returns source of this event.
         /// </summary>
-        public int Count
-        {
-            get; internal set;
-        }
+        public IndexedEventSource Source { get; internal set; }
 
         /// <summary>
-        ///   Returns event flags.
+        ///    Gets or sets transactional event flags.
+        ///    See "Event Flags" section from <see cref="IDxIndexedEvent"/>.
         /// </summary>
-        public EventFlag EventFlags
-        {
-            get; set;
-        }
+        public EventFlag EventFlags { get; set; }
 
         /// <summary>
-        ///   Returns exchange code of this order.
+        ///     Gets unique per-symbol index of this event.
         /// </summary>
-        public char ExchangeCode
-        {
-            get; internal set;
-        }
+        public long Index { get; internal set; }
 
         /// <summary>
-        ///   Returns unique per-symbol index of this order. Index is non-negative.
+        ///  Returns date time of this order.
         /// </summary>
-        public long Index
-        {
-            get; internal set;
-        }
-
+        public DateTime Time { get; internal set; }
         /// <summary>
-        ///   Returns detail level of this order.
-        ///   Deprecated use Scope instead.
+        ///  Returns microseconds and nanoseconds time part of the last trade.
         /// </summary>
-        public int Level
-        {
-            get; internal set;
-        }
-
-        /// <summary>
-        ///   Returns side of this order.
-        /// </summary>
-        public Side Side
-        {
-            get; internal set;
-        }
-
-        /// <summary>
-        ///   Returns price of this order.
-        /// </summary>
-        public double Price
-        {
-            get; internal set;
-        }
-
-        /// <summary>
-        ///   Returns scope of this order.
-        /// </summary>
-        public Scope Scope
-        {
-            get; internal set;
-        }
-
+        public int TimeNanoPart { get; internal set; }
         /// <summary>
         ///   Returns sequence number of this order to distinguish orders that have the same Time.
         ///   This sequence number does not have to be unique and does not need to be sequential.
         /// </summary>
-        public int Sequence
-        {
-            get; internal set;
-        }
-
+        public int Sequence { get; internal set; }
+        /// <summary>
+        ///   Returns price of this order.
+        /// </summary>
+        public double Price { get; internal set; }
         /// <summary>
         ///   Returns size of this order.
         /// </summary>
-        public long Size
-        {
-            get; internal set;
-        }
-
+        public long Size { get; internal set; }
         /// <summary>
-        ///   Returns source of this event.
+        ///   Returns number of individual orders in this aggregate order.
         /// </summary>
-        public IndexedEventSource Source
-        {
-            get; internal set;
-        }
-
+        public int Count { get; internal set; }
         /// <summary>
-        ///   Returns date time of this order.
+        ///   Returns scope of this order.
         /// </summary>
-        public DateTime Time
-        {
-            get; internal set;
-        }
-
+        public Scope Scope { get; internal set; }
         /// <summary>
-        ///   Returns time and sequence of this order packaged into single long value.
-        ///   This method is intended for efficient order time priority comparison.
+        ///   Returns side of this order.
         /// </summary>
-        public long TimeSequence
-        {
-            get; internal set;
-        }
+        public Side Side { get; internal set; }
+        /// <summary>
+        ///   Returns exchange code of this order.
+        /// </summary>
+        public char ExchangeCode { get; internal set; }
 
         #endregion
     }

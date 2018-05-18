@@ -18,7 +18,6 @@ namespace com.dxfeed.native.events
         private static readonly int TRADE_SIZE;
         private static readonly int SUMMARY_SIZE;
         private static readonly int PROFILE_SIZE;
-        private static readonly int MM_SIZE;
         private static readonly int TS_SIZE;
         private static readonly int CANDLE_SIZE;
         private static readonly int TRADE_ETH_SIZE;
@@ -36,11 +35,10 @@ namespace com.dxfeed.native.events
             TRADE_SIZE = sizeof(DxTrade);
             SUMMARY_SIZE = sizeof(DxSummary);
             PROFILE_SIZE = sizeof(DxProfile);
-            MM_SIZE = sizeof(DxMarketMaker);
             TS_SIZE = sizeof(DxTimeAndSale);
             CANDLE_SIZE = sizeof(DxCandle);
-            TRADE_ETH_SIZE = sizeof(DxTradeEth);
-            SPREAD_ORDER_SIZE = sizeof(DxSpreadOrder);
+            TRADE_ETH_SIZE = sizeof(DxTrade);
+            SPREAD_ORDER_SIZE = sizeof(DxOrder);
             GREEKS_SIZE = sizeof(DxGreeks);
             THEO_PRICE_SIZE = sizeof(DxTheoPrice);
             UNDERLYING_SIZE = sizeof(DxUnderlying);
@@ -78,11 +76,6 @@ namespace com.dxfeed.native.events
             return new NativeProfile((DxProfile*)IntPtr.Add(head, offset * PROFILE_SIZE), symbol);
         }
 
-        public static NativeMarketMaker ReadMarketMaker(IntPtr head, int offset, string symbol)
-        {
-            return new NativeMarketMaker((DxMarketMaker*)IntPtr.Add(head, offset * MM_SIZE), symbol);
-        }
-
         public static NativeTimeAndSale ReadTimeAndSale(IntPtr head, int offset, string symbol)
         {
             return new NativeTimeAndSale((DxTimeAndSale*)IntPtr.Add(head, offset * TS_SIZE), symbol);
@@ -93,14 +86,14 @@ namespace com.dxfeed.native.events
             return new NativeCandle((DxCandle*)IntPtr.Add(head, offset * CANDLE_SIZE), symbol);
         }
 
-        public static NativeTradeETH ReadTradeEth(IntPtr head, int offset, string symbol)
+        public static NativeTradeETH ReadTradeETH(IntPtr head, int offset, string symbol)
         {
-            return new NativeTradeETH((DxTradeEth*)IntPtr.Add(head, offset * TRADE_ETH_SIZE), symbol);
+            return new NativeTradeETH((DxTrade*)IntPtr.Add(head, offset * TRADE_ETH_SIZE), symbol);
         }
 
         public static NativeSpreadOrder ReadSpreadOrder(IntPtr head, int offset, string symbol)
         {
-            return new NativeSpreadOrder((DxSpreadOrder*)IntPtr.Add(head, offset * SPREAD_ORDER_SIZE), symbol);
+            return new NativeSpreadOrder((DxOrder*)IntPtr.Add(head, offset * SPREAD_ORDER_SIZE), symbol);
         }
 
         public static NativeGreeks ReadGreeks(IntPtr head, int offset, string symbol)
@@ -126,11 +119,6 @@ namespace com.dxfeed.native.events
         public static NativeConfiguration ReadConfiguration(IntPtr head, int offset, string symbol)
         {
             return new NativeConfiguration((DxConfiguration*)IntPtr.Add(head, offset * CONFIGURATION_SIZE), symbol);
-        }
-
-        public static DxString ReadDxString(IntPtr ptr)
-        {
-            return new DxString((char*)ptr.ToPointer());
         }
     }
 }

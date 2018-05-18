@@ -9,6 +9,7 @@
 using System;
 using System.Runtime.InteropServices;
 using com.dxfeed.api.events;
+using com.dxfeed.api.data;
 
 namespace com.dxfeed.native.api
 {
@@ -287,11 +288,11 @@ namespace com.dxfeed.native.api
         }
 
         [DllImport(DXFEED_DLL, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl, EntryPoint = "dxf_create_snapshot")]
-        private static extern int __dxf_create_snapshot(IntPtr connection, int event_id, 
-                                                        string symbol, byte[] source, 
+        private static extern int __dxf_create_snapshot(IntPtr connection, int event_id,
+                                                        string symbol, byte[] source,
                                                         Int64 time, out IntPtr snapshot);
-        internal override int dxf_create_snapshot(IntPtr connection, int event_id, 
-                                                  string symbol, byte[] source, 
+        internal override int dxf_create_snapshot(IntPtr connection, int event_id,
+                                                  string symbol, byte[] source,
                                                   Int64 time, out IntPtr snapshot)
         {
             return __dxf_create_snapshot(connection, event_id, symbol, source, time, out snapshot);

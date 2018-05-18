@@ -21,7 +21,7 @@ namespace com.dxfeed.samples
         {
             string[] symbols = new string[] { "C", "IBM", "MSFT" };
             IDXFeed feed = DXFeed.GetInstance();
-            List<Task<LastingEvent>> promises = feed.GetLastEventsPromises<IDxTrade>(
+            List<Task<IDxLastingEvent>> promises = feed.GetLastEventsPromises<IDxTrade>(
                 symbols,
                 new CancellationTokenSource(TimeSpan.FromSeconds(5)).Token);
             // combine the list of promises into one with Task utility method and wait

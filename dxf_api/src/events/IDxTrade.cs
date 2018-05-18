@@ -15,6 +15,9 @@ namespace com.dxfeed.api.events
     [EventTypeAttribute("Trade")]
     public interface IDxTrade : IDxTradeBase
     {
-        //Note: no extra fields in this interface.
+        /// <summary>
+        /// Returns price change of the last trade, if availiable.
+        /// </summary>
+        double Change { get; }
     }
 }

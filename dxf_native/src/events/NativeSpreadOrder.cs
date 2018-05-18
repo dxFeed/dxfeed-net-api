@@ -21,15 +21,15 @@ namespace com.dxfeed.native.events
     /// </summary>
     public class NativeSpreadOrder : NativeOrderBase, IDxSpreadOrder
     {
-        internal unsafe NativeSpreadOrder(DxSpreadOrder* order, string symbol) : base(order, symbol)
+        internal unsafe NativeSpreadOrder(DxOrder* order, string symbol) : base(order, symbol)
         {
-            DxSpreadOrder o = *order;
-            SpreadSymbol = DxMarshal.ReadDxString(o.spread_symbol);
+            DxOrder o = *order;
+            SpreadSymbol = new string((char*)o.mm_or_ss.ToPointer());
         }
 
         internal NativeSpreadOrder(IDxSpreadOrder order) : base(order)
         {
-            SpreadSymbol = (DxString)order.SpreadSymbol.Clone();
+            SpreadSymbol = order.SpreadSymbol;
         }
 
         public override string ToString()
@@ -43,10 +43,7 @@ namespace com.dxfeed.native.events
         /// <summary>
         /// Returns spread symbol of this event.
         /// </summary>
-        public DxString SpreadSymbol
-        {
-            get; internal set;
-        }
+        public string SpreadSymbol { get; private set; }
 
         #endregion
     }

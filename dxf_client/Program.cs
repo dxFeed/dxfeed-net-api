@@ -8,6 +8,7 @@ using System;
 using System.Globalization;
 using com.dxfeed.api;
 using com.dxfeed.api.candle;
+using com.dxfeed.api.data;
 using com.dxfeed.api.events;
 using com.dxfeed.api.extras;
 using com.dxfeed.native;
@@ -205,7 +206,7 @@ namespace dxf_client
                     "where\n" +
                     "    host:port - address of dxfeed server (demo.dxfeed.com:7300)\n" +
                     "    event     - any of the {Profile,Order,Quote,Trade,TimeAndSale,Summary,\n" +
-                    "                TradeETH,SpreadOrder,Candle,Greeks,TheoPrice,Underlying,Series,\n" + 
+                    "                TradeETH,SpreadOrder,Candle,Greeks,TheoPrice,Underlying,Series,\n" +
                     "                Configuration}\n" +
                     "    symbol    - a) IBM, MSFT, ...\n" +
                     "                b) if it is Candle event you can specify candle symbol\n" +

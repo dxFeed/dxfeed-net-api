@@ -9,6 +9,7 @@
 using System;
 using System.Runtime.InteropServices;
 using com.dxfeed.api.events;
+using com.dxfeed.api.data;
 
 namespace com.dxfeed.native.api
 {
@@ -46,7 +47,7 @@ namespace com.dxfeed.native.api
 
 
         /// <summary>
-        ///   Helper method to check error codes 
+        ///   Helper method to check error codes
         ///   Throws NativeDxException if return_code != DX_OK
         /// </summary>
         /// <param name="returnCode"></param>
@@ -75,7 +76,7 @@ namespace com.dxfeed.native.api
 
         /*
             typedef void (*dxf_event_listener_t) (int event_type, dxf_const_string_t symbol_name,
-                                                  const dxf_event_data_t* data, int data_count, 
+                                                  const dxf_event_data_t* data, int data_count,
                                                   const dxf_event_params_t* event_params, void* user_data);
         */
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
@@ -106,7 +107,7 @@ namespace com.dxfeed.native.api
          *  Initializes the internal logger.
          *  Various actions and events, including the errors, are being logged throughout the library. They may be stored
          *  into the file.
-         *  
+         *
          *  param file_name - a full path to the file where the log is to be stored
          *  rewrite_file - a flag defining the file open mode; if it's nonzero then the log file will be rewritten
          *  show_timezone_info - a flag defining the time display option in the log file; if it's nonzero then
@@ -119,7 +120,7 @@ namespace com.dxfeed.native.api
 
         /*
          *  Creates connection with the specified parameters.
- 
+
          *  address - the single address: "host:port" or just "host"
          *            address with credentials: "host:port[username=xxx,password=yyy]"
          *            multiple addresses: "(host1:port1)(host2)(host3:port3[username=xxx,password=yyy])"
@@ -145,7 +146,7 @@ namespace com.dxfeed.native.api
 
         /*
          *  Creates connection with the specified parameters and basic authorization.
- 
+
          *  address - the single address: "host:port" or just "host"
          *            address with credentials: "host:port[username=xxx,password=yyy]"
          *            multiple addresses: "(host1:port1)(host2)(host3:port3[username=xxx,password=yyy])"
@@ -263,7 +264,7 @@ namespace com.dxfeed.native.api
         /*
          *  Closes a subscription.
          *  All the data associated with it will be freed.
-         *  
+         *
          *  subscription - a handle of the subscription to close
          */
         //DXFEED_API ERRORCODE dxf_close_subscription (dxf_subscription_t subscription);
@@ -283,7 +284,7 @@ namespace com.dxfeed.native.api
         /*
          *  Adds several symbols to the subscription.
          *  No error occurs if the symbol is attempted to add for the second time.
-         *  
+         *
          *  subscription - a handle of the subscription to which the symbols are added
          *  symbols - the symbols to add
          *  symbol_count - a number of symbols
@@ -294,7 +295,7 @@ namespace com.dxfeed.native.api
 
         /*
          *  Adds a candle symbol to the subscription.
- 
+
          *  subscription - a handle of the subscription to which a symbol is added
          *  candle_attributes - pointer to the candle struct
          */
@@ -321,7 +322,7 @@ namespace com.dxfeed.native.api
         /*
          *  Removes several symbols from the subscription.
          *  No error occurs if it's attempted to remove symbols that weren't added beforehand.
-         *  
+         *
          *  subscription - a handle of the subscription to which the symbols are added
          *  symbols - the symbols to remove
          *  symbol_count - a number of symbols
@@ -394,9 +395,9 @@ namespace com.dxfeed.native.api
          *  Attaches a extended listener callback to the subscription.
          *  This callback will be invoked when the new event data for the subscription symbols arrives.
          *  No error occurs if it's attempted to attach the same listener twice or more.
-         *  
+         *
          *  This listener differs with extend number of callback parameters.
-         * 
+         *
          *  subscription - a handle of the subscription to which a listener is to be attached
          *  event_listener - a listener callback function pointer
          *  user_data - if there isn't user data pass NULL
@@ -499,22 +500,22 @@ namespace com.dxfeed.native.api
         /*
          *  Creates snapshot with the specified parameters.
          *
-         *  For Order or Candle events (dx_eid_order or dx_eid_candle) please use 
+         *  For Order or Candle events (dx_eid_order or dx_eid_candle) please use
          *  short form of this function: dxf_create_order_snapshot or dxf_create_candle_snapshot
          *  respectively.
          *
          *  For order events (event_id is 'dx_eid_order')
-         *  If source is NULL string subscription on Order event will be performed. You can specify order 
+         *  If source is NULL string subscription on Order event will be performed. You can specify order
          *  source for Order event by passing suffix: "BYX", "BZX", "DEA", "DEX", "ISE", "IST", "NTV".
-         *  If source is equal to "COMPOSITE_BID" or "COMPOSITE_ASK" subscription on MarketMaker event will 
+         *  If source is equal to "COMPOSITE_BID" or "COMPOSITE_ASK" subscription on MarketMaker event will
          *  be performed. For other events source parameter does not matter.
          *
          *  connection - a handle of a previously created connection which the subscription will be using
-         *  event_id - single event id. Next events is supported: dxf_eid_order, dxf_eid_candle, 
+         *  event_id - single event id. Next events is supported: dxf_eid_order, dxf_eid_candle,
                        dx_eid_spread_order, dx_eid_time_and_sale.
          *  symbol - the symbol to add.
-         *  source - order source for Order, which can be one of following: "BYX", "BZX", "DEA", "DEX", 
-         *           "ISE", "IST", "NTV". For MarketMaker subscription use "COMPOSITE_BID" or 
+         *  source - order source for Order, which can be one of following: "BYX", "BZX", "DEA", "DEX",
+         *           "ISE", "IST", "NTV". For MarketMaker subscription use "COMPOSITE_BID" or
          *           "COMPOSITE_ASK" keyword.
          *  time - time in the past (unix time in milliseconds).
          *  OUT snapshot - a handle of the created snapshot
@@ -526,14 +527,14 @@ namespace com.dxfeed.native.api
         /*
          *  Creates Order snapshot with the specified parameters.
          *
-         *  If source is NULL string subscription on Order event will be performed. You can specify order 
+         *  If source is NULL string subscription on Order event will be performed. You can specify order
          *  source for Order event by passing suffix: "BYX", "BZX", "DEA", "DEX", "ISE", "IST", "NTV".
-         *  If source is equal to "COMPOSITE_BID" or "COMPOSITE_ASK" subscription on MarketMaker event will 
+         *  If source is equal to "COMPOSITE_BID" or "COMPOSITE_ASK" subscription on MarketMaker event will
          *  be performed.
          *
          *  connection - a handle of a previously created connection which the subscription will be using
          *  symbol - the symbol to add
-         *  source - order source for Order event with 4 symbols maximum length OR keyword which can be 
+         *  source - order source for Order event with 4 symbols maximum length OR keyword which can be
          *           one of COMPOSITE_BID or COMPOSITE_ASK
          *  time - time in the past (unix time in milliseconds)
          *  OUT snapshot - a handle of the created snapshot

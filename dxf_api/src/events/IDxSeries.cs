@@ -13,7 +13,7 @@ namespace com.dxfeed.api.events
     /// about the corresponding values on the market at any given moment of time.
     /// </summary>
     [EventTypeAttribute("Series")]
-    public interface IDxSeries : IDxMarketEvent, IndexedEvent<string>
+    public interface IDxSeries : IDxMarketEvent, IDxIndexedEvent<string>
     {
         /// <summary>
         /// Returns day id of expiration.

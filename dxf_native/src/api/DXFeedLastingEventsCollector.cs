@@ -7,6 +7,7 @@
 #endregion
 
 using com.dxfeed.api.candle;
+using com.dxfeed.api.data;
 using com.dxfeed.api.events;
 using com.dxfeed.api.events.market;
 using com.dxfeed.api.util;
@@ -30,7 +31,7 @@ namespace com.dxfeed.api
         IDxTheoPriceListener,
         IDxTimeAndSaleListener,
         IDxTradeListener,
-        IDxTradeEthListener,
+        IDxTradeETHListener,
         IDxUnderlyingListener,
         IDxConfigurationListener
     {
@@ -94,14 +95,14 @@ namespace com.dxfeed.api
         public DXFeedLastingEventsCollector() { }
 
         /// <summary>
-        ///     Checks collector contains lasting event for specified <paramref name="symbol"/> 
+        ///     Checks collector contains lasting event for specified <paramref name="symbol"/>
         ///     and event of type <c>E</c>.
         /// </summary>
         /// <typeparam name="E">Event type.</typeparam>
         /// <param name="symbol">The market symbol.</param>
         /// <returns>
-        ///     <c>True</c> if collector contains lasting event for specified 
-        ///     <paramref name="symbol"/> and event of type <c>E</c>; otherwise returns 
+        ///     <c>True</c> if collector contains lasting event for specified
+        ///     <paramref name="symbol"/> and event of type <c>E</c>; otherwise returns
         ///     <c>false</c>.
         /// </returns>
         public bool HasEvent<E>(object symbol) where E : class, IDxEventType
@@ -111,13 +112,13 @@ namespace com.dxfeed.api
         }
 
         /// <summary>
-        ///     Returns lasting event for specified <paramref name="symbol"/> and event of type 
+        ///     Returns lasting event for specified <paramref name="symbol"/> and event of type
         ///     <c>E</c>. If collector haven't such event <c>null</c> will be returned.
         /// </summary>
         /// <typeparam name="E">Event type.</typeparam>
         /// <param name="symbol">The market symbol.</param>
         /// <returns>
-        ///     Lasting event for specified <paramref name="symbol"/> and event of type 
+        ///     Lasting event for specified <paramref name="symbol"/> and event of type
         ///     <c>E</c> if such contains in collector; otherwise returns <c>null.</c>
         /// </returns>
         public E GetEvent<E>(object symbol) where E : class, IDxEventType
@@ -228,12 +229,12 @@ namespace com.dxfeed.api
                 AddEvent<IDxTrade>(buf.Symbol.ToString(), e);
         }
 
-        public void OnTradeEth<TB, TE>(TB buf)
+        public void OnTradeETH<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
-            where TE : IDxTradeEth
+            where TE : IDxTradeETH
         {
             foreach (var e in buf)
-                AddEvent<IDxTradeEth>(buf.Symbol.ToString(), e);
+                AddEvent<IDxTradeETH>(buf.Symbol.ToString(), e);
         }
 
         public void OnUnderlying<TB, TE>(TB buf)
@@ -255,7 +256,7 @@ namespace com.dxfeed.api
     }
 
     /// <summary>
-    ///     Class provides methods for collecting and storing lasting events. This collector 
+    ///     Class provides methods for collecting and storing lasting events. This collector
     ///     expands with universal event listener.
     /// </summary>
     /// <typeparam name="E">The type of event.</typeparam>

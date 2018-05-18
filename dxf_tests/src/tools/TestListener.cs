@@ -38,12 +38,6 @@ namespace com.dxfeed.tests.tools
             public string Symbol { get; private set; }
             public EventParams EventParams { get; private set; }
             public TE Event { get; private set; }
-            public ReceivedEvent(DxString symbol, EventParams eventParams, TE eventObj)
-            {
-                Symbol = symbol.ToString();
-                EventParams = new EventParams(eventParams.Flags, eventParams.TimeIntField, eventParams.SnapshotKey);
-                Event = eventObj;
-            }
             public ReceivedEvent(string symbol, EventParams eventParams, TE eventObj)
             {
                 Symbol = symbol;

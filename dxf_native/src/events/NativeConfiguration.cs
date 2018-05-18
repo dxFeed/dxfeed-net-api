@@ -23,13 +23,13 @@ namespace com.dxfeed.native.events
         {
             DxConfiguration c = *configuration;
             Version = c.version;
-            Attachment = DxMarshal.ReadDxString(c.string_object);
+            Attachment = new string((char*)c.string_object.ToPointer());
         }
 
         internal NativeConfiguration(IDxConfiguration c) : base(c.EventSymbol)
         {
             Version = c.Version;
-            Attachment = (DxString)c.Attachment.Clone();
+            Attachment = c.Attachment;
         }
 
         public override string ToString()
@@ -60,7 +60,7 @@ namespace com.dxfeed.native.events
         /// <summary>
         /// Returns attachment.
         /// </summary>
-        public DxString Attachment { get; private set; }
+        public string Attachment { get; private set; }
 
         #endregion
 

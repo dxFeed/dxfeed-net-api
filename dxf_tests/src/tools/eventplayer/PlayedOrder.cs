@@ -33,7 +33,7 @@ namespace com.dxfeed.tests.tools.eventplayer
             this.Source = source;
             fixed (char* pMarketMaker = mm.ToCharArray())
             {
-                this.MarketMaker = new DxString(pMarketMaker);
+                this.MarketMaker = new string(pMarketMaker);
             }
 
             marketMakerCharArray = mm.ToCharArray();
@@ -61,7 +61,7 @@ namespace com.dxfeed.tests.tools.eventplayer
             this.Side = order.Side;
             this.ExchangeCode = order.ExchangeCode;
             this.Source = order.Source;
-            this.MarketMaker = (DxString)order.MarketMaker.Clone();
+            this.MarketMaker = order.MarketMaker;
 
             marketMakerCharArray = MarketMaker.ToString().ToCharArray();
             IntPtr marketMakerCharsPtr = Marshal.UnsafeAddrOfPinnedArrayElement(marketMakerCharArray, 0);
@@ -99,7 +99,7 @@ namespace com.dxfeed.tests.tools.eventplayer
             get; private set;
         }
 
-        public DxString MarketMaker
+        public string MarketMaker
         {
             get; private set;
         }

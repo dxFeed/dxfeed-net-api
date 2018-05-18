@@ -22,6 +22,6 @@ namespace com.dxfeed.api.events
         /// Returns market maker or other aggregate identifier of this order.
         /// This value is defined for Scope.AGGREGATE and Scope.ORDER orders.
         /// </summary>
-        DxString MarketMaker { get; }
+        string MarketMaker { get; }
     }
 }

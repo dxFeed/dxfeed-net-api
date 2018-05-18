@@ -23,11 +23,11 @@ namespace com.dxfeed.native
     class EventBuffer<T> : IDxEventBuf<T>
     {
         private readonly EventType type;
-        private readonly DxString symbol;
+        private readonly string symbol;
         private EventParams eventParams;
         private List<T> events = new List<T>();
 
-        internal EventBuffer(EventType type, DxString symbol, EventParams eventParams)
+        internal EventBuffer(EventType type, string symbol, EventParams eventParams)
         {
             this.type = type;
             this.symbol = symbol;
@@ -92,7 +92,7 @@ namespace com.dxfeed.native
             get { return type; }
         }
 
-        public DxString Symbol
+        public string Symbol
         {
             get { return symbol; }
         }

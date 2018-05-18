@@ -33,7 +33,7 @@ namespace com.dxfeed.tests.tools
         {
             List<TE> events;
 
-            public ReceivedSnapshot(DxString symbol, IList<TE> events)
+            public ReceivedSnapshot(string symbol, IList<TE> events)
             {
                 Symbol = symbol.ToString();
                 this.events = new List<TE>(events);

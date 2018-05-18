@@ -26,7 +26,7 @@ namespace com.dxfeed.tests.tools
             List<IDxOrder> snapshotEvents;
             List<IDxOrder> updates;
 
-            public ReceivedOrderView(DxString symbol, IList<IDxOrder> events)
+            public ReceivedOrderView(string symbol, IList<IDxOrder> events)
             {
                 Symbol = symbol.ToString();
                 snapshotEvents = new List<IDxOrder>(events);

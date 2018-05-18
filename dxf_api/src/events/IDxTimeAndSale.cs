@@ -43,7 +43,7 @@ namespace com.dxfeed.api.events
         /// <summary>
         ///   Returns sale conditions provided for this event by data feed.
         /// </summary>
-        DxString ExchangeSaleConditions { get; }
+        string ExchangeSaleConditions { get; }
         /// <summary>
         /// Returns implementation-specific raw bit flags value
         /// </summary>
@@ -51,11 +51,11 @@ namespace com.dxfeed.api.events
         /// <summary>
         ///   MMID of buyer (availible not for all markets).
         /// </summary>
-        DxString Buyer { get; }
+        string Buyer { get; }
         /// <summary>
         ///   MMID of seller (availible not for all markets).
         /// </summary>
-        DxString Seller { get; }
+        string Seller { get; }
         /// <summary>
         ///   Returns aggressor side of this time and sale event.
         /// </summary>

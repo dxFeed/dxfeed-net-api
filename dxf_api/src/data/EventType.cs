@@ -12,19 +12,19 @@ namespace com.dxfeed.api.data
     public enum EventType : int
     {
         None          = 0,
-        Trade         = (1 << 1),
-        Quote         = (1 << 2),
-        Summary       = (1 << 3),
-        Profile       = (1 << 4),
-        Order         = (1 << 5),
-        TimeAndSale   = (1 << 6),
-        Candle        = (1 << 7),
-        TradeETH      = (1 << 8),
-        SpreadOrder   = (1 << 9),
-        Greeks        = (1 << 10),
-        TheoPrice     = (1 << 11),
-        Underlying    = (1 << 12),
-        Series        = (1 << 13),
-        Configuration = (1 << 14)
+        Trade         = (1 << 0),
+        Quote         = (1 << 1),
+        Summary       = (1 << 2),
+        Profile       = (1 << 3),
+        Order         = (1 << 4),
+        TimeAndSale   = (1 << 5),
+        Candle        = (1 << 6),
+        TradeETH      = (1 << 7),
+        SpreadOrder   = (1 << 8),
+        Greeks        = (1 << 9),
+        TheoPrice     = (1 << 10),
+        Underlying    = (1 << 11),
+        Series        = (1 << 12),
+        Configuration = (1 << 13)
     }
 }

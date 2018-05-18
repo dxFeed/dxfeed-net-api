@@ -18,7 +18,7 @@ namespace com.dxfeed.native.events
         private readonly IntPtr head;
         private readonly int size;
         private readonly Func<IntPtr, int, string, T> readEvent;
-        private readonly DxString symbol;
+        private readonly string symbol;
         private readonly EventParams eventParams;
 
         internal unsafe NativeEventBuffer(EventType type, IntPtr symbol, IntPtr head, int size, EventParams eventParams, Func<IntPtr, int, string, T> readEvent)
@@ -27,7 +27,7 @@ namespace com.dxfeed.native.events
             this.head = head;
             this.size = size;
             this.readEvent = readEvent;
-            this.symbol = new DxString((char*)symbol.ToPointer());
+            this.symbol = new string((char*)symbol.ToPointer());
             this.eventParams = eventParams;
         }
 
@@ -40,7 +40,7 @@ namespace com.dxfeed.native.events
             private readonly Func<IntPtr, int, string, T> readEvent;
             private T current;
             private int nextRead;
-            private DxString symbol;
+            private string symbol;
 
             internal Enumerator(NativeEventBuffer<T> buf)
             {
@@ -69,7 +69,7 @@ namespace com.dxfeed.native.events
                     current = default(T);
                     return false;
                 }
-                current = readEvent(head, nextRead, symbol.ToString());
+                current = readEvent(head, nextRead, symbol);
                 nextRead++;
                 return true;
             }
@@ -122,7 +122,7 @@ namespace com.dxfeed.native.events
             get { return type; }
         }
 
-        public DxString Symbol
+        public string Symbol
         {
             get { return symbol; }
         }

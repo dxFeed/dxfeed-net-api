@@ -35,9 +35,9 @@ namespace com.dxfeed.native.events
             Size = ts.size;
             BidPrice = ts.bid_price;
             AskPrice = ts.ask_price;
-            ExchangeSaleConditions = DxMarshal.ReadDxString(ts.exchange_sale_conditions);
-            Buyer = DxMarshal.ReadDxString(ts.buyer);
-            Seller = DxMarshal.ReadDxString(ts.seller);
+            ExchangeSaleConditions = new string((char*)ts.exchange_sale_conditions.ToPointer());
+            Buyer = new string((char*)ts.buyer.ToPointer());
+            Seller = new string((char*)ts.seller.ToPointer());
             AgressorSide = ts.side;
             Type = ts.type;
             IsValidTick = ts.is_valid_tick;
@@ -57,9 +57,9 @@ namespace com.dxfeed.native.events
             Size = ts.Size;
             BidPrice = ts.BidPrice;
             AskPrice = ts.AskPrice;
-            ExchangeSaleConditions = (DxString)ts.ExchangeSaleConditions.Clone();
-            Buyer = (DxString)ts.Buyer.Clone();
-            Seller = (DxString)ts.Seller.Clone();
+            ExchangeSaleConditions = ts.ExchangeSaleConditions;
+            Buyer = ts.Buyer;
+            Seller = ts.Seller;
             AgressorSide = ts.AgressorSide;
             Type = ts.Type;
             IsValidTick = ts.IsValidTick;
@@ -87,10 +87,10 @@ namespace com.dxfeed.native.events
                 EventSymbol,
                 EventFlags, Index,
                 Time,
-                ExchangeCode, ExchangeSaleConditions.ToString(),
+                ExchangeCode, ExchangeSaleConditions,
                 Price, Size,
                 BidPrice, AskPrice,
-                Buyer.ToString(), Seller.ToString(),
+                Buyer, Seller,
                 AgressorSide,
                 Type,
                 IsValidTick, IsETHTrade, IsSpreadLeg, TradeThroughExempt,
@@ -154,7 +154,7 @@ namespace com.dxfeed.native.events
         /// <summary>
         ///   Returns sale conditions provided for this event by data feed.
         /// </summary>
-        public DxString ExchangeSaleConditions { get; private set; }
+        public string ExchangeSaleConditions { get; private set; }
         /// <summary>
         /// Returns implementation-specific raw bit flags value
         /// </summary>
@@ -162,11 +162,11 @@ namespace com.dxfeed.native.events
         /// <summary>
         ///   MMID of buyer (availible not for all markets).
         /// </summary>
-        public DxString Buyer { get; private set; }
+        public string Buyer { get; private set; }
         /// <summary>
         ///   MMID of seller (availible not for all markets).
         /// </summary>
-        public DxString Seller { get; private set; }
+        public string Seller { get; private set; }
         /// <summary>
         ///   Returns aggressor side of this time and sale event.
         /// </summary>

@@ -20,6 +20,6 @@ namespace com.dxfeed.api.events
         /// <summary>
         /// Returns spread symbol of this event.
         /// </summary>
-        DxString SpreadSymbol { get; }
+        string SpreadSymbol { get; }
     }
 }

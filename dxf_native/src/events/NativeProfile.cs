@@ -34,8 +34,8 @@ namespace com.dxfeed.native.events
             LowLimitPrice = profile.low_limit_price;
             HaltStartTime = TimeConverter.ToUtcDateTime(profile.halt_start_time);
             HaltEndTime = TimeConverter.ToUtcDateTime(profile.halt_end_time);
-            Description = DxMarshal.ReadDxString(profile.description);
-            StatusReason = DxMarshal.ReadDxString(profile.status_reason);
+            Description = new string((char*)profile.description.ToPointer());
+            StatusReason = new string((char*)profile.status_reason.ToPointer());
             TradingStatus = profile.trading_status;
             ShortSaleRestriction = profile.ssr;
             RawFlags = profile.raw_flags;
@@ -56,8 +56,8 @@ namespace com.dxfeed.native.events
             LowLimitPrice = profile.LowLimitPrice;
             HaltStartTime = profile.HaltStartTime;
             HaltEndTime = profile.HaltEndTime;
-            Description = (DxString)profile.Description.Clone();
-            StatusReason = (DxString)profile.StatusReason.Clone();
+            Description = profile.Description;
+            StatusReason = profile.StatusReason;
             TradingStatus = profile.TradingStatus;
             ShortSaleRestriction = profile.ShortSaleRestriction;
             RawFlags = profile.RawFlags;
@@ -71,7 +71,7 @@ namespace com.dxfeed.native.events
                 "DivFreq: {3}, ExdDivAmount: {4}, ExdDivDate: {5}, " +
                 "52HighPrice: {6}, 52LowPrice: {7}, "                +
                 "Shares: {8}, FreeFloat: {9},"                       +
-                "HighLimitPrice: {10}, LowLimitPrice: {11}"          +
+                "HighLimitPrice: {10}, LowLimitPrice: {11}, "        +
                 "HaltStartTime: {12:o}, HaltEndTime: {13:o}, "       +
                 "Description: '{14}', "                              +
                 "TradingStatus: {15}, StatusReason: '{16}', "        +
@@ -85,8 +85,8 @@ namespace com.dxfeed.native.events
                 Shares, FreeFloat,
                 HighLimitPrice, LowLimitPrice,
                 HaltStartTime, HaltEndTime,
-                Description.ToString(),
-                TradingStatus, StatusReason.ToString(),
+                Description,
+                TradingStatus, StatusReason,
                 ShortSaleRestriction,
                 RawFlags
             );
@@ -142,7 +142,7 @@ namespace com.dxfeed.native.events
         /// <summary>
         /// Returns description of the security instrument.
         /// </summary>
-        public DxString Description { get; private set; }
+        public string Description { get; private set; }
         /// <summary>
         /// Returns short sale restriction of the security instrument.
         /// </summary>
@@ -154,7 +154,7 @@ namespace com.dxfeed.native.events
         /// <summary>
         /// Returns description of the reason that trading was halted.
         /// </summary>
-        public DxString StatusReason { get; private set; }
+        public string StatusReason { get; private set; }
         /// <summary>
         /// Returns starting time of the trading halt interval.
         /// </summary>

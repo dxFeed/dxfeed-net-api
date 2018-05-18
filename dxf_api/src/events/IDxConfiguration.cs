@@ -23,6 +23,6 @@ namespace com.dxfeed.api.events
         /// <summary>
         /// Returns attachment.
         /// </summary>
-        DxString Attachment { get; }
+        string Attachment { get; }
     }
 }

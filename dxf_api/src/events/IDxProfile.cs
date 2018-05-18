@@ -56,7 +56,7 @@ namespace com.dxfeed.api.events
         /// <summary>
         /// Returns description of the security instrument.
         /// </summary>
-        DxString Description { get; }
+        string Description { get; }
         /// <summary>
         /// Returns short sale restriction of the security instrument.
         /// </summary>
@@ -68,7 +68,7 @@ namespace com.dxfeed.api.events
         /// <summary>
         /// Returns description of the reason that trading was halted.
         /// </summary>
-        DxString StatusReason { get; }
+        string StatusReason { get; }
         /// <summary>
         /// Returns starting time of the trading halt interval.
         /// </summary>

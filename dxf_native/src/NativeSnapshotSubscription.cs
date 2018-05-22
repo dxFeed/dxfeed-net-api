@@ -32,6 +32,7 @@ namespace com.dxfeed.native
         private long time = 0;
         private string source = string.Empty;
         private EventType eventType = EventType.None;
+        private NativeConnection connection = null;
 
         /// <summary>
         /// Invalid snapshot
@@ -54,6 +55,7 @@ namespace com.dxfeed.native
             connectionPtr = connection.Handler;
             this.listener = listener;
             this.time = time;
+            this.connection = connection;
         }
 
         /// <summary>
@@ -136,6 +138,11 @@ namespace com.dxfeed.native
         /// <exception cref="NativeDxSubscription"></exception>
         public void Dispose()
         {
+            if (connection != null)
+            {
+                connection.RemoveSubscription(this);
+                connection = null;
+            }
             if (snapshotPtr == InvalidSnapshot) return;
 
             C.CheckOk(C.Instance.dxf_close_snapshot(snapshotPtr));

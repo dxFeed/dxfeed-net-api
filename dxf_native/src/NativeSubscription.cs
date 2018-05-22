@@ -29,6 +29,7 @@ namespace com.dxfeed.native
         //to prevent callback from being garbage collected
         private readonly C.dxf_event_listener_v2_t callback;
         private readonly EventType eventType;
+        private NativeConnection connection = null;
 
         /// <summary>
         /// Create event subscription.
@@ -57,6 +58,7 @@ namespace com.dxfeed.native
                 C.Instance.dxf_close_subscription(subscriptionPtr);
                 throw;
             }
+            this.connection = connection;
         }
 
         /// <summary>
@@ -219,6 +221,12 @@ namespace com.dxfeed.native
 
         public void Dispose()
         {
+            if (connection != null)
+            {
+                connection.RemoveSubscription(this);
+                connection = null;
+            }
+
             if (subscriptionPtr == IntPtr.Zero) return;
 
             C.CheckOk(C.Instance.dxf_close_subscription(subscriptionPtr));

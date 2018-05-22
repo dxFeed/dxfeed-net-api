@@ -1,3 +1,7 @@
+Version 5.2.1
+* Link all created subscriptions to their connections
+  to prevent GC from collecting live subscription objects.
+
 Version 5.2.0
 + All events are sunchronized with C API and Java API
   Many small changes in field names.

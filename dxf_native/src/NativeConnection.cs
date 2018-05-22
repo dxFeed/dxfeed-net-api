@@ -28,7 +28,7 @@ namespace com.dxfeed.native
         private readonly C.dxf_conn_termination_notifier_t termination_notifier;
         private readonly C.dxf_socket_thread_creation_notifier_t creation_notifier;
         private readonly Action<IDxConnection> disconnectListener;
-        private readonly List<IDxSubscription> subscriptions = new List<IDxSubscription>();
+        private readonly ISet<IDxSubscription> subscriptions = new HashSet<IDxSubscription>();
         public delegate void OnCreationEventHandler(object sender, EventArgs e);
         public event OnCreationEventHandler OnCreation;
 

@@ -26,7 +26,7 @@ namespace com.dxfeed.native
     public class OrderViewSubscription : IDxSubscription, IDxOrderListener
     {
         private IDxOrderViewListener listener = null;
-        private IDxConnection connection = null;
+        private NativeConnection connection = null;
         private IDxSubscription subscription = null;
 
         /// <summary>
@@ -92,7 +92,7 @@ namespace com.dxfeed.native
         /// </summary>
         /// <param name="connection">IDxConnection connection</param>
         /// <param name="listener">OrderView listener</param>
-        public OrderViewSubscription(IDxConnection connection, IDxOrderViewListener listener)
+        public OrderViewSubscription(NativeConnection connection, IDxOrderViewListener listener)
         {
             this.connection = connection;
             this.listener = listener;
@@ -331,6 +331,10 @@ namespace com.dxfeed.native
         /// <exception cref="DxException"></exception>
         public void SetSource(params string[] sources)
         {
+            if (connection == null)
+            {
+                throw new InvalidOperationException("Object is disposed");
+            }
             if (subscription != null)
             {
                 throw new InvalidOperationException("Sources is already configured for this subscription.");
@@ -353,6 +357,11 @@ namespace com.dxfeed.native
         /// </summary>
         protected virtual void Dispose(bool disposing)
         {
+            if (connection != null)
+            {
+                connection.RemoveSubscription(this);
+                connection = null;
+            }
             if (!disposedValue)
             {
                 if (disposing)

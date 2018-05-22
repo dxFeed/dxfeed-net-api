@@ -15,6 +15,7 @@ using com.dxfeed.native.api;
 using com.dxfeed.api.candle;
 using com.dxfeed.api.util;
 using com.dxfeed.native.events;
+using System.Collections.Generic;
 
 namespace com.dxfeed.native
 {
@@ -27,6 +28,7 @@ namespace com.dxfeed.native
         private readonly C.dxf_conn_termination_notifier_t termination_notifier;
         private readonly C.dxf_socket_thread_creation_notifier_t creation_notifier;
         private readonly Action<IDxConnection> disconnectListener;
+        private readonly List<IDxSubscription> subscriptions = new List<IDxSubscription>();
         public delegate void OnCreationEventHandler(object sender, EventArgs e);
         public event OnCreationEventHandler OnCreation;
 
@@ -104,6 +106,11 @@ namespace com.dxfeed.native
             return 0;
         }
 
+        internal void RemoveSubscription(IDxSubscription subscription)
+        {
+            subscriptions.Remove(subscription);
+        }
+
         #region Implementation of IDxConnection
 
         /// <summary>
@@ -131,8 +138,9 @@ namespace com.dxfeed.native
         {
             if (handler == IntPtr.Zero)
                 throw new NativeDxException("not connected");
-
-            return new NativeSubscription(this, type, listener);
+            IDxSubscription result = new NativeSubscription(this, type, listener);
+            subscriptions.Add(result);
+            return result;
         }
 
         /// <summary>
@@ -148,7 +156,9 @@ namespace com.dxfeed.native
             if (handler == IntPtr.Zero)
                 throw new NativeDxException("not connected");
 
-            return new NativeSubscription(this, time, listener);
+            IDxSubscription result = new NativeSubscription(this, time, listener);
+            subscriptions.Add(result);
+            return result;
         }
 
         /// <summary>
@@ -165,7 +175,9 @@ namespace com.dxfeed.native
             if (handler == IntPtr.Zero)
                 throw new NativeDxException("not connected");
 
-            return new NativeSubscription(this, type, time, listener);
+            IDxSubscription result = new NativeSubscription(this, type, time, listener);
+            subscriptions.Add(result);
+            return result;
         }
 
         /// <summary>
@@ -182,10 +194,10 @@ namespace com.dxfeed.native
             if (handler == IntPtr.Zero)
                 throw new NativeDxException("not connected");
 
-            if (time == null)
-                return new NativeSubscription(this, type, 0L, listener);
-            else
-                return new NativeSubscription(this, type, (DateTime)time, listener);
+            IDxSubscription result = (time == null) ?
+                new NativeSubscription(this, type, 0L, listener) : new NativeSubscription(this, type, (DateTime)time, listener);
+            subscriptions.Add(result);
+            return result;
         }
 
         /// <summary>
@@ -200,7 +212,9 @@ namespace com.dxfeed.native
             if (handler == IntPtr.Zero)
                 throw new NativeDxException("not connected");
 
-            return new NativeSnapshotSubscription(this, time, listener);
+            IDxSubscription result = new NativeSnapshotSubscription(this, time, listener);
+            subscriptions.Add(result);
+            return result;
         }
 
         /// <summary>
@@ -216,7 +230,9 @@ namespace com.dxfeed.native
                 throw new NativeDxException("not connected");
 
             long unixTime = time == null ? 0 : Tools.DateToUnixTime((DateTime)time);
-            return new NativeSnapshotSubscription(this, unixTime, listener);
+            IDxSubscription result = new NativeSnapshotSubscription(this, unixTime, listener);
+            subscriptions.Add(result);
+            return result;
         }
 
         /// <summary>
@@ -233,7 +249,9 @@ namespace com.dxfeed.native
             if (handler == IntPtr.Zero)
                 throw new NativeDxException("not connected");
 
-            return new NativeSnapshotSubscription(this, eventType, time, listener);
+            IDxSubscription result = new NativeSnapshotSubscription(this, eventType, time, listener);
+            subscriptions.Add(result);
+            return result;
         }
 
         /// <summary>
@@ -251,7 +269,9 @@ namespace com.dxfeed.native
                 throw new NativeDxException("not connected");
 
             long unixTime = time == null ? 0 : Tools.DateToUnixTime((DateTime)time);
-            return new NativeSnapshotSubscription(this, eventType, unixTime, listener);
+            IDxSubscription result = new NativeSnapshotSubscription(this, eventType, unixTime, listener);
+            subscriptions.Add(result);
+            return result;
         }
 
         /// <summary>
@@ -265,7 +285,9 @@ namespace com.dxfeed.native
             if (handler == IntPtr.Zero)
                 throw new NativeDxException("not connected");
 
-            return new OrderViewSubscription(this, listener);
+            IDxSubscription result = new OrderViewSubscription(this, listener);
+            subscriptions.Add(result);
+            return result;
         }
 
         /// <summary>
@@ -289,6 +311,7 @@ namespace com.dxfeed.native
 
         public void Dispose()
         {
+            subscriptions.Clear();
             if (handler != IntPtr.Zero)
                 Disconnect();
         }

@@ -66,7 +66,7 @@ namespace com.dxfeed.native.events
                 "Theta: {9}, Vega: {10}"                 +
                 "}}",
                 EventSymbol,
-                EventFlags, Index,
+                (int) EventFlags, Index,
                 Time,
                 Price, Volatility,
                 Delta, Gamma, Rho,

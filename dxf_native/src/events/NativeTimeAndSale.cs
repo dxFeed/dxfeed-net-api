@@ -85,7 +85,7 @@ namespace com.dxfeed.native.events
                 "RawFlags: {18:x8}"                                                     +
                 "}}",
                 EventSymbol,
-                EventFlags, Index,
+                (int) EventFlags, Index,
                 Time,
                 ExchangeCode, ExchangeSaleConditions,
                 Price, Size,

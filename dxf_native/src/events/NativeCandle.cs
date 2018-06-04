@@ -81,7 +81,7 @@ namespace com.dxfeed.native.events
                 "OpenInterest: {13}, ImpVolatility: {14} "     +
                 "}}",
                 EventSymbol.ToString(),
-                EventFlags, Index,
+                (int) EventFlags, Index,
                 Time, Sequence,
                 Open, High, Low, Close,
                 Volume, VWAP,

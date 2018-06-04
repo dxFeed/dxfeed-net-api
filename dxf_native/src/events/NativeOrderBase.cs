@@ -67,7 +67,7 @@ namespace com.dxfeed.native.events
                 "Scope: {9}, Side: {10}, "                        +
                 "ExchangeCode: {11}",
                 Source,
-                EventFlags, Index,
+                (int) EventFlags, Index,
                 Time, TimeNanoPart, Sequence,
                 Price, Size, Count,
                 Scope, Side,

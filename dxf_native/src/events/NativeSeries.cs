@@ -59,7 +59,7 @@ namespace com.dxfeed.native.events
                 "Dividend: {7}, Interest: {8}"           +
                  "}}",
                 EventSymbol,
-                EventFlags, Index,
+                (int) EventFlags, Index,
                 Expiration,
                 Volatility, PutCallRatio,
                 ForwardPrice,

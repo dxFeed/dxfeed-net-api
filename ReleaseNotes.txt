@@ -1,3 +1,4 @@
+Version 5.2.2
 * Fix "Side" enum.
 * Fix ToString() of events with EventFlags.
 

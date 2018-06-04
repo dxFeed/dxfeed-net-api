@@ -1,3 +1,6 @@
+* Fix "Side" enum.
+* Fix ToString() of events with EventFlags.
+
 Version 5.2.1
 * Link all created subscriptions to their connections
   to prevent GC from collecting live subscription objects.

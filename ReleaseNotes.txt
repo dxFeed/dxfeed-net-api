@@ -1,3 +1,7 @@
+Version 5.2.3:
+* Fix authentication with Auther other than
+  default Login/Password one.
+
 Version 5.2.2
 * Fix "Side" enum.
 * Fix ToString() of events with EventFlags.

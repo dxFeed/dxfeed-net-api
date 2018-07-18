@@ -70,5 +70,9 @@ namespace com.dxfeed.api.events
         /// Returns implementation-specific raw bit flags value
         /// </summary>
         int RawFlags { get; }
+        /// <summary>
+        /// Returns whether last trade was a composite or regional (other constants are not used here).
+        /// </summary>
+        Scope Scope { get; }
     }
 }

@@ -6,6 +6,7 @@
 // http://mozilla.org/MPL/2.0/.
 #endregion
 
+using com.dxfeed.api.data;
 using com.dxfeed.api.events;
 using com.dxfeed.api.extras;
 using com.dxfeed.native.api;
@@ -37,6 +38,7 @@ namespace com.dxfeed.native.events
             AskExchangeCode = quote.ask_exchange_code;
             AskPrice = quote.ask_price;
             AskSize = quote.ask_size;
+            Scope = quote.scope;
         }
 
         internal NativeQuote(IDxQuote quote) : base(quote.EventSymbol)
@@ -59,11 +61,11 @@ namespace com.dxfeed.native.events
             return string.Format(CultureInfo.InvariantCulture,
                 "Quote: {{{0}, " +
                 "AskExchangeCode: '{1}', Ask: {2}@{3}, AskTime: {4:o}, " +
-                "BidExchangeCode: '{5}', Bid: {6}@{7}, BidTime: {8:o}"   +
+                "BidExchangeCode: '{5}', Bid: {6}@{7}, BidTime: {8:o}, Scope: {9}"   +
                 "}}",
                 EventSymbol,
                 AskExchangeCode, AskSize, AskPrice, AskTime,
-                BidExchangeCode, BidSize, BidPrice, BidTime);
+                BidExchangeCode, BidSize, BidPrice, BidTime, Scope);
         }
 
         #region Implementation of ICloneable
@@ -131,6 +133,10 @@ namespace com.dxfeed.native.events
         /// Returns ask size.
         /// </summary>
         public long AskSize { get; private set; }
+        /// <summary>
+        /// Returns whether quote is composite or regional (other constants are not used here)
+        /// </summary>
+        public Scope Scope { get; internal set; }
 
         #endregion
     }

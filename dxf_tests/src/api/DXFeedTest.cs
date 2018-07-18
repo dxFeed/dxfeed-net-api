@@ -89,7 +89,7 @@ namespace com.dxfeed.api
             EventPlayer<IDxEventType> eventPlayer = new EventPlayer<IDxEventType>(s as DXFeedSubscription<IDxEventType>);
             var playedOrder = new PlayedOrder(symbol, 0, 0x4e54560000000006, 0, 0, 0, 0, 100, 25, Scope.Order, Side.Buy, 'A', OrderSource.NTV, "AAAA");
             eventPlayer.PlayEvents(symbol, playedOrder);
-            var playedTrade = new PlayedTrade(symbol, 0, 0, 0, 'B', 123.456,  100, 123, 1.1, 0, 2.2, 0.0, Direction.Undefined, false);
+            var playedTrade = new PlayedTrade(symbol, 0, 0, 0, 'B', 123.456,  100, 123, 1.1, 0, 2.2, 0.0, Direction.Undefined, false, Scope.Regional);
             eventPlayer.PlayEvents(symbol, playedTrade);
 
             Assert.AreEqual(eventListener.GetEventCount<IDxOrder>(symbol), 1);
@@ -341,7 +341,7 @@ namespace com.dxfeed.api
             }
 
             //try to get last event succesfully
-            var playedTrade = new PlayedTrade(symbol, Tools.DateToUnixTime(DateTime.Now), 0, 0, 'B', 123.456,  100, 123, 1.1, 0, 2.2, 0.0, Direction.Undefined, false);
+            var playedTrade = new PlayedTrade(symbol, Tools.DateToUnixTime(DateTime.Now), 0, 0, 'B', 123.456,  100, 123, 1.1, 0, 2.2, 0.0, Direction.Undefined, false, Scope.Regional);
             Task eventPlayerTask = Task.Run(() =>
             {
                 Thread.Sleep(TimeSpan.FromSeconds(1));
@@ -365,7 +365,7 @@ namespace com.dxfeed.api
             for (int i = 0; i < 10; i++)
             {
                 var threadSymbol = symbol + i.ToString();
-                var threadPlayedTrade = new PlayedTrade(threadSymbol, Tools.DateToUnixTime(DateTime.Now), 0, 0, 'B', 123.456,  100, 123, 1.1, 0, 2.2, 0.0, Direction.Undefined, false);
+                var threadPlayedTrade = new PlayedTrade(threadSymbol, Tools.DateToUnixTime(DateTime.Now), 0, 0, 'B', 123.456,  100, 123, 1.1, 0, 2.2, 0.0, Direction.Undefined, false, Scope.Regional);
                 tasks.Add(Task.Run(() =>
                 {
                     Thread.Sleep(TimeSpan.FromSeconds(1));
@@ -495,8 +495,8 @@ namespace com.dxfeed.api
 
             //try to get last event succesfully
             var playedTrades = new PlayedTrade[] {
-                new PlayedTrade(symbols[0], Tools.DateToUnixTime(DateTime.Now), 0, 0, 'B', 123.456,  100, 123, 1.1, 0, 2.2, 0.0, Direction.Undefined, false),
-                new PlayedTrade(symbols[1], Tools.DateToUnixTime(DateTime.Now), 0, 0, 'B', 234.567,  101, 234, 3.2, 0, 4.3, 0.0, Direction.Undefined, false)
+                new PlayedTrade(symbols[0], Tools.DateToUnixTime(DateTime.Now), 0, 0, 'B', 123.456,  100, 123, 1.1, 0, 2.2, 0.0, Direction.Undefined, false, Scope.Regional),
+                new PlayedTrade(symbols[1], Tools.DateToUnixTime(DateTime.Now), 0, 0, 'B', 234.567,  101, 234, 3.2, 0, 4.3, 0.0, Direction.Undefined, false, Scope.Regional)
             };
             Task eventPlayerTask = Task.Run(() =>
             {
@@ -537,8 +537,8 @@ namespace com.dxfeed.api
             {
                 var threadSymbols = new string[] { symbols[0] + i.ToString(), symbols[1] + i.ToString() };
                 var threadPlayedTrades = new PlayedTrade[] {
-                    new PlayedTrade(threadSymbols[0], Tools.DateToUnixTime(DateTime.Now), 0, 0, 'B', 123.456,  100, 123, 1.1, 0, 2.2, 0.0, Direction.Undefined, false),
-                    new PlayedTrade(threadSymbols[1], Tools.DateToUnixTime(DateTime.Now), 0, 0, 'B', 234.567,  101, 234, 3.2, 0, 4.3, 0.0, Direction.Undefined, false)
+                    new PlayedTrade(threadSymbols[0], Tools.DateToUnixTime(DateTime.Now), 0, 0, 'B', 123.456,  100, 123, 1.1, 0, 2.2, 0.0, Direction.Undefined, false, Scope.Regional),
+                    new PlayedTrade(threadSymbols[1], Tools.DateToUnixTime(DateTime.Now), 0, 0, 'B', 234.567,  101, 234, 3.2, 0, 4.3, 0.0, Direction.Undefined, false, Scope.Regional)
                 };
                 HashSet<string> threadPlayedSymbols = new HashSet<string>();
                 foreach(var t in threadPlayedTrades)

@@ -49,6 +49,7 @@ namespace com.dxfeed.native.events
             TickDirection = trade.direction;
             IsExtendedTradingHours = trade.is_eth;
             RawFlags = trade.raw_flags;
+            Scope = trade.scope;
         }
 
         /// <summary>
@@ -67,6 +68,7 @@ namespace com.dxfeed.native.events
             DayTurnover = trade.DayTurnover;
             TickDirection = trade.TickDirection;
             IsExtendedTradingHours = trade.IsExtendedTradingHours;
+            Scope = trade.Scope;
             RawFlags = trade.RawFlags;
         }
 
@@ -77,12 +79,12 @@ namespace com.dxfeed.native.events
                 "ExchangeCode: {3}, Price: {4}, Size: {5},  "     +
                 "DayVolume: {6}, DayTurnover: {7}, "              +
                 "Tickdirection: {8}, IsETH: {9}, "                +
-                "RawFlags: {10:x8}",
+                "RawFlags: {10:x8}, Scope: {11}",
                 Time, Sequence, TimeNanoPart,
                 ExchangeCode, Price, Size,
                 DayVolume, DayTurnover,
                 TickDirection, IsExtendedTradingHours,
-                RawFlags
+                RawFlags, Scope
             );
         }
 
@@ -130,6 +132,10 @@ namespace com.dxfeed.native.events
         /// Returns whether last trade was in extended trading hours.
         /// </summary>
         public bool IsExtendedTradingHours { get; internal set; }
+        /// <summary>
+        /// Returns whether last trade was a composite or regional (other constants are not used here).
+        /// </summary>
+        public Scope Scope { get; internal set; }
         /// <summary>
         /// Returns implementation-specific raw bit flags value
         /// </summary>

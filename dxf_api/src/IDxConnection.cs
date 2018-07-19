@@ -8,6 +8,7 @@
 
 using System;
 using com.dxfeed.api.data;
+using System.Collections.Generic;
 
 namespace com.dxfeed.api
 {
@@ -115,5 +116,17 @@ namespace com.dxfeed.api
         /// <exception cref="ArgumentException">Invalid argument <c>rawFileName</c></exception>
         /// <exception cref="NativeDxException"></exception>
         void WriteRawData(string rawFileName);
+
+        /// <summary>
+        ///   Retrieves properties for specified connection. Properties can be changed during
+        ///   reconnection. So returned array is a snapshot of properties at the moment of the call.
+        /// </summary>
+        IDictionary<string, string> Properties { get; }
+
+        /// <summary>
+        ///   Retrieves string with current connected address in format <host>:<port>. If return value is NULL
+        ///   then connection is not connected (reconnection, no valid addresses, closed connection and others).
+        /// </summary>
+        string ConnectedAddress { get; }
     }
 }

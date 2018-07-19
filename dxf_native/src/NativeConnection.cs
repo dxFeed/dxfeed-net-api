@@ -16,6 +16,7 @@ using com.dxfeed.api.candle;
 using com.dxfeed.api.util;
 using com.dxfeed.native.events;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 namespace com.dxfeed.native
 {
@@ -303,6 +304,57 @@ namespace com.dxfeed.native
             Encoding ascii = Encoding.ASCII;
             byte[] fileName = ascii.GetBytes(rawFileName);
             C.CheckOk(C.Instance.dxf_write_raw_data(handler, fileName));
+        }
+
+        public IDictionary<string, string> Properties
+        {
+            get
+            {
+                IDictionary<string, string> result = new Dictionary<string, string>();
+                IntPtr properties;
+                int count;
+                C.CheckOk(C.Instance.dxf_get_connection_properties_snapshot(handler, out properties, out count));
+                if (properties != IntPtr.Zero)
+                {
+                    try
+                    {
+                        for (int i = 0; i < count; ++i)
+                        {
+                            IntPtr elem = properties + i * 2 * IntPtr.Size;
+                            unsafe
+                            {
+                                IntPtr key = new IntPtr(*(char**)elem.ToPointer());
+                                IntPtr value = new IntPtr(*(char**)(elem + IntPtr.Size).ToPointer());
+                                result.Add(Marshal.PtrToStringUni(key), Marshal.PtrToStringUni(value));
+                            }                            
+                        }
+                    } finally
+                    {
+                        C.Instance.dxf_free_connection_properties_snapshot(properties, count);
+                    }
+                }
+                return result;
+            }
+        }
+
+        public string ConnectedAddress
+        {
+            get
+            {
+                IntPtr address;
+                C.CheckOk(C.Instance.dxf_get_current_connected_address(handler, out address));
+                if (address == IntPtr.Zero)
+                {
+                    return null;
+                }
+                try
+                {
+                    return Marshal.PtrToStringAnsi(address);
+                } finally
+                {
+                    C.Instance.dxf_free(address);
+                }
+            }
         }
 
         #endregion

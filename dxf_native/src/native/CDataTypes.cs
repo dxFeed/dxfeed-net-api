@@ -31,6 +31,7 @@ namespace com.dxfeed.native.api
         internal double day_turnover;
         internal Direction direction;
         internal bool is_eth;
+        internal Scope scope;
     }
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
@@ -47,6 +48,7 @@ namespace com.dxfeed.native.api
         internal char ask_exchange_code;
         internal double ask_price;
         internal int ask_size;
+        internal Scope scope;
     }
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]

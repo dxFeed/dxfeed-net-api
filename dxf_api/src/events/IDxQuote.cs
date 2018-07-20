@@ -5,6 +5,7 @@
 /// http://mozilla.org/MPL/2.0/.
 
 using System;
+using com.dxfeed.api.data;
 
 namespace com.dxfeed.api.events
 {
@@ -71,5 +72,9 @@ namespace com.dxfeed.api.events
         /// Returns ask size.
         /// </summary>
         long AskSize { get; }
+        /// <summary>
+        /// Returns scope
+        /// </summary>
+        Scope Scope { get; }
     }
 }

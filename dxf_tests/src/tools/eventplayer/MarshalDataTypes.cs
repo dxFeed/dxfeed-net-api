@@ -85,6 +85,7 @@ namespace com.dxfeed.tests.tools.eventplayer
         internal double day_turnover;
         internal Direction direction;
         internal bool is_eth;
+        internal Scope scope;
 
 
         internal DxTestTrade(long time, int sequence, int time_nanos,
@@ -93,7 +94,7 @@ namespace com.dxfeed.tests.tools.eventplayer
                                 int tick, double change,
                                 int raw_flags,
                                 double day_volume, double day_turnover,
-                                Direction direction, bool is_eth)
+                                Direction direction, bool is_eth, Scope scope)
         {
             this.time = time;
             this.sequence = sequence;
@@ -108,6 +109,7 @@ namespace com.dxfeed.tests.tools.eventplayer
             this.day_turnover = day_turnover;
             this.direction = direction;
             this.is_eth = is_eth;
+            this.scope = scope;
         }
     }
 

@@ -16,7 +16,7 @@ namespace com.dxfeed.tests.tools.eventplayer
                                 int tick, double change,
                                 int raw_flags,
                                 double day_volume, double day_turnover,
-                                Direction direction, bool is_eth)
+                                Direction direction, bool is_eth, Scope scope)
         {
             this.EventSymbol = symbol;
             this.Time = Tools.UnixTimeToDate(time);
@@ -31,9 +31,10 @@ namespace com.dxfeed.tests.tools.eventplayer
             this.DayTurnover = day_turnover;
             this.TickDirection = direction;
             this.IsExtendedTradingHours = is_eth;
+            this.Scope = scope;
 
             Params = new EventParams(0, 0, 0);
-            Data = new DxTestTrade(time, sequence, time_nanos, exchange_code, price, size, tick, change, raw_flags, day_volume, day_turnover, direction, is_eth);
+            Data = new DxTestTrade(time, sequence, time_nanos, exchange_code, price, size, tick, change, raw_flags, day_volume, day_turnover, direction, is_eth, scope);
         }
 
         /// <summary>
@@ -55,9 +56,10 @@ namespace com.dxfeed.tests.tools.eventplayer
             this.DayTurnover = trade.DayTurnover;
             this.TickDirection = trade.TickDirection;
             this.IsExtendedTradingHours = trade.IsExtendedTradingHours;
+            this.Scope = trade.Scope;
 
             Params = new EventParams(0, 0, 0);
-            Data = new DxTestTrade(Tools.DateToUnixTime(Time), Sequence, TimeNanoPart, ExchangeCode, Price, (int)Size, 0, Change, RawFlags, DayVolume, DayTurnover, TickDirection, IsExtendedTradingHours);
+            Data = new DxTestTrade(Tools.DateToUnixTime(Time), Sequence, TimeNanoPart, ExchangeCode, Price, (int)Size, 0, Change, RawFlags, DayVolume, DayTurnover, TickDirection, IsExtendedTradingHours, Scope);
         }
 
         public DxTestTrade Data
@@ -135,6 +137,11 @@ namespace com.dxfeed.tests.tools.eventplayer
         }
 
         public int RawFlags
+        {
+            get; private set;
+        }
+
+        public Scope Scope
         {
             get; private set;
         }

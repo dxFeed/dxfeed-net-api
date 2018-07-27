@@ -597,5 +597,43 @@ namespace com.dxfeed.native.api
          *  raw_file_name - raw data file name
          */
         internal abstract int dxf_write_raw_data(IntPtr connection, byte[] raw_file_name);
+
+        /*
+        *  Retrieves the array of key-value pairs (properties) for specified connection. The memory for the resulting array
+        *  is allocated during execution of the function and SHOULD be free by caller with dxf_free_connection_properties_snapshot
+        *  function. So done because connection properties can be changed during reconnection. Returned array is a snapshot
+        *  of properties at the moment of the call.
+        *
+        *  connection - a handle of a previously created connection
+        *  OUT properties - pointer to store address of key-value pairs array
+        *  OUT count - variable to store length of key-value pairs array
+        */
+        internal abstract int dxf_get_connection_properties_snapshot(IntPtr connection, out IntPtr properties, out int count);
+
+        /*
+        * Frees memory allocated during dxf_get_connection_properties_snapshot function execution
+        *
+        *  properties - pointer to the key-value pairs array
+        *  count - length of key-value pairs array
+        */
+        internal abstract int dxf_free_connection_properties_snapshot(IntPtr properties, int count);
+
+        /*
+        *  Retrieves the null-terminated string with current connected address in format <host>:<port>. If (*address)
+        *  points to NULL then connection is not connected (reconnection, no valid addresses, closed connection and others).
+        *  The memory for the resulting string is allocated during execution of the function and SHOULD be free by caller
+        *  with call of dxf_free function. So done because inner string with connected address can be free during reconnection.
+        *
+        *  connection - a handle of a previously created connection
+        *  OUT address - pointer to store address of the null-terminated string with current connected address
+        */
+        internal abstract int dxf_get_current_connected_address(IntPtr connection, out IntPtr address);
+
+        /*
+        * Frees memory allocated in API functions from this module
+        *
+        *  pointer - pointer to memory allocated earlier in some API function from this module
+        */
+        internal abstract int dxf_free(IntPtr pointer);
     }
 }

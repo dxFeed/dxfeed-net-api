@@ -350,9 +350,37 @@ namespace com.dxfeed.native.api
 
         [DllImport(DXFEED_DLL, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl, EntryPoint = "dxf_write_raw_data")]
         private static extern int __dxf_write_raw_data(IntPtr connection, byte[] raw_file_name);
-        internal override int dxf_write_raw_data (IntPtr connection, byte[] raw_file_name)
+        internal override int dxf_write_raw_data(IntPtr connection, byte[] raw_file_name)
         {
             return __dxf_write_raw_data(connection, raw_file_name);
+        }
+
+        [DllImport(DXFEED_DLL, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl, EntryPoint = "dxf_get_connection_properties_snapshot")]
+        private static extern int __dxf_get_connection_properties_snapshot(IntPtr connection, out IntPtr properties, out int count);
+        internal override int dxf_get_connection_properties_snapshot(IntPtr connection, out IntPtr properties, out int count)
+        {
+            return __dxf_get_connection_properties_snapshot(connection, out properties, out count);
+        }
+
+        [DllImport(DXFEED_DLL, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl, EntryPoint = "dxf_free_connection_properties_snapshot")]
+        private static extern int __dxf_free_connection_properties_snapshot(IntPtr properties, int count);
+        internal override int dxf_free_connection_properties_snapshot(IntPtr properties, int count)
+        {
+            return __dxf_free_connection_properties_snapshot(properties, count);
+        }
+
+        [DllImport(DXFEED_DLL, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl, EntryPoint = "dxf_get_current_connected_address")]
+        private static extern int __dxf_get_current_connected_address(IntPtr connection, out IntPtr address);
+        internal override int dxf_get_current_connected_address(IntPtr connection, out IntPtr address)
+        {
+            return __dxf_get_current_connected_address(connection, out address);
+        }
+
+        [DllImport(DXFEED_DLL, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl, EntryPoint = "dxf_free")]
+        private static extern int __dxf_free(IntPtr pointer);
+        internal override int dxf_free(IntPtr pointer)
+        {
+            return __dxf_free(pointer);
         }
     }
 }

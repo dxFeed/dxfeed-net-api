@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.IO;
 using NUnit.Framework;
 using com.dxfeed.ipf;
+using System.Net;
 
 namespace com.dxfeed.api
 {
@@ -28,6 +29,7 @@ namespace com.dxfeed.api
         [Test]
         public void ReadFromHttpTest()
         {
+            TurnOnAllSecurityProtocolTypes();
             InstrumentProfileReader reader = new InstrumentProfileReader();
             IList<InstrumentProfile> profiles = reader.ReadFromFile(dxfToolsHost, dxfToolsUser, dxfToolsPassword);
             Assert.Greater(profiles.Count, 0);
@@ -80,6 +82,7 @@ namespace com.dxfeed.api
 
         private void WriteToFileHelper(string filePath)
         {
+            TurnOnAllSecurityProtocolTypes();
             InstrumentProfileReader reader = new InstrumentProfileReader();
             InstrumentProfileWriter writer = new InstrumentProfileWriter();
             IList<InstrumentProfile> profilesFromHttp = reader.ReadFromFile(dxfToolsHost, dxfToolsUser, dxfToolsPassword);
@@ -116,6 +119,16 @@ namespace com.dxfeed.api
         public void WriteToGzTest()
         {
             WriteToFileHelper(GZ_FILE_NAME);
+        }
+
+        private static void TurnOnAllSecurityProtocolTypes()
+        {
+            SecurityProtocolType allFlags = 0;
+            foreach (SecurityProtocolType value in System.Enum.GetValues(typeof(SecurityProtocolType)))
+            {
+                allFlags |= value;
+            }
+            ServicePointManager.SecurityProtocol = allFlags;
         }
     }
 }

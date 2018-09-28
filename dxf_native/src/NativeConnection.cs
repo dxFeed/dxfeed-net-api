@@ -9,12 +9,8 @@
 using System;
 using System.Text;
 using com.dxfeed.api;
-using com.dxfeed.api.events;
 using com.dxfeed.api.data;
 using com.dxfeed.native.api;
-using com.dxfeed.api.candle;
-using com.dxfeed.api.util;
-using com.dxfeed.native.events;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
@@ -289,6 +285,18 @@ namespace com.dxfeed.native
             IDxSubscription result = new OrderViewSubscription(this, listener);
             subscriptions.Add(result);
             return result;
+        }
+
+        /// <summary>
+        ///   Creates regional book
+        /// </summary>
+        /// <param name="symbol">Single symbol name</param>
+        /// <param name="book_listener">Regional book changes listener. Null is allowed.</param>
+        /// <param name="quote_listener">Quotes listener. Null is allowed.</param>
+        /// <returns>regional book object</returns>
+        public IDxRegionalBook CreateRegionalBook(string symbol, IDxRegionalBookListener book_listener, IDxQuoteListener quote_listener)
+        {
+            return new NativeRegionalBook(this, symbol, book_listener, quote_listener);
         }
 
         /// <summary>

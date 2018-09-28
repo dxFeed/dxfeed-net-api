@@ -110,6 +110,16 @@ namespace com.dxfeed.api
         IDxSubscription CreateOrderViewSubscription(IDxOrderViewListener listener);
 
         /// <summary>
+        ///   Creates regional book
+        /// </summary>
+        /// <param name="symbol">Single symbol name</param>
+        /// <param name="book_listener">Regional book changes listener. Null is allowed.</param>
+        /// <param name="quote_listener">Quotes listener. Null is allowed.</param>
+        /// <returns>regional book object</returns>
+        IDxRegionalBook CreateRegionalBook(string symbol, IDxRegionalBookListener book_listener,
+            IDxQuoteListener quote_listener);
+
+        /// <summary>
         ///   Add dumping raw data of incoming traffic of connection into specific file
         /// </summary>
         /// <param name="rawFileName">file name for raw data</param>

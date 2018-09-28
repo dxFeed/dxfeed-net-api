@@ -227,4 +227,21 @@ namespace com.dxfeed.native.api
         internal int records_count;
         internal IntPtr records;
     }
+
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+    internal struct DxPriceLevelBook
+    {
+        internal IntPtr symbol;
+        internal uint bids_count;
+        internal IntPtr bids;
+        internal uint asks_count;
+        internal IntPtr asks;
+    }
+
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+    internal struct DxPriceLevel {
+        internal double price;
+        internal long size;
+        internal long time;
+    }
 }

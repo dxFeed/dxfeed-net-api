@@ -103,6 +103,10 @@ namespace com.dxfeed.native.api
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate void dxf_snapshot_listener_t(IntPtr snapshotData, IntPtr userData);
 
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        internal delegate void dxf_price_level_book_listener_t(IntPtr price_level_book, IntPtr user_data);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        internal delegate void dxf_regional_quote_listener_t(IntPtr symbol, IntPtr quote, int count, IntPtr user_data);
         /*
          *  Initializes the internal logger.
          *  Various actions and events, including the errors, are being logged throughout the library. They may be stored
@@ -635,5 +639,58 @@ namespace com.dxfeed.native.api
         *  pointer - pointer to memory allocated earlier in some API function from this module
         */
         internal abstract int dxf_free(IntPtr pointer);
+
+        /*
+         *  Creates Regional book with the specified parameters.
+         *  Regional book is like Price Level Book but uses regional data instead of full depth order book.
+         *
+         *  connection - a handle of a previously created connection which the subscription will be using
+         *  symbol - the symbol to use
+         *  OUT book - a handle of the created regional book
+         */
+        internal abstract int dxf_create_regional_book(IntPtr connection, string symbol, out IntPtr book);
+
+        /*
+         *  Closes a regional book.
+         *  All the data associated with it will be freed.
+         *
+         *  book - a handle of the price level book to close
+         */
+        internal abstract int dxf_close_regional_book(IntPtr book);
+
+        /*
+         *  Attaches a listener callback to regional book.
+         *  This callback will be invoked when price levels created from regional data change.
+         *
+         *  book - a handle of the book to which a listener is to be detached
+         *  book_listener - a listener callback function pointer
+         */
+        internal abstract int dxf_attach_regional_book_listener(IntPtr book, dxf_price_level_book_listener_t book_listener, IntPtr user_data);
+
+        /*
+         *  Detaches a listener from the regional book.
+         *  No error occurs if it's attempted to detach a listener which wasn't previously attached.
+         *
+         *  book - a handle of the book to which a listener is to be detached
+         *  book_listener - a listener callback function pointer
+         */
+        internal abstract int dxf_detach_regional_book_listener(IntPtr book, dxf_price_level_book_listener_t book_listener);
+
+        /*
+        *  Attaches a listener callback to regional book.
+        *  This callback will be invoked when new regional quotes are received.
+        *
+        *  book - a handle of the book to which a listener is to be detached
+        *  listener - a listener callback function pointer
+        */
+        internal abstract int dxf_attach_regional_book_listener_v2(IntPtr book, dxf_regional_quote_listener_t listener, IntPtr user_data);
+        /*
+        *  Detaches a listener from the regional book.
+        *  No error occurs if it's attempted to detach a listener which wasn't previously attached.
+        *
+        *  book - a handle of the book to which a listener is to be detached
+        *  book_listener - a listener callback function pointer
+        */
+        internal abstract int dxf_detach_regional_book_listener_v2(IntPtr book, dxf_regional_quote_listener_t listener);
     }
 }

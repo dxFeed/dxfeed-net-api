@@ -376,11 +376,53 @@ namespace com.dxfeed.native.api
             return __dxf_get_current_connected_address(connection, out address);
         }
 
-        [DllImport(DXFEED_DLL, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl, EntryPoint = "__dxf_free")]
+        [DllImport(DXFEED_DLL, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl, EntryPoint = "dxf_free")]
         private static extern int __dxf_free(IntPtr pointer);
         internal override int dxf_free(IntPtr pointer)
         {
             return __dxf_free(pointer);
+        }
+
+        [DllImport(DXFEED_DLL, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl, EntryPoint = "dxf_create_regional_book")]
+        private static extern int __dxf_create_regional_book(IntPtr connection, string symbol, out IntPtr book);
+        internal override int dxf_create_regional_book(IntPtr connection, string symbol, out IntPtr book)
+        {
+            return __dxf_create_regional_book(connection, symbol, out book);
+        }
+
+        [DllImport(DXFEED_DLL, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl, EntryPoint = "dxf_close_regional_book")]
+        private static extern int __dxf_close_regional_book(IntPtr book);
+        internal override int dxf_close_regional_book(IntPtr book)
+        {
+            return __dxf_close_regional_book(book);
+        }
+
+        [DllImport(DXFEED_DLL, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl, EntryPoint = "dxf_attach_regional_book_listener")]
+        private static extern int __dxf_attach_regional_book_listener(IntPtr book, dxf_price_level_book_listener_t book_listener, IntPtr user_data);
+        internal override int dxf_attach_regional_book_listener(IntPtr book, dxf_price_level_book_listener_t book_listener, IntPtr user_data)
+        {
+            return __dxf_attach_regional_book_listener(book, book_listener, user_data);
+        }
+
+        [DllImport(DXFEED_DLL, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl, EntryPoint = "dxf_detach_regional_book_listener")]
+        private static extern int __dxf_detach_regional_book_listener(IntPtr book, dxf_price_level_book_listener_t book_listener);
+        internal override int dxf_detach_regional_book_listener(IntPtr book, dxf_price_level_book_listener_t book_listener)
+        {
+            return __dxf_detach_regional_book_listener(book, book_listener);
+        }
+
+        [DllImport(DXFEED_DLL, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl, EntryPoint = "dxf_attach_regional_book_listener_v2")]
+        private static extern int __dxf_attach_regional_book_listener_v2(IntPtr book, dxf_regional_quote_listener_t listener, IntPtr user_data);
+        internal override int dxf_attach_regional_book_listener_v2(IntPtr book, dxf_regional_quote_listener_t listener, IntPtr user_data)
+        {
+            return __dxf_attach_regional_book_listener_v2(book, listener, user_data);
+        }
+
+        [DllImport(DXFEED_DLL, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl, EntryPoint = "dxf_detach_regional_book_listener_v2")]
+        private static extern int __dxf_detach_regional_book_listener_v2(IntPtr book, dxf_regional_quote_listener_t listener);
+        internal override int dxf_detach_regional_book_listener_v2(IntPtr book, dxf_regional_quote_listener_t listener)
+        {
+            return __dxf_detach_regional_book_listener_v2(book, listener);
         }
     }
 }

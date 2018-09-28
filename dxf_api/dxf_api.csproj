@@ -117,8 +117,10 @@
     <Compile Include="src\events\IDxOrderBase.cs" />
     <Compile Include="src\events\IDxTradeBase.cs" />
     <Compile Include="src\events\IDxTimeSeriesEvent.cs" />
+    <Compile Include="src\events\DxPriceLevelBook.cs" />
     <Compile Include="src\extras\EventPrinter.cs" />
     <Compile Include="src\extras\TimeConverter.cs" />
+    <Compile Include="src\IDxRegionalBook.cs" />
     <Compile Include="src\listeners\event\IDxCandleListener.cs" />
     <Compile Include="src\listeners\event\IDxGreeksListener.cs" />
     <Compile Include="src\listeners\event\IDxConfigurationListener.cs" />
@@ -140,6 +142,7 @@
     <Compile Include="src\events\IDxTrade.cs" />
     <Compile Include="src\IDxConnection.cs" />
     <Compile Include="src\listeners\event\IDxUnderlyingListener.cs" />
+    <Compile Include="src\listeners\IDxRegionalBookListener.cs" />
     <Compile Include="src\listeners\snapshot\IDxCandleSnapshotListener.cs" />
     <Compile Include="src\listeners\event\IDxSpreadOrderListener.cs" />
     <Compile Include="src\listeners\event\IDxTradeEthListener.cs" />

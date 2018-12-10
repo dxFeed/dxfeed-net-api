@@ -96,7 +96,7 @@
       <Name>dxf_read_write_raw_data_sample</Name>
       <Label>BuildPublish</Label>
     </ProjectReference>
-    <ProjectReference Include="..\samples\dxf_simple_order_book\dxf_simple_order_book_sample.csproj">
+    <ProjectReference Include="..\samples\dxf_simple_order_book_sample\dxf_simple_order_book_sample.csproj">
       <Name>dxf_simple_order_book_sample</Name>
       <Label>BuildPublish</Label>
     </ProjectReference>

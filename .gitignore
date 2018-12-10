@@ -17,3 +17,6 @@ packages/**
 
 # ignore Visual Studio folders
 .vs
+
+# ignore Rider folders
+.idea

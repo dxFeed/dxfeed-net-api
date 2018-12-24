@@ -13,33 +13,34 @@ using com.dxfeed.api.events;
 using com.dxfeed.api.extras;
 using com.dxfeed.native;
 
-namespace dxf_client
-{
-
+namespace dxf_client {
     public class SnapshotPrinter :
         IDxOrderSnapshotListener,
         IDxCandleSnapshotListener,
         IDxTimeAndSaleSnapshotListener,
         IDxSpreadOrderSnapshotListener,
         IDxGreeksSnapshotListener,
-        IDxSeriesSnapshotListener
-    {
+        IDxSeriesSnapshotListener {
+        private readonly int recordsPrintLimit;
 
-        private const int RECORDS_PRINT_LIMIT = 7;
+        public SnapshotPrinter(int recordsPrintLimit) {
+            this.recordsPrintLimit = recordsPrintLimit;
+        }
 
-        private void PrintSnapshot<TE>(IDxEventBuf<TE> buf)
-        {
-            Console.WriteLine(string.Format(CultureInfo.InvariantCulture, "Snapshot {0} {{Symbol: '{1}', RecordsCount: {2}}}",
+        private void PrintSnapshot<TE>(IDxEventBuf<TE> buf) {
+            Console.WriteLine(string.Format(CultureInfo.InvariantCulture,
+                "Snapshot {0} {{Symbol: '{1}', RecordsCount: {2}}}",
                 buf.EventType, buf.Symbol, buf.Size));
-            int count = 0;
-            foreach (var o in buf)
-            {
-                Console.WriteLine(string.Format("   {{ {0} }}", o));
-                if (++count >= RECORDS_PRINT_LIMIT)
-                {
-                    Console.WriteLine(string.Format("   {{ ... {0} records left ...}}", buf.Size - count));
-                    break;
-                }
+
+            var count = 0;
+            foreach (var o in buf) {
+                Console.WriteLine($"   {{ {o} }}");
+
+                if (++count < recordsPrintLimit || recordsPrintLimit == 0) continue;
+
+                Console.WriteLine($"   {{ ... {buf.Size - count} records left ...}}");
+
+                break;
             }
         }
 
@@ -53,8 +54,7 @@ namespace dxf_client
         /// <param name="buf">Event buffer object.</param>
         public void OnOrderSnapshot<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
-            where TE : IDxOrder
-        {
+            where TE : IDxOrder {
             PrintSnapshot(buf);
         }
 
@@ -70,8 +70,7 @@ namespace dxf_client
         /// <param name="buf">Event buffer object.</param>
         public void OnCandleSnapshot<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
-            where TE : IDxCandle
-        {
+            where TE : IDxCandle {
             PrintSnapshot(buf);
         }
 
@@ -87,8 +86,7 @@ namespace dxf_client
         /// <param name="buf">Event buffer object.</param>
         public void OnTimeAndSaleSnapshot<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
-            where TE : IDxTimeAndSale
-        {
+            where TE : IDxTimeAndSale {
             PrintSnapshot(buf);
         }
 
@@ -104,8 +102,7 @@ namespace dxf_client
         /// <param name="buf">Event buffer object.</param>
         public void OnSpreadOrderSnapshot<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
-            where TE : IDxSpreadOrder
-        {
+            where TE : IDxSpreadOrder {
             PrintSnapshot(buf);
         }
 
@@ -115,8 +112,7 @@ namespace dxf_client
 
         public void OnGreeksSnapshot<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
-            where TE : IDxGreeks
-        {
+            where TE : IDxGreeks {
             PrintSnapshot(buf);
         }
 
@@ -126,83 +122,89 @@ namespace dxf_client
 
         public void OnSeriesSnapshot<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
-            where TE : IDxSeries
-        {
+            where TE : IDxSeries {
             PrintSnapshot(buf);
         }
 
         #endregion
     }
 
-    class InputParam<T>
-    {
+    internal class InputParam<T> {
         private T value;
 
-        public InputParam()
-        {
+        private InputParam() {
             IsSet = false;
         }
 
-        public InputParam(T defaultValue) : this()
-        {
+        public InputParam(T defaultValue) : this() {
             value = defaultValue;
         }
 
         public bool IsSet { get; private set; }
 
-        public T Value
-        {
-            get
-            {
-                return value;
-            }
-            set
-            {
+        public T Value {
+            get { return value; }
+            set {
                 this.value = value;
                 IsSet = true;
             }
         }
     }
 
-    class Program
-    {
+    class Program {
+        private const int DEFAULT_RECORDS_PRINT_LIMIT = 7;
 
-        private const int HostIndex = 0;
-        private const int EventIndex = 1;
-        private const int SymbolIndex = 2;
+        private const int HOST_INDEX = 0;
+        private const int EVENT_INDEX = 1;
+        private const int SYMBOL_INDEX = 2;
 
-        static bool TryParseDateTimeParam(string stringParam, InputParam<DateTime?> param)
-        {
-            DateTime dateTimeValue = new DateTime();
-            if (DateTime.TryParse(stringParam, out dateTimeValue))
-            {
-                param.Value = dateTimeValue;
-                return true;
+        private static bool TryParseDateTimeParam(string stringParam, InputParam<DateTime?> param) {
+            DateTime dateTimeValue;
+
+            if (!DateTime.TryParse(stringParam, out dateTimeValue)) {
+                return false;
             }
-            return false;
+
+            param.Value = dateTimeValue;
+
+            return true;
         }
 
-        static bool TryParseSnapshotParam(string stringParam, InputParam<bool> param)
-        {
-            if (stringParam.ToLower().Equals("snapshot"))
-            {
-                param.Value = true;
-                return true;
+        private static bool TryParseSnapshotParam(string stringParam, InputParam<bool> param) {
+            if (!stringParam.ToLower().Equals("snapshot")) {
+                return false;
             }
-            return false;
+
+            param.Value = true;
+
+            return true;
         }
 
-        static void TryParseSourcesParam(string stringParam, InputParam<string[]> param)
-        {
+        static void TryParseSourcesParam(string stringParam, InputParam<string[]> param) {
             param.Value = stringParam.Split(',');
         }
 
-        static void Main(string[] args)
-        {
-            if (args.Length < 3 || args.Length > 6)
-            {
+        private static bool TryParseRecordsPrintLimitParam(string stringParamTag, string stringParam,
+            InputParam<int> param) {
+            if (!stringParamTag.Equals("-l")) {
+                return false;
+            }
+
+            int newRecordsPrintLimit;
+
+            if (!int.TryParse(stringParam, out newRecordsPrintLimit)) {
+                return false;
+            }
+
+            param.Value = newRecordsPrintLimit;
+
+            return true;
+        }
+
+        static void Main(string[] args) {
+            if (args.Length < 3 || args.Length > 8) {
                 Console.WriteLine(
-                    "Usage: dxf_client <host:port> <event> <symbol> [<date>] [<source>] [snapshot]\n" +
+                    "Usage: dxf_client <host:port> <event> <symbol> [<date>] [<source>] [snapshot] [-l records_print_limit]\n" +
                     "where\n" +
                     "    host:port - address of dxfeed server (demo.dxfeed.com:7300)\n" +
                     "    event     - any of the {Profile,Order,Quote,Trade,TimeAndSale,Summary,\n" +
@@ -221,6 +223,7 @@ namespace dxf_client
                     "                   or COMPOSITE_BID\n" +
                     "    snapshot  - use keyword 'snapshot' for create snapshot subscription,\n" +
                     "                otherwise leave empty\n\n" +
+                    $"    [records_print_limit] - the number of displayed records (0 - unlimited, default: {DEFAULT_RECORDS_PRINT_LIMIT})\n" +
                     "examples:\n" +
                     "  events: dxf_client demo.dxfeed.com:7300 Quote,Trade MSFT.TEST,IBM.TEST\n" +
                     "  order: dxf_client demo.dxfeed.com:7300 Order MSFT.TEST,IBM.TEST NTV,IST\n" +
@@ -228,32 +231,41 @@ namespace dxf_client
                     "  underlying: dxf_client demo.dxfeed.com:7300 Underlyingn AAPL\n" +
                     "  series: dxf_client demo.dxfeed.com:7300 Series AAPL\n" +
                     "  order snapshot: dxf_client demo.dxfeed.com:7300 Order AAPL NTV snapshot\n" +
+                    "  order snapshot: dxf_client demo.dxfeed.com:7300 Order AAPL NTV snapshot -l 0\n" +
                     "  market maker snapshot: dxf_client demo.dxfeed.com:7300 Order AAPL COMPOSITE_BID snapshot\n" +
-                    "  candle snapshot: dxf_client demo.dxfeed.com:7300 Candle XBT/USD{=d} 2016-10-10 snapshot\n"
+                    "  market maker snapshot: dxf_client demo.dxfeed.com:7300 Order AAPL COMPOSITE_BID snapshot -l 3\n" +
+                    "  candle snapshot: dxf_client demo.dxfeed.com:7300 Candle XBT/USD{=d} 2016-10-10 snapshot\n" + 
+                    "  candle snapshot: dxf_client demo.dxfeed.com:7300 Candle XBT/USD{=d} 2016-10-10 snapshot -l 10\n"
                 );
                 return;
             }
 
-            var address = args[HostIndex];
+            var address = args[HOST_INDEX];
 
             EventType events;
-            if (!Enum.TryParse(args[EventIndex], true, out events))
-            {
+            if (!Enum.TryParse(args[EVENT_INDEX], true, out events)) {
                 Console.WriteLine("Unsupported event type: " + args[1]);
                 return;
             }
 
-            string symbols = args[SymbolIndex];
-            InputParam<string[]> sources = new InputParam<string[]>(new string[] { });
-            InputParam<bool> isSnapshot = new InputParam<bool>(false);
-            InputParam<DateTime?> dateTime = new InputParam<DateTime?>(null);
+            var symbols = args[SYMBOL_INDEX];
+            var sources = new InputParam<string[]>(new string[] { });
+            var isSnapshot = new InputParam<bool>(false);
+            var dateTime = new InputParam<DateTime?>(null);
+            var recordsPrintLimit = new InputParam<int>(DEFAULT_RECORDS_PRINT_LIMIT);
 
-            for (int i = SymbolIndex + 1; i < args.Length; i++)
-            {
+            for (var i = SYMBOL_INDEX + 1; i < args.Length; i++) {
                 if (!dateTime.IsSet && TryParseDateTimeParam(args[i], dateTime))
                     continue;
                 if (!isSnapshot.IsSet && TryParseSnapshotParam(args[i], isSnapshot))
                     continue;
+                if (!recordsPrintLimit.IsSet && i < args.Length - 1 &&
+                    TryParseRecordsPrintLimitParam(args[i], args[i + 1], recordsPrintLimit)) {
+                    i++;
+
+                    continue;
+                }
+
                 if (!sources.IsSet)
                     TryParseSourcesParam(args[i], sources);
             }
@@ -268,58 +280,41 @@ namespace dxf_client
             NativeTools.InitializeLogging("log.log", true, true);
 
             var listener = new EventPrinter();
-            using (var con = new NativeConnection(address, OnDisconnect))
-            {
+            using (var con = new NativeConnection(address, OnDisconnect)) {
                 IDxSubscription s = null;
-                try
-                {
-                    if (isSnapshot.Value)
-                    {
-                        s = con.CreateSnapshotSubscription(events, dateTime.Value, new SnapshotPrinter());
-                    }
-                    else if (dateTime.IsSet)
-                    {
+                try {
+                    if (isSnapshot.Value) {
+                        s = con.CreateSnapshotSubscription(events, dateTime.Value,
+                            new SnapshotPrinter(recordsPrintLimit.Value));
+                    } else if (dateTime.IsSet) {
                         s = con.CreateSubscription(events, dateTime.Value, listener);
-                    }
-                    else
-                    {
+                    } else {
                         s = con.CreateSubscription(events, listener);
                     }
 
                     if (events.HasFlag(EventType.Order) && sources.Value.Length > 0)
                         s.SetSource(sources.Value);
 
-                    if (events == EventType.Candle)
-                    {
+                    if (events == EventType.Candle) {
                         CandleSymbol candleSymbol = CandleSymbol.ValueOf(symbols);
                         s.AddSymbol(candleSymbol);
-                    }
-                    else
-                    {
+                    } else {
                         s.AddSymbols(symbols.Split(','));
                     }
 
                     Console.WriteLine("Press enter to stop");
                     Console.ReadLine();
-                }
-                catch (DxException dxException)
-                {
+                } catch (DxException dxException) {
                     Console.WriteLine("Native exception occured: " + dxException.Message);
-                }
-                catch (Exception exc)
-                {
+                } catch (Exception exc) {
                     Console.WriteLine("Exception occured: " + exc.Message);
-                }
-                finally
-                {
-                    if (s != null)
-                        s.Dispose();
+                } finally {
+                    s?.Dispose();
                 }
             }
         }
 
-        private static void OnDisconnect(IDxConnection con)
-        {
+        private static void OnDisconnect(IDxConnection con) {
             Console.WriteLine("Disconnected");
         }
     }

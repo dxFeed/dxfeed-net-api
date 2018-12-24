@@ -21,6 +21,45 @@ namespace dxf_order_view_sample {
             Console.WriteLine("Disconnected");
         }
 
+        private class InputParam<T> {
+            private T value;
+
+            private InputParam() {
+                IsSet = false;
+            }
+
+            public InputParam(T defaultValue) : this() {
+                value = defaultValue;
+            }
+
+            public bool IsSet { get; private set; }
+
+            public T Value {
+                get { return value; }
+                set {
+                    this.value = value;
+                    IsSet = true;
+                }
+            }
+        }
+
+        private static bool TryParseRecordsPrintLimitParam(string stringParamTag, string stringParam,
+            InputParam<int> param) {
+            if (!stringParamTag.Equals("-l")) {
+                return false;
+            }
+
+            int newRecordsPrintLimit;
+
+            if (!int.TryParse(stringParam, out newRecordsPrintLimit)) {
+                return false;
+            }
+
+            param.Value = newRecordsPrintLimit;
+
+            return true;
+        }
+        
         private static void PrintUsage() {
             Console.WriteLine(
                 "Usage: dxf_order_view_sample <host:port> [-l records_print_limit]\n" +
@@ -31,33 +70,22 @@ namespace dxf_order_view_sample {
                 "          dxf_order_view_sample demo.dxfeed.com:7300 -l 0\n"
             );
         }
-        
+
         static void Main(string[] args) {
             if (args.Length != 1 && args.Length != 3) {
                 PrintUsage();
-                
+
                 return;
             }
 
             var address = args[HOST_INDEX];
-            var recordsPrintLimit = DEFAULT_RECORDS_PRINT_LIMIT;
+            var recordsPrintLimit = new InputParam<int>(DEFAULT_RECORDS_PRINT_LIMIT);
 
-            if (args.Length == 3) {
-                if (args[HOST_INDEX + 1].Equals("-l")) {
-                    int newRecordsPrintLimit;
-
-                    if (int.TryParse(args[HOST_INDEX + 2], out newRecordsPrintLimit)) {
-                        recordsPrintLimit = newRecordsPrintLimit;
-                    } else {
-                        Console.WriteLine("Invalid [records_print_limit] (number of displayed records) value!");
-                        PrintUsage();
-
-                        return;
-                    }
-                } else {
-                    PrintUsage();
-
-                    return;
+            
+            for (var i = HOST_INDEX + 1; i < args.Length; i++) {
+                if (!recordsPrintLimit.IsSet && i < args.Length - 1 &&
+                    TryParseRecordsPrintLimitParam(args[i], args[i + 1], recordsPrintLimit)) {
+                    i++;
                 }
             }
 
@@ -66,7 +94,7 @@ namespace dxf_order_view_sample {
             try {
                 NativeTools.InitializeLogging("log.log", true, true);
                 using (var con = new NativeConnection(address, OnDisconnect)) {
-                    using (var sub = con.CreateOrderViewSubscription(new OrderViewEventListener(recordsPrintLimit))) {
+                    using (var sub = con.CreateOrderViewSubscription(new OrderViewEventListener(recordsPrintLimit.Value))) {
                         sub.SetSource("NTV", "DEA", "DEX");
                         sub.SetSymbols("AAPL", "GOOG", "IBM", "F");
 

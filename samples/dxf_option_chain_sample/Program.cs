@@ -1,23 +1,24 @@
-﻿/// Copyright (C) 2010-2016 Devexperts LLC
-///
-/// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-/// If a copy of the MPL was not distributed with this file, You can obtain one at
-/// http://mozilla.org/MPL/2.0/.
+﻿#region License
+
+/*
+Copyright (C) 2010-2018 Devexperts LLC
+
+This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+*/
+
+#endregion
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using com.dxfeed.ipf;
 using com.dxfeed.ipf.option;
-using System.Globalization;
 
-namespace dxf_option_chain_sample
-{
-    class Program
-    {
-        static void Main(string[] args)
-        {
-            if (args.Length < 7)
-            {
+namespace dxf_option_chain_sample {
+    internal class Program {
+        private static void Main(string[] args) {
+            if (args.Length < 7) {
                 Console.WriteLine(
                     "Usage: dxf_option_chain_sample <host> <user> <password> <symbol> <nStrikes> <nMonths> <price>\n" +
                     "where\n" +
@@ -33,49 +34,39 @@ namespace dxf_option_chain_sample
                 return;
             }
 
-            IList<InstrumentProfile> profiles = null;
-            IDictionary<string, OptionChain> chains = null;
+            var path = args[0];
+            var user = args[1];
+            var password = args[2];
+            var symbol = args[3];
 
-            string path = args[0];
-            string user = args[1];
-            string password = args[2];
-            string symbol = args[3];
+            try {
+                var nStrikes = int.Parse(args[4]);
+                var nMonths = int.Parse(args[5]);
+                var price = double.Parse(args[6], CultureInfo.InvariantCulture);
 
-            try
-            {
-                int nStrikes = int.Parse(args[4]);
-                int nMonths = int.Parse(args[5]);
-                double price = double.Parse(args[6], CultureInfo.InvariantCulture);
-
-                InstrumentProfileReader reader = new InstrumentProfileReader();
+                var reader = new InstrumentProfileReader();
                 //Read profiles from server
-                profiles = reader.ReadFromFile(path, user, password);
+                var profiles = reader.ReadFromFile(path, user, password);
 
-                Console.WriteLine(string.Format("Profiles from '{0}' count: {1}", path, profiles.Count));
+                Console.WriteLine("Profiles from '{0}' count: {1}", path, profiles.Count);
 
                 Console.WriteLine("Building option chains ...");
-                chains = OptionChainsBuilder.Build(profiles).Chains;
-                OptionChain chain = chains[symbol];
+                IDictionary<string, OptionChain> chains = OptionChainsBuilder.Build(profiles).Chains;
+                var chain = chains[symbol];
                 nMonths = Math.Min(nMonths, chain.GetSeries().Count);
-                List<OptionSeries> seriesList
+                var seriesList
                     = new List<OptionSeries>(chain.GetSeries()).GetRange(0, nMonths);
 
                 Console.WriteLine("Printing option series ...");
-                foreach (OptionSeries series in seriesList)
-                {
+                foreach (var series in seriesList) {
                     Console.WriteLine("Option series {0}", series);
-                    List<double> strikes = series.GetNStrikesAround(nStrikes, price);
+                    var strikes = series.GetNStrikesAround(nStrikes, price);
                     Console.WriteLine("Strikes:");
-                    foreach (double strike in strikes)
-                    {
-                        Console.Write("{0} ", strike);
-                    }
+                    foreach (var strike in strikes) Console.Write("{0} ", strike);
                     Console.WriteLine();
                 }
-            }
-            catch (Exception exc)
-            {
-                Console.WriteLine("Exception occured: " + exc.ToString());
+            } catch (Exception exc) {
+                Console.WriteLine($"Exception occured: {exc}");
             }
         }
     }

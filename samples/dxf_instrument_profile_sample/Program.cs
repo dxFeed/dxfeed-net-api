@@ -1,70 +1,61 @@
-﻿/// Copyright (C) 2010-2016 Devexperts LLC
-///
-/// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-/// If a copy of the MPL was not distributed with this file, You can obtain one at
-/// http://mozilla.org/MPL/2.0/.
+﻿#region License
+
+/*
+Copyright (C) 2010-2018 Devexperts LLC
+
+This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+*/
+
+#endregion
 
 using System;
 using System.Collections.Generic;
 using System.IO;
 using com.dxfeed.ipf;
 
-namespace dxf_instrument_profile_sample
-{
-    class Program
-    {
-        static bool IsFilePath(string path)
-        {
-            try
-            {
+namespace dxf_instrument_profile_sample {
+    internal class Program {
+        private const int MAX_PRINT_COUNT = 7;
+
+        private static bool IsFilePath(string path) {
+            try {
                 return new Uri(path).IsFile;
-            }
-            catch (UriFormatException)
-            {
+            } catch (UriFormatException) {
                 //This exception used for determine that path is not valid uri.
                 return true;
             }
         }
 
-        static int MAX_PRINT_COUNT = 7;
-
-        static void Main(string[] args)
-        {
-
-            if (args.Length == 0)
-            {
+        private static void Main(string[] args) {
+            if (args.Length == 0) {
                 Console.WriteLine(
                     "Usage: dxf_instrument_profile_sample <host> <user> <password>\n" +
                     "or:    dxf_instrument_profile_sample <file>\n" +
                     "where\n" +
-                    "    host      - valid host to download instruments (https://tools.dxfeed.com/ipf)\n" +
-                    "    user      - user name to host access\n" +
-                    "    password  - user password to host access\n" +
-                    "    file      - name of file or archive (.gz or .zip) contains instrument profiles\n" +
+                    "    host      - The valid host to download instruments (https://tools.dxfeed.com/ipf)\n" +
+                    "    user      - The user name to host access\n" +
+                    "    password  - The user password to host access\n" +
+                    "    file      - The name of file or archive (.gz or .zip) contains instrument profiles\n\n" +
                     "example: dxf_instrument_profile_sample https://tools.dxfeed.com/ipf demo demo\n" +
                     "or:      dxf_instrument_profile_sample profiles.zip\n"
                 );
                 return;
             }
 
-            string path = args[0];
-            string user = string.Empty;
-            string password = string.Empty;
-            IList<InstrumentProfile> profiles = null;
+            var path = args[0];
+            var user = string.Empty;
+            var password = string.Empty;
             const string ZIP_FILE_PATH = "profiles.zip";
-            try
-            {
-                InstrumentProfileReader reader = new InstrumentProfileReader();
-                if (IsFilePath(path))
-                {
+            try {
+                var reader = new InstrumentProfileReader();
+                IList<InstrumentProfile> profiles;
+                if (IsFilePath(path)) {
                     //Read profiles from local file system
-                    using (FileStream inputStream = new FileStream(path, FileMode.Open))
-                    {
+                    using (var inputStream = new FileStream(path, FileMode.Open)) {
                         profiles = reader.Read(inputStream, path);
                     }
-                }
-                else
-                {
+                } else {
                     if (args.Length >= 2)
                         user = args[1];
                     if (args.Length >= 3)
@@ -74,20 +65,18 @@ namespace dxf_instrument_profile_sample
                 }
 
                 //Iterate through received profiles
-                Console.WriteLine(string.Format("Profiles from '{0}' count: {1}", path, profiles.Count));
-                Console.WriteLine(string.Format("Print first {0} instruments:", MAX_PRINT_COUNT));
-                for (int i = 0; i < Math.Min(profiles.Count, MAX_PRINT_COUNT); i++)
-                    Console.WriteLine(string.Format("#{0}:{1}", i, profiles[i].ToString()));
+                Console.WriteLine("Profiles from '{0}' count: {1}", path, profiles.Count);
+                Console.WriteLine("Print first {0} instruments:", MAX_PRINT_COUNT);
+                for (var i = 0; i < Math.Min(profiles.Count, MAX_PRINT_COUNT); i++)
+                    Console.WriteLine("#{0}:{1}", i, profiles[i]);
                 if (profiles.Count > MAX_PRINT_COUNT)
-                    Console.WriteLine(string.Format("   {0} instruments left...", profiles.Count - MAX_PRINT_COUNT));
+                    Console.WriteLine("   {0} instruments left...", profiles.Count - MAX_PRINT_COUNT);
 
                 //Write profiles to local file system
-                InstrumentProfileWriter writer = new InstrumentProfileWriter();
+                var writer = new InstrumentProfileWriter();
                 writer.WriteToFile(ZIP_FILE_PATH, profiles);
-            }
-            catch (Exception exc)
-            {
-                Console.WriteLine("Exception occured: " + exc.ToString());
+            } catch (Exception exc) {
+                Console.WriteLine($"Exception occured: {exc}");
             }
         }
     }

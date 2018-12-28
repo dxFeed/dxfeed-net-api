@@ -1,20 +1,23 @@
-﻿/// Copyright (C) 2010-2016 Devexperts LLC
-///
-/// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-/// If a copy of the MPL was not distributed with this file, You can obtain one at
-/// http://mozilla.org/MPL/2.0/.
+﻿#region License
 
- using System;
+/*
+Copyright (C) 2010-2018 Devexperts LLC
+
+This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+*/
+
+#endregion
+
+using System;
 using com.dxfeed.api;
 using com.dxfeed.api.events;
 
-namespace dxf_candle_sample
-{
+namespace dxf_candle_sample {
     /// <summary>
     /// Candle event listener
     /// </summary>
-    public class EventListener : IDxCandleListener
-    {
+    public class EventListener : IDxCandleListener {
         #region Implementation of IDxCandleListener
 
         /// <summary>
@@ -25,11 +28,9 @@ namespace dxf_candle_sample
         /// <param name="buf">Event buffer object.</param>
         public void OnCandle<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
-            where TE : IDxCandle
-        {
-
+            where TE : IDxCandle {
             foreach (var c in buf)
-                Console.WriteLine(string.Format("{0} {1}", buf.Symbol, c));
+                Console.WriteLine($"{buf.Symbol} {c}");
         }
 
         #endregion

@@ -1,7 +1,9 @@
 Version 5.4.0
+* [Samples] Expand the parameter set by passing an authentication token
+  - The optional command line parameter "[-T <token>]" is added
 * [Samples] Add the ability to change the number of displayed records
   - The optional command line parameter "[-l records_print_limit]" is added (0 - unlimited).
-  - Affected samples: dxf_client, dxf_order_view_sample
+  - Affected samples: dxf_client, dxf_order_view_sample, dxf_snapshot_sample
 * dxf_simple_order_book has been renamed to dxf_simple_order_book_sample
 
 Version 5.3.2

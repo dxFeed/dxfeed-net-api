@@ -1,43 +1,79 @@
-﻿/// Copyright (C) 2010-2016 Devexperts LLC
-///
-/// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-/// If a copy of the MPL was not distributed with this file, You can obtain one at
-/// http://mozilla.org/MPL/2.0/.
+﻿#region License
+
+/*
+Copyright (C) 2010-2018 Devexperts LLC
+
+This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+*/
+
+#endregion
 
 using System;
 using com.dxfeed.api;
-using com.dxfeed.api.data;
 using com.dxfeed.api.candle;
-using com.dxfeed.api.events;
+using com.dxfeed.api.data;
 using com.dxfeed.native;
 
-namespace dxf_snapshot_sample
-{
+namespace dxf_snapshot_sample {
     /// <summary>
-    /// This sample class demonstrates subscription to snapshots.
-    /// The sample configures via command line, subscribes to snapshot and prints received data.
+    ///     This sample class demonstrates subscription to snapshots.
+    ///     The sample configures via command line, subscribes to snapshot and prints received data.
     /// </summary>
-    class Program
-    {
-        private const int hostIndex = 0;
-        private const int eventIndex = 1;
-        private const int symbolIndex = 2;
-        private const int sourceIndex = 3;
-        private const int defaultTime = 0;
+    internal class Program {
+        private const int DEFAULT_RECORDS_PRINT_LIMIT = 7;
+        private const int HOST_INDEX = 0;
+        private const int EVENT_INDEX = 1;
+        private const int SYMBOL_INDEX = 2;
+        private const int DEFAULT_TIME = 0;
 
         private const string COMPOSITE_BID = "COMPOSITE_BID";
 
-        private static void OnDisconnect(IDxConnection con)
-        {
+        private static void DisconnectHandler(IDxConnection con) {
             Console.WriteLine("Disconnected");
         }
 
-        static void Main(string[] args)
-        {
-            if (args.Length < 3)
-            {
+        private static bool TryParseRecordsPrintLimitParam(string paramTagString, string paramString,
+            InputParam<int> param) {
+            if (!paramTagString.Equals("-l")) {
+                return false;
+            }
+
+            int newRecordsPrintLimit;
+
+            if (!int.TryParse(paramString, out newRecordsPrintLimit)) {
+                return false;
+            }
+
+            param.Value = newRecordsPrintLimit;
+
+            return true;
+        }
+
+        private static void TryParseStringParam(string paramString,
+            InputParam<string> param) {
+            if (string.IsNullOrEmpty(paramString)) {
+                return;
+            }
+
+            param.Value = paramString;
+        }
+
+        private static bool TryParseTaggedStringParam(string tag, string paramTagString, string paramString,
+            InputParam<string> param) {
+            if (!paramTagString.Equals(tag)) {
+                return false;
+            }
+
+            param.Value = paramString;
+
+            return true;
+        }
+
+        private static void Main(string[] args) {
+            if (args.Length < 3 || args.Length > 8) {
                 Console.WriteLine(
-                    "Usage: dxf_snapshot_sample <host:port> <event> <symbol> [<source>]\n" +
+                    "Usage: dxf_snapshot_sample <host:port> <event> <symbol> [<source>] [-l <records_print_limit>] [-T <token>]\n" +
                     "where\n" +
                     "    host:port - address of dxfeed server (demo.dxfeed.com:7300)\n" +
                     "    event     - snapshot event Order, Candle, TimeAndSale, SpreadOrder,\n" +
@@ -54,6 +90,8 @@ namespace dxf_snapshot_sample
                     "                   or COMPOSITE_BID (default value for Order snapshots)\n" +
                     "                If source is not specified MarketMaker snapshot will be\n" +
                     "                subscribed by default.\n\n" +
+                    $"    -l <records_print_limit> - The number of displayed records (0 - unlimited, default: {DEFAULT_RECORDS_PRINT_LIMIT})\n" +
+                    "    -T <token>               - The authorization token\n\n" +
                     "order example: dxf_snapshot_sample demo.dxfeed.com:7300 Order AAPL NTV\n" +
                     "market maker example:\n" +
                     "    dxf_snapshot_sample demo.dxfeed.com:7300 Order AAPL COMPOSITE_BID\n" +
@@ -64,61 +102,63 @@ namespace dxf_snapshot_sample
                 return;
             }
 
-            var address = args[hostIndex];
-            var symbol = args[symbolIndex];
+            var address = args[HOST_INDEX];
+            var symbol = args[SYMBOL_INDEX];
 
             EventType eventType;
-            if (!Enum.TryParse(args[eventIndex], true, out eventType) ||
+            if (!Enum.TryParse(args[EVENT_INDEX], true, out eventType) ||
                 eventType != EventType.Order && eventType != EventType.Candle &&
                 eventType != EventType.TimeAndSale && eventType != EventType.SpreadOrder &&
-                eventType != EventType.Greeks && eventType != EventType.Series)
-            {
-
-                Console.WriteLine("Unsupported event type: " + args[eventIndex]);
+                eventType != EventType.Greeks && eventType != EventType.Series) {
+                Console.WriteLine($"Unsupported event type: {args[EVENT_INDEX]}");
                 return;
             }
 
-            var source = COMPOSITE_BID;
-            if (args.Length == sourceIndex + 1)
-                source = args[sourceIndex];
+            var source = new InputParam<string>(COMPOSITE_BID);
+            var recordsPrintLimit = new InputParam<int>(DEFAULT_RECORDS_PRINT_LIMIT);
+            var token = new InputParam<string>(null);
 
-            if (eventType == EventType.Order)
-            {
-                if (source.Equals(COMPOSITE_BID))
-                {
-                    Console.WriteLine(string.Format("Connecting to {0} for MarketMaker snapshot on {1}...",
-                        address, symbol));
+            for (var i = SYMBOL_INDEX + 1; i < args.Length; i++) {
+                if (!recordsPrintLimit.IsSet && i < args.Length - 1 &&
+                    TryParseRecordsPrintLimitParam(args[i], args[i + 1], recordsPrintLimit)) {
+                    i++;
+
+                    continue;
                 }
+
+                if (!token.IsSet && i < args.Length - 1 &&
+                    TryParseTaggedStringParam("-T", args[i], args[i + 1], token)) {
+                    i++;
+
+                    continue;
+                }
+
+                if (!source.IsSet) TryParseStringParam(args[i], source);
+            }
+
+            if (eventType == EventType.Order) {
+                if (source.Value.Equals(COMPOSITE_BID))
+                    Console.WriteLine("Connecting to {0} for MarketMaker snapshot on {1}...", address, symbol);
                 else
-                {
-                    Console.WriteLine(string.Format("Connecting to {0} for Order#{1} snapshot on {2}...",
-                        address, source, symbol));
-                }
-            }
-            else
-            {
-                Console.WriteLine(string.Format("Connecting to {0} for {1} snapshot on {2}...",
-                    address, eventType, symbol));
+                    Console.WriteLine("Connecting to {0} for Order#{1} snapshot on {2}...", address, source.Value,
+                        symbol);
+            } else {
+                Console.WriteLine("Connecting to {0} for {1} snapshot on {2}...", address, eventType, symbol);
             }
 
-            try
-            {
-                NativeTools.InitializeLogging("log.log", true, true);
-                using (var con = new NativeConnection(address, OnDisconnect))
-                {
-                    using (var s = con.CreateSnapshotSubscription(defaultTime, new SnapshotListener()))
-                    {
-                        if (eventType == EventType.Order)
-                        {
-                            s.AddSource(source);
+            try {
+                NativeTools.InitializeLogging("dxf_snapshot_sample.log", true, true);
+                using (var con = token.IsSet
+                    ? new NativeConnection(address, token.Value, DisconnectHandler)
+                    : new NativeConnection(address, DisconnectHandler)) {
+                    using (var s = con.CreateSnapshotSubscription(DEFAULT_TIME,
+                        new SnapshotListener(DEFAULT_RECORDS_PRINT_LIMIT))) {
+                        if (eventType == EventType.Order) {
+                            s.AddSource(source.Value);
                             s.AddSymbol(symbol);
-                        }
-                        else if (eventType == EventType.Candle)
-                        {
+                        } else if (eventType == EventType.Candle) {
                             s.AddSymbol(CandleSymbol.ValueOf(symbol));
-                        }
-                        else
-                        {
+                        } else {
                             s.AddSymbol(symbol);
                         }
 
@@ -126,14 +166,32 @@ namespace dxf_snapshot_sample
                         Console.ReadLine();
                     }
                 }
+            } catch (DxException dxException) {
+                Console.WriteLine($"Native exception occured: {dxException.Message}");
+            } catch (Exception exc) {
+                Console.WriteLine($"Exception occured: {exc.Message}");
             }
-            catch (DxException dxException)
-            {
-                Console.WriteLine("Native exception occured: " + dxException.Message);
+        }
+
+        private class InputParam<T> {
+            private T value;
+
+            private InputParam() {
+                IsSet = false;
             }
-            catch (Exception exc)
-            {
-                Console.WriteLine("Exception occured: " + exc.Message);
+
+            public InputParam(T defaultValue) : this() {
+                value = defaultValue;
+            }
+
+            public bool IsSet { get; private set; }
+
+            public T Value {
+                get { return value; }
+                set {
+                    this.value = value;
+                    IsSet = true;
+                }
             }
         }
     }

@@ -10,6 +10,7 @@ using System;
 using System.Runtime.InteropServices;
 using com.dxfeed.api.events;
 using com.dxfeed.api.data;
+using com.dxfeed.api.connection;
 
 namespace com.dxfeed.native.api
 {
@@ -85,6 +86,15 @@ namespace com.dxfeed.native.api
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate void dxf_conn_termination_notifier_t(IntPtr connection, IntPtr user_data);
 
+        /*
+          typedef void (*dxf_conn_status_notifier_t) (dxf_connection_t connection,
+                                                      dxf_connection_status_t old_status,
+                                                      dxf_connection_status_t new_status,
+                                                      void* user_data);
+         */
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        internal delegate void dxf_conn_status_notifier_t(IntPtr connection, ConnectionStatus old_status, ConnectionStatus new_status, IntPtr user_data);
+        
         /* the low level callback types, required in case some thread-specific initialization must be performed
            on the client side on the thread creation/destruction
          */
@@ -130,6 +140,7 @@ namespace com.dxfeed.native.api
          *            multiple addresses: "(host1:port1)(host2)(host3:port3[username=xxx,password=yyy])"
          *            the data from file: "/path/to/file" on *nix and "drive:\path\to\file" on Windows
          *  notifier - the callback to inform the client side that the connection has stumbled upon and error and will go reconnecting
+         *  conn_status_notifier - the callback to inform the client side that the connection status has changed
          *  stcn - the callback for informing the client side about the socket thread creation;
                    may be set to NULL if no specific action is required to perform on the client side on a new thread creation
          *  shdn - the callback for informing the client side about the socket thread destruction;
@@ -143,6 +154,7 @@ namespace com.dxfeed.native.api
         internal abstract int dxf_create_connection(
             string address,
             dxf_conn_termination_notifier_t notifier,
+            dxf_conn_status_notifier_t conn_status_notifier,
             dxf_socket_thread_creation_notifier_t stcn,
             dxf_socket_thread_destruction_notifier_t stdn,
             IntPtr user_data,
@@ -158,6 +170,7 @@ namespace com.dxfeed.native.api
          *  user - the user name;
          *  password - the user password;
          *  notifier - the callback to inform the client side that the connection has stumbled upon and error and will go reconnecting
+         *  conn_status_notifier - the callback to inform the client side that the connection status has changed
          *  stcn - the callback for informing the client side about the socket thread creation;
                    may be set to NULL if no specific action is required to perform on the client side on a new thread creation
          *  shdn - the callback for informing the client side about the socket thread destruction;
@@ -172,6 +185,7 @@ namespace com.dxfeed.native.api
                                                                string user,
                                                                string password,
                                                                dxf_conn_termination_notifier_t notifier,
+                                                               dxf_conn_status_notifier_t conn_status_notifier,
                                                                dxf_socket_thread_creation_notifier_t stcn,
                                                                dxf_socket_thread_destruction_notifier_t stdn,
                                                                IntPtr user_data,
@@ -186,6 +200,7 @@ namespace com.dxfeed.native.api
          *            the data from file: "/path/to/file" on *nix and "drive:\path\to\file" on Windows
          *  token - the authorization token;
          *  notifier - the callback to inform the client side that the connection has stumbled upon and error and will go reconnecting
+         *  conn_status_notifier - the callback to inform the client side that the connection status has changed
          *  stcn - the callback for informing the client side about the socket thread creation;
                    may be set to NULL if no specific action is required to perform on the client side on a new thread creation
          *  shdn - the callback for informing the client side about the socket thread destruction;
@@ -199,6 +214,7 @@ namespace com.dxfeed.native.api
         internal abstract int dxf_create_connection_auth_bearer(string address,
                                                                 string token,
                                                                 dxf_conn_termination_notifier_t notifier,
+                                                                dxf_conn_status_notifier_t conn_status_notifier,
                                                                 dxf_socket_thread_creation_notifier_t stcn,
                                                                 dxf_socket_thread_destruction_notifier_t stdn,
                                                                 IntPtr user_data,
@@ -214,6 +230,7 @@ namespace com.dxfeed.native.api
          *  authscheme - the authorization scheme;
          *  authdata - the authorization data;
          *  notifier - the callback to inform the client side that the connection has stumbled upon and error and will go reconnecting
+         *  conn_status_notifier - the callback to inform the client side that the connection status has changed
          *  stcn - the callback for informing the client side about the socket thread creation;
                    may be set to NULL if no specific action is required to perform on the client side on a new thread creation
          *  shdn - the callback for informing the client side about the socket thread destruction;
@@ -228,6 +245,7 @@ namespace com.dxfeed.native.api
                                                                 string authscheme,
                                                                 string authdata,
                                                                 dxf_conn_termination_notifier_t notifier,
+                                                                dxf_conn_status_notifier_t conn_status_notifier,
                                                                 dxf_socket_thread_creation_notifier_t stcn,
                                                                 dxf_socket_thread_destruction_notifier_t stdn,
                                                                 IntPtr user_data,
@@ -632,6 +650,14 @@ namespace com.dxfeed.native.api
         *  OUT address - pointer to store address of the null-terminated string with current connected address
         */
         internal abstract int dxf_get_current_connected_address(IntPtr connection, out IntPtr address);
+
+        /*
+        *  Retrieves the current connection status
+        *
+        *  connection - a handle of a previously created connection
+        *  OUT status - connection status
+        */
+        internal abstract int dxf_get_current_connection_status(IntPtr connection, out ConnectionStatus status);
 
         /*
         * Frees memory allocated in API functions from this module

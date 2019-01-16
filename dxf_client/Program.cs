@@ -9,6 +9,7 @@ using System;
 using System.Globalization;
 using com.dxfeed.api;
 using com.dxfeed.api.candle;
+using com.dxfeed.api.connection;
 using com.dxfeed.api.data;
 using com.dxfeed.api.events;
 using com.dxfeed.api.extras;
@@ -301,8 +302,8 @@ namespace dxf_client {
 
             var listener = new EventPrinter();
             using (var con = (token.IsSet)
-                ? new NativeConnection(address, token.Value, DisconnectHandler)
-                : new NativeConnection(address, DisconnectHandler)) {
+                ? new NativeConnection(address, token.Value, DisconnectHandler, ConnectionStatusChangeHandler)
+                : new NativeConnection(address, DisconnectHandler, ConnectionStatusChangeHandler)) {
                 IDxSubscription s = null;
                 try {
                     if (isSnapshot.Value) {
@@ -333,6 +334,14 @@ namespace dxf_client {
                 } finally {
                     s?.Dispose();
                 }
+            }
+        }
+
+        private static void ConnectionStatusChangeHandler(IDxConnection connection, ConnectionStatus oldStatus, ConnectionStatus newStatus) {
+            if (newStatus == ConnectionStatus.Connected) {
+                Console.WriteLine("Connected!");
+            } else if (newStatus == ConnectionStatus.Authorized) {
+                Console.WriteLine("Authorized!");
             }
         }
 

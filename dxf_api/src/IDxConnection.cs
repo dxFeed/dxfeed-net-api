@@ -9,6 +9,7 @@
 using System;
 using com.dxfeed.api.data;
 using System.Collections.Generic;
+using com.dxfeed.api.connection;
 
 namespace com.dxfeed.api
 {
@@ -138,5 +139,10 @@ namespace com.dxfeed.api
         ///   then connection is not connected (reconnection, no valid addresses, closed connection and others).
         /// </summary>
         string ConnectedAddress { get; }
+        
+        /// <summary>
+        ///   Retrieves the current connection status
+        /// </summary>
+        ConnectionStatus Status { get; }
     }
 }

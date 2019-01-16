@@ -8,6 +8,7 @@
 
 using System;
 using System.Runtime.InteropServices;
+using com.dxfeed.api.connection;
 using com.dxfeed.api.events;
 using com.dxfeed.api.data;
 
@@ -31,6 +32,7 @@ namespace com.dxfeed.native.api
         private static extern int __dxf_create_connection(
             string address,
             dxf_conn_termination_notifier_t notifier,
+            dxf_conn_status_notifier_t conn_status_notifier,
             dxf_socket_thread_creation_notifier_t stcn,
             dxf_socket_thread_destruction_notifier_t stdn,
             IntPtr user_data,
@@ -38,12 +40,13 @@ namespace com.dxfeed.native.api
         internal override int dxf_create_connection(
             string address,
             dxf_conn_termination_notifier_t notifier,
+            dxf_conn_status_notifier_t conn_status_notifier,
             dxf_socket_thread_creation_notifier_t stcn,
             dxf_socket_thread_destruction_notifier_t stdn,
             IntPtr user_data,
             out IntPtr connection)
         {
-            return __dxf_create_connection(address, notifier, stcn, stdn, user_data, out connection);
+            return __dxf_create_connection(address, notifier, conn_status_notifier, stcn, stdn, user_data, out connection);
         }
 
         [DllImport(DXFEED_DLL, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl, EntryPoint = "dxf_create_connection_auth_basic")]
@@ -52,6 +55,7 @@ namespace com.dxfeed.native.api
             string user,
             string password,
             dxf_conn_termination_notifier_t notifier,
+            dxf_conn_status_notifier_t conn_status_notifier,
             dxf_socket_thread_creation_notifier_t stcn,
             dxf_socket_thread_destruction_notifier_t stdn,
             IntPtr user_data,
@@ -61,12 +65,13 @@ namespace com.dxfeed.native.api
             string user,
             string password,
             dxf_conn_termination_notifier_t notifier,
+            dxf_conn_status_notifier_t conn_status_notifier,
             dxf_socket_thread_creation_notifier_t stcn,
             dxf_socket_thread_destruction_notifier_t stdn,
             IntPtr user_data,
             out IntPtr connection)
         {
-            return __dxf_create_connection_auth_basic(address, user, password, notifier, stcn, stdn, user_data, out connection);
+            return __dxf_create_connection_auth_basic(address, user, password, notifier, conn_status_notifier, stcn, stdn, user_data, out connection);
         }
 
         [DllImport(DXFEED_DLL, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl, EntryPoint = "dxf_create_connection_auth_bearer")]
@@ -74,6 +79,7 @@ namespace com.dxfeed.native.api
             string address,
             string token,
             dxf_conn_termination_notifier_t notifier,
+            dxf_conn_status_notifier_t conn_status_notifier,
             dxf_socket_thread_creation_notifier_t stcn,
             dxf_socket_thread_destruction_notifier_t stdn,
             IntPtr user_data,
@@ -82,12 +88,13 @@ namespace com.dxfeed.native.api
             string address,
             string token,
             dxf_conn_termination_notifier_t notifier,
+            dxf_conn_status_notifier_t conn_status_notifier,
             dxf_socket_thread_creation_notifier_t stcn,
             dxf_socket_thread_destruction_notifier_t stdn,
             IntPtr user_data,
             out IntPtr connection)
         {
-            return __dxf_create_connection_auth_bearer(address, token, notifier, stcn, stdn, user_data, out connection);
+            return __dxf_create_connection_auth_bearer(address, token, notifier, conn_status_notifier, stcn, stdn, user_data, out connection);
         }
 
         [DllImport(DXFEED_DLL, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl, EntryPoint = "dxf_create_connection_auth_custom")]
@@ -96,6 +103,7 @@ namespace com.dxfeed.native.api
             string authscheme,
             string authdata,
             dxf_conn_termination_notifier_t notifier,
+            dxf_conn_status_notifier_t conn_status_notifier,
             dxf_socket_thread_creation_notifier_t stcn,
             dxf_socket_thread_destruction_notifier_t stdn,
             IntPtr user_data,
@@ -105,12 +113,13 @@ namespace com.dxfeed.native.api
             string authscheme,
             string authdata,
             dxf_conn_termination_notifier_t notifier,
+            dxf_conn_status_notifier_t conn_status_notifier,
             dxf_socket_thread_creation_notifier_t stcn,
             dxf_socket_thread_destruction_notifier_t stdn,
             IntPtr user_data,
             out IntPtr connection)
         {
-            return __dxf_create_connection_auth_custom(address, authscheme, authdata, notifier, stcn, stdn, user_data, out connection);
+            return __dxf_create_connection_auth_custom(address, authscheme, authdata, notifier, conn_status_notifier, stcn, stdn, user_data, out connection);
         }
 
         [DllImport(DXFEED_DLL, CallingConvention = CallingConvention.Cdecl, EntryPoint = "dxf_close_connection")]
@@ -374,6 +383,14 @@ namespace com.dxfeed.native.api
         internal override int dxf_get_current_connected_address(IntPtr connection, out IntPtr address)
         {
             return __dxf_get_current_connected_address(connection, out address);
+        }
+        
+        [DllImport(DXFEED_DLL, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl, EntryPoint = "dxf_get_current_connection_status")]
+        private static extern int __dxf_get_current_connection_status(IntPtr connection, out ConnectionStatus status);
+
+        internal override int dxf_get_current_connection_status(IntPtr connection, out ConnectionStatus status) 
+        {
+            return __dxf_get_current_connection_status(connection, out status);
         }
 
         [DllImport(DXFEED_DLL, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl, EntryPoint = "dxf_free")]

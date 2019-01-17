@@ -1,4 +1,8 @@
 Version 5.4.0
+* Notifications for connection status changes
+  - the ability to notify about changes in the connection status is added. 
+    See: com.dxfeed.api.connection.ConnectionStatus enum, com.dxfeed.native.NativeConnection class 
+    and com.dxfeed.native.NativeConnection.Status field
 * [Samples] Expand the parameter set by passing an authentication token
   - The optional command line parameter "[-T <token>]" is added
 * [Samples] Add the ability to change the number of displayed records

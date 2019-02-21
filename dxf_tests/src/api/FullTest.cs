@@ -188,7 +188,7 @@ namespace com.dxfeed.api
             SnapshotTestListener snapshotListener = new SnapshotTestListener(eventsTimeout, eventsSleepTime, IsConnected);
             OrderViewTestListener orderViewListener = new OrderViewTestListener(eventsTimeout, eventsSleepTime, IsConnected);
             EventType events = EventType.Order | EventType.Profile |
-                EventType.Quote | EventType.Summary | EventType.TimeAndSale |
+                EventType.Quote | EventType.Summary | EventType.TimeAndSale | EventType.Series |
                 EventType.Trade;
             using (var con = new NativeConnection(address, OnDisconnect))
             {
@@ -213,6 +213,7 @@ namespace com.dxfeed.api
                         PrintEvents<IDxQuote>(eventListener, eventSymbols);
                         PrintEvents<IDxSummary>(eventListener, eventSymbols);
                         PrintEvents<IDxTimeAndSale>(eventListener, eventSymbols);
+                        PrintEvents<IDxSeries>(eventListener, eventSymbols);
                         PrintEvents<IDxTrade>(eventListener, eventSymbols);
 
                         PrintSnapshots<IDxOrder>(snapshotListener, snapshotCases);

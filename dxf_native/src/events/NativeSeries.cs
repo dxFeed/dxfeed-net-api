@@ -11,6 +11,7 @@ using com.dxfeed.api.events;
 using com.dxfeed.native.api;
 using System;
 using System.Globalization;
+using com.dxfeed.api.extras;
 
 namespace com.dxfeed.native.events
 {
@@ -28,6 +29,8 @@ namespace com.dxfeed.native.events
 
             EventFlags = s.event_flags;
             Index = s.index;
+            Time = TimeConverter.ToUtcDateTime(s.time);
+            Sequence = s.sequence;
             Expiration = s.expiration;
             Volatility = s.volatility;
             PutCallRatio = s.put_call_ratio;
@@ -40,6 +43,8 @@ namespace com.dxfeed.native.events
         {
             EventFlags = s.EventFlags;
             Index = s.Index;
+            Time = s.Time;
+            Sequence = s.Sequence;
             Expiration = s.Expiration;
             Volatility = s.Volatility;
             PutCallRatio = s.PutCallRatio;
@@ -53,13 +58,14 @@ namespace com.dxfeed.native.events
             return string.Format(CultureInfo.InvariantCulture,
                 "Series: {{{0}, "                        +
                 "EventFlags: 0x{1:x2}, Index: {2:x16}, " +
-                "Expiration: {3}, "                      +
-                "Volatility: {4}, PutCallRatio: {5}, "   +
-                "ForwardPrice: {6}, "                    +
-                "Dividend: {7}, Interest: {8}"           +
+                "Time: {3:o}, Sequence: {4}, " +
+                "Expiration: {5}, " +
+                "Volatility: {6}, PutCallRatio: {7}, "   +
+                "ForwardPrice: {8}, "                    +
+                "Dividend: {9}, Interest: {10}"           +
                  "}}",
                 EventSymbol,
-                (int) EventFlags, Index,
+                (int) EventFlags, Index, Time, Sequence,
                 Expiration,
                 Volatility, PutCallRatio,
                 ForwardPrice,
@@ -91,16 +97,20 @@ namespace com.dxfeed.native.events
         /// </summary>
         public long Index { get; private set; }
         /// <summary>
+        ///  Returns date time of this order.
+        /// </summary>
+        public DateTime Time { get; private set; }
+        /// <summary>
+        /// Returns sequence of this series
+        /// </summary>
+        public int Sequence { get; private set; }
+        /// <summary>
         /// Returns day id of expiration.
         /// Example: DayUtil.getDayIdByYearMonthDay(20090117). Most significant
         /// 32 bits of Index contain day id of expiration, so changing Index also
         /// changes day id of expiration.
         /// </summary>
         public int Expiration { get; private set; }
-        /// <summary>
-        /// Returns sequence of this series
-        /// </summary>
-        public int Sequence { get; private set; }
         /// <summary>
         /// Returns ratio of put traded volume to call traded volume for a day.
         /// </summary>

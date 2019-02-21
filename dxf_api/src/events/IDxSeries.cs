@@ -4,6 +4,8 @@
 /// If a copy of the MPL was not distributed with this file, You can obtain one at
 /// http://mozilla.org/MPL/2.0/.
 
+using System;
+
 namespace com.dxfeed.api.events
 {
     /// <summary>
@@ -16,16 +18,20 @@ namespace com.dxfeed.api.events
     public interface IDxSeries : IDxMarketEvent, IDxIndexedEvent<string>
     {
         /// <summary>
+        ///  Returns date time of this order.
+        /// </summary>
+        DateTime Time { get; }
+        /// <summary>
+        /// Returns sequence of this series
+        /// </summary>
+        int Sequence { get; }
+        /// <summary>
         /// Returns day id of expiration.
         /// Example: DayUtil.getDayIdByYearMonthDay(20090117). Most significant
         /// 32 bits of Index contain day id of expiration, so changing Index also
         /// changes day id of expiration.
         /// </summary>
         int Expiration { get; }
-        /// <summary>
-        /// Returns sequence of this series
-        /// </summary>
-        int Sequence { get; }
         /// <summary>
         /// Returns ratio of put traded volume to call traded volume for a day.
         /// </summary>

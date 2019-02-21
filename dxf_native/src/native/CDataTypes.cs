@@ -194,6 +194,8 @@ namespace com.dxfeed.native.api
     {
         internal EventFlag event_flags;
         internal long index;
+        internal long time;
+        internal int sequence;
         internal int expiration;
         internal double volatility;
         internal double put_call_ratio;

@@ -8,6 +8,7 @@ using System;
 using System.IO;
 using System.Net;
 using System.Text;
+using com.dxfeed.api;
 
 namespace com.dxfeed.io
 {
@@ -15,6 +16,10 @@ namespace com.dxfeed.io
     {
         private static readonly int READ_TIMEOUT = 60000;
 
+        static URLInputStream() {
+            Tools.AddTls11PlusSupport();
+        }
+        
         /// <summary>
         /// Resolves a given URL in the context of the current file.
         /// </summary>

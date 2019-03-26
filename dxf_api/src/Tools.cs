@@ -5,6 +5,7 @@
 /// http://mozilla.org/MPL/2.0/.
 
 using System;
+using System.Net;
 
 namespace com.dxfeed.api
 {
@@ -64,6 +65,15 @@ namespace com.dxfeed.api
             //simple tollerance
             double tolerance = 0.000001d;
             return Math.Abs(double1 - double2) <= tolerance;
+        }
+
+        /// <summary>
+        /// Adds the TLS 1.1+ support if it necessary
+        /// </summary>
+        public static void AddTls11PlusSupport() {
+            if (!ServicePointManager.SecurityProtocol.HasFlag(SecurityProtocolType.Tls11)) {
+                ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
+            }
         }
     }
 }

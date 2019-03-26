@@ -36,7 +36,9 @@ namespace dxf_instrument_profile_live_sample {
                     "where\n" +
                     "    host:port   - The valid host and port to download instruments (https://tools.dxfeed.com/ipf)\n" +
                     "    time-period - The update period in ISO8601 duration format (optional)\n\n" +
-                    "example: dxf_instrument_profile_live_sample https://tools.dxfeed.com/ipf[update=P30S]\n"
+                    "examples: " +
+                    "    dxf_instrument_profile_live_sample https://tools.dxfeed.com/ipf[update=P30S]\n" +
+                    "    dxf_instrument_profile_live_sample https://user:password@tools.dxfeed.com/ipf[update=P30S]\n"
                 );
                 return;
             }

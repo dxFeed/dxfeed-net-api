@@ -1,3 +1,11 @@
+Version 5.5.0
+
+* Fixed an issue with error "HRESULT: 0x8007000B" in the samples
+* Added a TLS 1.1+ support to instrument profile and option chain samples
+* Fixed an issue with concurrent modification of record digests data
+* Updated the Series API to QDS 3.271
+* Fixed a Series snapshot data processing
+
 Version 5.4.0
 * Notifications for connection status changes
   - the ability to notify about changes in the connection status is added. 

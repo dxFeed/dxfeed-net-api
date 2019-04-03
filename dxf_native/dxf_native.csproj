@@ -82,7 +82,6 @@
     <Compile Include="src\native\C64.cs" />
     <Compile Include="src\api\DXFeedSnapshotCollector.cs" />
     <Compile Include="src\api\DXFeedLastingEventsCollector.cs" />
-    <Compile Include="src\EventBuffer.cs" />
     <Compile Include="src\api\DXEndpoint.cs" />
     <Compile Include="src\api\DXFeed.cs" />
     <Compile Include="src\api\DXFeedSubscription.cs" />
@@ -109,6 +108,7 @@
     <Compile Include="src\NativeSnapshotSubscription.cs" />
     <Compile Include="src\NativeSubscription.cs" />
     <Compile Include="src\NativeTools.cs" />
+    <Compile Include="src\OrderEventBuffer.cs" />
     <Compile Include="src\OrderViewSubscription.cs" />
   </ItemGroup>
   <ItemGroup />

@@ -67,6 +67,10 @@ namespace com.dxfeed.api.util
                     events |= EventType.TimeAndSale;
                 else if (typeof(IDxCandle).IsAssignableFrom(t))
                     events |= EventType.Candle;
+                else if (typeof(IDxTradeETH).IsAssignableFrom(t))
+                    events |= EventType.TradeETH;
+                else if (typeof(IDxSpreadOrder).IsAssignableFrom(t))
+                    events |= EventType.SpreadOrder;
                 else if (typeof(IDxGreeks).IsAssignableFrom(t))
                     events |= EventType.Greeks;
                 else if (typeof(IDxTheoPrice).IsAssignableFrom(t))

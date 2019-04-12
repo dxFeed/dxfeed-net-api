@@ -1,5 +1,7 @@
-Version 5.5.0
+Version 5.5.1
+* Data collection in OrderViewSubscription has been greatly accelerated
 
+Version 5.5.0
 * Fixed an issue with error "HRESULT: 0x8007000B" in the samples
 * Added a TLS 1.1+ support to instrument profile and option chain samples
 * Fixed an issue with concurrent modification of record digests data

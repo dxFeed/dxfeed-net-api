@@ -1,3 +1,6 @@
+Version 5.6.0
+* Snapshot sample didn't use event type
+
 Version 5.5.2
 * Fixed a memory leak in ServerMessageProcessor
 

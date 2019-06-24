@@ -151,7 +151,7 @@ namespace dxf_snapshot_sample {
                 using (var con = token.IsSet
                     ? new NativeConnection(address, token.Value, DisconnectHandler)
                     : new NativeConnection(address, DisconnectHandler)) {
-                    using (var s = con.CreateSnapshotSubscription(DEFAULT_TIME,
+                    using (var s = con.CreateSnapshotSubscription(eventType, DEFAULT_TIME,
                         new SnapshotListener(DEFAULT_RECORDS_PRINT_LIMIT))) {
                         if (eventType == EventType.Order) {
                             s.AddSource(source.Value);

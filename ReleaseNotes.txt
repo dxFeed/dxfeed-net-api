@@ -1,5 +1,5 @@
 Version 5.6.0
-* Snapshot sample didn't use event type
+* Fixed Snapshot sample. Unused event type parameter has been removed.
 
 Version 5.5.2
 * Fixed a memory leak in ServerMessageProcessor

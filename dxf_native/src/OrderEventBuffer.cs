@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using com.dxfeed.api.data;
 using com.dxfeed.api.events;
 
@@ -27,6 +28,8 @@ namespace com.dxfeed.native {
         /// </summary>
         /// <param name="order">A new order event</param>
         internal void Add(IDxOrder order) {
+            if (order == null) return;
+
             events[order.Index] = order;
 
             if (Size == 1 || First.Index > order.Index) {
@@ -47,10 +50,17 @@ namespace com.dxfeed.native {
         /// </summary>
         /// <param name="order"></param>
         internal void Remove(IDxOrder order) {
+            if (IsEmpty || order == null) return;
+
             if (!events.Remove(order.Index)) return;
-            
-            if (First.Index == order.Index) {
-                First = null;
+
+            if (First.Index != order.Index) return;
+
+            if (IsEmpty) First = null;
+            else { //Worst case
+                var firstKey = events.Keys.Min();
+
+                First = events[firstKey];
             }
         }
 
@@ -73,6 +83,7 @@ namespace com.dxfeed.native {
         public string Symbol { get; }
 
         public int Size => events.Count;
+
         public EventParams EventParams { get; internal set; }
 
         #endregion
@@ -81,5 +92,10 @@ namespace com.dxfeed.native {
         /// The first order event (the order with min Index) 
         /// </summary>
         public IDxOrder First { get; private set; }
+
+        /// <summary>
+        /// True if Size == 0
+        /// </summary>
+        public bool IsEmpty => Size == 0;
     }
 }

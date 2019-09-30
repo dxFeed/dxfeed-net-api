@@ -70,6 +70,8 @@ set C_API_LIB_EXT=.dll
 set TARGET_TEST=RunUnitTests;
 set C_API_NO_TEST=
 set C_API_NO_BUIILD=
+set C_API_NO_TLS=
+set AssemblySuffix=
 
 for %%A in (%*) do (
     if [%%A] EQU [no-test] (
@@ -78,6 +80,10 @@ for %%A in (%*) do (
     )
     if [%%A] EQU [no-c-build] (
         set C_API_NO_BUIILD=yes
+    )
+    if [%%A] EQU [no-tls] (
+        set C_API_NO_TLS=yes
+        set AssemblySuffix=-no-tls
     )
 )
 

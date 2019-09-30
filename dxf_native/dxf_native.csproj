@@ -135,6 +135,8 @@
       <Link>DXFeed_64.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup Condition="'$(C_API_NO_TLS)'!='yes'">
     <Content Include="..\lib\libcrypto-41.dll">
       <Link>libcrypto-41.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

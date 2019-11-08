@@ -1,3 +1,8 @@
+Version 5.7.0
+* Fixed an issue with crash on reconnect (connection by TLS)
+* Added the ability to subscribe to "*" (wildcard) symbol
+  - See descriptions of the `NativeSubscription.AddSymbol`, `NativeSubscription.AddSymbols`, `NativeSubscription.RemoveSymbols` methods in the NativeSubscription.cs
+
 Version 5.6.3
 * Fixed multiple symbols subscription in samples on Linux
 * Fixed formatting and logging of indices, strings, timestamps and identifiers on Linux

@@ -223,7 +223,7 @@ namespace dxf_client {
                     "    event     - Any of the {Profile,Order,Quote,Trade,TimeAndSale,Summary,\n" +
                     "                TradeETH,SpreadOrder,Candle,Greeks,TheoPrice,Underlying,Series,\n" +
                     "                Configuration}\n" +
-                    "    symbol    - a) IBM, MSFT, ...\n" +
+                    "    symbol    - a) IBM, MSFT, ... ; * - all symbols\n" +
                     "                b) if it is Candle event you can specify candle symbol\n" +
                     "                   attribute by string, for example: XBT/USD{=d}\n" +
                     "    date      - The date of time series event in the format YYYY-MM-DD (optional)\n" +

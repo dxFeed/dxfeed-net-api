@@ -238,7 +238,14 @@ namespace com.dxfeed.native
         #region Implementation of IDxSubscription
 
         /// <summary>
-        ///     Add symbol to subscription.
+        ///     <para>
+        ///         Add symbol to subscription.
+        ///     </para>
+        ///     <para>
+        ///         A wildcard symbol "*" will replace all symbols: there will be an unsubscription from messages on all current symbols
+        ///         and a subscription to "*". The subscription type will be changed to STREAM
+        ///         If there is already a subscription to "*", then nothing will happen
+        ///     </para>
         /// </summary>
         /// <param name="symbol">Symbol.</param>
         /// <exception cref="ArgumentException">Invalid <paramref name="symbol"/> parameter.</exception>
@@ -281,7 +288,14 @@ namespace com.dxfeed.native
         }
 
         /// <summary>
-        ///     Add multiply symbols to subscription.
+        ///     <para>
+        ///         Add multiply symbols to subscription.
+        ///     </para>
+        ///     <para>
+        ///         First met the "*" symbol (wildcard) will overwrite all other symbols: there will be an unsubscription from messages
+        ///         on all current symbols and a subscription to "*". The subscription type will be changed to STREAM
+        ///         If there is already a subscription to "*", then nothing will happen.
+        ///     </para>
         /// </summary>
         /// <param name="symbols">List of symbols.</param>
         /// <exception cref="ArgumentException">Invalid <paramref name="symbol"/> parameter.</exception>
@@ -327,6 +341,11 @@ namespace com.dxfeed.native
         /// <summary>
         ///     <para>
         ///         Remove multiply symbols from subscription.
+        ///     </para>
+        ///     <para>
+        ///         First met the "*" symbol (wildcard) will remove all symbols: there will be an unsubscription from messages on all
+        ///         current symbols.
+        ///         If there is already a subscription to "*" and the symbols to remove are not contain a "*", then nothing will happen.
         ///     </para>
         ///     <para>
         ///         Snapshot will be disposed if symbols contains snapshot symbol (for Snapshots only).

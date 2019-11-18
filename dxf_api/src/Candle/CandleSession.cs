@@ -107,7 +107,7 @@ namespace com.dxfeed.api.candle
         /// Returns string representation of this candle session attribute.
         /// The string representation of candle session attribute is a lower case string
         /// that corresponds to its type name. For example,
-        /// {@link #ANY} is represented as "any".
+        /// {@link #ANY} is represented as "false".
         /// </summary>
         /// <returns>string representation of this candle session attribute.</returns>
         public override string ToString()

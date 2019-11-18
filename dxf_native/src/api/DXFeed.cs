@@ -188,7 +188,7 @@ namespace com.dxfeed.api
         ///     </para>
         ///     <para>
         ///         Note, that this method does not work when <see cref="DXEndpoint"/> was created
-        ///         with {@link DXEndpoint.Role#STREAM_FEED STREAM_FEED} role (promise completes
+        ///         with DXEndpoint.Role#STREAM_FEED role (promise completes
         ///         exceptionally).
         ///     </para>
         ///     <para>Threads</para>
@@ -277,7 +277,7 @@ namespace com.dxfeed.api
         ///     </para>
         ///     <para>
         ///         Note, that this method does not work when <see cref="DXEndpoint"/>  was created
-        ///         with {@link DXEndpoint.Role#STREAM_FEED STREAM_FEED} role (promise completes
+        ///         with DXEndpoint.Role#STREAM_FEED role (promise completes
         ///         exceptionally).
         ///     </para>
         ///     <para>
@@ -359,7 +359,7 @@ namespace com.dxfeed.api
         ///     </para>
         ///     <para>
         ///         Note, that this method does not work when <see cref="DXEndpoint"/>  was created
-        ///         with {@link DXEndpoint.Role#STREAM_FEED STREAM_FEED} role (promise completes
+        ///         with DXEndpoint.Role#STREAM_FEED role (promise completes
         ///         exceptionally).
         ///     </para>
         ///     <para>
@@ -443,7 +443,7 @@ namespace com.dxfeed.api
         ///     </para>
         ///     <para>
         ///         Note, that this method does not work when <see cref="DXEndpoint"/>  was created
-        ///         with {@link DXEndpoint.Role#STREAM_FEED STREAM_FEED} role (promise completes
+        ///         with DXEndpoint.Role#STREAM_FEED role (promise completes
         ///         exceptionally).
         ///     </para>
         ///     <para>

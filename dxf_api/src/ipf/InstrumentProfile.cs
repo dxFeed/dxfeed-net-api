@@ -825,7 +825,7 @@ namespace com.dxfeed.ipf
 
         /// <summary>
         /// Returns trading hours specification.
-        /// See {@link Schedule#getInstance(string)}.
+        /// See Schedule#getInstance(string).
         /// </summary>
         /// <returns>Trading hours specification.</returns>
         public string GetTradingHours()
@@ -835,7 +835,7 @@ namespace com.dxfeed.ipf
 
         /// <summary>
         /// Changes trading hours specification.
-        /// See {@link Schedule#getInstance(string)}.
+        /// See Schedule#getInstance(string).
         /// </summary>
         /// <param name="tradingHours">Trading hours specification.</param>
         public void SetTradingHours(string tradingHours)

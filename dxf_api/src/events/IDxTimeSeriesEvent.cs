@@ -51,16 +51,16 @@ namespace com.dxfeed.api.events
     ///         Unlike a general <see cref="IDxIndexedEvent"/> that is subscribed to via
     ///         <see cref="IDXFeedSubscription{E}"/> using a plain symbol to receive all events
     ///         for all indices, time-series events are typically subscribed to using
-    ///         {@link TimeSeriesSubscriptionSymbol} class to specific time range of the
+    ///         TimeSeriesSubscriptionSymbol class to specific time range of the
     ///         subscription. There is a dedicated <see cref="IDXFeedTimeSeriesSubscription{E}"/>
     ///         class that is designed to simplify the task of subscribing for time-series events.
     ///     </para>
     ///     <para>
-    ///         {@link TimeSeriesEventModel} class handles all the snapshot and transaction logic
+    ///         TimeSeriesEventModel class handles all the snapshot and transaction logic
     ///         and conveniently represents a list of current time-series events ordered by their
     ///         <see cref="IDxTimeSeriesEvent.TimeStamp"/>.
-    ///         It relies on the code of {@link AbstractIndexedEventModel} to handle this logic.
-    ///         Use the source code of {@link AbstractIndexedEventModel} for clarification on
+    ///         It relies on the code of AbstractIndexedEventMode to handle this logic.
+    ///         Use the source code of AbstractIndexedEventModel for clarification on
     ///         transactions and snapshot logic.
     ///     </para>
     ///     <para>
@@ -73,8 +73,8 @@ namespace com.dxfeed.api.events
     ///         Publishing time-series
     ///     </para>
     ///     <para>
-    ///         When publishing time-series event with {@link DXPublisher#publishEvents(Collection) DXPublisher.publishEvents}
-    ///         method on incoming {@link TimeSeriesSubscriptionSymbol} the snapshot of currently known events for the
+    ///         When publishing time-series event with DXPublisher#publishEvents(Collection)
+    ///         method on incoming TimeSeriesSubscriptionSymbol the snapshot of currently known events for the
     ///         requested time range has to be published first.
     ///     </para>
     ///     <para>
@@ -162,16 +162,16 @@ namespace com.dxfeed.api.events
     ///         Unlike a general <see cref="IDxIndexedEvent"/> that is subscribed to via
     ///         <see cref="IDXFeedSubscription{E}"/> using a plain symbol to receive all events
     ///         for all indices, time-series events are typically subscribed to using
-    ///         {@link TimeSeriesSubscriptionSymbol} class to specific time range of the
+    ///         TimeSeriesSubscriptionSymbol class to specific time range of the
     ///         subscription. There is a dedicated <see cref="IDXFeedTimeSeriesSubscription{E}"/>
     ///         class that is designed to simplify the task of subscribing for time-series events.
     ///     </para>
     ///     <para>
-    ///         {@link TimeSeriesEventModel} class handles all the snapshot and transaction logic
+    ///         TimeSeriesEventModel class handles all the snapshot and transaction logic
     ///         and conveniently represents a list of current time-series events ordered by their
     ///         <see cref="IDxTimeSeriesEvent.TimeStamp"/>.
-    ///         It relies on the code of {@link AbstractIndexedEventModel} to handle this logic.
-    ///         Use the source code of {@link AbstractIndexedEventModel} for clarification on
+    ///         It relies on the code of AbstractIndexedEventModel to handle this logic.
+    ///         Use the source code of AbstractIndexedEventModel for clarification on
     ///         transactions and snapshot logic.
     ///     </para>
     ///     <para>
@@ -184,8 +184,8 @@ namespace com.dxfeed.api.events
     ///         Publishing time-series
     ///     </para>
     ///     <para>
-    ///         When publishing time-series event with {@link DXPublisher#publishEvents(Collection) DXPublisher.publishEvents}
-    ///         method on incoming {@link TimeSeriesSubscriptionSymbol} the snapshot of currently known events for the
+    ///         When publishing time-series event with DXPublisher#publishEvents(Collection)
+    ///         method on incoming TimeSeriesSubscriptionSymbol the snapshot of currently known events for the
     ///         requested time range has to be published first.
     ///     </para>
     ///     <para>

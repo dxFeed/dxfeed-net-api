@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("dxf_tests")]
-[assembly: AssemblyDescription("dxFeed API tests")]
+[assembly: AssemblyDescription("dxFeed API Tests")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("DevExperts")]
+[assembly: AssemblyCompany("dxFeed")]
 [assembly: AssemblyProduct("dxf_tests")]
-[assembly: AssemblyCopyright("Copyright © 2014-2016 Devexperts LLC")]
+[assembly: AssemblyCopyright("Copyright © 2010-2019 dxFeed Solutions DE GmbH")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("3.5.1.0")]
-[assembly: AssemblyFileVersion("3.5.1.0")]
+[assembly: AssemblyVersion("5.7.0.0")]
+[assembly: AssemblyFileVersion("5.7.0.0")]

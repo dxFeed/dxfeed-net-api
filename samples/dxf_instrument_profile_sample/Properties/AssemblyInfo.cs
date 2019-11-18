@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("dxf_instrument_profile_sample")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("dxFeed Instrument Profile Sample")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Microsoft")]
+[assembly: AssemblyCompany("dxFeed")]
 [assembly: AssemblyProduct("dxf_instrument_profile_sample")]
-[assembly: AssemblyCopyright("Copyright © Microsoft 2016")]
+[assembly: AssemblyCopyright("Copyright © 2010-2019 dxFeed Solutions DE GmbH")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("dxf_promises_sample")]
-[assembly: AssemblyDescription("The simple console application demonstrates using promise methods od DxFeed API.")]
+[assembly: AssemblyDescription("The simple console application demonstrates using promise methods of DxFeed API.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("DevExperts")]
+[assembly: AssemblyCompany("dxFeed")]
 [assembly: AssemblyProduct("dxf_promises_sample")]
-[assembly: AssemblyCopyright("Copyright © 2014-2017 Devexperts LLC")]
+[assembly: AssemblyCopyright("Copyright © 2010-2019 dxFeed Solutions DE GmbH")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

@@ -32,7 +32,7 @@ namespace com.dxfeed.api.events
     ///
     ///     <para>
     ///         Note, that subscription to all lasting events of a specific type via
-    ///         {@link WildcardSymbol#ALL WildcardSymbol.ALL} symbol object does not benefit from the above
+    ///         WildcardSymbol#ALL symbol object does not benefit from the above
     ///         advantages of lasting events.
     ///         TODO: not implemented
     ///     </para>
@@ -67,7 +67,7 @@ namespace com.dxfeed.api.events
     ///
     ///     <para>
     ///         Note, that subscription to all lasting events of a specific type via
-    ///         {@link WildcardSymbol#ALL WildcardSymbol.ALL} symbol object does not benefit from the above
+    ///         WildcardSymbol#ALL symbol object does not benefit from the above
     ///         advantages of lasting events.
     ///         TODO: not implemented
     ///     </para>

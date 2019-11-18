@@ -27,7 +27,7 @@ namespace com.dxfeed.api.events
         int Sequence { get; }
         /// <summary>
         /// Returns day id of expiration.
-        /// Example: DayUtil.getDayIdByYearMonthDay(20090117). Most significant
+        /// Example: DayUtil.GetDayIdByYearMonthDay(20090117). Most significant
         /// 32 bits of Index contain day id of expiration, so changing Index also
         /// changes day id of expiration.
         /// </summary>

@@ -113,7 +113,7 @@ namespace com.dxfeed.ipf.option
 
         /// <summary>
         /// Returns a view of chains created by this builder.
-        /// It updates as new options are added with {@link #addOption(Object) addOption} method.
+        /// It updates as new options are added with {@link #AddOption(InstrumentProfile) AddOption} method.
         /// @return view of chains created by this builder.
         /// </summary>
         public Dictionary<string, OptionChain> Chains
@@ -126,7 +126,7 @@ namespace com.dxfeed.ipf.option
 
         /// <summary>
         /// Changes day id of expiration.
-        /// Example: {@link DayUtil#getDayIdByYearMonthDay DayUtil.getDayIdByYearMonthDay}(20090117).
+        /// Example: {@link com.dxfeed.util.DayUtil#GetDayIdByYearMonthDay DayUtil.GetDayIdByYearMonthDay}(20090117).
         /// </summary>
         /// <param name="expiration">day id of expiration</param>
         public void SetExpiration(int expiration)
@@ -136,7 +136,7 @@ namespace com.dxfeed.ipf.option
 
         /// <summary>
         /// Changes day id of last trading day.
-        /// Example: {@link DayUtil#getDayIdByYearMonthDay DayUtil.getDayIdByYearMonthDay}(20090116).
+        /// Example: {@link com.dxfeed.util.DayUtil#GetDayIdByYearMonthDay DayUtil.GetDayIdByYearMonthDay}(20090116).
         /// </summary>
         /// <param name="lastTrade">day id of last trading day.</param>
         public void SetLastTrade(int lastTrade)
@@ -235,18 +235,18 @@ namespace com.dxfeed.ipf.option
 
         /// <summary>
         /// Adds an option instrument to this builder.
-        /// Option is added to chains for the currently set {@link #setProduct(String) product} and/or
-        /// {@link #setUnderlying(String) underlying} to the {@link OptionSeries series} that corresponding
+        /// Option is added to chains for the currently set {@link #Product product} and/or
+        /// {@link #Underlying underlying} to the {@link OptionSeries series} that corresponding
         /// to all other currently set attributes.This method is safe in the sense that is ignores
         /// illegal state of the builder.It only adds an option when all of the following conditions are met:
         /// <ul>
-        ///  <li>{@link #setCFI(String) CFI code} is set and starts with either "OC" for call or "OP" for put.
-        ///  <li>{@link #setExpiration(int) expiration} is set and is not zero;
-        ///  <li>{@link #setStrike(double) strike} is set and is not {@link Double#NaN NaN} nor {@link Double#isInfinite() infinite};
-        ///  <li>{@link #setProduct(String) product} or {@link #setUnderlying(String) underlying symbol} are set;
+        ///  <li>{@link #CFI CFI code} is set and starts with either "OC" for call or "OP" for put.
+        ///  <li>{@link #SetExpiration(int) expiration} is set and is not zero;
+        ///  <li>{@link #Strike strike} is set and is not `Double.NaN` nor `Double.isInfinite()`;
+        ///  <li>{@link #Product product} or {@link #Underlying underlying symbol} are set;
         /// </ul>
         /// All the attributes remain set as before after the call to this method, but
-        /// {@link #getChains() chains} are updated correspondingly.
+        /// {@link #Chains() chains} are updated correspondingly.
         /// </summary>
         /// <param name="option">option to add.</param>
         public void AddOption(InstrumentProfile option)

@@ -24,7 +24,7 @@ namespace com.dxfeed.util
         /// Month must be between 1 and 12 inclusive.Year and day might take arbitrary values assuming
         /// proleptic Gregorian calendar.The value returned by this method for an arbitrary day value always
         /// satisfies the following equality:
-        /// {@code getDayIdByYearMonthDay(year, month, day) == getDayIdByYearMonthDay(year, month, 0) + day}
+        /// {@code GetDayIdByYearMonthDay(year, month, day) == GetDayIdByYearMonthDay(year, month, 0) + day @endcode}
         /// @throws ArgumentOutOfRangeException when month is less than 1 or more than 12.
         /// </summary>
         /// <param name="year">year</param>
@@ -44,10 +44,10 @@ namespace com.dxfeed.util
         /// <summary>
         /// Returns day identifier for specified yyyymmdd integer in Gregorian calendar.
         /// The day identifier is defined as the number of days since Unix epoch of January 1, 1970.
-        /// The yyyymmdd integer is equal to {@code yearSign * (abs(year) * 10000 + month * 100 + day)}, where year,
+        /// The yyyymmdd integer is equal to `yearSign * (abs(year) * 10000 + month * 100 + day)`, where year,
         /// month, and day are in Gregorian calendar, month is between 1 and 12 inclusive, and day is counted from 1.
         /// @throws ArgumentOutOfRangeException when month is less than 1 or more than 12.
-        /// @see #getDayIdByYearMonthDay(int year, int month, int day)
+        /// @see #GetDayIdByYearMonthDay(int year, int month, int day)
         /// </summary>
         /// <param name="yyyymmdd"></param>
         /// <returns></returns>
@@ -61,7 +61,7 @@ namespace com.dxfeed.util
         /// <summary>
         /// Returns yyyymmdd integer in Gregorian calendar for a specified day identifier.
         /// The day identifier is defined as the number of days since Unix epoch of January 1, 1970.
-        /// The result is equal to {@code yearSign * (abs(year) * 10000 + month * 100 + day)}, where year,
+        /// The result is equal to `yearSign * (abs(year) * 10000 + month * 100 + day)`, where year,
         /// month, and day are in Gregorian calendar, month is between 1 and 12 inclusive, and day is counted from 1.
         /// </summary>
         /// <param name="dayId"></param>

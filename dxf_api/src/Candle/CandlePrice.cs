@@ -18,23 +18,27 @@ namespace com.dxfeed.api.candle
     /// <h3>Implementation details</h3>
     ///
     /// This attribute is encoded in a symbol string with
-    /// {@link MarketEventSymbols#getAttributeStringByKey(string, string) MarketEventSymbols.getAttributeStringByKey},
-    /// {@link MarketEventSymbols#changeAttributeStringByKey(string, string, string) changeAttributeStringByKey}, and
-    /// {@link MarketEventSymbols#removeAttributeStringByKey(string, string) removeAttributeStringByKey} methods.
+    /// {@link com.dxfeed.api.events.market.MarketEventSymbols#GetAttributeStringByKey(string, string)
+    /// MarketEventSymbols.GetAttributeStringByKey},
+    /// {@link com.dxfeed.api.events.market.MarketEventSymbols#ChangeAttributeStringByKey(string, string, string)
+    /// MarketEventSymbols.ChangeAttributeStringByKey}, and
+    /// {@link com.dxfeed.api.events.market.MarketEventSymbols#RemoveAttributeStringByKey(string, string)
+    /// MarketEventSymbols.RemoveAttributeStringByKey} methods.
     /// The key to use with these methods is available via
     /// {@link #ATTRIBUTE_KEY} constant.
     /// The value that this key shall be set to is equal to
-    /// the corresponding {@link #toString() CandlePrice.ToString()}
+    /// the corresponding {@link #ToString() CandlePrice.ToString()}
     /// </summary>
     class CandlePrice : ICandleSymbolAttribute
     {
 
         /// <summary>
-        /// The attribute key that is used to store the value of {@code CandlePrice} in
-        /// a symbol string using methods of {@link MarketEventSymbols} class.
+        /// The attribute key that is used to store the value of `CandlePrice` in
+        /// a symbol string using methods of {@link com.dxfeed.api.events.market.MarketEventSymbols.MarketEventSymbols
+        /// MarketEventSymbols} class.
         /// The value of this constant is "price".
         /// The value that this key shall be set to is equal to
-        /// the corresponding {@link #toString() CandlePrice.ToString()}
+        /// the corresponding {@link #ToString() CandlePrice.ToString()}
         /// </summary>
         public static readonly string ATTRIBUTE_KEY = "price";
         public enum CandlePriceType { Last = 0, Bid = 1, Ask = 2, Mark = 3, Settlement = 4 };
@@ -62,8 +66,9 @@ namespace com.dxfeed.api.candle
 
         /// <summary>
         /// Official settlement price that is defined by exchange or last trading price otherwise.
-        /// It updates based on all {@link PriceType PriceType} values:
-        /// {@link PriceType#INDICATIVE}, {@link PriceType#PRELIMINARY}, and {@link PriceType#FINAL}.
+        /// It updates based on all {@link com.dxfeed.api.data.PriceType} values:
+        /// {@link com.dxfeed.api.data.PriceType#Indicative}, {@link com.dxfeed.api.data.PriceType#Preliminary},
+        /// and {@link com.dxfeed.api.data.PriceType#Final}.
         /// </summary>
         public static readonly CandlePrice SETTLEMENT = new CandlePrice(CandlePriceType.Settlement, "s");
 
@@ -118,7 +123,7 @@ namespace com.dxfeed.api.candle
         /// <summary>
         /// Returns string representation of this candle price type.
         /// The string representation of candle price type is a lower case string
-        /// that corresponds to its {@link #name() name}. For example,
+        /// that corresponds to its type name. For example,
         /// {@link #LAST} is represented as "last".
         /// </summary>
         /// <returns>string representation of this candle price type.</returns>
@@ -140,7 +145,7 @@ namespace com.dxfeed.api.candle
 
         /// <summary>
         /// Parses string representation of candle price type into object.
-        /// Any string that was returned by {@link #toString()} can be parsed
+        /// Any string that was returned by {@link #ToString()} can be parsed
         /// and case is ignored for parsing.
         /// </summary>
         /// <param name="s">string representation of candle price type.</param>

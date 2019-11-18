@@ -126,6 +126,7 @@ namespace com.dxfeed.native {
         /// </summary>
         /// <param name="address">Server address to connect.</param>
         /// <param name="authscheme">The authorization scheme.</param>
+        /// <param name="authdata">The authorization data.</param>
         /// <param name="disconnectListener">Listener will be called when the connection is interrupted.</param>
         /// <param name="connectionStatusListener">listener will be called when the connection status is changed</param>
         /// <exception cref="DxException">Create connection failed.</exception>

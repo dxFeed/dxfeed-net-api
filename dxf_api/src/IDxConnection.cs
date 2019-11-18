@@ -135,7 +135,7 @@ namespace com.dxfeed.api
         IDictionary<string, string> Properties { get; }
 
         /// <summary>
-        ///   Retrieves string with current connected address in format <host>:<port>. If return value is NULL
+        ///   Retrieves string with current connected address in format `<host>:<port>`. If return value is NULL
         ///   then connection is not connected (reconnection, no valid addresses, closed connection and others).
         /// </summary>
         string ConnectedAddress { get; }

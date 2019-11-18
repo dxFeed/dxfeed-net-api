@@ -18,24 +18,28 @@ namespace com.dxfeed.api.candle
     /// <h3>Implementation details</h3>
     ///
     /// This attribute is encoded in a symbol string with
-    /// {@link MarketEventSymbols#getAttributeStringByKey(string, string) MarketEventSymbols.getAttributeStringByKey},
-    /// {@link MarketEventSymbols#changeAttributeStringByKey(string, string, string) changeAttributeStringByKey}, and
-    /// {@link MarketEventSymbols#removeAttributeStringByKey(string, string) removeAttributeStringByKey} methods.
+    /// {@link com.dxfeed.api.events.market.MarketEventSymbols#GetAttributeStringByKey(string, string)
+    /// MarketEventSymbols.GetAttributeStringByKey},
+    /// {@link com.dxfeed.api.events.market.MarketEventSymbols#ChangeAttributeStringByKey(string, string, string)
+    /// MarketEventSymbols.ChangeAttributeStringByKey}, and
+    /// {@link com.dxfeed.api.events.market.MarketEventSymbols#RemoveAttributeStringByKey(string, string)
+    /// MarketEventSymbols.RemoveAttributeStringByKey} methods.
     ///
     /// <p> {@link #ANY} session is a default.
     /// The key to use with these methods is available via
     /// {@link #ATTRIBUTE_KEY} constant.
     /// The value that this key shall be set to is equal to
-    /// the corresponding {@link #toString() CandleSession.ToString()}
+    /// the corresponding {@link #ToString() CandleSession.ToString()}
     /// </summary>
     class CandleSession : ICandleSymbolAttribute
     {
         /// <summary>
-        /// The attribute key that is used to store the value of {@code CandleSession} in
-        /// a symbol string using methods of {@link MarketEventSymbols} class.
+        /// The attribute key that is used to store the value of `CandleSession` in
+        /// a symbol string using methods of {@link com.dxfeed.api.events.market.MarketEventSymbols MarketEventSymbols}
+        /// class.
         /// The value of this constant is "tho", which is an abbreviation for "trading hours only".
         /// The value that this key shall be set to is equal to
-        /// the corresponding {@link #toString() CandleSession.ToString()}
+        /// the corresponding {@link #ToString() CandleSession.ToString()}
         /// </summary>
         public static readonly string ATTRIBUTE_KEY = "tho";
         private enum CandleSessionType { Any = 0, Regular = 1 };
@@ -102,7 +106,7 @@ namespace com.dxfeed.api.candle
         /// <summary>
         /// Returns string representation of this candle session attribute.
         /// The string representation of candle session attribute is a lower case string
-        /// that corresponds to its {@link #name() name}. For example,
+        /// that corresponds to its type name. For example,
         /// {@link #ANY} is represented as "any".
         /// </summary>
         /// <returns>string representation of this candle session attribute.</returns>
@@ -124,7 +128,7 @@ namespace com.dxfeed.api.candle
 
         /// <summary>
         /// Parses string representation of candle session attribute into object.
-        /// Any string that was returned by {@link #toString()} can be parsed
+        /// Any string that was returned by {@link #ToString()} can be parsed
         /// and case is ignored for parsing.
         /// </summary>
         /// <param name="s">string representation of candle candle session attribute.</param>

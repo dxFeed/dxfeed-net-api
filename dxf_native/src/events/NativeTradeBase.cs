@@ -32,11 +32,11 @@ namespace com.dxfeed.native.events
         /// <summary>
         /// Creates new trade with the specified event symbol.
         /// </summary>
-        /// <param name="trade">Native DxTrade object.</param>
+        /// <param name="tradeNative">Native DxTrade object.</param>
         /// <param name="symbol">The event symbol.</param>
-        internal unsafe NativeTradeBase(DxTrade* t, string symbol) : base(symbol)
+        internal unsafe NativeTradeBase(DxTrade* tradeNative, string symbol) : base(symbol)
         {
-            DxTrade trade = *t;
+            DxTrade trade = *tradeNative;
 
             Time = TimeConverter.ToUtcDateTime(trade.time);
             Sequence = trade.sequence;

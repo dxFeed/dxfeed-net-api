@@ -76,6 +76,10 @@
       <Name>dxf_instrument_profile_sample</Name>
       <Label>BuildPublish</Label>
     </ProjectReference>
+    <ProjectReference Include="..\samples\dxf_ipf_connect_sample\dxf_ipf_connect_sample.csproj">
+      <Name>dxf_ipf_connect_sample</Name>
+      <Label>BuildPublish</Label>
+    </ProjectReference>
     <ProjectReference Include="..\samples\dxf_option_chain_sample\dxf_option_chain_sample.csproj">
       <Name>dxf_option_chain_sample</Name>
       <Label>BuildPublish</Label>
@@ -94,6 +98,10 @@
     </ProjectReference>
     <ProjectReference Include="..\samples\dxf_read_write_raw_data_sample\dxf_read_write_raw_data_sample.csproj">
       <Name>dxf_read_write_raw_data_sample</Name>
+      <Label>BuildPublish</Label>
+    </ProjectReference>
+    <ProjectReference Include="..\samples\dxf_regional_book_sample\dxf_regional_book_sample.csproj">
+      <Name>dxf_regional_book_sample</Name>
       <Label>BuildPublish</Label>
     </ProjectReference>
     <ProjectReference Include="..\samples\dxf_simple_order_book_sample\dxf_simple_order_book_sample.csproj">

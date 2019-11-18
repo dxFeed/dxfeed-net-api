@@ -14,18 +14,21 @@ namespace com.dxfeed.api.candle
 {
     /// <summary>
     /// Period attribute of {@link CandleSymbol} defines aggregation period of the candles.
-    /// Aggregation period is defined as pair of a {@link #getValue()} and {@link #getType() type}.
+    /// Aggregation period is defined as pair of a {@link #GetValue()} and {@link #GetCandleType() type}.
     ///
     /// <h3>Implementation details</h3>
     ///
     /// This attribute is encoded in a symbol string with
-    /// {@link MarketEventSymbols#getAttributeStringByKey(string, string) MarketEventSymbols.getAttributeStringByKey},
-    /// {@link MarketEventSymbols#changeAttributeStringByKey(string, string, string) changeAttributeStringByKey}, and
-    /// {@link MarketEventSymbols#removeAttributeStringByKey(string, string) removeAttributeStringByKey} methods.
+    /// {@link com.dxfeed.api.events.market.MarketEventSymbols#GetAttributeStringByKey
+    /// MarketEventSymbols.GetAttributeStringByKey},
+    /// {@link com.dxfeed.api.events.market.MarketEventSymbols#ChangeAttributeStringByKey
+    /// MarketEventSymbols.ChangeAttributeStringByKey}, and
+    /// {@link com.dxfeed.api.events.market.MarketEventSymbols#RemoveAttributeStringByKey
+    /// MarketEventSymbols.RemoveAttributeStringByKey} methods.
     /// The key to use with these methods is available via
     /// {@link #ATTRIBUTE_KEY} constant.
     /// The value that this key shall be set to is equal to
-    /// the corresponding {@link #toString() CandlePeriod.ToString()}
+    /// the corresponding {@link #ToString() CandlePeriod.ToString()}
     /// </summary>
     public class CandlePeriod : ICandleSymbolAttribute
     {
@@ -50,12 +53,13 @@ namespace com.dxfeed.api.candle
         public static readonly CandlePeriod DEFAULT = TICK;
 
         /// <summary>
-        /// The attribute key that is used to store the value of {@code CandlePeriod} in
-        /// a symbol string using methods of {@link MarketEventSymbols} class.
+        /// The attribute key that is used to store the value of `CandlePeriod` in
+        /// a symbol string using methods of {@link com.dxfeed.api.events.market.MarketEventSymbols MarketEventSymbols}
+        /// class.
         /// The value of this constant is an empty string, because this is the
         /// main attribute that every {@link CandleSymbol} must have.
         /// The value that this key shall be set to is equal to
-        /// the corresponding {@link #toString() CandlePeriod.ToString()}
+        /// the corresponding {@link #ToString() CandlePeriod.ToString()}
         /// </summary>
         public static readonly string ATTRIBUTE_KEY = ""; // empty string as attribute key is allowed!
 
@@ -87,10 +91,10 @@ namespace com.dxfeed.api.candle
         /// are approximate. Candle period of
         /// {@link CandleType#TICK}, {@link CandleType#VOLUME}, {@link CandleType#PRICE},
         /// {@link CandleType#PRICE_MOMENTUM} and {@link CandleType#PRICE_RENKO}
-        /// is not defined and this method returns {@code 0}.
+        /// is not defined and this method returns `0`.
         /// The result of this method is equal to
-        /// {@code (long)(this.getType().getPeriodIntervalMillis() /// this.getValue())}
-        /// @see CandleType#getPeriodIntervalMillis()
+        /// `(long)(this.GetCandleType().getPeriodIntervalMillis() /// this.GetValue())`
+        /// @see CandleType#GetPeriodIntervalMillis()
         /// </summary>
         /// <returns>aggregation period in milliseconds.</returns>
         public long GetPeriodIntervalMillis()
@@ -123,7 +127,7 @@ namespace com.dxfeed.api.candle
         }
 
         /// <summary>
-        /// Returns aggregation period value. For example, the value of {@code 5} with
+        /// Returns aggregation period value. For example, the value of `5` with
         /// the candle type of {@link CandleType#MINUTE MINUTE} represents 5 minute
         /// aggregation period.
         /// </summary>
@@ -144,11 +148,11 @@ namespace com.dxfeed.api.candle
 
         /// <summary>
         /// Indicates whether this aggregation period is the same as another one.
-        /// The same aggregation period has the same {@link #getValue() value} and
-        /// {@link #getType() type}.
+        /// The same aggregation period has the same {@link #GetValue() value} and
+        /// {@link #GetCandleType() type}.
         /// </summary>
         /// <param name="o"></param>
-        /// <returns>{@code true} if this aggregation period is the same as another one.</returns>
+        /// <returns>`true` if this aggregation period is the same as another one.</returns>
         public override bool Equals(object o)
         {
             if (this == o)
@@ -172,11 +176,11 @@ namespace com.dxfeed.api.candle
         /// <summary>
         /// Returns string representation of this aggregation period.
         /// The string representation is composed of value and type string.
-        /// For example, 5 minute aggregation is represented as {@code "5m"}.
-        /// The value of {@code 1} is omitted in the string representation, so
-        /// {@link #DAY} (one day) is represented as {@code "d"}.
+        /// For example, 5 minute aggregation is represented as `"5m"`.
+        /// The value of `1` is omitted in the string representation, so
+        /// {@link #DAY} (one day) is represented as `"d"`.
         /// This string representation can be converted back into object
-        /// with {@link #parse(string)} method.
+        /// with {@link #Parse(string)} method.
         /// </summary>
         /// <returns>string representation of this aggregation period.</returns>
         public override string ToString()
@@ -186,9 +190,9 @@ namespace com.dxfeed.api.candle
 
         /// <summary>
         /// Parses string representation of aggregation period into object.
-        /// Any string that was returned by {@link #toString()} can be parsed.
+        /// Any string that was returned by {@link #ToString()} can be parsed.
         /// This method is flexible in the way candle types can be specified.
-        /// See {@link CandleType#parse(string)} for details.
+        /// See {@link CandleType#Parse(string)} for details.
         /// </summary>
         /// <param name="s">string representation of aggregation period.</param>
         /// <returns>aggregation period object.</returns>

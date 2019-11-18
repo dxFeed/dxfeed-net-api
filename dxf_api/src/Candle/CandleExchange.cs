@@ -6,6 +6,10 @@
 // http://mozilla.org/MPL/2.0/.
 #endregion
 
+/**
+ * @file 
+ */
+
 using com.dxfeed.api.events.market;
 using System;
 
@@ -18,8 +22,10 @@ namespace com.dxfeed.api.candle
     /// <h3>Implementation details</h3>
     ///
     /// This attribute is encoded in a symbol string with
-    /// {@link MarketEventSymbols#getExchangeCode(string) MarketEventSymbols.getExchangeCode} and
-    /// {@link MarketEventSymbols#changeExchangeCode(string, char) changeExchangeCode} methods.
+    /// {@link com.dxfeed.api.events.market.MarketEventSymbols#GetExchangeCode(string)
+    /// MarketEventSymbols.GetExchangeCode} and
+    /// {@link com.dxfeed.api.events.market.MarketEventSymbols#ChangeExchangeCode(string, char)
+    /// MarketEventSymbols.ChangeExchangeCode} methods.
     /// </summary>
     class CandleExchange : ICandleSymbolAttribute
     {
@@ -41,7 +47,7 @@ namespace com.dxfeed.api.candle
         }
 
         /// <summary>
-        /// Returns exchange code. It is {@code '\0'} for {@link #COMPOSITE} exchange.
+        /// Returns exchange code. It is `'\0'` for {@link #COMPOSITE} exchange.
         /// </summary>
         /// <returns>exchange code.</returns>
         public char GetExchangeCode()
@@ -51,7 +57,7 @@ namespace com.dxfeed.api.candle
 
         /// <summary>
         /// Returns string representation of this exchange.
-        /// It is the string {@code "COMPOSITE"} for {@link #COMPOSITE} exchange or
+        /// It is the string `"COMPOSITE"` for {@link #COMPOSITE} exchange or
         /// exchange character otherwise.
         /// </summary>
         /// <returns>string representation of this exchange.</returns>
@@ -64,7 +70,7 @@ namespace com.dxfeed.api.candle
         /// Indicates whether this exchange attribute is the same as another one.
         /// </summary>
         /// <param name="o"></param>
-        /// <returns>{@code true} if this exchange attribute is the same as another one.</returns>
+        /// <returns>`true` if this exchange attribute is the same as another one.</returns>
         public override bool Equals(object o)
         {
             return this == o || o.GetType() == typeof(CandleExchange) && exchangeCode == ((CandleExchange)o).exchangeCode;

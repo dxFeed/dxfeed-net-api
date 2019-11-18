@@ -11,7 +11,7 @@ namespace com.dxfeed.api.candle
 {
     /// <summary>
     /// Type of the candle aggregation period constitutes {@link CandlePeriod} type together
-    /// its actual {@link CandlePeriod#getValue() value}.
+    /// its actual {@link CandlePeriod#GetValue() value}.
     /// </summary>
     public class CandleType
     {
@@ -134,7 +134,7 @@ namespace com.dxfeed.api.candle
         /// are approximate. Candle type period of
         /// {@link #TICK}, {@link #VOLUME}, {@link #PRICE},
         /// {@link #PRICE_MOMENTUM} and {@link #PRICE_RENKO}
-        /// is not defined and this method returns {@code 0}.
+        /// is not defined and this method returns `0`.
         /// </summary>
         /// <returns>aggregation period in milliseconds.</returns>
         public long GetPeriodIntervalMillis()
@@ -145,9 +145,9 @@ namespace com.dxfeed.api.candle
         /// <summary>
         /// Returns string representation of this candle type.
         /// The string representation of candle type is the shortest unique prefix of the
-        /// lower case string that corresponds to its {@link #name() name}. For example,
-        /// {@link #TICK} is represented as {@code "t"}, while {@link #MONTH} is represented as
-        /// {@code "mo"} to distinguish it from {@link #MINUTE} that is represented as {@code "m"}.
+        /// lower case string that corresponds to its type name. For example,
+        /// {@link #TICK} is represented as `"t"`, while {@link #MONTH} is represented as
+        /// `"mo"` to distinguish it from {@link #MINUTE} that is represented as `"m"`.
         /// @return string representation of this candle price type.
         /// </summary>
         /// <returns></returns>
@@ -158,8 +158,8 @@ namespace com.dxfeed.api.candle
 
         /// <summary>
         /// Parses string representation of candle type into object.
-        /// Any string that that is a prefix of candle type {@link #name()} can be parsed
-        /// (including the one that was returned by {@link #toString()})
+        /// Any string that is a prefix of candle type name can be parsed
+        /// (including the one that was returned by {@link #ToString()})
         /// and case is ignored for parsing.
         /// </summary>
         /// <param name="s">string representation of candle type.</param>

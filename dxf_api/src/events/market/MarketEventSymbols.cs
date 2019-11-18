@@ -27,7 +27,7 @@ namespace com.dxfeed.api.events.market
     /// <h3>Symbol attributes</h3>
     ///
     /// Market event symbols can have a number of attributes attached to then in curly braces
-    /// with {@code <key>=<value>} paris separated by commas. For example,
+    /// with `<key>=<value>` paris separated by commas. For example,
     /// <ul>
     /// <li>"SPY{price=bid}" is the market symbol "SPY" with an attribute key "price" set to value "bid".
     /// <li>"SPY(=5m,tho=true}" is the market symbol "SPY" with two attributes. One has an empty key and
@@ -46,22 +46,22 @@ namespace com.dxfeed.api.events.market
         private MarketEventSymbols() { }
 
         /// <summary>
-        /// Returns {@code true} is the specified symbol has the exchange code specification.
-        /// The result is {@code false} if symbol is {@code null}.
+        /// Returns `true` is the specified symbol has the exchange code specification.
+        /// The result is `false` if symbol is `null`.
         /// </summary>
         /// <param name="symbol">symbol</param>
-        /// <returns>{@code true} is the specified symbol has the exchange code specification.</returns>
+        /// <returns>`true` is the specified symbol has the exchange code specification.</returns>
         public static bool HasExchangeCode(string symbol)
         {
             return symbol != null && HasExchangeCodeInternal(symbol, GetLengthWithoutAttributesInternal(symbol));
         }
 
         /// <summary>
-        /// Returns exchange code of the specified symbol or {@code '\0'} if none is defined.
-        /// The result is {@code '\0'} if symbol is {@code null}.
+        /// Returns exchange code of the specified symbol or `'\0'` if none is defined.
+        /// The result is `'\0'` if symbol is `null`.
         /// </summary>
         /// <param name="symbol">symbol</param>
-        /// <returns>exchange code of the specified symbol or {@code '\0'} if none is defined.</returns>
+        /// <returns>exchange code of the specified symbol or `'\0'` if none is defined.</returns>
         public static char GetExchangeCode(string symbol)
         {
             return HasExchangeCode(symbol) ? symbol[GetLengthWithoutAttributesInternal(symbol) - 1] : CandleExchange.DEFAULT.GetExchangeCode();
@@ -69,8 +69,8 @@ namespace com.dxfeed.api.events.market
 
         /// <summary>
         /// Changes exchange code of the specified symbol or removes it
-        /// if new exchange code is {@code '\0'}.
-        /// The result is {@code null} if old symbol is {@code null}.
+        /// if new exchange code is `'\0'`.
+        /// The result is `null` if old symbol is `null`.
         /// </summary>
         /// <param name="symbol">old symbol.</param>
         /// <param name="exchangeCode">new exchange code.</param>
@@ -88,7 +88,7 @@ namespace com.dxfeed.api.events.market
 
         /// <summary>
         /// Returns base symbol without exchange code and attributes.
-        /// The result is {@code null} if symbol is {@code null}.
+        /// The result is `null` if symbol is `null`.
         /// </summary>
         /// <param name="symbol">symbol</param>
         /// <returns>base symbol without exchange code and attributes.</returns>
@@ -101,7 +101,7 @@ namespace com.dxfeed.api.events.market
 
         /// <summary>
         /// Changes base symbol while leaving exchange code and attributes intact.
-        /// The result is {@code null} if old symbol is {@code null}.
+        /// The result is `null` if old symbol is `null`.
         /// </summary>
         /// <param name="symbol">old symbol</param>
         /// <param name="baseSymbol">new base symbol.</param>
@@ -128,8 +128,8 @@ namespace com.dxfeed.api.events.market
 
         /// <summary>
         /// Returns value of the attribute with the specified key.
-        /// The result is {@code null} if attribute with the specified key is not found.
-        /// The result is {@code null} if symbol is {@code null}.
+        /// The result is `null` if attribute with the specified key is not found.
+        /// The result is `null` if symbol is `null`.
         ///
         /// </summary>
         /// <param name="symbol">symbol</param>
@@ -147,7 +147,7 @@ namespace com.dxfeed.api.events.market
 
         /// <summary>
         /// Changes value of one attribute value while leaving exchange code and other attributes intact.
-        /// The {@code null} symbol is interpreted as empty one by this method..
+        /// The `null` symbol is interpreted as empty one by this method..
         ///
         /// </summary>
         /// <param name="symbol">old symbol</param>
@@ -169,7 +169,7 @@ namespace com.dxfeed.api.events.market
 
         /// <summary>
         /// Removes one attribute with the specified key while leaving exchange code and other attributes intact.
-        /// The result is {@code null} if symbol is {@code null}.
+        /// The result is `null` if symbol is `null`.
         ///
         /// </summary>
         /// <param name="symbol">old symbol</param>

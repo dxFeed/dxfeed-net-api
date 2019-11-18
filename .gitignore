@@ -22,3 +22,7 @@ packages/**
 .idea
 
 *.log
+
+# generated documentation
+/docs/dxfeed-*/
+/docs/*.old

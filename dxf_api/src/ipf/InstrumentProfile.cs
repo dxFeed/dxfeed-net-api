@@ -170,7 +170,7 @@ namespace com.dxfeed.ipf
 
         /// <summary>
         /// Returns identifier of instrument in national language.
-        /// It shall be empty if same as {@link #getSymbol symbol}.
+        /// It shall be empty if same as {@link #GetSymbol symbol}.
         /// </summary>
         /// <returns>Identifier of instrument in national language.</returns>
         public string GetLocalSymbol()
@@ -180,7 +180,7 @@ namespace com.dxfeed.ipf
 
         /// <summary>
         /// Changes identifier of instrument in national language.
-        /// It shall be empty if same as {@link #setSymbol symbol}.
+        /// It shall be empty if same as {@link #SetSymbol symbol}.
         /// </summary>
         /// <param name="localSymbol">Identifier of instrument in national language.</param>
         public void SetLocalSymbol(string localSymbol)
@@ -190,7 +190,7 @@ namespace com.dxfeed.ipf
 
         /// <summary>
         /// Returns description of instrument in national language.
-        /// It shall be empty if same as {@link #getDescription description}.
+        /// It shall be empty if same as {@link #GetDescription description}.
         /// </summary>
         /// <returns>Description of instrument in national language.</returns>
         public string GetLocalDescription()
@@ -200,7 +200,7 @@ namespace com.dxfeed.ipf
 
         /// <summary>
         /// Changes description of instrument in national language.
-        /// It shall be empty if same as {@link #getDescription description}.
+        /// It shall be empty if same as {@link #GetDescription description}.
         /// </summary>
         /// <param name="localDescription">Description of instrument in national language.</param>
         public void SetLocalDescription(string localDescription)
@@ -336,7 +336,7 @@ namespace com.dxfeed.ipf
 
         /// <summary>
         /// Returns base currency of currency pair (FOREX instruments).
-        /// It shall use three-letter currency code similarly to {@link #getCurrency currency}.
+        /// It shall use three-letter currency code similarly to {@link #GetCurrency currency}.
         /// </summary>
         /// <returns>Base currency of currency pair (FOREX instruments).</returns>
         public string GetBaseCurrency()
@@ -346,7 +346,7 @@ namespace com.dxfeed.ipf
 
         /// <summary>
         /// Changes base currency of currency pair (FOREX instruments).
-        /// It shall use three-letter currency code similarly to {@link #setCurrency currency}.
+        /// It shall use three-letter currency code similarly to {@link #SetCurrency currency}.
         /// </summary>
         /// <param name="baseCurrency">BaseCurrency base currency of currency pair (FOREX instruments).</param>
         public void SetBaseCurrency(string baseCurrency)
@@ -657,7 +657,7 @@ namespace com.dxfeed.ipf
 
         /// <summary>
         /// Returns day id of expiration.
-        /// Example: {@link DayUtil#getDayIdByYearMonthDay DayUtil.getDayIdByYearMonthDay}(20090117).
+        /// Example: {@link com.dxfeed.util.DayUtil#GetDayIdByYearMonthDay DayUtil.GetDayIdByYearMonthDay}(20090117).
         /// </summary>
         /// <returns>Day id of expiration.</returns>
         public int GetExpiration()
@@ -667,7 +667,7 @@ namespace com.dxfeed.ipf
 
         /// <summary>
         /// Changes day id of expiration.
-        /// Example: {@link DayUtil#getDayIdByYearMonthDay DayUtil.getDayIdByYearMonthDay}(20090117).
+        /// Example: {@link com.dxfeed.util.DayUtil#GetDayIdByYearMonthDay DayUtil.GetDayIdByYearMonthDay}(20090117).
         /// </summary>
         /// <param name="expiration">Expiration day id of expiration.</param>
         public void SetExpiration(int expiration)
@@ -677,7 +677,7 @@ namespace com.dxfeed.ipf
 
         /// <summary>
         /// Returns day id of last trading day.
-        /// Example: {@link DayUtil#getDayIdByYearMonthDay DayUtil.getDayIdByYearMonthDay}(20090116).
+        /// Example: {@link com.dxfeed.util.DayUtil#GetDayIdByYearMonthDay DayUtil.GetDayIdByYearMonthDay}(20090116).
         /// </summary>
         /// <returns>Day id of last trading day.</returns>
         public int GetLastTrade()
@@ -687,7 +687,7 @@ namespace com.dxfeed.ipf
 
         /// <summary>
         /// Changes day id of last trading day.
-        /// Example: {@link DayUtil#getDayIdByYearMonthDay DayUtil.getDayIdByYearMonthDay}(20090116).
+        /// Example: {@link com.dxfeed.util.DayUtil#GetDayIdByYearMonthDay DayUtil.GetDayIdByYearMonthDay}(20090116).
         /// </summary>
         /// <param name="lastTrade">Day id of last trading day.</param>
         public void SetLastTrade(int lastTrade)
@@ -1012,7 +1012,7 @@ namespace com.dxfeed.ipf
         /// Adds names of non-empty custom fields to specified collection.
         /// </summary>
         /// <param name="targetFieldNames"></param>
-        /// <returns><tt>true</tt> if {@code targetFieldNames} changed as a result of the call</returns>
+        /// <returns><tt>true</tt> if `targetFieldNames` changed as a result of the call</returns>
         public bool AddNonEmptyCustomFieldNames(ICollection<string> targetFieldNames)
         {
             int size = targetFieldNames.Count;
@@ -1030,7 +1030,7 @@ namespace com.dxfeed.ipf
         /// Indicates whether some other object is "equal to" this one.
         /// </summary>
         /// <param name="o">The reference object with which to compare.</param>
-        /// <returns>{@code true} if this object is the same as the obj argument; {@code false} otherwise.</returns>
+        /// <returns>`true` if this object is the same as the obj argument; `false` otherwise.</returns>
         public override bool Equals(object o)
         {
             if (this == o) return true;

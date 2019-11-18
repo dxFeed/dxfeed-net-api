@@ -97,8 +97,9 @@ namespace com.dxfeed.api.candle
 
             /// <summary>
             /// Official settlement price that is defined by exchange or last trading price otherwise.
-            /// It updates based on all {@link PriceType PriceType} values:
-            /// {@link PriceType#INDICATIVE}, {@link PriceType#PRELIMINARY}, and {@link PriceType#FINAL}.
+            /// It updates based on all {@link com.dxfeed.api.data.PriceType PriceType} values:
+            /// {@link com.dxfeed.api.data.PriceType#Indicative}, {@link com.dxfeed.api.data.PriceType#Preliminary},
+            /// and {@link com.dxfeed.api.data.PriceType#Final}.
             /// </summary>
             public static readonly ICandleSymbolAttribute SETTLEMENT = CandlePrice.SETTLEMENT;
 
@@ -109,7 +110,7 @@ namespace com.dxfeed.api.candle
 
             /// <summary>
             /// Parses string representation of candle price type into object.
-            /// Any string that was returned by {@link #toString()} can be parsed
+            /// Any string that was returned by {@link CandlePrice#ToString() CandlePrice.ToString} can be parsed
             /// and case is ignored for parsing.
             /// </summary>
             /// <param name="s">string representation of candle price type.</param>
@@ -143,7 +144,7 @@ namespace com.dxfeed.api.candle
 
             /// <summary>
             /// Parses string representation of candle session attribute into object.
-            /// Any string that was returned by {@link #toString()} can be parsed
+            /// Any string that was returned by {@link CandleSession#ToString() CandleSession.ToString} can be parsed
             /// and case is ignored for parsing.
             /// </summary>
             /// <param name="s">string representation of candle candle session attribute.</param>
@@ -177,13 +178,13 @@ namespace com.dxfeed.api.candle
 
             /// <summary>
             /// Parses string representation of candle alignment into object.
-            /// Any string that was returned by {@link #toString()} can be parsed
+            /// Any string that was returned by {@link CandleAlignment#ToString() CandleAlignment.ToString} can be parsed
             /// and case is ignored for parsing.
             ///
             /// </summary>
             /// <param name="s">string representation of candle alignment.</param>
             /// <returns>candle alignment</returns>
-            /// <exception cref="ArgumentNullException">Canlde alignment in string is unknown</exception>
+            /// <exception cref="ArgumentNullException">Candle alignment in string is unknown</exception>
             public static ICandleSymbolAttribute Parse(string s)
             {
                 return CandleAlignment.Parse(s);

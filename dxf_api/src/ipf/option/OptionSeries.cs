@@ -68,7 +68,7 @@ namespace com.dxfeed.ipf.option
 
         /// <summary>
         /// Day id of expiration.
-        /// Example: {@link DayUtil#getDayIdByYearMonthDay DayUtil.getDayIdByYearMonthDay}(20090117).
+        /// Example: {@link com.dxfeed.util.DayUtil#GetDayIdByYearMonthDay DayUtil.GetDayIdByYearMonthDay}(20090117).
         /// </summary>
         /// <value>Gets day id of expiration.</value>
         public int Expiration
@@ -79,7 +79,7 @@ namespace com.dxfeed.ipf.option
 
         /// <summary>
         /// Day id of last trading day.
-        /// Example: {@link DayUtil#getDayIdByYearMonthDay DayUtil.getDayIdByYearMonthDay}(20090116).
+        /// Example: {@link com.dxfeed.util.DayUtil#GetDayIdByYearMonthDay DayUtil.GetDayIdByYearMonthDay}(20090116).
         /// </summary>
         /// <value>Gets day id of last trading day.</value>
         public int LastTrade
@@ -188,7 +188,7 @@ namespace com.dxfeed.ipf.option
         /// It shall use six-letter CFI code from ISO 10962 standard.
         /// It is allowed to use 'X' extensively and to omit trailing letters(assumed to be 'X').
         /// See<a href="http://en.wikipedia.org/wiki/ISO_10962"> ISO 10962 on Wikipedia</a>.
-        /// It starts with "OX" as both {@link #getCalls() calls} and {@link #getPuts()} puts} are stored in a series.
+        /// It starts with "OX" as both {@link #Calls() calls} and {@link #Puts()} puts} are stored in a series.
         /// </summary>
         /// <value>Gets CFI code.</value>
         public string CFI

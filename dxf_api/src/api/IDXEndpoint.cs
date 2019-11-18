@@ -94,7 +94,7 @@ namespace com.dxfeed.api
         ///         The address string is provided with the market data vendor agreement.
         ///         Use "demo.dxfeed.com:7300" for a demo quote feed.
         ///     </para>
-        ///     <list type="bullet">
+        ///     <list type="table">
         ///         <listheader>
         ///             <description>
         ///                 The simplest address strings have the following format:

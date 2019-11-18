@@ -66,7 +66,7 @@ namespace com.dxfeed.api.events
     ///     <para>
     ///         Classes that implement this interface may also implement
     ///         <see cref="IDxLastingEvent"/> interface, which makes it possible to
-    ///         use {@link DXFeed#getLastEvent(LastingEvent) DXFeed.getLastEvent} method to
+    ///         use {@link DXFeed#GetLastEventPromise<E> DXFeed.GetLastEventPromise} method to
     ///         retrieve the last event for the corresponding symbol.
     ///     </para>
     ///     <para>
@@ -177,7 +177,7 @@ namespace com.dxfeed.api.events
     ///     <para>
     ///         Classes that implement this interface may also implement
     ///         <see cref="IDxLastingEvent"/> interface, which makes it possible to
-    ///         use {@link DXFeed#getLastEvent(LastingEvent) DXFeed.getLastEvent} method to
+    ///         use {@link DXFeed#getLastEvent<E> DXFeed.getLastEvent} method to
     ///         retrieve the last event for the corresponding symbol.
     ///     </para>
     ///     <para>

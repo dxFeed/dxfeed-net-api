@@ -37,7 +37,6 @@ namespace com.dxfeed.api
         ///     This method creates new DXFeedSubscription.
         /// </summary>
         /// <typeparam name="E">The type of events.</typeparam>
-        /// <param name="eventType">The class of event types.</param>
         /// <returns>New <see cref="IDXFeedSubscription{E}"/> for a single event type.</returns>
         /// <exception cref="InvalidOperationException">Endpoint was been closed.</exception>
         public IDXFeedSubscription<E> CreateSubscription<E>()
@@ -391,7 +390,7 @@ namespace com.dxfeed.api
         ///     </para>
         /// </remarks>
         /// <typeparam name="E">The event type.</typeparam>
-        /// <param name="symbols">The collection of symbols.</param>
+        /// <param name="symbol">The collection of symbols.</param>
         /// <param name="source">The source.</param>
         /// <param name="cancellationToken">The task cancellation token.</param>
         /// <returns>The promise for the result of the request.</returns>
@@ -503,7 +502,8 @@ namespace com.dxfeed.api
         ///     This method creates new <see cref="IDXFeedSubscription{E}"/>.
         /// </summary>
         /// <typeparam name="E">The type of events.</typeparam>
-        /// <param name="eventType">The class of event types.</param>
+        /// <param name="time">Unix time in the past - number of milliseconds from 1.1.1970.</param>
+        /// <param name="source">The source of the event.</param>
         /// <returns>New DXFeedSubscription for a single event type.</returns>
         internal IDXFeedSubscription<E> CreateSnapshotSubscription<E>(long time, IndexedEventSource source)
             where E : IDxIndexedEvent

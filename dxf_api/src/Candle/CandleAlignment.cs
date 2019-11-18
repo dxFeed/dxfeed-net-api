@@ -18,22 +18,25 @@ namespace com.dxfeed.api.candle
     /// <h3>Implementation details</h3>
     ///
     /// This attribute is encoded in a symbol string with
-    /// {@link MarketEventSymbols#getAttributeStringByKey(String, String) MarketEventSymbols.getAttributeStringByKey},
-    /// {@link MarketEventSymbols#changeAttributeStringByKey(String, String, String) changeAttributeStringByKey}, and
-    /// {@link MarketEventSymbols#removeAttributeStringByKey(String, String) removeAttributeStringByKey} methods.
+    /// {@link com.dxfeed.api.events.market.MarketEventSymbols#GetAttributeStringByKey
+    /// MarketEventSymbols.GetAttributeStringByKey},
+    /// {@link com.dxfeed.api.events.market.MarketEventSymbols#ChangeAttributeStringByKey
+    /// MarketEventSymbols.ChangeAttributeStringByKey},
+    /// and {@link com.dxfeed.api.events.market.MarketEventSymbols#RemoveAttributeStringByKey
+    /// MarketEventSymbols.RemoveAttributeStringByKey} methods.
     /// The key to use with these methods is available via
     /// {@link #ATTRIBUTE_KEY} constant.
     /// The value that this key shall be set to is equal to
-    /// the corresponding {@link #toString() CandleAlignment.toString()}
+    /// the corresponding {@link #ToString() CandleAlignment.ToString()}
     /// </summary>
     class CandleAlignment : ICandleSymbolAttribute
     {
         /// <summary>
-        /// The attribute key that is used to store the value of {@code CandleAlignment} in
-        /// a symbol string using methods of {@link MarketEventSymbols} class.
+        /// The attribute key that is used to store the value of `CandleAlignment` in
+        /// a symbol string using methods of {@link com.dxfeed.api.events.market.MarketEventSymbols MarketEventSymbols} class.
         /// The value of this constant is "a".
         /// The value that this key shall be set to is equal to
-        /// the corresponding {@link #toString() CandleAlignment.ToString()}
+        /// the corresponding {@link #ToString() CandleAlignment.ToString()}
         /// </summary>
         private static readonly string ATTRIBUTE_KEY = "a";
         private enum CandleAlignmentType { Midnight = 0, Session = 1 };
@@ -122,16 +125,16 @@ namespace com.dxfeed.api.candle
 
         /// <summary>
         /// Parses string representation of candle alignment into object.
-        /// Any string that was returned by {@link #toString()} can be parsed
+        /// Any string that was returned by {@link #ToString()} can be parsed
         /// and case is ignored for parsing.
         ///
         /// </summary>
         /// <param name="s">string representation of candle alignment.</param>
         /// <returns>candle alignment</returns>
-        /// <exception cref="ArgumentNullException">Canlde alignment in string is unknown</exception>
+        /// <exception cref="ArgumentNullException">Candle alignment in string is unknown</exception>
         public static CandleAlignment Parse(string s)
         {
-            // fast path to reverse toString result
+            // fast path to reverse ToString result
             if (objCash.ContainsKey(s))
                 return objCash[s];
             // slow path for different case

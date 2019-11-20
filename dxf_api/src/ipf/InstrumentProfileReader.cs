@@ -30,11 +30,6 @@ namespace com.dxfeed.ipf
         private DateTime lastModified;
 
         /// <summary>
-        /// Creates instrument profile reader.
-        /// </summary>
-        public InstrumentProfileReader() { }
-
-        /// <summary>
         /// Returns last modification time (in milliseconds) from last ReadFromFile operation
         /// or zero if it is unknown.
         /// </summary>
@@ -46,7 +41,7 @@ namespace com.dxfeed.ipf
 
         /// <summary>
         /// Reads and returns instrument profiles from specified file.
-        /// This method recognizes popular data compression formats "zip" and "gzip" by analysing file name.
+        /// This method recognizes popular data compression formats "zip" and "gzip" by analyzing file name.
         /// If file name ends with ".zip" then all compressed files will be read independently one by one
         /// in their order of appearing and total concatenated list of instrument profiles will be returned.
         /// If file name ends with ".gz" then compressed content will be read and returned.
@@ -70,7 +65,7 @@ namespace com.dxfeed.ipf
 
         /// <summary>
         /// Reads and returns instrument profiles from specified address with a specified basic user and password credentials.
-        /// This method recognizes popular data compression formats "zip" and "gzip" by analysing file name.
+        /// This method recognizes popular data compression formats "zip" and "gzip" by analyzing file name.
         /// If file name ends with ".zip" then all compressed files will be read independently one by one
         /// in their order of appearing and total concatenated list of instrument profiles will be returned.
         /// If file name ends with ".gz" then compressed content will be read and returned.
@@ -89,10 +84,10 @@ namespace com.dxfeed.ipf
         /// <exception cref="InstrumentProfileFormatException">If input stream does not conform to the Simple File Format.</exception>
         public IList<InstrumentProfile> ReadFromFile(string address, string user, string password)
         {
-            string url = ResolveSourceURL(address);
+            string url = ResolveSourceUrl(address);
             try
             {
-                WebRequest webRequest = URLInputStream.OpenConnection(URLInputStream.ResolveURL(url), user, password);
+                WebRequest webRequest = URLInputStream.OpenConnection(URLInputStream.ResolveUrl(url), user, password);
                 webRequest.Headers.Add(Constants.LIVE_PROP_KEY, Constants.LIVE_PROP_REQUEST_NO);
                 using (WebResponse response = webRequest.GetResponse())
                 {
@@ -111,8 +106,8 @@ namespace com.dxfeed.ipf
                             modificationTime = ((HttpWebResponse)response).LastModified;
                     }
 
-                    IList<InstrumentProfile> list = null;
-                    using (Stream dataStream = response.GetResponseStream())
+                    IList<InstrumentProfile> list;
+                    using (var dataStream = response.GetResponseStream())
                     {
                         list = Read(dataStream, url);
                     }
@@ -140,20 +135,20 @@ namespace com.dxfeed.ipf
         /// </summary>
         /// <param name="address">Address to convert.</param>
         /// <returns>A new resolved URL.</returns>
-        public static string ResolveSourceURL(string address)
+        public static string ResolveSourceUrl(string address)
         {
             // Detect simple "host:port" source and convert it to full HTTP URL
             if (address.IndexOf(':') > 0 && address.IndexOf('/') < 0)
                 try
                 {
-                    int j = address.IndexOf('?');
-                    string query = "";
+                    var j = address.IndexOf('?');
+                    var query = "";
                     if (j >= 0)
                     {
                         query = address.Substring(j);
                         address = address.Substring(0, j);
                     }
-                    int port = int.Parse(address.Substring(address.IndexOf(':') + 1));
+                    var port = int.Parse(address.Substring(address.IndexOf(':') + 1));
                     if (port > 0 && port < 65536)
                         address = "http://" + address + "/ipf/all.ipf.gz" + query;
                 }
@@ -166,7 +161,7 @@ namespace com.dxfeed.ipf
 
         /// <summary>
         /// Reads and returns instrument profiles from specified stream using specified name to select data compression format.
-        /// This method recognizes popular data compression formats "zip" and "gzip" by analysing file name.
+        /// This method recognizes popular data compression formats "zip" and "gzip" by analyzing file name.
         /// If file name ends with ".zip" then all compressed files will be read independently one by one
         /// in their order of appearing and total concatenated list of instrument profiles will be returned.
         /// If file name ends with ".gz" then compressed content will be read and returned.
@@ -187,8 +182,8 @@ namespace com.dxfeed.ipf
                 {
                     using (ZipArchive zip = new ZipArchive(inputStream))
                     {
-                        List<InstrumentProfile> profiles = new List<InstrumentProfile>();
-                        foreach (ZipArchiveEntry entry in zip.Entries)
+                        var profiles = new List<InstrumentProfile>();
+                        foreach (var entry in zip.Entries)
                         {
                             profiles.AddRange(Read(entry.Open(), entry.Name));
                         }

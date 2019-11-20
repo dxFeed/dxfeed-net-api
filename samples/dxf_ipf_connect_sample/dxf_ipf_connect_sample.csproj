@@ -53,6 +53,10 @@
       <Project>{f0e087df-6c09-42ff-90ff-a470b3391f76}</Project>
       <Name>dxf_api</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\dxf_native\dxf_native.csproj">
+      <Project>{d56eed21-ee2c-441c-b0d5-e85f10436cea}</Project>
+      <Name>dxf_native</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

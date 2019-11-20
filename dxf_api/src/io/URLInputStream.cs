@@ -32,7 +32,7 @@ namespace com.dxfeed.io
         /// <returns>Resolved url.</returns>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="UriFormatException"></exception>
-        public static Uri ResolveURL(string url)
+        public static Uri ResolveUrl(string url)
         {
             if (url.Length > 2 && url[1] == ':' && Path.PathSeparator == '\\')
                 url = "/" + url; // special case for full file path with drive letter on windows
@@ -54,7 +54,7 @@ namespace com.dxfeed.io
         /// to the requested URI or a URI that the request is redirected to.</exception>
         public static WebRequest OpenConnection(string url)
         {
-            return OpenConnection(ResolveURL(url), null, null);
+            return OpenConnection(ResolveUrl(url), null, null);
         }
 
         /// <summary>

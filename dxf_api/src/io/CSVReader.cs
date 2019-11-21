@@ -23,15 +23,17 @@ namespace com.dxfeed.io
     /// This reader supports records with arbitrary (variable) number of fields, multiline fields,
     /// custom separator and quote characters. It accepts <b>CR</b>, <b>LF</b> and <b>CRLF</b> sequence
     /// as record separators.
-    /// <p>
+    /// </p>
     /// This reader provides its own buffering but does not perform decoding.
     /// The correct way to efficiently read CSV file with UTF-8 encoding is as follows:
-    /// <pre>
+    /// <example>
+    /// <code>
     /// CSVReader reader = new CSVReader(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8));
     /// string[] header = reader.readRecord();
     /// List&lt;string[]&gt; records = reader.readAll();
     /// reader.close();
-    /// </pre>
+    /// </code>
+    /// </example>
     /// </summary>
     public class CSVReader : IDisposable
     {
@@ -65,7 +67,7 @@ namespace com.dxfeed.io
         /// </summary>
         /// <param name="reader"></param>
         /// <param name="separator">Separator.</param>
-        /// <param name="quote">Quote charachter.</param>
+        /// <param name="quote">Quote character.</param>
         /// <exception cref="System.NullReferenceException">If reader is null.</exception>
         /// <exception cref="System.ArgumentException">If separator or quote characters are invalid.</exception>
         public CSVReader(StreamReader reader, char separator, char quote)
@@ -200,7 +202,7 @@ namespace com.dxfeed.io
         }
 
         /// <summary>
-        /// Read charachters from the stream according to internal buffer.
+        /// Read characters from the stream according to internal buffer.
         /// </summary>
         /// <exception cref="System.InvalidOperationException">If buffer error occurs.</exception>
         /// <exception cref="System.IO.IOException">If an I/O error occurs.</exception>

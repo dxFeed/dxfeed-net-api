@@ -98,11 +98,12 @@ namespace com.dxfeed.ipf.live
             Closed
         }
 
-        private static readonly string UPDATE_PATTERN = "(.*)\\[update=([^\\]]+)\\]";
-        private static readonly long DEFAULT_UPDATE_PERIOD = 60000;
+        private const string UpdatePattern = "(.*)\\[update=([^\\]]+)\\]";
+        private const long DefaultUpdatePeriod = 60000;
         private State state = State.NotConnected;
-        private long updatePeriod = DEFAULT_UPDATE_PERIOD;
+        private long updatePeriod = DefaultUpdatePeriod;
         private readonly string address;
+        private const int DefaultReadTimeout = 1000;
         private readonly object stateLocker = new object();
         private readonly object lastModifiedLocker = new object();
         private readonly object listenersLocker = new object();
@@ -129,7 +130,7 @@ namespace com.dxfeed.ipf.live
         public InstrumentProfileConnection(string address)
         {
             this.address = address;
-            var regex = new Regex(UPDATE_PATTERN, RegexOptions.IgnoreCase);
+            var regex = new Regex(UpdatePattern, RegexOptions.IgnoreCase);
             var match = regex.Match(address);
             
             if (!match.Success) return;
@@ -356,11 +357,12 @@ namespace com.dxfeed.ipf.live
                     MakeConnected();
                     using (var inputStream = webResponse.GetResponseStream())
                     {
-                        var compress = (isFileStream ? StreamCompression.DetectCompressionByExtension(new Uri(address)) :
-                            StreamCompression.DetectCompressionByMimeType(webResponse.ContentType));
-                        using (var decompressedIn = compress.Decompress(inputStream))
-                        {
-                            var count = Process(decompressedIn);
+                        var compress = isFileStream ? StreamCompression.DetectCompressionByExtension(new Uri(address)) :
+                            StreamCompression.DetectCompressionByMimeType(webResponse.ContentType);
+                        using (var decompressedIn = compress.Decompress(inputStream)) {
+                            if (!isFileStream) decompressedIn.ReadTimeout = DefaultReadTimeout;
+                            
+                            Process(decompressedIn);
                             // Update timestamp only after first successful processing
                             LastModified = time;
                         }
@@ -384,29 +386,37 @@ namespace com.dxfeed.ipf.live
         /// </summary>
         /// <param name="inputStream">Decompressed input stream of instrument profiles.</param>
         /// <returns>Number of received instrument profiles.</returns>
-        private int Process(Stream inputStream)
+        private void Process(Stream inputStream)
         {
-            var count = 0;
             var parser = new InstrumentProfileParser(inputStream);
             
             parser.OnFlush += Flush;
             parser.OnComplete += Complete;
-            InstrumentProfile ip;
-            
-            while ((ip = parser.Next()) != null)
-            {
-                count++;
-                ipBuffer.Add(ip);
-                if (CurrentState == State.Closed)
-                    return count;
+
+            while (true) {
+                InstrumentProfile instrumentProfile;
+                
+                try 
+                {
+                    instrumentProfile = parser.Next();
+                }
+                catch (InvalidOperationException) //Timeout
+                {
+                    return;
+                }
+
+                if (instrumentProfile == null) {
+                    break;
+                }
+                
+                ipBuffer.Add(instrumentProfile);
+                if (CurrentState == State.Closed) return;
             }
 
             // EOF of live connection is _NOT_ a signal that snapshot was complete (it sends an explicit complete)
             // for non-live data sources, though, EOF is a completion signal
             if (!supportsLive)
                 Complete(this, new EventArgs());
-            
-            return count;
         }
 
         /// <summary>

@@ -59,18 +59,21 @@ namespace com.dxfeed.ipf.impl
             {
                 int line = reader.GetLineNumber();
                 string[] record;
-                try
-                {
+                try {
                     record = reader.ReadRecord();
-                }
-                catch (CSVFormatException csvException)
+                } catch (CSVFormatException csvException)
                 {
                     throw new InstrumentProfileFormatException(csvException.Message);
+                } 
+                catch (InvalidOperationException)
+                {
+                    throw;
                 }
                 catch (Exception exc)
                 {
                     throw new IOException("Next failed: " + exc);
                 }
+                
                 if (record == null) // EOF reached
                     return null;
                 if (record.Length == 0 || record.Length == 1 && String.IsNullOrEmpty(record[0])) // skip empty lines

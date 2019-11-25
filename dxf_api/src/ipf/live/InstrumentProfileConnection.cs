@@ -413,22 +413,9 @@ namespace com.dxfeed.ipf.live
             parser.OnFlush += Flush;
             parser.OnComplete += Complete;
 
-            while (true) {
-                InstrumentProfile instrumentProfile;
-                
-                try 
-                {
-                    instrumentProfile = parser.Next();
-                }
-                catch (InvalidOperationException) //Timeout
-                {
-                    return;
-                }
-
-                if (instrumentProfile == null) {
-                    break;
-                }
-                
+            InstrumentProfile instrumentProfile;
+            
+            while ((instrumentProfile = parser.Next()) != null) {
                 ipBuffer.Add(instrumentProfile);
                 if (CurrentState == State.Closed) return;
             }

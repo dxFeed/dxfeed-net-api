@@ -291,7 +291,7 @@ namespace com.dxfeed.ipf.live
                 }
                 catch (Exception e)
                 {
-                    if (e is SocketException && CurrentState == State.Closed)
+                    if (CurrentState == State.Closed)
                         return;
                     
                     CallOnError(e);

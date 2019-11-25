@@ -12,6 +12,7 @@ If a copy of the MPL was not distributed with this file, You can obtain one at h
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net.Sockets;
 using System.Text;
 using com.dxfeed.io;
 
@@ -59,18 +60,18 @@ namespace com.dxfeed.ipf.impl
             {
                 int line = reader.GetLineNumber();
                 string[] record;
-                try {
+                try 
+                {
                     record = reader.ReadRecord();
-                } catch (CSVFormatException csvException)
+                }
+                catch (CSVFormatException csvException)
                 {
                     throw new InstrumentProfileFormatException(csvException.Message);
                 } 
-                catch (InvalidOperationException)
-                {
-                    throw;
-                }
                 catch (Exception exc)
                 {
+                    if (exc is IOException && exc.InnerException is SocketException) throw exc.InnerException;
+                    
                     throw new IOException("Next failed: " + exc);
                 }
                 

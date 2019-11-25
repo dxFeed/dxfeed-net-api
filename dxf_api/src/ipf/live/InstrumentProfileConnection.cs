@@ -16,6 +16,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Net.Sockets;
 using System.Text.RegularExpressions;
 using System.Threading;
 
@@ -103,10 +104,12 @@ namespace com.dxfeed.ipf.live
         private State state = State.NotConnected;
         private long updatePeriod = DefaultUpdatePeriod;
         private readonly string address;
-        private const int DefaultReadTimeout = 1000;
         private readonly object stateLocker = new object();
         private readonly object lastModifiedLocker = new object();
         private readonly object listenersLocker = new object();
+        private WebResponse webResponse;
+        private readonly object webResponseLocker = new object();
+        
         /// <summary>
         /// Working thread to download instruments.
         /// Thread must != null when state in (CONNECTING, CONNECTED, COMPLETE).
@@ -224,6 +227,11 @@ namespace com.dxfeed.ipf.live
                     return;
                 state = State.Closed;
             }
+
+            lock (webResponseLocker)
+            {
+                webResponse?.Close();                
+            }
         }
 
         /// <summary>
@@ -275,23 +283,21 @@ namespace com.dxfeed.ipf.live
         /// </summary>
         private void Handler()
         {
-            var downloadStart = DateTime.MinValue;
-            
             while (CurrentState != State.Closed)
             {
-                // wait before retrying
-                if (!(DateTime.Now.Subtract(downloadStart).TotalMilliseconds > UpdatePeriod)) continue;
-                
                 try
                 {
                     Download();
                 }
                 catch (Exception e)
                 {
+                    if (e is SocketException && CurrentState == State.Closed)
+                        return;
+                    
                     CallOnError(e);
                 }
                 
-                downloadStart = DateTime.Now;
+                Thread.Sleep((int) UpdatePeriod);
             }
         }
 
@@ -337,7 +343,12 @@ namespace com.dxfeed.ipf.live
 
             try
             {
-                using (var webResponse = webRequest.GetResponse())
+                lock (webResponseLocker)
+                {
+                    webResponse = webRequest.GetResponse();
+                }
+
+                try
                 {
                     var isFileStream = webResponse.GetType() == typeof(FileWebResponse);
                     DateTime time;
@@ -345,27 +356,36 @@ namespace com.dxfeed.ipf.live
                     {
                         var fileUri = new Uri(address);
                         time = File.GetLastWriteTime(fileUri.AbsolutePath);
-                    }
+                    } 
                     else
                     {
                         URLInputStream.CheckConnectionResponseCode(webResponse);
-                        time = ((HttpWebResponse)webResponse).LastModified;
-                        supportsLive = Constants.LIVE_PROP_RESPONSE.Equals(webResponse.Headers.Get(Constants.LIVE_PROP_KEY));
+                        time = ((HttpWebResponse) webResponse).LastModified;
+                        supportsLive =
+                            Constants.LIVE_PROP_RESPONSE.Equals(webResponse.Headers.Get(Constants.LIVE_PROP_KEY));
                     }
+
                     if (time == LastModified)
                         return; // nothing changed
                     MakeConnected();
                     using (var inputStream = webResponse.GetResponseStream())
                     {
-                        var compress = isFileStream ? StreamCompression.DetectCompressionByExtension(new Uri(address)) :
-                            StreamCompression.DetectCompressionByMimeType(webResponse.ContentType);
-                        using (var decompressedIn = compress.Decompress(inputStream)) {
-                            if (!isFileStream) decompressedIn.ReadTimeout = DefaultReadTimeout;
-                            
+                        var compress = isFileStream
+                            ? StreamCompression.DetectCompressionByExtension(new Uri(address))
+                            : StreamCompression.DetectCompressionByMimeType(webResponse.ContentType);
+                        using (var decompressedIn = compress.Decompress(inputStream))
+                        {
                             Process(decompressedIn);
                             // Update timestamp only after first successful processing
                             LastModified = time;
                         }
+                    }
+                } 
+                finally
+                {
+                    lock (webResponseLocker)
+                    {
+                        webResponse = null;   
                     }
                 }
             }

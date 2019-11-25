@@ -230,9 +230,9 @@ namespace com.dxfeed.api
         [Test]
         public void SetPeriodTest()
         {
-            const int TEST_TIMES = 3;
+            const int TEST_TIMES = 4;
             const long PERIOD_NEW = 5000;
-            const double PERIOD_DELTA = 1000;
+            const double PERIOD_DELTA = 1800;
             const string UPDATE_CHANGE_FILE_NAME = "update_change_field_profiles.zip";
             string sourceFile = Path.GetFullPath(Path.Combine(DATA_PATH, ZIP_FILE_NAME));
             string updateFile = Path.GetFullPath(Path.Combine(DATA_PATH, UPDATE_CHANGE_FILE_NAME));
@@ -246,8 +246,8 @@ namespace com.dxfeed.api
             connection.AddUpdateListener(updateListener);
             connection.Start();
 
-            while (!updateListener.IsUpdated) { }
             DateTime time = DateTime.Now;
+            while (!updateListener.IsUpdated) { }
             for (int i = 0; i < TEST_TIMES * 2; i++)
             {
                 if (i == TEST_TIMES)

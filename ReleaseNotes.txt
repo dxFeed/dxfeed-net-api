@@ -1,3 +1,8 @@
+Version 5.8.0
+* Improved the documentation (converted to doxygen format)
+* Added a sample that implements subscribing to symbols which downloaded from IPF. See the dxf_connect_ipf_sample project
+* Fixed the InstrumentProfileConnection class that does not respond after downloading all data
+
 Version 5.7.0
 * Fixed an issue with crash on reconnect (connection by TLS)
 * Added the ability to subscribe to "*" (wildcard) symbol

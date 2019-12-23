@@ -90,7 +90,9 @@ namespace dxf_events_sample {
 
             try {
                 NativeTools.InitializeLogging("dxf_events_sample.log", true, true);
-                using (var con = new NativeConnection(address, DisconnectHandler)) {
+                using (var con = token.IsSet
+                    ? new NativeConnection(address, token.Value, DisconnectHandler)
+                    : new NativeConnection(address, DisconnectHandler)) {
                     using (var s = con.CreateSubscription(events, dateTime.Value, new EventListener())) {
                         s.AddSymbols(symbols);
 

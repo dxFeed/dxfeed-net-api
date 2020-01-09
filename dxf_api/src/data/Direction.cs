@@ -1,7 +1,7 @@
 #region License
 
 /*
-Copyright © 2010-2019 dxFeed Solutions DE GmbH
+Copyright Â© 2010-2019 dxFeed Solutions DE GmbH
 
 This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
 If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -24,11 +24,11 @@ namespace com.dxfeed.api.data
         /// <summary>
         /// Current price is lower than previous price.
         /// </summary>
-        Down = 0,
+        Down = 1,
         /// <summary>
         /// Current price is the same as previous price and is lower than the last known price of different value.
         /// </summary>
-        ZeroDown = 1,
+        ZeroDown = 2,
         /// <summary>
         /// Current price is equal to the only known price value suitable for price direction computation.
         /// </summary>

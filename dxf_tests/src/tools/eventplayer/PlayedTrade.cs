@@ -37,6 +37,7 @@ namespace com.dxfeed.tests.tools.eventplayer
             this.Price = price;
             this.Size = size;
             this.Change = change;
+            this.Tick = tick;
             this.RawFlags = raw_flags;
             this.DayVolume = day_volume;
             this.DayTurnover = day_turnover;
@@ -62,6 +63,7 @@ namespace com.dxfeed.tests.tools.eventplayer
             this.Price = trade.Price;
             this.Size = trade.Size;
             this.Change = trade.Change;
+            this.Tick = trade.Tick;
             this.RawFlags = trade.RawFlags;
             this.DayVolume = trade.DayVolume;
             this.DayTurnover = trade.DayTurnover;
@@ -70,7 +72,7 @@ namespace com.dxfeed.tests.tools.eventplayer
             this.Scope = trade.Scope;
 
             Params = new EventParams(0, 0, 0);
-            Data = new DxTestTrade(Tools.DateToUnixTime(Time), Sequence, TimeNanoPart, ExchangeCode, Price, (int)Size, 0, Change, RawFlags, DayVolume, DayTurnover, TickDirection, IsExtendedTradingHours, Scope);
+            Data = new DxTestTrade(Tools.DateToUnixTime(Time), Sequence, TimeNanoPart, ExchangeCode, Price, (int)Size, Tick, Change, RawFlags, DayVolume, DayTurnover, TickDirection, IsExtendedTradingHours, Scope);
         }
 
         public DxTestTrade Data
@@ -93,6 +95,11 @@ namespace com.dxfeed.tests.tools.eventplayer
         }
 
         public double Change
+        {
+            get; private set;
+        }
+        
+        public int Tick
         {
             get; private set;
         }

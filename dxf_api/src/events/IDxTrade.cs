@@ -1,7 +1,7 @@
 #region License
 
 /*
-Copyright � 2010-2019 dxFeed Solutions DE GmbH
+Copyright © 2010-2019 dxFeed Solutions DE GmbH
 
 This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
 If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -21,8 +21,15 @@ namespace com.dxfeed.api.events
     public interface IDxTrade : IDxTradeBase
     {
         /// <summary>
-        /// Returns price change of the last trade, if availiable.
+        /// Returns price change of the last trade, if available.
         /// </summary>
         double Change { get; }
+
+        /// <summary>
+        /// Returns Trend indicator – in which direction price is moving. The values are: Up (Tick = 1), Down (Tick = 2),
+        /// and Undefined (Tick = 0).
+        /// Should be used if IDxTradeBase.TickDirection is Undefined 
+        /// </summary>
+        int Tick { get; }
     }
 }

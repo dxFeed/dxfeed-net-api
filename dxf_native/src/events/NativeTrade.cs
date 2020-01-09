@@ -31,6 +31,7 @@ namespace com.dxfeed.native.events
         internal unsafe NativeTrade(DxTrade* trade, string symbol) : base(trade, symbol)
         {
             Change = (*trade).change;
+            Tick = (*trade).tick;
         }
 
         /// <summary>
@@ -40,6 +41,7 @@ namespace com.dxfeed.native.events
         internal NativeTrade(IDxTrade trade) : base(trade)
         {
             Change = trade.Change;
+            Tick = trade.Tick;
         }
 
         #region Implementation of ICloneable
@@ -51,15 +53,23 @@ namespace com.dxfeed.native.events
 
         #region Implementation of IDxTrade
         /// <summary>
-        /// Returns price change of the last trade, if availiable.
+        /// Returns price change of the last trade, if available.
         /// </summary>
         public double Change { get; private set; }
+        
+        /// <summary>
+        /// Returns Trend indicator – in which direction price is moving. The values are: Up (Tick = 1), Down (Tick = 2),
+        /// and Undefined (Tick = 0).
+        /// Should be used if IDxTradeBase.TickDirection is Undefined 
+        /// </summary>
+        public int Tick { get; private set; }
+        
         #endregion
 
         public override string ToString()
         {
-            return string.Format(CultureInfo.InvariantCulture, "Trade {{{0}, {1}, Change: {2}}}",
-                EventSymbol, base.ToString(), Change);
+            return string.Format(CultureInfo.InvariantCulture, "Trade {{{0}, {1}, Change: {2}, Tick: {3}}}",
+                EventSymbol, base.ToString(), Change, Tick);
         }
     }
 }

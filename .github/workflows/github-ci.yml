@@ -14,7 +14,7 @@ env:
   WINDOWS_BUILD_TEMPLATE: dxfeed-net-api-#VERSION#
   WIN_SRC_DIR: "C:\\dxfeed-net-api"
   RELEASE_PREFIX: "dxFeed .Net API "
-  C_API_REPO: "https://github.com/mvkvl/dxfeed-c-api.git"
+  C_API_REPO: "https://github.com/dxfeed/dxfeed-c-api.git"
 
 jobs:
 

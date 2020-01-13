@@ -84,6 +84,8 @@ namespace com.dxfeed.api.candle
         internal CandlePeriod period;
         [NonSerialized()]
         internal CandleAlignment alignment;
+        [NonSerialized()]
+        internal CandlePriceLevel priceLevel;
 
         private CandleSymbol(string symbol)
         {
@@ -110,79 +112,42 @@ namespace com.dxfeed.api.candle
         /// <summary>
         /// Returns base market symbol without attributes.
         /// </summary>
-        public string BaseSymbol
-        {
-            get
-            {
-                return baseSymbol;
-            }
-        }
+        public string BaseSymbol => baseSymbol;
 
         /// <summary>
         /// Returns exchange attribute of this symbol.
         /// </summary>
-        public char ExchangeCode
-        {
-            get
-            {
-                return exchange.GetExchangeCode();
-            }
-        }
+        public char ExchangeCode => exchange.GetExchangeCode();
 
         /// <summary>
         /// Returns price type attribute of this symbol.
         /// </summary>
-        public int PriceId
-        {
-            get
-            {
-                return price.GetId();
-            }
-        }
+        public int PriceId => price.GetId();
 
         /// <summary>
         /// Returns session attribute of this symbol.
         /// </summary>
-        public int SessionId
-        {
-            get
-            {
-                return session.GetId();
-            }
-        }
+        public int SessionId => session.GetId();
 
         /// <summary>
         /// Returns aggregation period of this symbol.
         /// </summary>
-        public int PeriodId
-        {
-            get
-            {
-                return period.GetCandleType().Id;
-            }
-        }
+        public int PeriodId => period.GetCandleType().Id;
 
         /// <summary>
         /// Returns aggregation period value of this symbol.
         /// </summary>
-        public double PeriodValue
-        {
-            get
-            {
-                return period.GetValue();
-            }
-        }
+        public double PeriodValue => period.GetValue();
 
         /// <summary>
         /// Returns alignment attribute of this symbol.
         /// </summary>
-        public int AlignmentId
-        {
-            get
-            {
-                return alignment.GetId();
-            }
-        }
+        public int AlignmentId => alignment.GetId();
+
+        /// <summary>
+        /// Returns price level attribute of this symbol.
+        /// </summary>
+        public double PriceLevel => priceLevel.GetValue();
 
         /// <summary>
         /// Returns string representation of this symbol.
@@ -202,7 +167,7 @@ namespace com.dxfeed.api.candle
         /// <returns>`true` if this symbol is the same as another one.</returns>
         public override bool Equals(object obj)
         {
-            return this == obj || obj.GetType() == typeof(CandleSymbol) && symbol.Equals(((CandleSymbol)obj).symbol);
+            return this == obj || obj is CandleSymbol && symbol.Equals(((CandleSymbol)obj).symbol);
         }
 
         /// <summary>
@@ -255,9 +220,10 @@ namespace com.dxfeed.api.candle
         /// <returns>String representation of this symbol.</returns>
         public string ToFullString()
         {
-            string exchangeString = (exchange == CandleExchange.DEFAULT ? string.Empty : "&" + exchange.ToString());
-            return string.Format("{0}{1}{{={2},{3},{4},{5}}}", baseSymbol, exchangeString, period.ToString(),
-                alignment.ToFullString(), price.ToFullString(), session.ToFullString());
+            var exchangeString = Equals(exchange, CandleExchange.DEFAULT) ? string.Empty : "&" + exchange;
+            
+            return
+                $"{baseSymbol}{exchangeString}{{={period},{alignment.ToFullString()},{priceLevel.ToFullString()},{price.ToFullString()},{session.ToFullString()}}}";
         }
 
         /// <summary>
@@ -266,12 +232,12 @@ namespace com.dxfeed.api.candle
         /// <returns>"true" if all attributes is default, otherwise returns false.</returns>
         public bool IsDefault()
         {
-            return (
-                exchange.Equals(CandleExchange.DEFAULT) &&
-                period.Equals(CandlePeriod.DEFAULT) &&
-                alignment.Equals(CandleAlignment.DEFAULT) &&
-                price.Equals(CandlePrice.DEFAULT) &&
-                session.Equals(CandleSession.DEFAULT));
+            return exchange.Equals(CandleExchange.DEFAULT) &&
+                   period.Equals(CandlePeriod.DEFAULT) &&
+                   alignment.Equals(CandleAlignment.DEFAULT) &&
+                   price.Equals(CandlePrice.DEFAULT) &&
+                   session.Equals(CandleSession.DEFAULT) &&
+                   priceLevel.Equals(CandlePriceLevel.DEFAULT);
         }
 
         //----------------------- private implementation details -----------------------
@@ -296,6 +262,7 @@ namespace com.dxfeed.api.candle
             symbol = CandleSession.NormalizeAttributeForSymbol(symbol);
             symbol = CandlePeriod.NormalizeAttributeForSymbol(symbol);
             symbol = CandleAlignment.NormalizeAttributeForSymbol(symbol);
+            symbol = CandlePriceLevel.NormalizeAttributeForSymbol(symbol);
             return symbol;
         }
 
@@ -312,6 +279,8 @@ namespace com.dxfeed.api.candle
                 period = CandlePeriod.GetAttributeForSymbol(symbol);
             if (alignment == null)
                 alignment = CandleAlignment.GetAttributeForSymbol(symbol);
+            if (priceLevel == null)
+                priceLevel = CandlePriceLevel.GetAttributeForSymbol(symbol);
         }
 
         [OnDeserialized()]

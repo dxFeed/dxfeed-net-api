@@ -121,7 +121,7 @@ namespace com.dxfeed.api.candle
         /// <summary>
         /// Returns full string representation of this candle session attribute.
         /// It is contains attribute key and its value.
-        /// The full string representation of {@link #ANY} is "tho=any"
+        /// The full string representation of {@link #ANY} is "tho=false"
         /// </summary>
         /// <returns></returns>
         public string ToFullString()

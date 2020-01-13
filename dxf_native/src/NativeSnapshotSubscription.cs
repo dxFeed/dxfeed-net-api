@@ -229,7 +229,7 @@ namespace com.dxfeed.native
             {
                 C.CheckOk(C.Instance.dxf_create_candle_symbol_attributes(symbol.BaseSymbol,
                 symbol.ExchangeCode, symbol.PeriodValue, symbol.PeriodId, symbol.PriceId,
-                symbol.SessionId, symbol.AlignmentId, out candleAttributesPtr));
+                symbol.SessionId, symbol.AlignmentId, symbol.PriceLevel, out candleAttributesPtr));
             }
             catch (DxException)
             {

@@ -159,7 +159,6 @@ namespace dxf_client {
 
     class Program {
         private const int DEFAULT_RECORDS_PRINT_LIMIT = 7;
-
         private const int HOST_INDEX = 0;
         private const int EVENT_INDEX = 1;
         private const int SYMBOL_INDEX = 2;
@@ -253,7 +252,8 @@ namespace dxf_client {
                     "  market maker snapshot: dxf_client demo.dxfeed.com:7300 Order AAPL COMPOSITE_BID snapshot\n" +
                     "  market maker snapshot: dxf_client demo.dxfeed.com:7300 Order AAPL COMPOSITE_BID snapshot -l 3\n" +
                     "  candle snapshot: dxf_client demo.dxfeed.com:7300 Candle XBT/USD{=d} 2016-10-10 snapshot\n" + 
-                    "  candle snapshot: dxf_client demo.dxfeed.com:7300 Candle XBT/USD{=d} 2016-10-10 snapshot -l 10\n"
+                    "  candle snapshot: dxf_client demo.dxfeed.com:7300 Candle XBT/USD{=d} 2016-10-10 snapshot -l 10\n" +
+                    "  candle snapshot: dxf_client demo.dxfeed.com:7300 Candle XBT/USD{=d,pl=0.5} 2016-10-10 snapshot -l 10\n"
                 );
                 return;
             }
@@ -343,9 +343,9 @@ namespace dxf_client {
 
         private static void ConnectionStatusChangeHandler(IDxConnection connection, ConnectionStatus oldStatus, ConnectionStatus newStatus) {
             if (newStatus == ConnectionStatus.Connected) {
-                Console.WriteLine("Connected!");
+                Console.WriteLine("Connected to {0}", connection.ConnectedAddress);
             } else if (newStatus == ConnectionStatus.Authorized) {
-                Console.WriteLine("Authorized!");
+                Console.WriteLine("Authorized");
             }
         }
 

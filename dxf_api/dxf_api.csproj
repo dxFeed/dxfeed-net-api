@@ -82,6 +82,7 @@
     <Compile Include="src\candle\CandleExchange.cs" />
     <Compile Include="src\candle\CandlePeriod.cs" />
     <Compile Include="src\candle\CandlePrice.cs" />
+    <Compile Include="src\candle\CandlePriceLevel.cs" />
     <Compile Include="src\candle\CandleSession.cs" />
     <Compile Include="src\candle\CandleSymbol.cs" />
     <Compile Include="src\candle\CandleSymbolAttributes.cs" />

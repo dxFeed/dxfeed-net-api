@@ -504,8 +504,28 @@ namespace com.dxfeed.native.api
          *  price - price type attribute of this symbol
          *  session - session attribute of this symbol
          *  alignment - alignment attribute of this symbol
+         *  price_level - Price level ("pl" key) attribute of this symbol. The candle price level defines
+ *                               additional axis to split candles within particular price corridor in addition to
+ *                               candle period attribute with the default value NAN.
          *  candle_attributes - pointer to the configured candle attributes struct
          */
+        /// <summary>
+        /// API that allows user to create candle symbol attributes
+        /// </summary>
+        /// <param name="base_symbol">The base symbol</param>
+        /// <param name="exchange_code">Exchange attribute of this symbol (A-Z)</param>
+        /// <param name="period_value">Aggregation period value of this symbol</param>
+        /// <param name="period_type">Aggregation period type of this symbol</param>
+        /// <param name="price">Price ("price" key) type attribute of this symbol</param>
+        /// <param name="session">Session ("tho" key) attribute of this symbol</param>
+        /// <param name="alignment">Alignment ("a" key) attribute of this symbol</param>
+        /// <param name="price_level">Price level ("pl" key) attribute of this symbol. The candle price level defines 
+        /// additional axis to split candles within particular price corridor in addition to candle period attribute
+        /// with the default value NAN.</param>
+        /// <param name="candle_attributes">Pointer to the configured candle attributes struct</param>
+        /// <returns>DXF_SUCCESS (1) if candle attributes have been created successfully or DXF_FAILURE (0) on error.
+        /// dxf_get_last_error can be used to retrieve the error code and description in case of failure;
+        /// *candle_attributes* are returned via output parameter</returns>
         internal abstract int dxf_create_candle_symbol_attributes(string base_symbol,
                                                                  char exchange_code,
                                                                  double period_value,
@@ -513,6 +533,7 @@ namespace com.dxfeed.native.api
                                                                  int price,
                                                                  int session,
                                                                  int alignment,
+                                                                 double price_level,
                                                                  out IntPtr candle_attributes);
 
         /*

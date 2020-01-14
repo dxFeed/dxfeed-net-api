@@ -68,8 +68,7 @@ namespace com.dxfeed.api.candle
 
         private readonly double value;
         private readonly CandleType type;
-
-        private string stringBuf;
+        private readonly string stringBuf;
 
         /// <summary>
         /// Create a new candle period attribute

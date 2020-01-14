@@ -73,10 +73,10 @@ namespace dxf_candle_sample {
                 "                empty, default: ANY\n" +
                 "    alignment - The alignment defines how candle are aligned with respect to time\n" +
                 "                (use \"m\" for MIDNIGHT, \"s\" for SESSION or may be empty,\n" +
-                "                default: MIDNIGHT\n\n" +
+                "    priceLevel - The candle price level\n" +
+                "                 default: NaN\n\n" +
                 "All missed attributes values will be set to defaults\n" +
-                "example: dxf_candle_sample demo.dxfeed.com:7300 2016-06-18 XBT/USD exchange=a\n" +
-                "period=1 type=d price=last session=false alignment=m"
+                "example: dxf_candle_sample demo.dxfeed.com:7300 XBT/USD 2016-06-18 exchange=A period=1 type=d price=last session=false alignment=m priceLevel=0.5"
             );
         }
 
@@ -97,6 +97,7 @@ namespace dxf_candle_sample {
                 var price = CandleSymbolAttributes.Price.DEFAULT;
                 var session = CandleSymbolAttributes.Session.DEFAULT;
                 var alignment = CandleSymbolAttributes.Alignment.DEFAULT;
+                var priceLevel = CandleSymbolAttributes.PriceLevel.DEFAULT;
 
                 for (var i = SYMBOL_INDEX + 1; i < args.Length; i++) {
                     if (!dateTime.IsSet && TryParseDateTimeParam(args[i], dateTime))
@@ -132,10 +133,12 @@ namespace dxf_candle_sample {
                         session = CandleSymbolAttributes.Session.Parse(match.Groups[3].Value);
                     } else if (match.Groups[1].Value.Equals("alignment")) {
                         alignment = CandleSymbolAttributes.Alignment.Parse(match.Groups[3].Value);
+                    } else if (match.Groups[1].Value.Equals("priceLevel")) {
+                        priceLevel = CandleSymbolAttributes.PriceLevel.Parse(match.Groups[3].Value);
                     }
                 }
 
-                var symbol = CandleSymbol.ValueOf(baseSymbol, exchange, period, price, session, alignment);
+                var symbol = CandleSymbol.ValueOf(baseSymbol, exchange, period, price, session, alignment, priceLevel);
 
                 Console.WriteLine($"Connecting to {address} for Candle on {symbol} ...");
 

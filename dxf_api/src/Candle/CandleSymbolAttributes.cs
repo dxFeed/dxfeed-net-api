@@ -195,5 +195,37 @@ namespace com.dxfeed.api.candle
                 return CandleAlignment.Parse(s);
             }
         }
+
+        /// <summary>
+        /// Candle price level attribute of {@link CandleSymbol} defines how candles shall be aggregated in respect to
+        /// price interval. The negative or infinite values of price interval are treated as exceptional.
+        /// </summary>
+        public static class PriceLevel
+        {
+            /// <summary>
+            /// Default price level is NaN
+            /// </summary>
+            public static readonly ICandleSymbolAttribute DEFAULT = CandlePriceLevel.DEFAULT;
+            
+            /// <summary>
+            /// Creates a new candle price level attribute with certain value
+            /// </summary>
+            /// <param name="priceLevel">The price level value</param>
+            /// <returns>The new price level attribute</returns>
+            public static ICandleSymbolAttribute NewPriceLevel(double priceLevel)
+            {
+                return CandlePriceLevel.ValueOf(priceLevel);
+            }
+
+            /// <summary>
+            /// Parses string representation of candle price level into object.
+            /// </summary>
+            /// <param name="s">The string representation of candle price level attribute.</param>
+            /// <returns>The new candle price level attribute</returns>
+            public static ICandleSymbolAttribute Parse(string s)
+            {
+                return CandlePriceLevel.Parse(s);
+            }
+        }
     }
 }

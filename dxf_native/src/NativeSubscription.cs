@@ -281,7 +281,7 @@ namespace com.dxfeed.native
             IntPtr candleAttributesPtr = IntPtr.Zero;
             C.CheckOk(C.Instance.dxf_create_candle_symbol_attributes(symbol.BaseSymbol,
                 symbol.ExchangeCode, symbol.PeriodValue, symbol.PeriodId, symbol.PriceId,
-                symbol.SessionId, symbol.AlignmentId, out candleAttributesPtr));
+                symbol.SessionId, symbol.AlignmentId, symbol.PriceLevel, out candleAttributesPtr));
             try
             {
                 C.CheckOk(C.Instance.dxf_add_candle_symbol(subscriptionPtr, candleAttributesPtr));
@@ -399,7 +399,7 @@ namespace com.dxfeed.native
                 IntPtr candleAttributesPtr = IntPtr.Zero;
                 C.CheckOk(C.Instance.dxf_create_candle_symbol_attributes(symbol.BaseSymbol,
                     symbol.ExchangeCode, symbol.PeriodValue, symbol.PeriodId, symbol.PriceId,
-                    symbol.SessionId, symbol.AlignmentId, out candleAttributesPtr));
+                    symbol.SessionId, symbol.AlignmentId, symbol.PriceLevel, out candleAttributesPtr));
                 try
                 {
                     C.CheckOk(C.Instance.dxf_remove_candle_symbol(subscriptionPtr, candleAttributesPtr));

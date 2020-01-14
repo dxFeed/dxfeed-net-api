@@ -285,11 +285,11 @@ namespace com.dxfeed.native.api
 
         [DllImport(DXFEED_DLL, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl, EntryPoint = "dxf_create_candle_symbol_attributes")]
         private static extern int __dxf_create_candle_symbol_attributes(string base_symbol, char exchange_code, double period_value, int period_type,
-                                                                        int price, int session, int alignment, out IntPtr candle_attributes);
+                                                                        int price, int session, int alignment, double price_level, out IntPtr candle_attributes);
         internal override int dxf_create_candle_symbol_attributes(string base_symbol, char exchange_code, double period_value, int period_type,
-                                                                        int price, int session, int alignment, out IntPtr candle_attributes)
+                                                                        int price, int session, int alignment, double price_level, out IntPtr candle_attributes)
         {
-            return __dxf_create_candle_symbol_attributes(base_symbol, exchange_code, period_value, period_type, price, session, alignment, out candle_attributes);
+            return __dxf_create_candle_symbol_attributes(base_symbol, exchange_code, period_value, period_type, price, session, alignment, price_level, out candle_attributes);
         }
 
         [DllImport(DXFEED_DLL, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl, EntryPoint = "dxf_delete_candle_symbol_attributes")]

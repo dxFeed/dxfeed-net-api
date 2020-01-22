@@ -48,6 +48,7 @@ namespace com.dxfeed.native.events
             TradeThroughExempt = ts.trade_through_exempt;
             IsSpreadLeg = ts.is_spread_leg;
             RawFlags = ts.raw_flags;
+            Scope = ts.scope;
         }
 
         internal NativeTimeAndSale(IDxTimeAndSale ts) : base(ts.EventSymbol)
@@ -70,6 +71,7 @@ namespace com.dxfeed.native.events
             TradeThroughExempt = ts.TradeThroughExempt;
             IsSpreadLeg = ts.IsSpreadLeg;
             RawFlags = ts.RawFlags;
+            Scope = ts.Scope;
         }
 
         public override string ToString()
@@ -85,7 +87,8 @@ namespace com.dxfeed.native.events
                 "AggressorSide: {12}, "                                                 +
                 "Type: {13}, "                                                          +
                 "IsValidTick: {14}, IsETHTrade: {15}, IsSpreadLeg: {16}, TTE: '{17}', " +
-                "RawFlags: {18:x8}"                                                     +
+                "RawFlags: {18:x8}, "                                                   +
+                "Scope: {19}"                                                           +
                 "}}",
                 EventSymbol,
                 (int) EventFlags, Index,
@@ -97,8 +100,7 @@ namespace com.dxfeed.native.events
                 AgressorSide,
                 Type,
                 IsValidTick, IsETHTrade, IsSpreadLeg, TradeThroughExempt,
-                RawFlags
-
+                RawFlags, Scope
             );
         }
 
@@ -212,6 +214,11 @@ namespace com.dxfeed.native.events
         /// </summary>
         public bool IsSpreadLeg { get; private set; }
 
+        /// <summary>
+        /// Returns whether time&sale was a composite or regional (other constants are not used here).
+        /// </summary>
+        public Scope Scope { get; private set; }
+        
         #endregion
     }
 }

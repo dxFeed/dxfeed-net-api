@@ -40,6 +40,7 @@ namespace com.dxfeed.native.events
             ExchangeCode = summary.exchange_code;
             DayClosePriceType = summary.day_close_price_type;
             PrevDayClosePriceType = summary.prev_day_close_price_type;
+            Scope = summary.scope;
         }
 
         internal NativeSummary(IDxSummary summary) : base(summary.EventSymbol)
@@ -57,6 +58,7 @@ namespace com.dxfeed.native.events
             ExchangeCode = summary.ExchangeCode;
             DayClosePriceType = summary.DayClosePriceType;
             PrevDayClosePriceType = summary.PrevDayClosePriceType;
+            Scope = summary.Scope;
         }
 
         public override string ToString()
@@ -67,13 +69,14 @@ namespace com.dxfeed.native.events
                 "DayId: {1}, DayOpenPrice: {2}, DayHighPrice: {3}, DayLowPrice: {4}, DayClosePrice: {5}, DayClosePriceType: {6}, " +
                 "PrevDayId: {7}, PrevDayClosePrice: {8}, PrevDayValoume: {9}, PrevDayClosePriceType {10}, "                        +
                 "OpenInterest: {11}, ExchangeCode: {12}, "                                                                         +
-                "RawFlags: {13:x8}"                                                                                                +
+                "RawFlags: {13:x8}, "                                                                                              +
+                "Scope: {14}"                                                                                                      +
                 "}}",
                 EventSymbol,
                 DayId, DayOpenPrice, DayHighPrice, DayLowPrice, DayClosePrice, DayClosePriceType,
                 PrevDayId, PrevDayClosePrice, PrevDayVolume, PrevDayClosePriceType,
                 OpenInterest, ExchangeCode,
-                RawFlags
+                RawFlags, Scope
             );
         }
 
@@ -142,6 +145,11 @@ namespace com.dxfeed.native.events
         /// Returns implementation-specific raw bit flags value
         /// </summary>
         public int RawFlags { get; private set; }
+        
+        /// <summary>
+        /// Returns whether summary was a composite or regional (other constants are not used here).
+        /// </summary>
+        public Scope Scope { get; private set; }
 
         #endregion
     }

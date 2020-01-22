@@ -1,7 +1,7 @@
 #region License
 
 /*
-Copyright © 2010-2019 dxFeed Solutions DE GmbH
+Copyright Â© 2010-2019 dxFeed Solutions DE GmbH
 
 This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
 If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -100,5 +100,10 @@ namespace com.dxfeed.api.events
         ///   Returns whether this event represents a spread leg.
         /// </summary>
         bool IsSpreadLeg { get; }
+        
+        /// <summary>
+        /// Returns whether time&sale was a composite or regional (other constants are not used here).
+        /// </summary>
+        Scope Scope { get; }
     }
 }

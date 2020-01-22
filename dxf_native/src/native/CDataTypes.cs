@@ -70,6 +70,7 @@ namespace com.dxfeed.native.api
         internal char exchange_code;
         internal PriceType day_close_price_type;
         internal PriceType prev_day_close_price_type;
+        internal Scope scope;
     }
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
@@ -134,6 +135,7 @@ namespace com.dxfeed.native.api
         internal bool is_eth_trade;
         internal char trade_through_exempt;
         internal bool is_spread_leg;
+        internal Scope scope;
     }
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]

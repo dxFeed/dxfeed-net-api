@@ -274,8 +274,21 @@ namespace com.dxfeed.native.api
         //[DllImport(DXFEED_DLL, CallingConvention = CallingConvention.Cdecl)]
         internal abstract int dxf_create_subscription(IntPtr connection, EventType event_types, out IntPtr subscription);
 
+        /// <summary>
+        /// Creates a subscription with the specified parameters and the subscription flags.
+        /// </summary>
+        /// <param name="connection">A handle of a previously created connection which the subscription will be using</param>
+        /// <param name="event_types">A bitmask of the subscription event types. See: EventType</param>
+        /// <param name="subscr_flags">A bitmask of the subscription event flags. See: EventSubscriptionFlag</param>
+        /// <param name="subscription">A handle of the created subscription</param>
+        /// <returns>DX_OK (1) on successful subscription creation or DX_ERR (0) on error;
+        /// dxf_get_last_error can be used to retrieve the error code and description in case of failure; a handle to
+        /// newly created subscription is returned via ```subscription``` out parameter</returns>
+        internal abstract int dxf_create_subscription_with_flags(IntPtr connection, EventType event_types,
+            EventSubscriptionFlag subscr_flags, out IntPtr subscription);
+        
         /*
-         *  Creates a subscription with the specified parameters.
+         *  Creates a timed subscription with the specified parameters.
 
          *  connection - a handle of a previously created connection which the subscription will be using
          *  event_types - a bitmask of the subscription event types. See 'dx_event_id_t' and 'DX_EVENT_BIT_MASK'
@@ -285,6 +298,20 @@ namespace com.dxfeed.native.api
          */
         internal abstract int dxf_create_subscription_timed(IntPtr connection, EventType event_types,
                                                             Int64 time, out IntPtr subscription);
+        
+        /// <summary>
+        /// Creates a timed subscription with the specified parameters and the subscription flags.
+        /// </summary>
+        /// <param name="connection">A handle of a previously created connection which the subscription will be using</param>
+        /// <param name="event_types">A bitmask of the subscription event types. See: EventType</param>
+        /// <param name="time">UTC time in the past (unix time in milliseconds)</param>
+        /// <param name="subscr_flags">A bitmask of the subscription event flags. See: EventSubscriptionFlag</param>
+        /// <param name="subscription">A handle of the created subscription</param>
+        /// <returns>DX_OK (1) on successful subscription creation or DX_ERR (0) on error;
+        /// dxf_get_last_error can be used to retrieve the error code and description in case of failure; a handle to
+        /// newly created subscription is returned via ```subscription``` out parameter</returns>
+        internal abstract int dxf_create_subscription_timed_with_flags(IntPtr connection, EventType event_types,
+            Int64 time, EventSubscriptionFlag subscr_flags, out IntPtr subscription);
 
         /*
          *  Closes a subscription.
@@ -494,21 +521,6 @@ namespace com.dxfeed.native.api
          */
         internal abstract int dxf_add_order_source(IntPtr subscription, byte[] source);
 
-        /*
-         *  API that allows user to create candle symbol attributes
-         *
-         *  base_symbol - the symbols to add
-         *  exchange_code - exchange attribute of this symbol
-         *  period_value -  aggregation period value of this symbol
-         *  period_type - aggregation period type of this symbol
-         *  price - price type attribute of this symbol
-         *  session - session attribute of this symbol
-         *  alignment - alignment attribute of this symbol
-         *  price_level - Price level ("pl" key) attribute of this symbol. The candle price level defines
- *                               additional axis to split candles within particular price corridor in addition to
- *                               candle period attribute with the default value NAN.
-         *  candle_attributes - pointer to the configured candle attributes struct
-         */
         /// <summary>
         /// API that allows user to create candle symbol attributes
         /// </summary>
@@ -523,7 +535,7 @@ namespace com.dxfeed.native.api
         /// additional axis to split candles within particular price corridor in addition to candle period attribute
         /// with the default value NAN.</param>
         /// <param name="candle_attributes">Pointer to the configured candle attributes struct</param>
-        /// <returns>DXF_SUCCESS (1) if candle attributes have been created successfully or DXF_FAILURE (0) on error.
+        /// <returns>DX_OK (1) if candle attributes have been created successfully or DX_ERR (0) on error.
         /// dxf_get_last_error can be used to retrieve the error code and description in case of failure;
         /// *candle_attributes* are returned via output parameter</returns>
         internal abstract int dxf_create_candle_symbol_attributes(string base_symbol,

@@ -139,11 +139,25 @@ namespace com.dxfeed.native.api
             return __dxf_create_subscription(connection, event_types, out subscription);
         }
 
+        [DllImport(DXFEED_DLL, CallingConvention = CallingConvention.Cdecl, EntryPoint = "dxf_create_subscription_with_flags")]
+        private static extern int __dxf_create_subscription_with_flags(IntPtr connection, EventType event_types, EventSubscriptionFlag subscr_flags, out IntPtr subscription);
+        internal override int dxf_create_subscription_with_flags(IntPtr connection, EventType event_types, EventSubscriptionFlag subscr_flags, out IntPtr subscription)
+        {
+            return __dxf_create_subscription_with_flags(connection, event_types, subscr_flags, out subscription);
+        }
+        
         [DllImport(DXFEED_DLL, CallingConvention = CallingConvention.Cdecl, EntryPoint = "dxf_create_subscription_timed")]
         private static extern int __dxf_create_subscription_timed(IntPtr connection, EventType event_types, Int64 time, out IntPtr subscription);
         internal override int dxf_create_subscription_timed(IntPtr connection, EventType event_types, Int64 time, out IntPtr subscription)
         {
             return __dxf_create_subscription_timed(connection, event_types, time, out subscription);
+        }
+        
+        [DllImport(DXFEED_DLL, CallingConvention = CallingConvention.Cdecl, EntryPoint = "dxf_create_subscription_timed_with_flags")]
+        private static extern int __dxf_create_subscription_timed_with_flags(IntPtr connection, EventType event_types, Int64 time, EventSubscriptionFlag subscr_flags, out IntPtr subscription);
+        internal override int dxf_create_subscription_timed_with_flags(IntPtr connection, EventType event_types, Int64 time, EventSubscriptionFlag subscr_flags, out IntPtr subscription)
+        {
+            return __dxf_create_subscription_timed_with_flags(connection, event_types, time, subscr_flags, out subscription);
         }
 
         [DllImport(DXFEED_DLL, CallingConvention = CallingConvention.Cdecl, EntryPoint = "dxf_close_subscription")]

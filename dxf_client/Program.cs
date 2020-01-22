@@ -205,6 +205,29 @@ namespace dxf_client {
 
             return true;
         }
+        
+        private static bool TryParseEventSubscriptionFlagParam(string tag, string paramTagString, string paramString,
+            InputParam<EventSubscriptionFlag> param) {
+            if (!paramTagString.Equals(tag)) {
+                return false;
+            }
+
+            if (paramString.Equals("ticker", StringComparison.InvariantCultureIgnoreCase))
+            {
+                param.Value = EventSubscriptionFlag.ForceTicker;
+            } else if (paramString.Equals("stream", StringComparison.InvariantCultureIgnoreCase))
+            {
+                param.Value = EventSubscriptionFlag.ForceStream;
+            } else if (paramString.Equals("history", StringComparison.InvariantCultureIgnoreCase))
+            {
+                param.Value = EventSubscriptionFlag.ForceHistory;
+            } else
+            {
+                return false;
+            }
+
+            return true;
+        }
 
         private static bool TryParseTaggedStringParam(string tag, string paramTagString, string paramString,
             InputParam<string> param) {
@@ -218,9 +241,9 @@ namespace dxf_client {
         }
 
         static void Main(string[] args) {
-            if (args.Length < 3 || args.Length > 10) {
+            if (args.Length < 3 || args.Length > 12) {
                 Console.WriteLine(
-                    "Usage: dxf_client <host:port> <event> <symbol> [<date>] [<source>] [snapshot] [-l <records_print_limit>] [-T <token>]\n" +
+                    "Usage: dxf_client <host:port> <event> <symbol> [<date>] [<source>] [snapshot] [-l <records_print_limit>] [-T <token>] [-s <subscr_data>]\n" +
                     "where\n" +
                     "    host:port - The address of dxfeed server (demo.dxfeed.com:7300)\n" +
                     "    event     - Any of the {Profile,Order,Quote,Trade,TimeAndSale,Summary,\n" +
@@ -241,8 +264,10 @@ namespace dxf_client {
                     "                otherwise leave empty\n" +
                     $"    -l <records_print_limit> - The number of displayed records (0 - unlimited, default: {DEFAULT_RECORDS_PRINT_LIMIT})\n" +
                     "    -T <token>               - The authorization token\n\n" +
+                    "    -s <subscr_data>         - The subscription data: ticker|TICKER, stream|STREAM, history|HISTORY\n\n" +
                     "examples:\n" +
                     "  events: dxf_client demo.dxfeed.com:7300 Quote,Trade MSFT.TEST,IBM.TEST\n" +
+                    "  events: dxf_client demo.dxfeed.com:7300 Quote,Trade MSFT.TEST,IBM.TEST -s stream\n" +
                     "  order: dxf_client demo.dxfeed.com:7300 Order MSFT.TEST,IBM.TEST NTV,IST\n" +
                     "  candle: dxf_client demo.dxfeed.com:7300 Candle XBT/USD{=d} 2016-10-10\n" +
                     "  underlying: dxf_client demo.dxfeed.com:7300 Underlyingn AAPL\n" +
@@ -272,6 +297,7 @@ namespace dxf_client {
             var dateTime = new InputParam<DateTime?>(null);
             var recordsPrintLimit = new InputParam<int>(DEFAULT_RECORDS_PRINT_LIMIT);
             var token = new InputParam<string>(null);
+            var subscriptionData = new InputParam<EventSubscriptionFlag>(EventSubscriptionFlag.Default);
 
             for (var i = SYMBOL_INDEX + 1; i < args.Length; i++) {
                 if (!dateTime.IsSet && TryParseDateTimeParam(args[i], dateTime))
@@ -292,6 +318,13 @@ namespace dxf_client {
                     continue;
                 }
 
+                if (!subscriptionData.IsSet && i < args.Length - 1 &&
+                    TryParseEventSubscriptionFlagParam("-s", args[i], args[i + 1], subscriptionData)) {
+                    i++;
+                    
+                    continue;
+                }
+
                 if (!sources.IsSet)
                     TryParseSourcesParam(args[i], sources);
             }
@@ -305,18 +338,25 @@ namespace dxf_client {
             NativeTools.InitializeLogging("dxf_client.log", true, true);
 
             var listener = new EventPrinter();
-            using (var con = (token.IsSet)
+            using (var con = token.IsSet
                 ? new NativeConnection(address, token.Value, DisconnectHandler, ConnectionStatusChangeHandler)
                 : new NativeConnection(address, DisconnectHandler, ConnectionStatusChangeHandler)) {
                 IDxSubscription s = null;
                 try {
-                    if (isSnapshot.Value) {
+                    if (isSnapshot.Value)
+                    {
                         s = con.CreateSnapshotSubscription(events, dateTime.Value,
                             new SnapshotPrinter(recordsPrintLimit.Value));
-                    } else if (dateTime.IsSet) {
-                        s = con.CreateSubscription(events, dateTime.Value, listener);
-                    } else {
-                        s = con.CreateSubscription(events, listener);
+                    } else if (dateTime.IsSet)
+                    {
+                        s = subscriptionData.IsSet
+                            ? con.CreateSubscription(events, dateTime.Value, subscriptionData.Value, listener)
+                            : con.CreateSubscription(events, dateTime.Value, listener);
+                    } else
+                    {
+                        s = subscriptionData.IsSet
+                            ? con.CreateSubscription(events, subscriptionData.Value, listener)
+                            : con.CreateSubscription(events, listener);
                     }
 
                     if (events.HasFlag(EventType.Order) && sources.Value.Length > 0)

@@ -90,6 +90,7 @@
     <Compile Include="src\candle\ICandleSymbolAttribute.cs" />
     <Compile Include="src\connection\ConnectionStatus.cs" />
     <Compile Include="src\data\EventFlag.cs" />
+    <Compile Include="src\data\EventSubscriptionFlag.cs" />
     <Compile Include="src\data\EventType.cs" />
     <Compile Include="src\events\IDxTradeETH.cs" />
     <Compile Include="src\events\IndexedEventSource.cs" />

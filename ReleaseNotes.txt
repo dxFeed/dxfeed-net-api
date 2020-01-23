@@ -1,3 +1,38 @@
+Version 5.9.0
+* [Samples] Added the ability to connect with token in a dxf_events_sample
+* Added the ability to override the type of data the application subscribes to
+  - Added EventSubscriptionFlag enum with possible values:
+    - `Default` that used for default dubscription behaviour
+    - `ForceTicker` that used to force subscription to ticker data
+    - `ForceStream` that used to force subscription to stream data
+    - `ForceHistory` that used to force subscription to history data
+  - Added the new `NativeSubscription` constructors and `NativeConnection.CreateSubscription` methods with additional parameter `eventSubscriptionFlags`.
+  - [Samples] Added an additional command line parameter "[-s <subscr_data>]" to `dxf_client` (to describe how to use the new function with flags). 
+    This parameter accepts the next values:
+    - 'TICKER' or 'ticker' to force subscription to ticker data
+    - 'STREAM' or 'stream' to force subscription to stream data
+    - 'HISTORY' or 'history' to force subscription to history data
+* Added the `Tick` field to non ETH Trades.
+  The `Tick` field Returns Trend indicator – in which direction price is moving. The values are: Up (Tick = 1), Down (Tick = 2), and Undefined (Tick = 0).
+  The `Tick` field should be used if `IDxTradeBase.TickDirection` is `Undefined`
+* Fixed the `Direction` enum.
+  Now `Down` = 1 and `ZeroDown` = 2
+* Added the candle price level attribute support. The candle price level (pl) defines additional axis to split candles within particular price corridor in addition 
+  to candle period attribute with the default value Double.NaN.
+  So a one-minute candles of "AAPL" with price level 0.1 shall be specified with "AAPL{=m,pl=0.1}".
+  - Added the `CandlePriceLevel` attribute class
+  - Added the `PriceLevel` field to `CandleSymbol` class
+  - Added additional utility methods to `CandleSymbolAttributes`:
+    - The static constructor method `PriceLevel.NewPriceLevel` to construct PriceLevel from double precision floating point value
+    - The static constructor method `PriceLevel.NewPriceLevel` to construct PriceLevel by string parsing
+
+  Example: `dxf_client demo.dxfeed.com:7300 Candle AAPL{=m,pl=0.1} 2020-01-01`
+* Added ability to retrieve regional TnS. Now API backend (C-API) subsribes to both composite and regional TimeAndSale events. 
+  Sometimes server may sent equal composite and regional TnS which differ by suffix only (for example: TimeAndSale and TimeAndSale&K). 
+  So the `Scope` field was added with possible values: `Composite` and `Regional` to `IDxTimeAndSale`, `NativeTimeAndSale`. Same field was added for 
+  `IDxSummary` and `NativeSummary` events. 
+  Please, use the `Scope` field to filter out duplicates.
+
 Version 5.8.0
 * Improved the documentation (converted to doxygen format)
 * Added a sample that implements subscribing to symbols which downloaded from IPF. See the dxf_connect_ipf_sample project

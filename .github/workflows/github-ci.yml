@@ -68,15 +68,6 @@ jobs:
           echo "WB_ARTIFACT       : ${{ env.WB_ARTIFACT }}"
           echo "C_API_REPO        : ${{ env.C_API_REPO }}"
 
-#      - name: Check directory
-#        run: |
-#          echo "-------------------------------------------------------------------------------------------------------"
-#          pwd
-#          echo "-------------------------------------------------------------------------------------------------------"
-#          ls
-#          echo "-------------------------------------------------------------------------------------------------------"
-#          ls -recurse
-
       - name: Get dxfeed-c-api source code
         run: |
           git clone ${{ env.C_API_REPO }}
@@ -108,8 +99,6 @@ jobs:
         run: |
           cp dxf_master\bin\${{ env.WB_ARTIFACT }}.zip artifact\${{ env.ARTIFACT }}.zip
           ls artifact\
-#          D:\a\dxfeed-net-api\dxfeed-net-api\dxf_master\bin
-#          D:\a\dxfeed-net-api\dxfeed-net-api
 
       - name: Upload build artifact (TLS)
         uses: actions/upload-artifact@v1
@@ -149,12 +138,24 @@ jobs:
           name: ${{ env.WINDOWS_ARTIFACT }}
           path: downloads/
 
+      - name: Get release notes
+        uses: ./.github/actions/notes
+        id: notes
+        with:
+          file: ReleaseNotes.txt
+
+      - name: Print release notes
+        run: |
+          echo "=== Release notes ============="
+          echo '${{ steps.notes.outputs.data }}'
+
       - name: Publish release
         uses: ./.github/actions/publish
         with:
           args: downloads/
           draft_regex: '[0-9]+.[0-9]+.[0-9]+-[a-zA-Z]+'
           prerelease_regex: '[a-zA-Z]+-[0-9]+.[0-9]+.[0-9]+'
+          notes: '${{ steps.notes.outputs.data }}'
         env:
           RELEASE_PREFIX: ${{ env.RELEASE_PREFIX }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

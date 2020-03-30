@@ -1,3 +1,5 @@
+* [DXFC-174] Added the ability to subscribe to regional quotes. Now Quote subscription requests both composite and regional events. Please, use the `Scope` field to filter events.
+
 Version 5.9.0
 * [Samples] Added the ability to connect with token in a dxf_events_sample
 * Added the ability to override the type of data the application subscribes to

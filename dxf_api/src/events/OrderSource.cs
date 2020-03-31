@@ -21,12 +21,12 @@ namespace com.dxfeed.api.events
     ///     There are the following kinds of order sources:
     /// </para>
     /// <para>
-    ///     Synthetic sources COMPOSITE_BID, COMPOSITE_ASK, REGIONAL_BID, and REGIONAL_ASK are
+    ///     Synthetic sources <see cref="COMPOSITE_BID"/>, <see cref="COMPOSITE_ASK"/>, <see cref="REGIONAL_BID"/>, and <see cref="REGIONAL_ASK"/> are
     ///     provided for convenience of a consolidated order book and are automatically generated
-    ///     based on the corresponding Quote events.
+    ///     based on the corresponding <see cref="IDxQuote"/> events.
     /// </para>
     /// <para>
-    ///     Aggregate sources AGGREGATE_BID and AGGREGATE_ASK provide futures depth (aggregated by
+    ///     Aggregate sources <see cref="AGGREGATE_BID"/> and <see cref="AGGREGATE_ASK"/> provide futures depth (aggregated by
     ///     price level) and NASDAQ Level II (top of book for each market maker).
     /// </para>
     /// </summary>
@@ -98,6 +98,11 @@ namespace com.dxfeed.api.events
         public static readonly OrderSource ESPD = new OrderSource("ESPD");
 
         /// <summary>
+        /// NASDAQ Fixed Income.
+        /// </summary>
+        public static readonly OrderSource XNFI = new OrderSource("XNFI");
+
+        /// <summary>
         /// Intercontinental Exchange.
         /// </summary>
         public static readonly OrderSource ICE = new OrderSource("ICE");
@@ -138,6 +143,11 @@ namespace com.dxfeed.api.events
         public static readonly OrderSource CHIX = new OrderSource("CHIX");
 
         /// <summary>
+        /// Bats Europe DXE Exchange.
+        /// </summary>
+        public static readonly OrderSource CEUX = new OrderSource("CEUX");
+
+        /// <summary>
         /// Bats Europe TRF.
         /// </summary>
         public static readonly OrderSource BXTR = new OrderSource("BXTR");
@@ -148,9 +158,29 @@ namespace com.dxfeed.api.events
         public static readonly OrderSource IST = new OrderSource("IST");
 
         /// <summary>
+        /// Borsa Istanbul Exchange. Record for particular top 20 order book.
+        /// </summary>
+        public static readonly OrderSource BI20 = new OrderSource("BI20");
+
+        /// <summary>
+        /// ABE (abe.io) exchange.
+        /// </summary>
+        public static readonly OrderSource ABE = new OrderSource("ABE");
+
+        /// <summary>
+        /// FAIR (FairX) exchange.
+        /// </summary>
+        public static readonly OrderSource FAIR = new OrderSource("FAIR");
+        
+        /// <summary>
         /// CME Globex.
         /// </summary>
         public static readonly OrderSource GLBX = new OrderSource("GLBX");
+
+        /// <summary>
+        /// Eris Exchange group of companies.
+        /// </summary>
+        public static readonly OrderSource ERIS = new OrderSource("ERIS");
 
         /// <summary>
         /// Eurex Exchange.
@@ -161,6 +191,11 @@ namespace com.dxfeed.api.events
         /// CBOE Futures Exchange.
         /// </summary>
         public static readonly OrderSource CFE = new OrderSource("CFE");
+
+        /// <summary>
+        /// Small Exchange.
+        /// </summary>
+        public static readonly OrderSource SMFE = new OrderSource("SMFE");
 
         /// <summary>
         ///     Create a new order source
@@ -259,7 +294,7 @@ namespace com.dxfeed.api.events
 
         #region  private helper methods
 
-        private static void checkChar(char c) {
+        private static void CheckChar(char c) {
             if (c >= 'A' && c <= 'Z' || c >= 'a' && c <= 'z' || c >= '0' && c <= '9')
                 return;
             throw new ArgumentException("Source name must contain only alphanumeric characters");
@@ -274,7 +309,7 @@ namespace com.dxfeed.api.events
             for (int i = 0; i < n; i++)
             {
                 char c = name[i];
-                checkChar(c);
+                CheckChar(c);
                 sourceId = (sourceId << 8) | c;
             }
             return sourceId;
@@ -290,7 +325,7 @@ namespace com.dxfeed.api.events
                 if (id >> i == 0) // skip highest contiguous zeros
                     continue;
                 char c = (char)((id >> i) & 0xff);
-                checkChar(c);
+                CheckChar(c);
                 sb.Append(c);
             }
             return sb.ToString();

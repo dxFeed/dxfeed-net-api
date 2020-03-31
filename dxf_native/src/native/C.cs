@@ -564,7 +564,7 @@ namespace com.dxfeed.native.api
          *
          *  For order events (event_id is 'dx_eid_order')
          *  If source is NULL string subscription on Order event will be performed. You can specify order
-         *  source for Order event by passing suffix: "BYX", "BZX", "DEA", "DEX", "ISE", "IST", "NTV".
+         *  source for Order event by passing suffix: "BYX", "BZX", "DEA", "DEX", "ISE", "IST", "NTV", ...
          *  If source is equal to "COMPOSITE_BID" or "COMPOSITE_ASK" subscription on MarketMaker event will
          *  be performed. For other events source parameter does not matter.
          *
@@ -572,8 +572,9 @@ namespace com.dxfeed.native.api
          *  event_id - single event id. Next events is supported: dxf_eid_order, dxf_eid_candle,
                        dx_eid_spread_order, dx_eid_time_and_sale.
          *  symbol - the symbol to add.
-         *  source - order source for Order, which can be one of following: "BYX", "BZX", "DEA", "DEX",
-         *           "ISE", "IST", "NTV". For MarketMaker subscription use "COMPOSITE_BID" or
+         *  source - order source for Order, which can be one of following: NTV,NFX,ESPD,XNFI,ICE,ISE,DEA,
+         *           DEX,BYX,BZX,BATE,CHIX,CEUX,BXTR,IST,BI20,ABE,FAIR,GLBX,ERIS,XEUR,CFE,SMFE
+         *           For MarketMaker subscription use "COMPOSITE_BID" or
          *           "COMPOSITE_ASK" keyword.
          *  time - time in the past (unix time in milliseconds).
          *  OUT snapshot - a handle of the created snapshot
@@ -586,7 +587,7 @@ namespace com.dxfeed.native.api
          *  Creates Order snapshot with the specified parameters.
          *
          *  If source is NULL string subscription on Order event will be performed. You can specify order
-         *  source for Order event by passing suffix: "BYX", "BZX", "DEA", "DEX", "ISE", "IST", "NTV".
+         *  source for Order event by passing suffix: "BYX", "BZX", "DEA", "DEX", "ISE", "IST", "NTV", ...
          *  If source is equal to "COMPOSITE_BID" or "COMPOSITE_ASK" subscription on MarketMaker event will
          *  be performed.
          *

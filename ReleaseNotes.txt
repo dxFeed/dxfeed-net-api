@@ -1,4 +1,5 @@
 * [DXFC-174] Added the ability to subscribe to regional quotes. Now Quote subscription requests both composite and regional events. Please, use the `Scope` field to filter events.
+* [DXFC-168] The list of supported order sources was updated: NTV,NFX,ESPD,XNFI,ICE,ISE,DEA,DEX,BYX,BZX,BATE,CHIX,CEUX,BXTR,IST,BI20,ABE,FAIR,GLBX,ERIS,XEUR,CFE,SMFE
 
 Version 5.9.0
 * [Samples] Added the ability to connect with token in a dxf_events_sample
@@ -15,7 +16,7 @@ Version 5.9.0
     - 'STREAM' or 'stream' to force subscription to stream data
     - 'HISTORY' or 'history' to force subscription to history data
 * Added the `Tick` field to non ETH Trades.
-  The `Tick` field Returns Trend indicator – in which direction price is moving. The values are: Up (Tick = 1), Down (Tick = 2), and Undefined (Tick = 0).
+  The `Tick` field Returns Trend indicator â€“ in which direction price is moving. The values are: Up (Tick = 1), Down (Tick = 2), and Undefined (Tick = 0).
   The `Tick` field should be used if `IDxTradeBase.TickDirection` is `Undefined`
 * Fixed the `Direction` enum.
   Now `Down` = 1 and `ZeroDown` = 2

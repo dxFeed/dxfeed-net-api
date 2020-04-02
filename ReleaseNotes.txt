@@ -1,3 +1,4 @@
+Version 5.10.0
 * [DXFC-173] [Samples] Added additional command line parameters to the `dxf_simple_order_book_sample` sample:
   - host:port - The address of dxfeed server (exmaple: demo.dxfeed.com:7300)
   - symbol    - The instrument symbol: IBM, MSFT, AAPL, ...

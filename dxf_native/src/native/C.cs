@@ -587,8 +587,9 @@ namespace com.dxfeed.native.api
          *  event_id - single event id. Next events is supported: dxf_eid_order, dxf_eid_candle,
                        dx_eid_spread_order, dx_eid_time_and_sale.
          *  symbol - the symbol to add.
-         *  source - order source for Order, which can be one of following: NTV,NFX,ESPD,XNFI,ICE,ISE,DEA,
-         *           DEX,BYX,BZX,BATE,CHIX,CEUX,BXTR,IST,BI20,ABE,FAIR,GLBX,ERIS,XEUR,CFE,SMFE
+         *  source - order source for Order, which can be one of following: "NTV", "ntv", "NFX", "ESPD", "XNFI", "ICE",
+         *           "ISE", "DEA", "DEX", "BYX", "BZX", "BATE", "CHIX", "CEUX", "BXTR", "IST", "BI20", "ABE", "FAIR",
+         *           "GLBX", "glbx", "ERIS", "XEUR", "xeur", "CFE", "SMFE"
          *           For MarketMaker subscription use "COMPOSITE_BID" or
          *           "COMPOSITE_ASK" keyword.
          *  time - time in the past (unix time in milliseconds).

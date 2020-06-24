@@ -185,7 +185,7 @@ namespace dxf_simple_order_book_sample
                 "    date      - The date of time series event in the format YYYY-MM-DD\n" +
                 "    source    - Source for order events (default: NTV):\n" +
                 "                NTV,NFX,ESPD,XNFI,ICE,ISE,DEA,DEX,BYX,BZX,BATE,CHIX,CEUX,BXTR,\n" +
-                "                IST,BI20,ABE,FAIR,GLBX,ERIS,XEUR,CFE,SMFE\n" +
+                "                IST,BI20,ABE,FAIR,GLBX,ERIS,XEUR,CFE,SMFE...\n" +
                 "    -l <records_print_limit> - The number of displayed bids or asks in a book\n" +
                 $"                               (0 - unlimited, default: {DefaultRecordsPrintLimit})\n" +
                 "    -T <token>               - The authorization token\n" +

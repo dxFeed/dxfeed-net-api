@@ -88,6 +88,11 @@ namespace com.dxfeed.api.events
         public static readonly OrderSource NTV = new OrderSource("NTV");
 
         /// <summary>
+        /// NASDAQ Total View. Record for price level book.
+        /// </summary>
+        public static readonly OrderSource ntv = new OrderSource("ntv");
+
+        /// <summary>
         /// NASDAQ Futures Exchange.
         /// </summary>
         public static readonly OrderSource NFX = new OrderSource("NFX");
@@ -178,6 +183,11 @@ namespace com.dxfeed.api.events
         public static readonly OrderSource GLBX = new OrderSource("GLBX");
 
         /// <summary>
+        /// CME Globex. Record for price level book.
+        /// </summary>
+        public static readonly OrderSource glbx = new OrderSource("glbx");
+
+        /// <summary>
         /// Eris Exchange group of companies.
         /// </summary>
         public static readonly OrderSource ERIS = new OrderSource("ERIS");
@@ -186,6 +196,11 @@ namespace com.dxfeed.api.events
         /// Eurex Exchange.
         /// </summary>
         public static readonly OrderSource XEUR = new OrderSource("XEUR");
+
+        /// <summary>
+        /// Eurex Exchange. Record for price level book.
+        /// </summary>
+        public static readonly OrderSource xeur = new OrderSource("xeur");
 
         /// <summary>
         /// CBOE Futures Exchange.

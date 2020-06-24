@@ -1,7 +1,7 @@
 ﻿#region License
 
 /*
-Copyright © 2010-2019 dxFeed Solutions DE GmbH
+Copyright (c) 2010-2020 dxFeed Solutions DE GmbH
 
 This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
 If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -71,9 +71,9 @@ namespace dxf_snapshot_sample {
         }
 
         private static void Main(string[] args) {
-            if (args.Length < 3 || args.Length > 8) {
+            if (args.Length < 3 || args.Length > 9) {
                 Console.WriteLine(
-                    "Usage: dxf_snapshot_sample <host:port> <event> <symbol> [<source>] [-l <records_print_limit>] [-T <token>]\n" +
+                    "Usage: dxf_snapshot_sample <host:port> <event> <symbol> [<source>] [-l <records_print_limit>] [-T <token>] [-p]\n" +
                     "where\n" +
                     "    host:port - address of dxfeed server (demo.dxfeed.com:7300)\n" +
                     "    event     - snapshot event Order, Candle, TimeAndSale, SpreadOrder,\n" +
@@ -91,7 +91,8 @@ namespace dxf_snapshot_sample {
                     "                If source is not specified MarketMaker snapshot will be\n" +
                     "                subscribed by default.\n\n" +
                     $"    -l <records_print_limit> - The number of displayed records (0 - unlimited, default: {DEFAULT_RECORDS_PRINT_LIMIT})\n" +
-                    "    -T <token>               - The authorization token\n\n" +
+                    "    -T <token>               - The authorization token\n" +
+                    "    -p                       - Enables the data transfer logging\n\n" +
                     "order example: dxf_snapshot_sample demo.dxfeed.com:7300 Order AAPL NTV\n" +
                     "market maker example:\n" +
                     "    dxf_snapshot_sample demo.dxfeed.com:7300 Order AAPL COMPOSITE_BID\n" +
@@ -117,6 +118,7 @@ namespace dxf_snapshot_sample {
             var source = new InputParam<string>(COMPOSITE_BID);
             var recordsPrintLimit = new InputParam<int>(DEFAULT_RECORDS_PRINT_LIMIT);
             var token = new InputParam<string>(null);
+            var logDataTransferFlag = false;
 
             for (var i = SYMBOL_INDEX + 1; i < args.Length; i++) {
                 if (!recordsPrintLimit.IsSet && i < args.Length - 1 &&
@@ -128,6 +130,13 @@ namespace dxf_snapshot_sample {
 
                 if (!token.IsSet && i < args.Length - 1 &&
                     TryParseTaggedStringParam("-T", args[i], args[i + 1], token)) {
+                    i++;
+
+                    continue;
+                }
+
+                if (logDataTransferFlag == false && args[i].Equals("-p")) {
+                    logDataTransferFlag = true;
                     i++;
 
                     continue;
@@ -147,7 +156,7 @@ namespace dxf_snapshot_sample {
             }
 
             try {
-                NativeTools.InitializeLogging("dxf_snapshot_sample.log", true, true);
+                NativeTools.InitializeLogging("dxf_snapshot_sample.log", true, true, logDataTransferFlag);
                 using (var con = token.IsSet
                     ? new NativeConnection(address, token.Value, DisconnectHandler)
                     : new NativeConnection(address, DisconnectHandler)) {

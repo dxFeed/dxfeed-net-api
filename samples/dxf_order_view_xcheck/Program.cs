@@ -1,7 +1,7 @@
 ﻿#region License
 
 /*
-Copyright © 2010-2019 dxFeed Solutions DE GmbH
+Copyright (c) 2010-2020 dxFeed Solutions DE GmbH
 
 This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
 If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -32,12 +32,13 @@ namespace dxf_order_view_xcheck {
         }
 
         private static void Main(string[] args) {
-            if (args.Length < 1 || args.Length > 3) {
+            if (args.Length < 1 || args.Length > 4) {
                 Console.WriteLine(
-                    "Usage: dxf_order_view_xcheck <host:port> [-T <token>]\n" +
+                    "Usage: dxf_order_view_xcheck <host:port> [-T <token>] [-p]\n" +
                     "where\n" +
                     "    host:port  - The address of dxfeed server (demo.dxfeed.com:7300)\n" +
-                    "    -T <token> - The authorization token\n\n" +
+                    "    -T <token> - The authorization token\n" +
+                    "    -p         - Enables the data transfer logging\n\n" +
                     "example: dxf_order_view_xcheck demo.dxfeed.com:7300\n"
                 );
 
@@ -46,16 +47,26 @@ namespace dxf_order_view_xcheck {
 
             var address = args[HOST_INDEX];
             var token = new InputParam<string>(null);
+            var logDataTransferFlag = false;
 
-            for (var i = HOST_INDEX + 1; i < args.Length; i++)
+            for (var i = HOST_INDEX + 1; i < args.Length; i++) {
                 if (!token.IsSet && i < args.Length - 1 &&
                     TryParseTaggedStringParam("-T", args[i], args[i + 1], token))
+                {
                     i++;
+                    continue;
+                }
+
+                if (logDataTransferFlag == false && args[i].Equals("-p")) {
+                    logDataTransferFlag = true;
+                    i++;
+                }
+            }
 
             Console.WriteLine("Connecting to {0} for Order View", address);
 
             try {
-                NativeTools.InitializeLogging("dxf_order_view_xcheck.log", true, true);
+                NativeTools.InitializeLogging("dxf_order_view_xcheck.log", true, true, logDataTransferFlag);
                 using (var con = token.IsSet
                     ? new NativeConnection(address, token.Value, DisconnectHandler)
                     : new NativeConnection(address, DisconnectHandler)) {

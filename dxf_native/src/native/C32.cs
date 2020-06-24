@@ -1,7 +1,7 @@
 ﻿#region License
 
 /*
-Copyright © 2010-2019 dxFeed Solutions DE GmbH
+Copyright (c) 2010-2020 dxFeed Solutions DE GmbH
 
 This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
 If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -29,6 +29,13 @@ namespace com.dxfeed.native.api
         internal override int dxf_initialize_logger(string file_name, bool rewrite_file, bool show_time_zone_info, bool verbose)
         {
             return __dxf_initialize_logger(file_name, rewrite_file, show_time_zone_info, verbose);
+        }
+
+        [DllImport(DXFEED_DLL, CallingConvention = CallingConvention.Cdecl, EntryPoint = "dxf_initialize_logger_v2")]
+        private static extern int __dxf_initialize_logger_v2(string file_name, bool rewrite_file, bool show_time_zone_info, bool verbose, bool log_data_transfer);
+        internal override int dxf_initialize_logger_v2(string file_name, bool rewrite_file, bool show_time_zone_info, bool verbose, bool log_data_transfer)
+        {
+            return __dxf_initialize_logger_v2(file_name, rewrite_file, show_time_zone_info, verbose, log_data_transfer);
         }
 
         [DllImport(DXFEED_DLL, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl, EntryPoint = "dxf_create_connection")]

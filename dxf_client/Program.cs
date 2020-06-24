@@ -1,7 +1,7 @@
 ﻿#region License
 
 /*
-Copyright © 2010-2019 dxFeed Solutions DE GmbH
+Copyright (c) 2010-2020 dxFeed Solutions DE GmbH
 
 This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
 If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -241,9 +241,9 @@ namespace dxf_client {
         }
 
         static void Main(string[] args) {
-            if (args.Length < 3 || args.Length > 12) {
+            if (args.Length < 3 || args.Length > 13) {
                 Console.WriteLine(
-                    "Usage: dxf_client <host:port> <event> <symbol> [<date>] [<source>] [snapshot] [-l <records_print_limit>] [-T <token>] [-s <subscr_data>]\n" +
+                    "Usage: dxf_client <host:port> <event> <symbol> [<date>] [<source>] [snapshot] [-l <records_print_limit>] [-T <token>] [-s <subscr_data>] [-p]\n" +
                     "where\n" +
                     "    host:port - The address of dxfeed server (demo.dxfeed.com:7300)\n" +
                     "    event     - Any of the {Profile,Order,Quote,Trade,TimeAndSale,Summary,\n" +
@@ -266,7 +266,8 @@ namespace dxf_client {
                     "                otherwise leave empty\n" +
                     $"    -l <records_print_limit> - The number of displayed records (0 - unlimited, default: {DEFAULT_RECORDS_PRINT_LIMIT})\n" +
                     "    -T <token>               - The authorization token\n\n" +
-                    "    -s <subscr_data>         - The subscription data: ticker|TICKER, stream|STREAM, history|HISTORY\n\n" +
+                    "    -s <subscr_data>         - The subscription data: ticker|TICKER, stream|STREAM, history|HISTORY\n" +
+                    "    -p                       - Enables the data transfer logging\n\n" +
                     "examples:\n" +
                     "  events: dxf_client demo.dxfeed.com:7300 Quote,Trade MSFT.TEST,IBM.TEST\n" +
                     "  events: dxf_client demo.dxfeed.com:7300 Quote,Trade MSFT.TEST,IBM.TEST -s stream\n" +
@@ -300,6 +301,7 @@ namespace dxf_client {
             var recordsPrintLimit = new InputParam<int>(DEFAULT_RECORDS_PRINT_LIMIT);
             var token = new InputParam<string>(null);
             var subscriptionData = new InputParam<EventSubscriptionFlag>(EventSubscriptionFlag.Default);
+            var logDataTransferFlag = false;
 
             for (var i = SYMBOL_INDEX + 1; i < args.Length; i++) {
                 if (!dateTime.IsSet && TryParseDateTimeParam(args[i], dateTime))
@@ -327,6 +329,13 @@ namespace dxf_client {
                     continue;
                 }
 
+                if (logDataTransferFlag == false && args[i].Equals("-p")) {
+                    logDataTransferFlag = true;
+                    i++;
+
+                    continue;
+                }
+
                 if (!sources.IsSet)
                     TryParseSourcesParam(args[i], sources);
             }
@@ -337,7 +346,7 @@ namespace dxf_client {
             Console.WriteLine(
                 $"Connecting to {address} for [{events}{snapshotString}]{timeSeriesString} on [{symbols}] ...");
 
-            NativeTools.InitializeLogging("dxf_client.log", true, true);
+            NativeTools.InitializeLogging("dxf_client.log", true, true, logDataTransferFlag);
 
             var listener = new EventPrinter();
             using (var con = token.IsSet

@@ -178,7 +178,7 @@ namespace dxf_simple_order_book_sample
         private static void ShowUsage()
         {
             Console.WriteLine(
-                "Usage: dxf_simple_order_book_sample <host:port> <symbol> [<date>] <source> [-l <records_print_limit>] [-T <token>]\n" +
+                "Usage: dxf_simple_order_book_sample <host:port> <symbol> [<date>] <source> [-l <records_print_limit>] [-T <token>] [-p]\n" +
                 "where\n" +
                 "    host:port - The address of dxfeed server (demo.dxfeed.com:7300)\n" +
                 "    symbol    - IBM, MSFT, AAPL, ...\n" +
@@ -188,7 +188,8 @@ namespace dxf_simple_order_book_sample
                 "                IST,BI20,ABE,FAIR,GLBX,ERIS,XEUR,CFE,SMFE\n" +
                 "    -l <records_print_limit> - The number of displayed bids or asks in a book\n" +
                 $"                               (0 - unlimited, default: {DefaultRecordsPrintLimit})\n" +
-                "    -T <token>               - The authorization token\n\n" +
+                "    -T <token>               - The authorization token\n" +
+                "    -p                       - Enables the data transfer logging\n\n" +
                 "examples:\n" +
                 "  dxf_simple_order_book_sample demo.dxfeed.com:7300 IBM NTV\n" +
                 "  dxf_simple_order_book_sample demo.dxfeed.com:7300 IBM 2020-03-31 NTV\n" +
@@ -197,7 +198,7 @@ namespace dxf_simple_order_book_sample
 
         private static void Main(string[] args)
         {
-            if (args.Length < 3 || args.Length > 8)
+            if (args.Length < 3 || args.Length > 9)
             {
                 ShowUsage();
 
@@ -210,11 +211,13 @@ namespace dxf_simple_order_book_sample
             var dateTime = new InputParam<DateTime?>(null);
             var recordsPrintLimit = new InputParam<int>(DefaultRecordsPrintLimit);
             var token = new InputParam<string>(null);
+            var logDataTransferFlag = false;
 
-            for (var i = SymbolIndex + 1; i < args.Length; i++)
-            {
-                if (!dateTime.IsSet && TryParseDateTimeParam(args[i], dateTime))
+            for (var i = SymbolIndex + 1; i < args.Length; i++)  {
+                if (!dateTime.IsSet && TryParseDateTimeParam(args[i], dateTime)) {
                     continue;
+                }
+
                 if (!recordsPrintLimit.IsSet && i < args.Length - 1 &&
                     TryParseRecordsPrintLimitParam(args[i], args[i + 1], recordsPrintLimit))
                 {
@@ -224,15 +227,20 @@ namespace dxf_simple_order_book_sample
                 }
 
                 if (!token.IsSet && i < args.Length - 1 &&
-                    TryParseTaggedStringParam("-T", args[i], args[i + 1], token))
-                {
+                    TryParseTaggedStringParam("-T", args[i], args[i + 1], token)) {
                     i++;
 
                     continue;
                 }
 
-                if (!source.IsSet)
-                {
+                if (logDataTransferFlag == false && args[i].Equals("-p")) {
+                    logDataTransferFlag = true;
+                    i++;
+
+                    continue;
+                }
+
+                if (!source.IsSet) {
                     source.Value = args[i];
                 }
             }
@@ -247,6 +255,7 @@ namespace dxf_simple_order_book_sample
                 IDxSubscription s = null;
                 try
                 {
+                    NativeTools.InitializeLogging("dxf_simple_order_book_sample.log", true, true, logDataTransferFlag);
                     s = con.CreateSnapshotSubscription(EventType.Order, dateTime.Value, new OrderListener(recordsPrintLimit.Value));
                     s.SetSource(source.Value);
                     s.AddSymbols(symbol);

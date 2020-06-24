@@ -1,3 +1,11 @@
+Version 5.11.0
+* [DXFC-178] Added the ability to log received and transmitted data blocks
+  - [API] The `NativeTools.InitializeLogging` function extended by optional parameter `logDataTransfer`
+    This flag defining the logging mode; if it's `true` then the data transfer (portions of received and sent data) logging will be enabled.
+    It will also create two files with names similar to the name of the main log file, but ending with "*.receive.data" and "*.send.data"
+  - [Samples] Added the additional command line parameter:
+    - `-p` - Enables the data transfer logging
+
 Version 5.10.0
 * [DXFC-173] [Samples] Added additional command line parameters to the `dxf_simple_order_book_sample` sample:
   - host:port - The address of dxfeed server (exmaple: demo.dxfeed.com:7300)

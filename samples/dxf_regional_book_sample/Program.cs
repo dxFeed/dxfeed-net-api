@@ -1,7 +1,7 @@
 ﻿#region License
 
 /*
-Copyright © 2010-2019 dxFeed Solutions DE GmbH
+Copyright (c) 2010-2020 dxFeed Solutions DE GmbH
 
 This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
 If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -61,13 +61,14 @@ namespace dxf_regional_book_sample {
         }
 
         private static void Main(string[] args) {
-            if (args.Length < 2 || args.Length > 4) {
+            if (args.Length < 2 || args.Length > 5) {
                 Console.WriteLine(
-                    "Usage: dxf_regional_book_sample <host:port> <symbol> [-T <token>]\n" +
+                    "Usage: dxf_regional_book_sample <host:port> <symbol> [-T <token>] [-p]\n" +
                     "where\n" +
                     "    host:port  - The address of dxfeed server (demo.dxfeed.com:7300)\n" +
                     "    symbol     - IBM\n" +
-                    "    -T <token> - The authorization token\n\n" +
+                    "    -T <token> - The authorization token\n" +
+                    "    -p         - Enables the data transfer logging\n\n" +
                     "example: dxf_regional_book_sample demo.dxfeed.com:7300 MSFT\n"
                 );
                 return;
@@ -76,16 +77,26 @@ namespace dxf_regional_book_sample {
             var address = args[HOST_INDEX];
             var symbol = args[SYMBOL_INDEX];
             var token = new InputParam<string>(null);
+            var logDataTransferFlag = false;
 
-            for (var i = SYMBOL_INDEX + 1; i < args.Length; i++)
+            for (var i = SYMBOL_INDEX + 1; i < args.Length; i++) {
                 if (!token.IsSet && i < args.Length - 1 &&
                     TryParseTaggedStringParam("-T", args[i], args[i + 1], token))
+                {
                     i++;
+                    continue;
+                }
+
+                if (logDataTransferFlag == false && args[i].Equals("-p")) {
+                    logDataTransferFlag = true;
+                    i++;
+                }
+            }
 
             Console.WriteLine("Connecting to {0} on {1}...", address, symbol);
 
             try {
-                NativeTools.InitializeLogging("dxf_regional_book_sample.log", true, true);
+                NativeTools.InitializeLogging("dxf_regional_book_sample.log", true, true, logDataTransferFlag);
                 using (var con = token.IsSet
                     ? new NativeConnection(address, token.Value, DisconnectHandler)
                     : new NativeConnection(address, DisconnectHandler)) {

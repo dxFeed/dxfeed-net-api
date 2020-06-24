@@ -1,7 +1,7 @@
 ﻿#region License
 
 /*
-Copyright © 2010-2019 dxFeed Solutions DE GmbH
+Copyright (c) 2010-2020 dxFeed Solutions DE GmbH
 
 This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
 If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -48,9 +48,9 @@ namespace dxf_events_sample {
         }
 
         private static void Main(string[] args) {
-            if (args.Length < 3 || args.Length > 6) {
+            if (args.Length < 3 || args.Length > 7) {
                 Console.WriteLine(
-                    "Usage: dxf_events_sample <host:port> <event> <symbol> [<date>] [-T <token>]\n" +
+                    "Usage: dxf_events_sample <host:port> <event> <symbol> [<date>] [-T <token>] [-p]\n" +
                     "where\n" +
                     "    host:port  - The address of dxfeed server (demo.dxfeed.com:7300)\n" +
                     "    event      - Any of the {Profile,Order,Quote,Trade,TimeAndSale,Summary,\n" +
@@ -59,6 +59,7 @@ namespace dxf_events_sample {
                     "    symbol     - IBM, MSFT, ...\n\n" +
                     "    date       - The date of time series event in the format YYYY-MM-DD (optional)\n" +
                     "    -T <token> - The authorization token\n" +
+                    "    -p         - Enables the data transfer logging\n\n" +
                     "example: dxf_events_sample demo.dxfeed.com:7300 quote,trade MSFT.TEST,IBM.TEST\n" +
                     "or: dxf_events_sample demo.dxfeed.com:7300 TimeAndSale MSFT,IBM 2016-10-10\n"
                 );
@@ -76,20 +77,30 @@ namespace dxf_events_sample {
             var symbols = args[SYMBOL_INDEX].Split(',');
             var dateTime = new InputParam<DateTime?>(null);
             var token = new InputParam<string>(null);
+            var logDataTransferFlag = false;
 
             for (var i = SYMBOL_INDEX + 1; i < args.Length; i++) {
-                if (!dateTime.IsSet && TryParseDateTimeParam(args[i], dateTime))
+                if (!dateTime.IsSet && TryParseDateTimeParam(args[i], dateTime)) {
                     continue;
+                }
 
                 if (!token.IsSet && i < args.Length - 1 &&
                     TryParseTaggedStringParam("-T", args[i], args[i + 1], token))
+                {
                     i++;
+                    continue;
+                }
+
+                if (logDataTransferFlag == false && args[i].Equals("-p")) {
+                    logDataTransferFlag = true;
+                    i++;
+                }
             }
 
             Console.WriteLine($"Connecting to {address} for [{events}] on [{string.Join(", ", symbols)}] ...");
 
             try {
-                NativeTools.InitializeLogging("dxf_events_sample.log", true, true);
+                NativeTools.InitializeLogging("dxf_events_sample.log", true, true, logDataTransferFlag);
                 using (var con = token.IsSet
                     ? new NativeConnection(address, token.Value, DisconnectHandler)
                     : new NativeConnection(address, DisconnectHandler)) {

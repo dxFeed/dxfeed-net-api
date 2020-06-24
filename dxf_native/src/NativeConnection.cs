@@ -1,7 +1,7 @@
 ﻿#region License
 
 /*
-Copyright © 2010-2019 dxFeed Solutions DE GmbH
+Copyright (c) 2010-2020 dxFeed Solutions DE GmbH
 
 This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
 If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -83,6 +83,7 @@ namespace com.dxfeed.native {
             Action<IDxConnection> disconnectListener,
             Action<IDxConnection, ConnectionStatus, ConnectionStatus> connectionStatusListener) {
             this.termination_notifier = OnDisconnect;
+            this.connectionStatusChangeHandler = ConnectionStatusChangeHandler;
             this.disconnectListener = disconnectListener;
             this.connectionStatusListener = connectionStatusListener;
             C.CheckOk(C.Instance.dxf_create_connection_auth_basic(address, credential.UserName, credential.Password,
@@ -98,6 +99,7 @@ namespace com.dxfeed.native {
         /// <exception cref="DxException">Create connection failed.</exception>
         public NativeConnection(string address, string token, Action<IDxConnection> disconnectListener) {
             this.termination_notifier = OnDisconnect;
+            this.connectionStatusChangeHandler = ConnectionStatusChangeHandler;
             this.disconnectListener = disconnectListener;
             C.CheckOk(C.Instance.dxf_create_connection_auth_bearer(address, token, termination_notifier,
                 connectionStatusChangeHandler, null, null,
@@ -115,6 +117,7 @@ namespace com.dxfeed.native {
         public NativeConnection(string address, string token, Action<IDxConnection> disconnectListener,
             Action<IDxConnection, ConnectionStatus, ConnectionStatus> connectionStatusListener) {
             this.termination_notifier = OnDisconnect;
+            this.connectionStatusChangeHandler = ConnectionStatusChangeHandler;
             this.disconnectListener = disconnectListener;
             this.connectionStatusListener = connectionStatusListener;
             C.CheckOk(C.Instance.dxf_create_connection_auth_bearer(address, token, termination_notifier,
@@ -135,6 +138,7 @@ namespace com.dxfeed.native {
             Action<IDxConnection> disconnectListener,
             Action<IDxConnection, ConnectionStatus, ConnectionStatus> connectionStatusListener) {
             this.termination_notifier = OnDisconnect;
+            this.connectionStatusChangeHandler = ConnectionStatusChangeHandler;
             this.disconnectListener = disconnectListener;
             this.connectionStatusListener = connectionStatusListener;
             C.CheckOk(C.Instance.dxf_create_connection_auth_custom(address, authscheme, authdata, termination_notifier,

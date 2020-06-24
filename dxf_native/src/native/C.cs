@@ -1,7 +1,7 @@
 ﻿#region License
 
 /*
-Copyright © 2010-2019 dxFeed Solutions DE GmbH
+Copyright (c) 2010-2020 dxFeed Solutions DE GmbH
 
 This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
 If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -120,20 +120,35 @@ namespace com.dxfeed.native.api
         internal delegate void dxf_price_level_book_listener_t(IntPtr price_level_book, IntPtr user_data);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate void dxf_regional_quote_listener_t(IntPtr symbol, IntPtr quote, int count, IntPtr user_data);
-        /*
-         *  Initializes the internal logger.
-         *  Various actions and events, including the errors, are being logged throughout the library. They may be stored
-         *  into the file.
-         *
-         *  param file_name - a full path to the file where the log is to be stored
-         *  rewrite_file - a flag defining the file open mode; if it's nonzero then the log file will be rewritten
-         *  show_timezone_info - a flag defining the time display option in the log file; if it's nonzero then
-         *                   the time will be displayed with the timezone suffix
-         *  verbose - a flag defining the logging mode; if it's nonzero then the verbose logging will be enabled
-         */
-        //DXFEED_API ERRORCODE dxf_initialize_logger (const char* file_name, int rewrite_file, int show_timezone_info, int verbose);
-        //[DllImport(DXFEED_DLL, CallingConvention = CallingConvention.Cdecl)]
+
+        /// <summary>
+        /// Initializes the internal logger.
+        ///
+        /// Various actions and events, including the errors, are being logged throughout the library. They may be stored into the file.
+        ///
+        /// C-API: DXFEED_API ERRORCODE dxf_initialize_logger(const char* file_name, int rewrite_file, int show_timezone_info, int verbose);
+        /// </summary>
+        /// <param name="file_name">A full path to the file where the log is to be stored</param>
+        /// <param name="rewrite_file">A flag defining the file open mode; if it's nonzero then the log file will be rewritten</param>
+        /// <param name="show_time_zone_info">A flag defining the time display option in the log file; if it's nonzero then the time will be displayed with the timezone suffix</param>
+        /// <param name="verbose">A flag defining the logging mode; if it's nonzero then the verbose logging will be enabled</param>
+        /// <returns>DXF_SUCCESS on successful logger initialization or DXF_FAILURE on error; link dxf_get_last_error can be used to retrieve the error code and description in case of failure;</returns>
         internal abstract int dxf_initialize_logger(string file_name, bool rewrite_file, bool show_time_zone_info, bool verbose);
+
+        /// <summary>
+        /// Initializes the internal logger with data transfer logging.
+        ///
+        /// Various actions and events, including the errors, are being logged throughout the library. They may be stored into the file.
+        ///
+        /// C-API: DXFEED_API ERRORCODE dxf_initialize_logger_v2(const char* file_name, int rewrite_file, int show_timezone_info, int verbose, int log_data_transfer);
+        /// </summary>
+        /// <param name="file_name">A full path to the file where the log is to be stored</param>
+        /// <param name="rewrite_file">A flag defining the file open mode; if it's nonzero then the log file will be rewritten</param>
+        /// <param name="show_time_zone_info">A flag defining the time display option in the log file; if it's nonzero then the time will be displayed with the timezone suffix</param>
+        /// <param name="verbose">A flag defining the logging mode; if it's nonzero then the verbose logging will be enabled</param>
+        /// <param name="log_data_transfer">A flag defining the logging mode; if it's nonzero then the data transfer (portions of received and sent data) logging will be enabled</param>
+        /// <returns>DXF_SUCCESS on successful logger initialization or DXF_FAILURE on error; link dxf_get_last_error can be used to retrieve the error code and description in case of failure;</returns>
+        internal abstract int dxf_initialize_logger_v2(string file_name, bool rewrite_file, bool show_time_zone_info, bool verbose, bool log_data_transfer);
 
         /*
          *  Creates connection with the specified parameters.

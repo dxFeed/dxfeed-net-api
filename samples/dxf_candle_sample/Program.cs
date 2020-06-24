@@ -1,7 +1,7 @@
 ﻿#region License
 
 /*
-Copyright © 2010-2019 dxFeed Solutions DE GmbH
+Copyright (c) 2010-2020 dxFeed Solutions DE GmbH
 
 This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
 If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -50,12 +50,13 @@ namespace dxf_candle_sample {
 
         private static void WriteHelp() {
             Console.WriteLine(
-                "Usage: dxf_candle_sample <host:port> <base symbol> [<date>] [-T <token>] [<attributes> ...] \n" +
+                "Usage: dxf_candle_sample <host:port> <base symbol> [<date>] [-T <token>] [-p] [<attributes> ...] \n" +
                 "where\n" +
                 "    host:port   - The address of dxfeed server (demo.dxfeed.com:7300)\n" +
                 "    base symbol - The base market symbol without attributes\n" +
                 "    date        - The date of Candle in the format YYYY-MM-DD (may be empty)\n" +
                 "    -T <token>  - The authorization token\n" +
+                "    -p          - Enables the data transfer logging\n" +
                 "    attributes  - The candle attributes\n\n" +
                 "attributes must use the style of \"name=value\" and may be as follows:\n" +
                 "    exchange  - The exchange code letter (may be empty)\n" +
@@ -98,6 +99,7 @@ namespace dxf_candle_sample {
                 var session = CandleSymbolAttributes.Session.DEFAULT;
                 var alignment = CandleSymbolAttributes.Alignment.DEFAULT;
                 var priceLevel = CandleSymbolAttributes.PriceLevel.DEFAULT;
+                var logDataTransferFlag = false;
 
                 for (var i = SYMBOL_INDEX + 1; i < args.Length; i++) {
                     if (!dateTime.IsSet && TryParseDateTimeParam(args[i], dateTime))
@@ -105,6 +107,13 @@ namespace dxf_candle_sample {
 
                     if (!token.IsSet && i < args.Length - 1 &&
                         TryParseTaggedStringParam("-T", args[i], args[i + 1], token)) {
+                        i++;
+
+                        continue;
+                    }
+
+                    if (logDataTransferFlag == false && args[i].Equals("-p")) {
+                        logDataTransferFlag = true;
                         i++;
 
                         continue;
@@ -142,7 +151,7 @@ namespace dxf_candle_sample {
 
                 Console.WriteLine($"Connecting to {address} for Candle on {symbol} ...");
 
-                NativeTools.InitializeLogging("dxf_candle_sample.log", true, true);
+                NativeTools.InitializeLogging("dxf_candle_sample.log", true, true, logDataTransferFlag);
                 using (var con = token.IsSet
                     ? new NativeConnection(address, token.Value, DisconnectHandler)
                     : new NativeConnection(address, DisconnectHandler)) {

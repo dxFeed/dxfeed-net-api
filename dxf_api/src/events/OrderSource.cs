@@ -208,6 +208,11 @@ namespace com.dxfeed.api.events
         public static readonly OrderSource CFE = new OrderSource("CFE");
 
         /// <summary>
+        /// CBOE Options C2 Exchange.
+        /// </summary>
+        public static readonly OrderSource C2OX = new OrderSource("C2OX");
+
+        /// <summary>
         /// Small Exchange.
         /// </summary>
         public static readonly OrderSource SMFE = new OrderSource("SMFE");

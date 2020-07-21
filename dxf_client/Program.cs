@@ -256,10 +256,10 @@ namespace dxf_client {
                     "    source    - Used only for Order or MarketMaker subscription:\n" +
                     "                a) OPTIONAL source for order events is any combination of:\n" +
                     "                   NTV,NFX,ESPD,XNFI,ICE,ISE,DEA,DEX,BYX,BZX,BATE,CHIX,CEUX,\n" +
-                    "                   BXTR,IST,BI20,ABE,FAIR,GLBX,ERIS,XEUR,CFE,SMFE...;\n" +
+                    "                   BXTR,IST,BI20,ABE,FAIR,GLBX,ERIS,XEUR,CFE,C2OX,SMFE...;\n" +
                     "                b) source for Order snapshot can be one of following: NTV,NFX,\n" +
                     "                   ESPD,XNFI,ICE,ISE,DEA,DEX,BYX,BZX,BATE,CHIX,CEUX,BXTR,IST,BI20,\n" +
-                    "                   ABE,FAIR,GLBX,ERIS,XEUR,CFE,SMFE...\n" +
+                    "                   ABE,FAIR,GLBX,ERIS,XEUR,CFE,C2OX,SMFE...\n" +
                     "                c) source for MarketMaker snapshot, can be COMPOSITE_ASK\n" +
                     "                   or COMPOSITE_BID\n" +
                     "    snapshot  - Use keyword 'snapshot' for create snapshot subscription,\n" +

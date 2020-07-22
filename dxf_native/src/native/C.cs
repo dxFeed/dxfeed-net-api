@@ -589,7 +589,7 @@ namespace com.dxfeed.native.api
          *  symbol - the symbol to add.
          *  source - order source for Order, which can be one of following: "NTV", "ntv", "NFX", "ESPD", "XNFI", "ICE",
          *           "ISE", "DEA", "DEX", "BYX", "BZX", "BATE", "CHIX", "CEUX", "BXTR", "IST", "BI20", "ABE", "FAIR",
-         *           "GLBX", "glbx", "ERIS", "XEUR", "xeur", "CFE", "SMFE"
+         *           "GLBX", "glbx", "ERIS", "XEUR", "xeur", "CFE", "C2OX", "SMFE"
          *           For MarketMaker subscription use "COMPOSITE_BID" or
          *           "COMPOSITE_ASK" keyword.
          *  time - time in the past (unix time in milliseconds).

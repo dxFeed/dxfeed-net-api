@@ -15,6 +15,7 @@ env:
   WIN_SRC_DIR: "C:\\dxfeed-net-api"
   RELEASE_PREFIX: "dxFeed .Net API "
   C_API_REPO: "https://github.com/dxfeed/dxfeed-c-api.git"
+  C_API_RELEASE_TEMPLATE: "https://github.com/dxFeed/dxfeed-c-api/releases/download/#VERSION#/dxfeed-c-api-#VERSION#-windows.zip"
 
 jobs:
 
@@ -59,6 +60,7 @@ jobs:
           echo "::set-env name=ARTIFACT::$(echo $Env:WINDOWS_ARTIFACT_TEMPLATE | %{$_ -replace '#VERSION#', $("$Env:GITHUB_REF".Substring(10)) })"
           echo "::set-env name=WB_ARTIFACT::$(echo $Env:WINDOWS_BUILD_TEMPLATE | %{$_ -replace '#VERSION#', $("$Env:GITHUB_REF".Substring(10) -replace '[a-zA-Z-]', '') })"
           echo "::set-env name=C_API_REPO::$(echo $Env:C_API_REPO)"
+          echo "::set-env name=C_API_RELEASE::$(echo $Env:C_API_RELEASE_TEMPLATE | %{$_ -replace '#VERSION#', $("$Env:GITHUB_REF".Substring(10)) })"
 
       - name: Check env
         run: |
@@ -67,14 +69,12 @@ jobs:
           echo "ARTIFACT          : ${{ env.ARTIFACT }}"
           echo "WB_ARTIFACT       : ${{ env.WB_ARTIFACT }}"
           echo "C_API_REPO        : ${{ env.C_API_REPO }}"
+          echo "C_API_RELEASE     : ${{ env.C_API_RELEASE }}"
 
-      - name: Get dxfeed-c-api source code
+      - name: Download C-API artifacts
         run: |
-          git clone ${{ env.C_API_REPO }}
-      - name: Checkout dxfeed-c-api current release tag
-        run: |
-          cd dxfeed-c-api
-          git checkout tags/${{ env.RELEASE_VERSION }} -b ${{ env.RELEASE_VERSION }}
+          (New-Object System.Net.WebClient).DownloadFile("${{ env.C_API_RELEASE }}", '' + (Get-Location) + '/c-api.zip')
+          Expand-Archive -Path ./c-api.zip -DestinationPath .
       - name: Make artifacts directory
         run: |
           mkdir artifact
@@ -90,8 +90,8 @@ jobs:
           docker pull ${{ env.WIN_BUILDER_IMAGE }}
       - name: Build windows (TLS)
         run: |
-          echo "building windows dxfeed-net-api ( + dxfeed-c-api ) library"
-          docker run -v "${pwd}:${{ env.WIN_SRC_DIR }}" -e SRCDIR="${{ env.WIN_SRC_DIR }}" -e FLAGS=".\dxfeed-c-api no-test" -e RELEASE=${{ env.RELEASE_VERSION_TRUNCATED }} ${{ env.WIN_BUILDER_IMAGE }}
+          echo "building windows dxfeed-net-api library"
+          docker run -v "${pwd}:${{ env.WIN_SRC_DIR }}" -e SRCDIR="${{ env.WIN_SRC_DIR }}" -e FLAGS=".\dxfeed-c-api-${{ env.RELEASE_VERSION_TRUNCATED }} no-test no-c-build" -e RELEASE=${{ env.RELEASE_VERSION_TRUNCATED }} ${{ env.WIN_BUILDER_IMAGE }}
       - name: List files
         run: |
           ls -recurse

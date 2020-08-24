@@ -15,7 +15,7 @@ env:
   WIN_SRC_DIR: "C:\\dxfeed-net-api"
   RELEASE_PREFIX: "dxFeed .Net API "
   C_API_REPO: "https://github.com/dxfeed/dxfeed-c-api.git"
-  C_API_RELEASE: "https://github.com/dxFeed/dxfeed-c-api/releases/download/5.13.0/dxfeed-c-api-5.13.0-windows.zip"
+  C_API_RELEASE_TEMPLATE: "https://github.com/dxFeed/dxfeed-c-api/releases/download/#VERSION#/dxfeed-c-api-#VERSION#-windows.zip"
 
 jobs:
 
@@ -60,7 +60,7 @@ jobs:
           echo "::set-env name=ARTIFACT::$(echo $Env:WINDOWS_ARTIFACT_TEMPLATE | %{$_ -replace '#VERSION#', $("$Env:GITHUB_REF".Substring(10)) })"
           echo "::set-env name=WB_ARTIFACT::$(echo $Env:WINDOWS_BUILD_TEMPLATE | %{$_ -replace '#VERSION#', $("$Env:GITHUB_REF".Substring(10) -replace '[a-zA-Z-]', '') })"
           echo "::set-env name=C_API_REPO::$(echo $Env:C_API_REPO)"
-          echo "::set-env name=C_API_RELEASE::$(echo $Env:C_API_RELEASE)"
+          echo "::set-env name=C_API_RELEASE::$(echo $Env:C_API_RELEASE_TEMPLATE | %{$_ -replace '#VERSION#', $("$Env:GITHUB_REF".Substring(10)) })"
 
       - name: Check env
         run: |

@@ -115,8 +115,18 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Label>ToLib</Label>
     </Content>
+    <Content Include="..\lib\DXFeedd.pdb" Condition="Exists('..\lib\DXFeedd.pdb')">
+      <Link>DXFeedd.pdb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Label>ToLib</Label>
+    </Content>
     <Content Include="..\lib\DXFeedd_64.dll">
       <Link>DXFeedd_64.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Label>ToLib</Label>
+    </Content>
+    <Content Include="..\lib\DXFeedd_64.pdb" Condition="Exists('..\lib\DXFeedd_64.pdb')">
+      <Link>DXFeedd_64.pdb</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Label>ToLib</Label>
     </Content>
@@ -125,8 +135,18 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Label>ToLib</Label>
     </Content>
+    <Content Include="..\lib\DXFeed.pdb" Condition="Exists('..\lib\DXFeed.pdb')">
+      <Link>DXFeed.pdb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Label>ToLib</Label>
+    </Content>
     <Content Include="..\lib\DXFeed_64.dll">
       <Link>DXFeed_64.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Label>ToLib</Label>
+    </Content>
+    <Content Include="..\lib\DXFeed_64.pdb" Condition="Exists('..\lib\DXFeed_64.pdb')">
+      <Link>DXFeed_64.pdb</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Label>ToLib</Label>
     </Content>

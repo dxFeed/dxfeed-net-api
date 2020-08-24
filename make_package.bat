@@ -69,6 +69,8 @@ set C_API_LIB_NAME=DXFeed
 set C_API_LIB_EXT=.dll
 set C_API_LIB_PDB_EXT=.pdb
 set C_API_BIN_DIR_NAME=bin
+set C_API_RELEASE_DIR_NAME=
+set C_API_DEBUG_DIR_NAME=
 set TARGET_TEST=RunUnitTests;
 set C_API_NO_TEST=
 set C_API_NO_BUIILD=
@@ -119,23 +121,25 @@ if %C_API_ERRORLEVEL% GEQ 1 (
     goto exit_error
 )
 set C_API_BIN_DIR_NAME=build
+set C_API_RELEASE_DIR_NAME=Release
+set C_API_DEBUG_DIR_NAME=Debug
 
 :copy_c
-xcopy /Y /I %C_API_PATH%\%C_API_BIN_DIR_NAME%\x86\Release\%C_API_LIB_NAME%%C_API_LIB_EXT% %~dp0\lib
+xcopy /Y /I %C_API_PATH%\%C_API_BIN_DIR_NAME%\x86\%C_API_RELEASE_DIR_NAME%\%C_API_LIB_NAME%%C_API_LIB_EXT% %~dp0\lib
 if %ERRORLEVEL% GEQ 1 goto exit_error
-xcopy /Y /I %C_API_PATH%\%C_API_BIN_DIR_NAME%\x86\Release\%C_API_LIB_NAME%%C_API_LIB_PDB_EXT% %~dp0\lib
+xcopy /Y /I %C_API_PATH%\%C_API_BIN_DIR_NAME%\x86\%C_API_RELEASE_DIR_NAME%\%C_API_LIB_NAME%%C_API_LIB_PDB_EXT% %~dp0\lib
 if %ERRORLEVEL% GEQ 1 goto exit_error
-xcopy /Y /I %C_API_PATH%\%C_API_BIN_DIR_NAME%\x86\Debug\%C_API_LIB_NAME%d%C_API_LIB_EXT% %~dp0\lib
+xcopy /Y /I %C_API_PATH%\%C_API_BIN_DIR_NAME%\x86\%C_API_DEBUG_DIR_NAME%\%C_API_LIB_NAME%d%C_API_LIB_EXT% %~dp0\lib
 if %ERRORLEVEL% GEQ 1 goto exit_error
-xcopy /Y /I %C_API_PATH%\%C_API_BIN_DIR_NAME%\x86\Debug\%C_API_LIB_NAME%d%C_API_LIB_PDB_EXT% %~dp0\lib
+xcopy /Y /I %C_API_PATH%\%C_API_BIN_DIR_NAME%\x86\%C_API_DEBUG_DIR_NAME%\%C_API_LIB_NAME%d%C_API_LIB_PDB_EXT% %~dp0\lib
 if %ERRORLEVEL% GEQ 1 goto exit_error
-xcopy /Y /I %C_API_PATH%\%C_API_BIN_DIR_NAME%\x64\Release\%C_API_LIB_NAME%_64%C_API_LIB_EXT% %~dp0\lib
+xcopy /Y /I %C_API_PATH%\%C_API_BIN_DIR_NAME%\x64\%C_API_RELEASE_DIR_NAME%\%C_API_LIB_NAME%_64%C_API_LIB_EXT% %~dp0\lib
 if %ERRORLEVEL% GEQ 1 goto exit_error
-xcopy /Y /I %C_API_PATH%\%C_API_BIN_DIR_NAME%\x64\Release\%C_API_LIB_NAME%_64%C_API_LIB_PDB_EXT% %~dp0\lib
+xcopy /Y /I %C_API_PATH%\%C_API_BIN_DIR_NAME%\x64\%C_API_RELEASE_DIR_NAME%\%C_API_LIB_NAME%_64%C_API_LIB_PDB_EXT% %~dp0\lib
 if %ERRORLEVEL% GEQ 1 goto exit_error
-xcopy /Y /I %C_API_PATH%\%C_API_BIN_DIR_NAME%\x64\Debug\%C_API_LIB_NAME%d_64%C_API_LIB_EXT% %~dp0\lib
+xcopy /Y /I %C_API_PATH%\%C_API_BIN_DIR_NAME%\x64\%C_API_DEBUG_DIR_NAME%\%C_API_LIB_NAME%d_64%C_API_LIB_EXT% %~dp0\lib
 if %ERRORLEVEL% GEQ 1 goto exit_error
-xcopy /Y /I %C_API_PATH%\%C_API_BIN_DIR_NAME%\x64\Debug\%C_API_LIB_NAME%d_64%C_API_LIB_PDB_EXT% %~dp0\lib
+xcopy /Y /I %C_API_PATH%\%C_API_BIN_DIR_NAME%\x64\%C_API_DEBUG_DIR_NAME%\%C_API_LIB_NAME%d_64%C_API_LIB_PDB_EXT% %~dp0\lib
 if %ERRORLEVEL% GEQ 1 goto exit_error
 
 rem === BUILD PROJECTS ===

@@ -91,7 +91,7 @@ jobs:
       - name: Build windows (TLS)
         run: |
           echo "building windows dxfeed-net-api library"
-          docker run -v "${pwd}:${{ env.WIN_SRC_DIR }}" -e SRCDIR="${{ env.WIN_SRC_DIR }}" -e FLAGS=".\dxfeed-c-api-${{ env.RELEASE_VERSION_TRUNCATED }} no-test no-c-build" -e RELEASE=${{ env.RELEASE_VERSION_TRUNCATED }} ${{ env.WIN_BUILDER_IMAGE }}
+          docker run -v "${pwd}:${{ env.WIN_SRC_DIR }}" -e SRCDIR="${{ env.WIN_SRC_DIR }}" -e FLAGS=".\dxfeed-c-api-${{ env.RELEASE_VERSION }} no-test no-c-build" -e RELEASE=${{ env.RELEASE_VERSION_TRUNCATED }} ${{ env.WIN_BUILDER_IMAGE }}
       - name: List files
         run: |
           ls -recurse

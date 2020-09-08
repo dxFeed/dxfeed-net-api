@@ -76,8 +76,6 @@ namespace com.dxfeed.tests.tools
         int eventsTimeout = 120000;
         int eventsSleepTime = 100;
         Func<bool> IsConnected = null;
-        public const string COMPOSITE_BID = "COMPOSITE_BID";
-        public const string COMPOSITE_ASK = "COMPOSITE_ASK";
 
         public OrderViewTestListener(int eventsTimeout, int eventsSleepTime, Func<bool> IsConnected)
         {

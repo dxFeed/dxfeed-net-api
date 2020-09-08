@@ -13,6 +13,7 @@ using System;
 using com.dxfeed.api;
 using com.dxfeed.api.candle;
 using com.dxfeed.api.data;
+using com.dxfeed.api.events;
 using com.dxfeed.native;
 
 namespace dxf_snapshot_sample {
@@ -26,9 +27,7 @@ namespace dxf_snapshot_sample {
         private const int EVENT_INDEX = 1;
         private const int SYMBOL_INDEX = 2;
         private const int DEFAULT_TIME = 0;
-
-        private const string COMPOSITE_BID = "COMPOSITE_BID";
-
+        
         private static void DisconnectHandler(IDxConnection con) {
             Console.WriteLine("Disconnected");
         }
@@ -86,8 +85,8 @@ namespace dxf_snapshot_sample {
                     "                also it is allowed to use only one source\n" +
                     "                a) source for Order, e.g. NTV, BYX, BZX, DEA, ISE, \n" +
                     "                   DEX, IST\n" +
-                    "                b) source for MarketMaker, one of following: COMPOSITE_ASK\n" +
-                    "                   or COMPOSITE_BID (default value for Order snapshots)\n" +
+                    "                b) source for MarketMaker, one of following: AGGREGATE_ASK\n" +
+                    "                   or AGGREGATE_BID (default value for Order snapshots)\n" +
                     "                If source is not specified MarketMaker snapshot will be\n" +
                     "                subscribed by default.\n\n" +
                     $"    -l <records_print_limit> - The number of displayed records (0 - unlimited, default: {DEFAULT_RECORDS_PRINT_LIMIT})\n" +
@@ -95,7 +94,7 @@ namespace dxf_snapshot_sample {
                     "    -p                       - Enables the data transfer logging\n\n" +
                     "order example: dxf_snapshot_sample demo.dxfeed.com:7300 Order AAPL NTV\n" +
                     "market maker example:\n" +
-                    "    dxf_snapshot_sample demo.dxfeed.com:7300 Order AAPL COMPOSITE_BID\n" +
+                    "    dxf_snapshot_sample demo.dxfeed.com:7300 Order AAPL AGGREGATE_BID\n" +
                     "or just:\n" +
                     "    dxf_snapshot_sample demo.dxfeed.com:7300 Order AAPL\n" +
                     "candle example: dxf_snapshot_sample demo.dxfeed.com:7300 Candle XBT/USD{=d}"
@@ -115,7 +114,7 @@ namespace dxf_snapshot_sample {
                 return;
             }
 
-            var source = new InputParam<string>(COMPOSITE_BID);
+            var source = new InputParam<string>(OrderSource.AGGREGATE_BID);
             var recordsPrintLimit = new InputParam<int>(DEFAULT_RECORDS_PRINT_LIMIT);
             var token = new InputParam<string>(null);
             var logDataTransferFlag = false;
@@ -146,7 +145,7 @@ namespace dxf_snapshot_sample {
             }
 
             if (eventType == EventType.Order) {
-                if (source.Value.Equals(COMPOSITE_BID))
+                if (source.Value.Equals(OrderSource.AGGREGATE_BID) || source.Value.Equals(OrderSource.AGGREGATE_ASK))
                     Console.WriteLine("Connecting to {0} for MarketMaker snapshot on {1}...", address, symbol);
                 else
                     Console.WriteLine("Connecting to {0} for Order#{1} snapshot on {2}...", address, source.Value,
@@ -162,13 +161,18 @@ namespace dxf_snapshot_sample {
                     : new NativeConnection(address, DisconnectHandler)) {
                     using (var s = con.CreateSnapshotSubscription(eventType, DEFAULT_TIME,
                         new SnapshotListener(DEFAULT_RECORDS_PRINT_LIMIT))) {
-                        if (eventType == EventType.Order) {
-                            s.AddSource(source.Value);
-                            s.AddSymbol(symbol);
-                        } else if (eventType == EventType.Candle) {
-                            s.AddSymbol(CandleSymbol.ValueOf(symbol));
-                        } else {
-                            s.AddSymbol(symbol);
+                        switch (eventType)
+                        {
+                            case EventType.Order:
+                                s.AddSource(source.Value);
+                                s.AddSymbol(symbol);
+                                break;
+                            case EventType.Candle:
+                                s.AddSymbol(CandleSymbol.ValueOf(symbol));
+                                break;
+                            default:
+                                s.AddSymbol(symbol);
+                                break;
                         }
 
                         Console.WriteLine("Press enter to stop");

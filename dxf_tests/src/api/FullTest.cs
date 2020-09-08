@@ -138,7 +138,7 @@ namespace com.dxfeed.api
         static string[] candleSymbols = { "XBT/USD{=d}" };
         static SnapshotCase[] snapshotCases = {
             new SnapshotCase("AAPL", "NTV", null),
-            new SnapshotCase("IBM", SnapshotTestListener.COMPOSITE_BID, null),
+            new SnapshotCase("IBM", OrderSource.AGGREGATE_BID, null),
             new SnapshotCase(CandleSymbol.ValueOf("XBT/USD{=d}"), oneMonth)
         };
         static string[] orderViewSymbols = { "AAPL", "IBM" };

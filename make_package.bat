@@ -76,6 +76,7 @@ set C_API_NO_TEST=
 set C_API_NO_BUIILD=
 set C_API_NO_TLS=
 set AssemblySuffix=
+set C_API_NO_CI=
 
 for %%A in (%*) do (
     if [%%A] EQU [no-test] (
@@ -88,6 +89,9 @@ for %%A in (%*) do (
     if [%%A] EQU [no-tls] (
         set C_API_NO_TLS=yes
         set AssemblySuffix=-no-tls
+    )
+    if [%%A] EQU [no-ci] (
+        set C_API_NO_CI=yes
     )
 )
 
@@ -103,6 +107,12 @@ if [%C_API_PATH%] EQU [] (
 )
 if [%C_API_NO_BUIILD%] EQU [yes] (
     echo Skip C API build
+    if [%C_API_NO_CI%] EQU [yes] (
+        echo No CI
+        set C_API_BIN_DIR_NAME=build
+        set C_API_RELEASE_DIR_NAME=Release\
+        set C_API_DEBUG_DIR_NAME=Debug\
+    )
     goto copy_c
 )
 if NOT EXIST %C_API_BUILD% (

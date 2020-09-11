@@ -580,7 +580,7 @@ namespace com.dxfeed.native.api
          *  For order events (event_id is 'dx_eid_order')
          *  If source is NULL string subscription on Order event will be performed. You can specify order
          *  source for Order event by passing suffix: "BYX", "BZX", "DEA", "DEX", "ISE", "IST", "NTV", ...
-         *  If source is equal to "COMPOSITE_BID" or "COMPOSITE_ASK" subscription on MarketMaker event will
+         *  If source is equal to "AGGREGATE_BID" or "AGGREGATE_ASK" subscription on MarketMaker event will
          *  be performed. For other events source parameter does not matter.
          *
          *  connection - a handle of a previously created connection which the subscription will be using
@@ -590,8 +590,8 @@ namespace com.dxfeed.native.api
          *  source - order source for Order, which can be one of following: "NTV", "ntv", "NFX", "ESPD", "XNFI", "ICE",
          *           "ISE", "DEA", "DEX", "BYX", "BZX", "BATE", "CHIX", "CEUX", "BXTR", "IST", "BI20", "ABE", "FAIR",
          *           "GLBX", "glbx", "ERIS", "XEUR", "xeur", "CFE", "C2OX", "SMFE"
-         *           For MarketMaker subscription use "COMPOSITE_BID" or
-         *           "COMPOSITE_ASK" keyword.
+         *           For MarketMaker subscription use "AGGREGATE_BID" or
+         *           "AGGREGATE_ASK" keyword.
          *  time - time in the past (unix time in milliseconds).
          *  OUT snapshot - a handle of the created snapshot
          */
@@ -604,13 +604,13 @@ namespace com.dxfeed.native.api
          *
          *  If source is NULL string subscription on Order event will be performed. You can specify order
          *  source for Order event by passing suffix: "BYX", "BZX", "DEA", "DEX", "ISE", "IST", "NTV", ...
-         *  If source is equal to "COMPOSITE_BID" or "COMPOSITE_ASK" subscription on MarketMaker event will
+         *  If source is equal to "AGGREGATE_BID" or "AGGREGATE_ASK" subscription on MarketMaker event will
          *  be performed.
          *
          *  connection - a handle of a previously created connection which the subscription will be using
          *  symbol - the symbol to add
          *  source - order source for Order event with 4 symbols maximum length OR keyword which can be
-         *           one of COMPOSITE_BID or COMPOSITE_ASK
+         *           one of AGGREGATE_BID or AGGREGATE_ASK
          *  time - time in the past (unix time in milliseconds)
          *  OUT snapshot - a handle of the created snapshot
          */

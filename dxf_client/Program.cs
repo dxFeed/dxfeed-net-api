@@ -260,8 +260,8 @@ namespace dxf_client {
                     "                b) source for Order snapshot can be one of following: NTV,NFX,\n" +
                     "                   ESPD,XNFI,ICE,ISE,DEA,DEX,BYX,BZX,BATE,CHIX,CEUX,BXTR,IST,BI20,\n" +
                     "                   ABE,FAIR,GLBX,ERIS,XEUR,CFE,C2OX,SMFE...\n" +
-                    "                c) source for MarketMaker snapshot, can be COMPOSITE_ASK\n" +
-                    "                   or COMPOSITE_BID\n" +
+                    "                c) source for MarketMaker snapshot, can be AGGREGATE_ASK\n" +
+                    "                   or AGGREGATE_BID\n" +
                     "    snapshot  - Use keyword 'snapshot' for create snapshot subscription,\n" +
                     "                otherwise leave empty\n" +
                     $"    -l <records_print_limit> - The number of displayed records (0 - unlimited, default: {DEFAULT_RECORDS_PRINT_LIMIT})\n" +
@@ -277,8 +277,8 @@ namespace dxf_client {
                     "  series: dxf_client demo.dxfeed.com:7300 Series AAPL\n" +
                     "  order snapshot: dxf_client demo.dxfeed.com:7300 Order AAPL NTV snapshot\n" +
                     "  order snapshot: dxf_client demo.dxfeed.com:7300 Order AAPL NTV snapshot -l 0\n" +
-                    "  market maker snapshot: dxf_client demo.dxfeed.com:7300 Order AAPL COMPOSITE_BID snapshot\n" +
-                    "  market maker snapshot: dxf_client demo.dxfeed.com:7300 Order AAPL COMPOSITE_BID snapshot -l 3\n" +
+                    "  market maker snapshot: dxf_client demo.dxfeed.com:7300 Order AAPL AGGREGATE_BID snapshot\n" +
+                    "  market maker snapshot: dxf_client demo.dxfeed.com:7300 Order AAPL AGGREGATE_BID snapshot -l 3\n" +
                     "  candle snapshot: dxf_client demo.dxfeed.com:7300 Candle XBT/USD{=d} 2016-10-10 snapshot\n" + 
                     "  candle snapshot: dxf_client demo.dxfeed.com:7300 Candle XBT/USD{=d} 2016-10-10 snapshot -l 10\n" +
                     "  candle snapshot: dxf_client demo.dxfeed.com:7300 Candle XBT/USD{=d,pl=0.5} 2016-10-10 snapshot -l 10\n"

@@ -204,8 +204,14 @@ namespace com.dxfeed.ipf.live
         /// </summary>
         public long UpdatePeriod
         {
-            get => Thread.VolatileRead(ref updatePeriod);
-            set => Interlocked.Exchange(ref updatePeriod, value);
+            get
+            {
+                return Thread.VolatileRead(ref updatePeriod);
+            }
+            set
+            {
+                Interlocked.Exchange(ref updatePeriod, value);
+            }
         }
 
         /// <summary>

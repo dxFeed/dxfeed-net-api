@@ -16,36 +16,56 @@ using System.IO;
 using com.dxfeed.ipf;
 using com.dxfeed.ipf.live;
 
-namespace dxf_instrument_profile_live_sample {
-    internal class UpdateListener : InstrumentProfileUpdateListener {
-        public void InstrumentProfilesUpdated(ICollection<InstrumentProfile> instruments) {
+namespace dxf_instrument_profile_live_sample
+{
+    internal class UpdateListener : InstrumentProfileUpdateListener
+    {
+        public void InstrumentProfilesUpdated(ICollection<InstrumentProfile> instruments)
+        {
             Console.WriteLine("Update received @{0}:", DateTime.Now.ToString(CultureInfo.InvariantCulture));
             foreach (var ip in instruments) Console.WriteLine($"   {ip}");
         }
     }
 
-    internal class Program {
-        private static void OnErrorHandler(object sender, ErrorEventArgs e) {
+    internal class Program
+    {
+        private static void OnErrorHandler(object sender, ErrorEventArgs e)
+        {
             Console.WriteLine($"Error occured: {e.GetException().Message}");
         }
 
-        private static void Main(string[] args) {
-            if (args.Length == 0) {
+        private static void Main(string[] args)
+        {
+            if (args.Length == 0)
+            {
                 Console.WriteLine(
-                    "Usage: dxf_instrument_profile_live_sample <host:port>[update=<time-period>]\n" +
+                    "Usage: dxf_instrument_profile_live_sample <host:port>[update=<time-period>] [<token>]\n" +
                     "where\n" +
                     "    host:port   - The valid host and port to download instruments (https://tools.dxfeed.com/ipf)\n" +
-                    "    time-period - The update period in ISO8601 duration format (optional)\n\n" +
+                    "    time-period - The update period in ISO8601 duration format (optional)\n" +
+                    "    token       - The bearer token\n" +
+                    "\n" +
                     "examples: " +
                     "    dxf_instrument_profile_live_sample https://tools.dxfeed.com/ipf[update=P30S]\n" +
+                    "    dxf_instrument_profile_live_sample https://tools.dxfeed.com/ipf[update=P30S] Z2V0LmR4ZmVlZCxhbW...\n" +
                     "    dxf_instrument_profile_live_sample https://user:password@tools.dxfeed.com/ipf[update=P30S]\n"
                 );
                 return;
             }
 
             var path = args[0];
-            try {
-                var connection = new InstrumentProfileConnection(path);
+            string token = null;
+
+            if (args.Length > 1)
+            {
+                token = args[1];
+            }
+
+            try
+            {
+                var connection = string.IsNullOrEmpty(token)
+                    ? new InstrumentProfileConnection(path)
+                    : new InstrumentProfileConnection(path, token);
                 connection.OnError += OnErrorHandler;
                 var updateListener = new UpdateListener();
                 connection.AddUpdateListener(updateListener);
@@ -55,7 +75,9 @@ namespace dxf_instrument_profile_live_sample {
                 Console.ReadLine();
 
                 connection.Close();
-            } catch (Exception exc) {
+            }
+            catch (Exception exc)
+            {
                 Console.WriteLine($"Exception occured: {exc}");
             }
         }

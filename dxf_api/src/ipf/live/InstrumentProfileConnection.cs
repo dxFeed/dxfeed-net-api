@@ -16,7 +16,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
-using System.Net.Sockets;
 using System.Text.RegularExpressions;
 using System.Threading;
 
@@ -65,6 +64,7 @@ namespace com.dxfeed.ipf.live
     public class InstrumentProfileConnection
     {
         public delegate void OnErrorEventHandler(object sender, ErrorEventArgs e);
+
         public event OnErrorEventHandler OnError;
 
         /// <summary>
@@ -109,12 +109,16 @@ namespace com.dxfeed.ipf.live
         private readonly object listenersLocker = new object();
         private WebResponse webResponse;
         private readonly object webResponseLocker = new object();
-        
+        private readonly string login;
+        private readonly string password;
+        private readonly string token;
+
         /// <summary>
         /// Working thread to download instruments.
         /// Thread must != null when state in (CONNECTING, CONNECTED, COMPLETE).
         /// </summary>
         private Thread handlerThread;
+
         private DateTime lastModified = DateTime.MinValue;
         private bool supportsLive;
         private readonly List<InstrumentProfileUpdateListener> listeners = new List<InstrumentProfileUpdateListener>();
@@ -130,16 +134,66 @@ namespace com.dxfeed.ipf.live
         /// Connection needs to be started to begin an actual operation.
         /// </summary>
         /// <param name="address">Address of server</param>
-        public InstrumentProfileConnection(string address)
+        /// <param name="login">The user name (may be null).</param>
+        /// <param name="password">The user password (may be null).</param>
+        /// <param name="token">The bearer token (may be null).</param>
+        private InstrumentProfileConnection(string address, string login, string password, string token)
         {
             this.address = address;
+            this.login = login;
+            this.password = password;
+            this.token = token;
+
             var regex = new Regex(UpdatePattern, RegexOptions.IgnoreCase);
             var match = regex.Match(address);
-            
+
             if (!match.Success) return;
-            
+
             this.address = match.Groups[1].ToString();
             updatePeriod = TimePeriod.ValueOf(match.Groups[2].ToString()).GetTime();
+        }
+
+        /// <summary>
+        /// Creates instrument profile connection with a specified address and 
+        /// Address may be just "&lt;host&gt;:&lt;port&gt;" of server, URL, or a file path.
+        /// The "[update=&lt;period&gt;]" clause can be optionally added at the end of the address to
+        /// specify an UpdatePeriod via an address string.
+        /// Default update period is 1 minute.
+        /// Connection needs to be started to begin an actual operation.
+        /// </summary>
+        /// <param name="address">Address of server</param>
+        public InstrumentProfileConnection(string address) : this(address, null, null, null)
+        {
+        }
+
+        /// <summary>
+        /// Creates instrument profile connection with a specified address and basic user and password credentials
+        /// Address may be just "&lt;host&gt;:&lt;port&gt;" of server, URL, or a file path.
+        /// The "[update=&lt;period&gt;]" clause can be optionally added at the end of the address to
+        /// specify an UpdatePeriod via an address string.
+        /// Default update period is 1 minute.
+        /// Connection needs to be started to begin an actual operation.
+        /// </summary>
+        /// <param name="address">Address of server</param>
+        /// <param name="login">The user name (may be null).</param>
+        /// <param name="password">The user password (may be null).</param>
+        public InstrumentProfileConnection(string address, string login, string password) : this(address, login,
+            password, null)
+        {
+        }
+
+        /// <summary>
+        /// Creates instrument profile connection with a specified address and bearer token
+        /// Address may be just "&lt;host&gt;:&lt;port&gt;" of server, URL, or a file path.
+        /// The "[update=&lt;period&gt;]" clause can be optionally added at the end of the address to
+        /// specify an UpdatePeriod via an address string.
+        /// Default update period is 1 minute.
+        /// Connection needs to be started to begin an actual operation.
+        /// </summary>
+        /// <param name="address">Address of server</param>
+        /// <param name="token">The bearer authorization's token</param>
+        public InstrumentProfileConnection(string address, string token) : this(address, null, null, token)
+        {
         }
 
         /// <summary>
@@ -150,14 +204,8 @@ namespace com.dxfeed.ipf.live
         /// </summary>
         public long UpdatePeriod
         {
-            get
-            {
-                return Thread.VolatileRead(ref updatePeriod);
-            }
-            set
-            {
-                Interlocked.Exchange(ref updatePeriod, value);
-            }
+            get => Thread.VolatileRead(ref updatePeriod);
+            set => Interlocked.Exchange(ref updatePeriod, value);
         }
 
         /// <summary>
@@ -172,6 +220,7 @@ namespace com.dxfeed.ipf.live
                 {
                     currentState = state;
                 }
+
                 return currentState;
             }
         }
@@ -188,6 +237,7 @@ namespace com.dxfeed.ipf.live
                 {
                     value = lastModified;
                 }
+
                 return value;
             }
             set
@@ -230,7 +280,7 @@ namespace com.dxfeed.ipf.live
 
             lock (webResponseLocker)
             {
-                webResponse?.Close();                
+                webResponse?.Close();
             }
         }
 
@@ -293,10 +343,10 @@ namespace com.dxfeed.ipf.live
                 {
                     if (CurrentState == State.Closed)
                         return;
-                    
+
                     CallOnError(e);
                 }
-                
+
                 Thread.Sleep((int) UpdatePeriod);
             }
         }
@@ -332,13 +382,14 @@ namespace com.dxfeed.ipf.live
         /// </summary>
         private void Download()
         {
-            var webRequest = URLInputStream.OpenConnection(address);
+            var webRequest = string.IsNullOrEmpty(token)
+                ? URLInputStream.OpenConnection(address, login, password)
+                : URLInputStream.OpenConnection(address, token);
             webRequest.Headers.Add(Constants.LIVE_PROP_KEY, Constants.LIVE_PROP_REQUEST_YES);
             if (LastModified != DateTime.MinValue && !supportsLive &&
                 webRequest.GetType() == typeof(HttpWebRequest))
             {
-
-                ((HttpWebRequest)webRequest).IfModifiedSince = lastModified;
+                ((HttpWebRequest) webRequest).IfModifiedSince = lastModified;
             }
 
             try
@@ -356,7 +407,7 @@ namespace com.dxfeed.ipf.live
                     {
                         var fileUri = new Uri(address);
                         time = File.GetLastWriteTime(fileUri.AbsolutePath);
-                    } 
+                    }
                     else
                     {
                         URLInputStream.CheckConnectionResponseCode(webResponse);
@@ -380,23 +431,25 @@ namespace com.dxfeed.ipf.live
                             LastModified = time;
                         }
                     }
-                } 
+                }
                 finally
                 {
                     lock (webResponseLocker)
                     {
-                        webResponse = null;   
+                        webResponse = null;
                     }
                 }
             }
             catch (WebException we)
             {
-                using (var webResponse = we.Response)
+                using (var webResponseFromException = we.Response)
                 {
-                    if (webResponse != null && webResponse.GetType() == typeof(HttpWebResponse) &&
-                        ((HttpWebResponse)webResponse).StatusCode == HttpStatusCode.NotModified)
+                    if (webResponseFromException != null &&
+                        webResponseFromException.GetType() == typeof(HttpWebResponse) &&
+                        ((HttpWebResponse) webResponseFromException).StatusCode == HttpStatusCode.NotModified)
                         return; // not modified
                 }
+
                 throw;
             }
         }
@@ -409,13 +462,14 @@ namespace com.dxfeed.ipf.live
         private void Process(Stream inputStream)
         {
             var parser = new InstrumentProfileParser(inputStream);
-            
+
             parser.OnFlush += Flush;
             parser.OnComplete += Complete;
 
             InstrumentProfile instrumentProfile;
-            
-            while ((instrumentProfile = parser.Next()) != null) {
+
+            while ((instrumentProfile = parser.Next()) != null)
+            {
                 ipBuffer.Add(instrumentProfile);
                 if (CurrentState == State.Closed) return;
             }
@@ -434,7 +488,7 @@ namespace com.dxfeed.ipf.live
         private void Flush(object sender, EventArgs e)
         {
             if (ipBuffer.Count == 0) return;
-            
+
             var updateList = updater.Update(ipBuffer);
             CallListeners(updateList);
             ipBuffer.Clear();
@@ -459,7 +513,6 @@ namespace com.dxfeed.ipf.live
         private static void CheckAndCallListener(InstrumentProfileUpdateListener listener,
             ICollection<InstrumentProfile> instrumentProfiles)
         {
-
             if (instrumentProfiles == null || instrumentProfiles.Count == 0)
                 return;
             listener.InstrumentProfilesUpdated(instrumentProfiles);

@@ -76,7 +76,7 @@ namespace com.dxfeed.ipf
         ///
         /// This operation updates GetLastModified().
         /// </summary>
-        /// <param name="address">URL of file to read from.</param>
+        /// <param name="address">URL of file or service output to read from.</param>
         /// <param name="user">The user name (may be null).</param>
         /// <param name="password">The password (may be null).</param>
         /// <returns>List of instrument profiles.</returns>
@@ -84,26 +84,52 @@ namespace com.dxfeed.ipf
         /// <exception cref="InstrumentProfileFormatException">If input stream does not conform to the Simple File Format.</exception>
         public IList<InstrumentProfile> ReadFromFile(string address, string user, string password)
         {
-            string url = ResolveSourceUrl(address);
+            return ReadFromFileImpl(address, user, password, null);
+        }
+
+        /// <summary>
+        /// Reads and returns instrument profiles from specified address with a specified token.
+        /// This method recognizes popular data compression formats "zip" and "gzip" by analyzing file name.
+        /// If file name ends with ".zip" then all compressed files will be read independently one by one
+        /// in their order of appearing and total concatenated list of instrument profiles will be returned.
+        /// If file name ends with ".gz" then compressed content will be read and returned.
+        /// In other cases file will be considered uncompressed and will be read as is.
+        ///
+        /// This operation updates GetLastModified().
+        /// </summary>
+        /// <param name="address">URL of file or service output to read from.</param>
+        /// <param name="token">The bearer token.</param>
+        /// <returns>List of instrument profiles.</returns>
+        /// <exception cref="IOException">If an I/O error occurs.</exception>
+        /// <exception cref="InstrumentProfileFormatException">If input stream does not conform to the Simple File Format.</exception>
+        public IList<InstrumentProfile> ReadFromFile(string address, string token)
+        {
+            return ReadFromFileImpl(address, null, null, token);
+        }
+
+        private IList<InstrumentProfile> ReadFromFileImpl(string address, string user, string password, string token)
+        {
+            var url = ResolveSourceUrl(address);
             try
             {
-                WebRequest webRequest = URLInputStream.OpenConnection(URLInputStream.ResolveUrl(url), user, password);
+                var webRequest = string.IsNullOrEmpty(token)
+                    ? URLInputStream.OpenConnection(URLInputStream.ResolveUrl(url), user, password)
+                    : URLInputStream.OpenConnection(URLInputStream.ResolveUrl(url), token);
                 webRequest.Headers.Add(Constants.LIVE_PROP_KEY, Constants.LIVE_PROP_REQUEST_NO);
-                using (WebResponse response = webRequest.GetResponse())
+                using (var response = webRequest.GetResponse())
                 {
                     DateTime modificationTime;
                     if (response.GetType() == typeof(FileWebResponse))
                     {
-                        Uri fileUri = new Uri(address);
+                        var fileUri = new Uri(address);
                         modificationTime = File.GetLastWriteTime(fileUri.AbsolutePath);
                     }
                     else
                     {
                         URLInputStream.CheckConnectionResponseCode(response);
-                        if (response.GetType() == typeof(FtpWebResponse))
-                            modificationTime = ((FtpWebResponse)response).LastModified;
-                        else
-                            modificationTime = ((HttpWebResponse)response).LastModified;
+                        modificationTime = response.GetType() == typeof(FtpWebResponse)
+                            ? ((FtpWebResponse) response).LastModified
+                            : ((HttpWebResponse) response).LastModified;
                     }
 
                     IList<InstrumentProfile> list;
@@ -111,6 +137,7 @@ namespace com.dxfeed.ipf
                     {
                         list = Read(dataStream, url);
                     }
+
                     lastModified = modificationTime;
                     return list;
                 }
@@ -148,6 +175,7 @@ namespace com.dxfeed.ipf
                         query = address.Substring(j);
                         address = address.Substring(0, j);
                     }
+
                     var port = int.Parse(address.Substring(address.IndexOf(':') + 1));
                     if (port > 0 && port < 65536)
                         address = "http://" + address + "/ipf/all.ipf.gz" + query;
@@ -156,6 +184,7 @@ namespace com.dxfeed.ipf
                 {
                     // source does not end with valid port number, so just use it as is
                 }
+
             return address;
         }
 
@@ -187,9 +216,11 @@ namespace com.dxfeed.ipf
                         {
                             profiles.AddRange(Read(entry.Open(), entry.Name));
                         }
+
                         return profiles;
                     }
                 }
+
                 if (name.ToLower().EndsWith(".gz"))
                 {
                     using (GZipStream gzip = new GZipStream(inputStream, CompressionMode.Decompress))
@@ -197,6 +228,7 @@ namespace com.dxfeed.ipf
                         return Read(gzip);
                     }
                 }
+
                 return Read(inputStream);
             }
             catch (ArgumentNullException)
@@ -246,6 +278,7 @@ namespace com.dxfeed.ipf
                     throw new IOException("Read failed: " + exc);
                 }
             }
+
             return profiles;
         }
     }

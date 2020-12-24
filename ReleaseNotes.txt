@@ -12,7 +12,8 @@ Version 6.2.0
       `URLInputStream.OpenConnection(Uri url, string login, string password)`
     - Added constructors: `InstrumentProfileConnection(string address, string login, string password)`
   - [Samples] Added additional command line parameter to pass a bearer token. Samples that were affected: 
-    dxf_instrument_profile_sample, dxf_instrument_profile_live_sample
+    `dxf_instrument_profile_sample`, `dxf_instrument_profile_live_sample`
+* [DXFC-206] Fixed a minor memory leak related to incomplete deinitialization of the server message processor context.
 
 Version 6.1.0
 * Migrated to C-API 6.1.0

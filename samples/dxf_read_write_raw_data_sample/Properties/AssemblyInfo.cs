@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("dxf_read_write_raw_data_sample")]
 [assembly: AssemblyDescription("dxFeed Read|Write Raw Data Sample")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("dxFeed")]
+[assembly: AssemblyCompany("Devexperts")]
 [assembly: AssemblyProduct("dxf_read_write_raw_data_sample")]
-[assembly: AssemblyCopyright("Copyright (c) 2010-2020 dxFeed Solutions DE GmbH")]
+[assembly: AssemblyCopyright("Copyright (c) 2010-2021 Devexperts LLC")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

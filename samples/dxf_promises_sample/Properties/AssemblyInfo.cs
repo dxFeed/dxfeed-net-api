@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("dxf_promises_sample")]
 [assembly: AssemblyDescription("The simple console application demonstrates using promise methods of dxFeed API.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("dxFeed")]
+[assembly: AssemblyCompany("Devexperts")]
 [assembly: AssemblyProduct("dxf_promises_sample")]
-[assembly: AssemblyCopyright("Copyright (c) 2010-2020 dxFeed Solutions DE GmbH")]
+[assembly: AssemblyCopyright("Copyright (c) 2010-2021 Devexperts LLC")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

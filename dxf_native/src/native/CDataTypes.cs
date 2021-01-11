@@ -1,7 +1,7 @@
 ﻿#region License
 
 /*
-Copyright (c) 2010-2020 dxFeed Solutions DE GmbH
+Copyright (c) 2010-2021 Devexperts LLC
 
 This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
 If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -27,11 +27,10 @@ namespace com.dxfeed.native.api
         internal int size;
         /* This field is absent in TradeETH */
         internal int tick;
-        /* This field is absent in TradeETH */
         internal double change;
-        internal int raw_flags;
         internal double day_volume;
         internal double day_turnover;
+        internal int raw_flags;
         internal Direction direction;
         internal bool is_eth;
         internal Scope scope;
@@ -81,8 +80,8 @@ namespace com.dxfeed.native.api
         internal int div_freq;
         internal double exd_div_amount;
         internal int exd_div_date;
-        internal double _52_high_price;
-        internal double _52_low_price;
+        internal double high_52_week_price;
+        internal double low_52_week_price;
         internal double shares;
         internal double free_float;
         internal double high_limit_price;

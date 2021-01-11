@@ -1,3 +1,9 @@
+Version 7.0.0
+* [DXFC-175] [Breaking changes] Extended Trade and Profile events to support additional fields from QD records
+  - the `_52HighPrice` & `_52LowPrice` `IDxProfile` (and `NativeProfile`) properties were renamed to `High52WeekPrice` & 
+    `Low52WeekPrice` respectively
+  - the `Change` property was added to `IDxTradeETH` and `NativeTradeETH` classes
+
 Version 6.2.0
 * [DXFC-205] Fixed a bug with disconnecting (by server side) when removing symbols if no symbols have been added
 * [DXFC-203] Fixed segfaults and debug assertion failings when clearing symbols in a subscription's event listener

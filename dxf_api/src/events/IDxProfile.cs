@@ -1,7 +1,7 @@
 #region License
 
 /*
-Copyright (c) 2010-2020 dxFeed Solutions DE GmbH
+Copyright (c) 2010-2021 Devexperts LLC
 
 This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
 If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -45,13 +45,13 @@ namespace com.dxfeed.api.events
         /// <summary>
         /// Returns 52 Weeks high price of the security instrument.
         /// </summary>
-        double _52HighPrice { get; }
+        double High52WeekPrice { get; }
         /// <summary>
         /// Returns 52 Weeks low price of the security instrument.
         /// </summary>
-        double _52LowPrice { get; }
+        double Low52WeekPrice { get; }
         /// <summary>
-        /// Returns shares availiable of the security instrument.
+        /// Returns shares available of the security instrument.
         /// </summary>
         double Shares { get; }
         /// <summary>

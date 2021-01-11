@@ -1,7 +1,7 @@
 ﻿#region License
 
 /*
-Copyright (c) 2010-2020 dxFeed Solutions DE GmbH
+Copyright (c) 2010-2021 Devexperts LLC
 
 This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
 If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -24,7 +24,7 @@ namespace com.dxfeed.native.events
     /// given moment of time.
     ///
     /// IDxTrade event represents last trade information for regular trading hours(RTH) with an
-    /// official volumefor the whole trading day.
+    /// official volume for the whole trading day.
     ///
     /// IDxTradeETH event is defined only for symbols (typically stocks and ETFs) with a designated
     /// extended trading hours (ETH, pre market and post market trading sessions). It represents
@@ -47,6 +47,7 @@ namespace com.dxfeed.native.events
             ExchangeCode = trade.exchange_code;
             Price = trade.price;
             Size = trade.size;
+            Change = trade.change;
             DayVolume = trade.day_volume;
             DayTurnover = trade.day_turnover;
             TickDirection = trade.direction;
@@ -67,6 +68,7 @@ namespace com.dxfeed.native.events
             ExchangeCode = trade.ExchangeCode;
             Price = trade.Price;
             Size = trade.Size;
+            Change = trade.Change;
             DayVolume = trade.DayVolume;
             DayTurnover = trade.DayTurnover;
             TickDirection = trade.TickDirection;
@@ -80,11 +82,11 @@ namespace com.dxfeed.native.events
             return string.Format(CultureInfo.InvariantCulture,
                 "Time: {0:o}, Sequence: {1}, TimeNanoPart: {2}, " +
                 "ExchangeCode: {3}, Price: {4}, Size: {5},  "     +
-                "DayVolume: {6}, DayTurnover: {7}, "              +
-                "Tickdirection: {8}, IsETH: {9}, "                +
-                "RawFlags: {10:x8}, Scope: {11}",
+                "Change: {6}, DayVolume: {7}, DayTurnover: {8}, " +
+                "Tick Direction: {9}, IsETH: {10}, "                +
+                "RawFlags: {11:x8}, Scope: {12}",
                 Time, Sequence, TimeNanoPart,
-                ExchangeCode, Price, Size,
+                ExchangeCode, Price, Size, Change,
                 DayVolume, DayTurnover,
                 TickDirection, IsExtendedTradingHours,
                 RawFlags, Scope
@@ -118,6 +120,10 @@ namespace com.dxfeed.native.events
         /// Returns size of the last trade.
         /// </summary>
         public long Size { get; internal set; }
+        /// <summary>
+        /// Returns price change of the last trade, if available.
+        /// </summary>
+        public double Change { get; internal set; }
         /// <summary>
         /// Returns total volume traded for a day.
         /// </summary>

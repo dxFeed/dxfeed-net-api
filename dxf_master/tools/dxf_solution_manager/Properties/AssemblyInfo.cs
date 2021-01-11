@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("dxf_solution_manager")]
 [assembly: AssemblyDescription("dxFeed solution file manager for dxFeed make package tools")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("dxFeed Solutions DE GmbH")]
+[assembly: AssemblyCompany("Devexperts")]
 [assembly: AssemblyProduct("dxf_solution_manager")]
-[assembly: AssemblyCopyright("Copyright © 2014-2020 dxFeed Solutions DE GmbH")]
+[assembly: AssemblyCopyright("Copyright (c) 2010-2021 Devexperts LLC")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

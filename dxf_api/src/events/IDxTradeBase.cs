@@ -1,7 +1,7 @@
 #region License
 
 /*
-Copyright (c) 2010-2020 dxFeed Solutions DE GmbH
+Copyright (c) 2010-2021 Devexperts LLC
 
 This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
 If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -54,6 +54,10 @@ namespace com.dxfeed.api.events
         /// Returns size of the last trade.
         /// </summary>
         long Size { get; }
+        /// <summary>
+        /// Returns price change of the last trade, if available.
+        /// </summary>
+        double Change { get; }
         /// <summary>
         /// Returns total volume traded for a day.
         /// </summary>

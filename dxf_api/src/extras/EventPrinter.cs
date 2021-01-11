@@ -1,7 +1,7 @@
 #region License
 
 /*
-Copyright (c) 2010-2020 dxFeed Solutions DE GmbH
+Copyright (c) 2010-2021 Devexperts LLC
 
 This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
 If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -32,7 +32,7 @@ namespace com.dxfeed.api.extras
             where TE : IDxQuote
         {
             foreach (var q in buf)
-                Console.WriteLine(string.Format("{0} {1}", buf.Symbol, q));
+                Console.WriteLine($"{buf.Symbol} {q}");
         }
 
         public void OnTrade<TB, TE>(TB buf)
@@ -40,7 +40,7 @@ namespace com.dxfeed.api.extras
             where TE : IDxTrade
         {
             foreach (var t in buf)
-                Console.WriteLine(string.Format("{0} {1}", buf.Symbol, t));
+                Console.WriteLine($"{buf.Symbol} {t}");
         }
 
         public void OnOrder<TB, TE>(TB buf)
@@ -48,7 +48,7 @@ namespace com.dxfeed.api.extras
             where TE : IDxOrder
         {
             foreach (var o in buf)
-                Console.WriteLine(string.Format("{0} {1}", buf.Symbol, o));
+                Console.WriteLine($"{buf.Symbol} {o}");
         }
 
         public void OnProfile<TB, TE>(TB buf)
@@ -56,7 +56,7 @@ namespace com.dxfeed.api.extras
             where TE : IDxProfile
         {
             foreach (var p in buf)
-                Console.WriteLine(string.Format("{0} {1}", buf.Symbol, p));
+                Console.WriteLine($"{buf.Symbol} {p}");
         }
 
         public void OnFundamental<TB, TE>(TB buf)
@@ -64,7 +64,7 @@ namespace com.dxfeed.api.extras
             where TE : IDxSummary
         {
             foreach (var f in buf)
-                Console.WriteLine(string.Format("{0} {1}", buf.Symbol, f));
+                Console.WriteLine($"{buf.Symbol} {f}");
         }
 
         public void OnTimeAndSale<TB, TE>(TB buf)
@@ -72,7 +72,7 @@ namespace com.dxfeed.api.extras
             where TE : IDxTimeAndSale
         {
             foreach (var ts in buf)
-                Console.WriteLine(string.Format("{0} {1}", buf.Symbol, ts));
+                Console.WriteLine($"{buf.Symbol} {ts}");
         }
 
         #endregion
@@ -84,7 +84,7 @@ namespace com.dxfeed.api.extras
             where TE : IDxTradeETH
         {
             foreach (var te in buf)
-                Console.WriteLine(string.Format("{0} {1}", buf.Symbol, te));
+                Console.WriteLine($"{buf.Symbol} {te}");
         }
 
         #endregion
@@ -96,7 +96,7 @@ namespace com.dxfeed.api.extras
             where TE : IDxSpreadOrder
         {
             foreach (var so in buf)
-                Console.WriteLine(string.Format("{0} {1}", buf.Symbol, so));
+                Console.WriteLine($"{buf.Symbol} {so}");
         }
 
         #endregion
@@ -108,7 +108,7 @@ namespace com.dxfeed.api.extras
             where TE : IDxCandle
         {
             foreach (var c in buf)
-                Console.WriteLine(string.Format("{0} {1}", buf.Symbol, c));
+                Console.WriteLine($"{buf.Symbol} {c}");
         }
 
         #endregion
@@ -120,7 +120,7 @@ namespace com.dxfeed.api.extras
             where TE : IDxGreeks
         {
             foreach (var g in buf)
-                Console.WriteLine(string.Format("{0} {1}", buf.Symbol, g));
+                Console.WriteLine($"{buf.Symbol} {g}");
         }
 
         #endregion
@@ -132,7 +132,7 @@ namespace com.dxfeed.api.extras
             where TE : IDxTheoPrice
         {
             foreach (var tp in buf)
-                Console.WriteLine(string.Format("{0} {1}", buf.Symbol, tp));
+                Console.WriteLine($"{buf.Symbol} {tp}");
         }
 
         #endregion
@@ -144,7 +144,7 @@ namespace com.dxfeed.api.extras
             where TE : IDxUnderlying
         {
             foreach (var u in buf)
-                Console.WriteLine(string.Format("{0} {1}", buf.Symbol, u));
+                Console.WriteLine($"{buf.Symbol} {u}");
         }
 
         #endregion
@@ -156,7 +156,7 @@ namespace com.dxfeed.api.extras
             where TE : IDxSeries
         {
             foreach (var s in buf)
-                Console.WriteLine(string.Format("{0} {1}", buf.Symbol, s));
+                Console.WriteLine($"{buf.Symbol} {s}");
         }
 
         #endregion
@@ -168,7 +168,7 @@ namespace com.dxfeed.api.extras
             where TE : IDxConfiguration
         {
             foreach (var s in buf)
-                Console.WriteLine(string.Format("{0} {1}", buf.Symbol, s));
+                Console.WriteLine($"{buf.Symbol} {s}");
         }
 
         #endregion

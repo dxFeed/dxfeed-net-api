@@ -45,13 +45,13 @@ namespace com.dxfeed.api.events
         /// <summary>
         /// Returns 52 Weeks high price of the security instrument.
         /// </summary>
-        double _52HighPrice { get; }
+        double High52WeekPrice { get; }
         /// <summary>
         /// Returns 52 Weeks low price of the security instrument.
         /// </summary>
-        double _52LowPrice { get; }
+        double Low52WeekPrice { get; }
         /// <summary>
-        /// Returns shares availiable of the security instrument.
+        /// Returns shares available of the security instrument.
         /// </summary>
         double Shares { get; }
         /// <summary>

@@ -55,6 +55,10 @@ namespace com.dxfeed.api.events
         /// </summary>
         long Size { get; }
         /// <summary>
+        /// Returns price change of the last trade, if available.
+        /// </summary>
+        double Change { get; }
+        /// <summary>
         /// Returns total volume traded for a day.
         /// </summary>
         double DayVolume { get; }

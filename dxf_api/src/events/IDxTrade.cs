@@ -21,11 +21,6 @@ namespace com.dxfeed.api.events
     public interface IDxTrade : IDxTradeBase
     {
         /// <summary>
-        /// Returns price change of the last trade, if available.
-        /// </summary>
-        double Change { get; }
-
-        /// <summary>
         /// Returns Trend indicator – in which direction price is moving. The values are: Up (Tick = 1), Down (Tick = 2),
         /// and Undefined (Tick = 0).
         /// Should be used if IDxTradeBase.TickDirection is Undefined 

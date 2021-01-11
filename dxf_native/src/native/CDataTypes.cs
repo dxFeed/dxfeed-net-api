@@ -27,11 +27,10 @@ namespace com.dxfeed.native.api
         internal int size;
         /* This field is absent in TradeETH */
         internal int tick;
-        /* This field is absent in TradeETH */
         internal double change;
-        internal int raw_flags;
         internal double day_volume;
         internal double day_turnover;
+        internal int raw_flags;
         internal Direction direction;
         internal bool is_eth;
         internal Scope scope;
@@ -81,8 +80,8 @@ namespace com.dxfeed.native.api
         internal int div_freq;
         internal double exd_div_amount;
         internal int exd_div_date;
-        internal double _52_high_price;
-        internal double _52_low_price;
+        internal double high_52_week_price;
+        internal double low_52_week_price;
         internal double shares;
         internal double free_float;
         internal double high_limit_price;

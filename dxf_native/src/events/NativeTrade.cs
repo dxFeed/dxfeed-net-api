@@ -53,11 +53,6 @@ namespace com.dxfeed.native.events
 
         #region Implementation of IDxTrade
         /// <summary>
-        /// Returns price change of the last trade, if available.
-        /// </summary>
-        public double Change { get; private set; }
-        
-        /// <summary>
         /// Returns Trend indicator – in which direction price is moving. The values are: Up (Tick = 1), Down (Tick = 2),
         /// and Undefined (Tick = 0).
         /// Should be used if IDxTradeBase.TickDirection is Undefined 

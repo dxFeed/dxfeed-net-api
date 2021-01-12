@@ -30,22 +30,29 @@ namespace com.dxfeed.native.events
         /// </summary>
         /// <param name="trade">Native DxTrade object.</param>
         /// <param name="symbol">The event symbol.</param>
-        internal unsafe NativeTradeETH(DxTrade* trade, string symbol) : base(trade, symbol) {}
+        internal unsafe NativeTradeETH(DxTrade* trade, string symbol) : base(trade, symbol)
+        {
+        }
 
         /// <summary>
         /// Creates copy of trade object.
         /// </summary>
         /// <param name="trade">The IDxTrade object.</param>
-        internal NativeTradeETH(IDxTradeETH trade) : base(trade) {}
+        internal NativeTradeETH(IDxTradeETH trade) : base(trade)
+        {
+        }
 
         #region Implementation of ICloneable
+
         public override object Clone()
         {
             return new NativeTradeETH(this);
         }
+
         #endregion
 
         #region Implementation of IDxTradeETH
+
         #endregion
 
         public override string ToString()

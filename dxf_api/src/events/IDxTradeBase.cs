@@ -32,53 +32,71 @@ namespace com.dxfeed.api.events
         /// Returns time of the last trade. This time has precision up to milliseconds.
         /// </summary>
         DateTime Time { get; }
+
         /// <summary>
         /// Returns sequence number of the last trade to distinguish trades that have the same
         /// time. This sequence number does not have to be unique and
         /// does not need to be sequential.
         /// </summary>
         int Sequence { get; }
+
         /// <summary>
         /// Returns microseconds and nanoseconds time part of the last trade.
         /// </summary>
         int TimeNanoPart { get; }
+
         /// <summary>
         /// Returns exchange code of the last trade.
         /// </summary>
         char ExchangeCode { get; }
+
         /// <summary>
         /// Returns price of the last trade.
         /// </summary>
         double Price { get; }
+
         /// <summary>
         /// Returns size of the last trade.
         /// </summary>
         long Size { get; }
+
         /// <summary>
         /// Returns price change of the last trade, if available.
         /// </summary>
         double Change { get; }
+
+        /// <summary>
+        /// Returns identifier of the day that this event represents.
+        /// Identifier of the day is the number of days passed since January 1, 1970.
+        /// </summary>
+        int DayId { get; }
+
         /// <summary>
         /// Returns total volume traded for a day.
         /// </summary>
         double DayVolume { get; }
+
         /// <summary>
         /// Returns total turnover traded for a day.
         /// Day VWAP can be computed with getDayTurnover() / getDayVolume}().
         /// </summary>
         double DayTurnover { get; }
+
         /// <summary>
         /// Returns tick direction of the last trade.
         /// </summary>
         Direction TickDirection { get; }
+
         /// <summary>
         /// Returns whether last trade was in extended trading hours.
         /// </summary>
         bool IsExtendedTradingHours { get; }
+
         /// <summary>
         /// Returns implementation-specific raw bit flags value
         /// </summary>
         int RawFlags { get; }
+
         /// <summary>
         /// Returns whether last trade was a composite or regional (other constants are not used here).
         /// </summary>

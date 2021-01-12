@@ -24,10 +24,13 @@ namespace com.dxfeed.native.api
         internal int time_nanos;
         internal char exchange_code;
         internal double price;
+
         internal int size;
+
         /* This field is absent in TradeETH */
         internal int tick;
         internal double change;
+        internal int day_id;
         internal double day_volume;
         internal double day_turnover;
         internal int raw_flags;
@@ -89,7 +92,7 @@ namespace com.dxfeed.native.api
         internal long halt_start_time;
         internal long halt_end_time;
         internal int raw_flags;
-        internal IntPtr description;    // String
+        internal IntPtr description; // String
         internal IntPtr status_reason; // String
         internal TradingStatus trading_status;
         internal ShortSaleRestriction ssr;
@@ -245,7 +248,8 @@ namespace com.dxfeed.native.api
     }
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-    internal struct DxPriceLevel {
+    internal struct DxPriceLevel
+    {
         internal double price;
         internal long size;
         internal long time;

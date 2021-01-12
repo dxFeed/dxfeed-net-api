@@ -70,9 +70,10 @@ namespace com.dxfeed.tests.tools.eventplayer
             fixed (char* pSource = this.source)
             {
                 var length = Math.Min(4, source.Name.Length);
-                Marshal.Copy(source.Name.ToCharArray(), 0, (IntPtr)pSource, length);
-                pSource[length] = (char)0;
+                Marshal.Copy(source.Name.ToCharArray(), 0, (IntPtr) pSource, length);
+                pSource[length] = (char) 0;
             }
+
             this.mm_or_ss = mm_or_ss;
         }
     }
@@ -86,26 +87,24 @@ namespace com.dxfeed.tests.tools.eventplayer
         internal int time_nanos;
         internal char exchange_code;
         internal double price;
+
         internal int size;
+
         /* This field is absent in TradeETH */
         internal int tick;
-        /* This field is absent in TradeETH */
         internal double change;
-        internal int raw_flags;
+        internal int day_id;
         internal double day_volume;
         internal double day_turnover;
+        internal int raw_flags;
         internal Direction direction;
         internal bool is_eth;
         internal Scope scope;
 
 
-        internal DxTestTrade(long time, int sequence, int time_nanos,
-                                char exchange_code,
-                                double price, int size,
-                                int tick, double change,
-                                int raw_flags,
-                                double day_volume, double day_turnover,
-                                Direction direction, bool is_eth, Scope scope)
+        internal DxTestTrade(long time, int sequence, int time_nanos, char exchange_code, double price, int size,
+            int tick, double change, int day_id, double day_volume, double day_turnover, int raw_flags,
+            Direction direction, bool is_eth, Scope scope)
         {
             this.time = time;
             this.sequence = sequence;
@@ -115,9 +114,10 @@ namespace com.dxfeed.tests.tools.eventplayer
             this.size = size;
             this.tick = tick;
             this.change = change;
-            this.raw_flags = raw_flags;
+            this.day_id = day_id;
             this.day_volume = day_volume;
             this.day_turnover = day_turnover;
+            this.raw_flags = raw_flags;
             this.direction = direction;
             this.is_eth = is_eth;
             this.scope = scope;
@@ -145,10 +145,10 @@ namespace com.dxfeed.tests.tools.eventplayer
         internal double imp_volatility;
 
         internal DxTestCandle(EventFlag event_flags, long index, long time, int sequence,
-                                double count,
-                                double open, double high, double low, double close, double volume,
-                                double vwap, double bid_volume, double ask_volume,
-                                int open_interest, double imp_volatility)
+            double count,
+            double open, double high, double low, double close, double volume,
+            double vwap, double bid_volume, double ask_volume,
+            int open_interest, double imp_volatility)
         {
             this.event_flags = event_flags;
             this.index = index;
@@ -184,8 +184,8 @@ namespace com.dxfeed.tests.tools.eventplayer
         internal double vega;
 
         internal DxTestGreeks(EventFlag event_flags, long index, long time,
-                                double price, double volatility,
-                                double delta, double gamma, double theta, double rho, double vega)
+            double price, double volatility,
+            double delta, double gamma, double theta, double rho, double vega)
         {
             this.event_flags = event_flags;
             this.index = index;
@@ -210,5 +210,4 @@ namespace com.dxfeed.tests.tools.eventplayer
         internal int records_count;
         internal IntPtr records;
     }
-
 }

@@ -36,6 +36,9 @@ namespace com.dxfeed.native.events
             Sequence = s.sequence;
             Expiration = s.expiration;
             Volatility = s.volatility;
+            CallVolume = s.call_volume;
+            PutVolume = s.put_volume;
+            OptionVolume = s.option_volume;
             PutCallRatio = s.put_call_ratio;
             ForwardPrice = s.forward_price;
             Dividend = s.dividend;
@@ -50,6 +53,9 @@ namespace com.dxfeed.native.events
             Sequence = s.Sequence;
             Expiration = s.Expiration;
             Volatility = s.Volatility;
+            CallVolume = s.CallVolume;
+            PutVolume = s.PutVolume;
+            OptionVolume = s.OptionVolume;
             PutCallRatio = s.PutCallRatio;
             ForwardPrice = s.ForwardPrice;
             Dividend = s.Dividend;
@@ -59,20 +65,11 @@ namespace com.dxfeed.native.events
         public override string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture,
-                "Series: {{{0}, "                        +
-                "EventFlags: 0x{1:x2}, Index: {2:x16}, " +
-                "Time: {3:o}, Sequence: {4}, " +
-                "Expiration: {5}, " +
-                "Volatility: {6}, PutCallRatio: {7}, "   +
-                "ForwardPrice: {8}, "                    +
-                "Dividend: {9}, Interest: {10}"           +
-                 "}}",
-                EventSymbol,
-                (int) EventFlags, Index, Time, Sequence,
-                Expiration,
-                Volatility, PutCallRatio,
-                ForwardPrice,
-                Dividend, Interest
+                "Series: {{{0}, EventFlags: 0x{1:x2}, Index: {2:x16}, Time: {3:o}, Sequence: {4}, Expiration: {5}, " +
+                "Volatility: {6}, CallVolume: {7}, PutVolume: {8}, OptionVolume: {9}, PutCallRatio: {10}, " +
+                "ForwardPrice: {11}, Dividend: {12}, Interest: {13}}}",
+                EventSymbol, (int) EventFlags, Index, Time, Sequence, Expiration, Volatility, CallVolume, PutVolume, 
+                OptionVolume, PutCallRatio, ForwardPrice, Dividend, Interest
             );
         }
 
@@ -118,6 +115,18 @@ namespace com.dxfeed.native.events
         /// Returns ratio of put traded volume to call traded volume for a day.
         /// </summary>
         public double Volatility { get; private set; }
+        /// <summary>
+        /// Returns call options traded volume for a day
+        /// </summary>
+        public double CallVolume { get; private set; }
+        /// <summary>
+        /// Returns put options traded volume for a day
+        /// </summary>
+        public double PutVolume { get; private set; }
+        /// <summary>
+        /// Returns options traded volume for a day
+        /// </summary>
+        public double OptionVolume { get; private set; }
         /// <summary>
         /// Returns ratio of put traded volume to call traded volume for a day.
         /// </summary>

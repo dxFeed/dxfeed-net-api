@@ -193,6 +193,9 @@ namespace com.dxfeed.native.api
         internal double volatility;
         internal double front_volatility;
         internal double back_volatility;
+        internal double call_volume;
+        internal double put_volume;
+        internal double option_volume;
         internal double put_call_ratio;
     }
 
@@ -205,6 +208,9 @@ namespace com.dxfeed.native.api
         internal int sequence;
         internal int expiration;
         internal double volatility;
+        internal double call_volume;
+        internal double put_volume;
+        internal double option_volume;
         internal double put_call_ratio;
         internal double forward_price;
         internal double dividend;

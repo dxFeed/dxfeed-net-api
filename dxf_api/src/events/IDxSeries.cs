@@ -42,6 +42,18 @@ namespace com.dxfeed.api.events
         /// </summary>
         double Volatility { get; }
         /// <summary>
+        /// Returns call options traded volume for a day
+        /// </summary>
+        double CallVolume { get; }
+        /// <summary>
+        /// Returns put options traded volume for a day
+        /// </summary>
+        double PutVolume { get; }
+        /// <summary>
+        /// Returns options traded volume for a day
+        /// </summary>
+        double OptionVolume { get; }
+        /// <summary>
         /// Returns ratio of put traded volume to call traded volume for a day.
         /// </summary>
         double PutCallRatio { get; }

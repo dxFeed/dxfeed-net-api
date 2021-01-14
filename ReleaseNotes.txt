@@ -4,9 +4,16 @@ Version 7.0.0
     `Low52WeekPrice` respectively
   - the `Change` property was added to the `IDxTradeETH` and `NativeTradeETH` classes
 * [DXFC-207] [Breaking changes] Extended the Trade and TradeETH events with new field dayId
-  - the `DayId` property was added to to the `IDxTrade`, `NativeTrade`, `IDxTradeETH` and `NativeTradeETH` classes. 
+  - the `DayId` property was added to the `IDxTrade`, `IDxTradeETH` interfaces and `NativeTrade`, `NativeTradeETH` 
+    classes. 
     `DayId` - identifier of the day that `Trade` or `TradeETH` represents. Identifier of the day is the number of days 
     passed since January 1, 1970.
+* [DXFC-181] Extended the Underlying and Series events with putVolume and callVolume fields
+  - the `CallVolume`, `PutVolume` and `OptionVolume` properties were added to the `IDxUnderlying`, `IDxSeries` 
+    interfaces and `NativeUnderlying`, `NativeSeries` classes.
+    `CallVolume` - call options traded volume for a day.
+    `PutVolume` - put options traded volume for a day
+    `OptionVolume` - options traded volume  for a day.
 
 Version 6.2.0
 * [DXFC-205] Fixed a bug with disconnecting (by server side) when removing symbols if no symbols have been added

@@ -8,7 +8,7 @@ Version 7.0.0
     classes. 
     `DayId` - identifier of the day that `Trade` or `TradeETH` represents. Identifier of the day is the number of days 
     passed since January 1, 1970.
-* [DXFC-181] Extended the Underlying and Series events with putVolume and callVolume fields
+* [DXFC-181] [Breaking changes] Extended the Underlying and Series events with putVolume and callVolume fields
   - the `CallVolume`, `PutVolume` and `OptionVolume` properties were added to the `IDxUnderlying`, `IDxSeries` 
     interfaces and `NativeUnderlying`, `NativeSeries` classes.
     `CallVolume` - call options traded volume for a day.

@@ -465,5 +465,19 @@ namespace com.dxfeed.native.api
         {
             return __dxf_detach_regional_book_listener_v2(book, listener);
         }
+        
+        [DllImport(DXFEED_DLL, CallingConvention = CallingConvention.Cdecl, EntryPoint = "dxf_load_config_from_file")]
+        private static extern int __dxf_load_config_from_file(string fileName);
+        internal override int dxf_load_config_from_file(string fileName)
+        {
+            return __dxf_load_config_from_file(fileName);
+        }
+        
+        [DllImport(DXFEED_DLL, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl, EntryPoint = "dxf_load_config_from_wstring")]
+        private static extern int __dxf_load_config_from_string(string config);
+        internal override int dxf_load_config_from_string(string config)
+        {
+            return __dxf_load_config_from_string(config);
+        }
     }
 }

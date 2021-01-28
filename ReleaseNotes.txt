@@ -3,17 +3,38 @@ Version 7.0.0
   - the `_52HighPrice` & `_52LowPrice` `IDxProfile` (and `NativeProfile`) properties were renamed to `High52WeekPrice` & 
     `Low52WeekPrice` respectively
   - the `Change` property was added to the `IDxTradeETH` and `NativeTradeETH` classes
-* [DXFC-207] [Breaking changes] Extended the Trade and TradeETH events with new field dayId
+* [DXFC-207] Extended the Trade and TradeETH events with new field dayId
   - the `DayId` property was added to the `IDxTrade`, `IDxTradeETH` interfaces and `NativeTrade`, `NativeTradeETH` 
     classes. 
     `DayId` - identifier of the day that `Trade` or `TradeETH` represents. Identifier of the day is the number of days 
     passed since January 1, 1970.
-* [DXFC-181] [Breaking changes] Extended the Underlying and Series events with putVolume and callVolume fields
+* [DXFC-181] Extended the Underlying and Series events with putVolume and callVolume fields
   - the `CallVolume`, `PutVolume` and `OptionVolume` properties were added to the `IDxUnderlying`, `IDxSeries` 
     interfaces and `NativeUnderlying`, `NativeSeries` classes.
-    `CallVolume` - call options traded volume for a day.
-    `PutVolume` - put options traded volume for a day
-    `OptionVolume` - options traded volume  for a day.
+    - `CallVolume` - call options traded volume for a day.
+    - `PutVolume` - put options traded volume for a day
+    - `OptionVolume` - options traded volume  for a day.
+* [DXFC-208] Added the ability to configure client\server heartbeat parameters
+  - The default heartbeat period is set to 10 seconds. Which corresponds to the defaults of Java API. 
+    The default heartbeat timeout remains the same (120 seconds).
+  - Added the ability to load a configuration from a file or a string:
+
+    The config file sample: [Sample](https://github.com/dxFeed/dxfeed-net-api/dxfeed-api-config.sample.toml)
+
+    The config file properties:
+    - `network.heartbeatPeriod` -- The period between sending heartbeat messages (default value = 10 seconds)
+    - `network.heartbeatTimeout` -- Timeout for receiving messages from the server, after which the api tries to
+      change the server and/or reconnect (default value = 120 seconds)
+  - Added the new function `NativeTools.LoadConfigFromFile(string fileName)` that initializes the C\C#-API configuration
+    and loads a config (in TOML format) from a file.
+      - `fileName` -- The config (in TOML format) file name
+  - Added the new function `NativeTools.LoadConfigFromString(string config)` that initializes the C\C#-API configuration
+    and loads a config (in TOML format) from a string.
+      - `config` -- The config (in TOML format) string
+
+  For the successful application of the configuration, these functions must be called before creating any connection.
+
+  Examples of using functions can be found in their descriptions and in the generated documentation.
 
 Version 6.2.0
 * [DXFC-205] Fixed a bug with disconnecting (by server side) when removing symbols if no symbols have been added

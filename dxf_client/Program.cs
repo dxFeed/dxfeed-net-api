@@ -346,6 +346,7 @@ namespace dxf_client {
             Console.WriteLine(
                 $"Connecting to {address} for [{events}{snapshotString}]{timeSeriesString} on [{symbols}] ...");
 
+            //NativeTools.LoadConfigFromString("network.heartbeatPeriod = 11\n");
             NativeTools.InitializeLogging("dxf_client.log", true, true, logDataTransferFlag);
 
             var listener = new EventPrinter();

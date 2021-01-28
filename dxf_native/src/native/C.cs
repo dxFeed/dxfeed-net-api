@@ -771,5 +771,37 @@ namespace com.dxfeed.native.api
         *  book_listener - a listener callback function pointer
         */
         internal abstract int dxf_detach_regional_book_listener_v2(IntPtr book, dxf_regional_quote_listener_t listener);
+        
+
+        /// <summary>
+        /// Initializes the C-API configuration and loads a config (in TOML format) from a file
+        /// 
+        /// For the successful application of the configuration, this function must be called before creating any connection
+        ///
+        /// DXFEED_API ERRORCODE dxf_load_config_from_file(const char* file_name);
+        ///
+        /// The config file sample: [Sample](https://github.com/dxFeed/dxfeed-c-api/dxfeed-api-config.sample.toml)
+        /// The TOML format specification: https://toml.io/en/v1.0.0-rc.2
+        /// </summary>
+        /// <param name="fileName">The config (in TOML format) file name</param>
+        /// <returns>DXF_SUCCESS on successful logger initialization or DXF_FAILURE on error; dxf_get_last_error can
+        /// be used to retrieve the error code and description in case of failure;</returns>
+        internal abstract int dxf_load_config_from_file(string fileName);
+        
+        /// <summary>
+        /// Initializes the C-API configuration and loads a config (in TOML format) from a string
+        /// 
+        /// For the successful application of the configuration, this function must be called before creating any connection
+        ///
+        /// DXFEED_API ERRORCODE dxf_load_config_from_wstring(dxf_const_string_t config);
+        ///
+        /// The config file sample: [Sample](https://github.com/dxFeed/dxfeed-c-api/dxfeed-api-config.sample.toml)
+        /// The TOML format specification: https://toml.io/en/v1.0.0-rc.2
+        /// </summary>
+        /// <param name="config">The config (in TOML format) string</param>
+        /// <returns>DXF_SUCCESS on successful logger initialization or DXF_FAILURE on error; dxf_get_last_error can
+        /// be used to retrieve the error code and description in case of failure;</returns>
+        internal abstract int dxf_load_config_from_string(string config);
+        
     }
 }

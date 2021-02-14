@@ -131,6 +131,16 @@ namespace com.dxfeed.native.api
         {
             return __dxf_create_connection_auth_custom(address, authscheme, authdata, notifier, conn_status_notifier, stcn, stdn, user_data, out connection);
         }
+        
+        [DllImport(DXFEED_DLL, CallingConvention = CallingConvention.Cdecl, EntryPoint = "dxf_set_on_server_heartbeat_notifier")]
+        private static extern int __SetOnServerHeartbeatNotifier(IntPtr connection,
+            ConnectionOnServerHeartbeatNotifier notifier, IntPtr userData);
+
+        internal override int SetOnServerHeartbeatNotifier(IntPtr connection,
+            ConnectionOnServerHeartbeatNotifier notifier, IntPtr userData)
+        {
+            return __SetOnServerHeartbeatNotifier(connection, notifier, userData);
+        }
 
         [DllImport(DXFEED_DLL, CallingConvention = CallingConvention.Cdecl, EntryPoint = "dxf_close_connection")]
         private static extern int __dxf_close_connection(IntPtr connection);

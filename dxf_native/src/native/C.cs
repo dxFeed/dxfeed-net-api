@@ -98,6 +98,20 @@ namespace com.dxfeed.native.api
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate void dxf_conn_status_notifier_t(IntPtr connection, ConnectionStatus old_status, ConnectionStatus new_status, IntPtr user_data);
         
+        /// <summary>
+        /// The callback type of a connection incoming heartbeat notification
+        ///
+        /// Called when a server heartbeat arrives and contains non empty payload
+        /// </summary>
+        /// <param name="connection">The connection handle</param>
+        /// <param name="serverMillis">The server time in milliseconds (from the incoming heartbeat payload)</param>
+        /// <param name="serverLagMark">The server's messages composing lag time in microseconds (from the incoming heartbeat payload)</param>
+        /// <param name="connectionRtt">The calculated connection RTT in microseconds</param>
+        /// <param name="userData">The user data passed to SetOnServerHeartbeatNotifier</param>
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        internal delegate void ConnectionOnServerHeartbeatNotifier(IntPtr connection, long serverMillis, int serverLagMark, int connectionRtt, IntPtr userData);
+        
+        
         /* the low level callback types, required in case some thread-specific initialization must be performed
            on the client side on the thread creation/destruction
          */
@@ -268,6 +282,23 @@ namespace com.dxfeed.native.api
                                                                 dxf_socket_thread_destruction_notifier_t stdn,
                                                                 IntPtr user_data,
                                                                 out IntPtr connection);
+
+        /// <summary>
+        /// Sets a server heartbeat notifier's callback to the connection.
+        ///
+        /// This notifier will be invoked when the new heartbeat arrives from a server and contains non empty payload
+        ///
+        /// `[DllImport(DXFEED_DLL, CallingConvention = CallingConvention.Cdecl, EntryPoint = "dxf_set_on_server_heartbeat_notifier")]`
+        /// </summary>
+        /// <param name="connection">The handle of a previously created connection</param>
+        /// <param name="notifier">The notifier callback function pointer</param>
+        /// <param name="userData">The data to be passed to the callback function</param>
+        /// <returns>
+        /// DXF_SUCCESS (DX_OK) on successful logger initialization or DXF_FAILURE (DX_ERR) on error; link dxf_get_last_error
+        /// can be used to retrieve the error code and description in case of failure;
+        /// </returns>
+        internal abstract int SetOnServerHeartbeatNotifier(IntPtr connection,
+            ConnectionOnServerHeartbeatNotifier notifier, IntPtr userData);
 
         /*
          *  Closes a connection.

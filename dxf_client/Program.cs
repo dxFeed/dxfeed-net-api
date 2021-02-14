@@ -353,6 +353,10 @@ namespace dxf_client {
             using (var con = token.IsSet
                 ? new NativeConnection(address, token.Value, DisconnectHandler, ConnectionStatusChangeHandler)
                 : new NativeConnection(address, DisconnectHandler, ConnectionStatusChangeHandler)) {
+                con.SetOnServerHeartbeatHandler((connection, time, lagMark, rtt) =>
+                {
+                    Console.Error.WriteLine($"##### Server time (UTC) = {time}, Server lag = {lagMark} us, RTT = {rtt} us #####");
+                });
                 IDxSubscription s = null;
                 try {
                     if (isSnapshot.Value)

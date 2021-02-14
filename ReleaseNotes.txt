@@ -1,3 +1,23 @@
+Version 7.1.0
+* [DXFC-209] Implemented the heartbeat semantics with payload
+  - Added the new method `NativeConnection.SetOnServerHeartbeatHandler(OnServerHeartbeatHandler handler)`
+    that sets a handler that will be called when a server heartbeat arrives and contains non empty payload
+
+  - Added the new delegate type `delegate void OnServerHeartbeatHandler(IDxConnection connection, DateTime serverDateTime, int serverLagMark, int connectionRtt)`
+    which is describes the handler type of a connection's incoming heartbeat notification
+    Passed parameters:
+      - connection     - The current connection object
+      - serverDateTime - The server UTC time (from the incoming heartbeat payload)
+      - serverLagMark  - The server's messages composing lag time in microseconds (from the incoming heartbeat payload)
+      - connectionRtt  - The calculated connection RTT in microseconds
+
+    An example of usage:
+    ```csharp
+    connection.SetOnServerHeartbeatHandler((connection, time, lagMark, rtt) => {
+        Console.Error.WriteLine($"##### Server time (UTC) = {time}, Server lag = {lagMark} us, RTT = {rtt} us #####");
+    });
+    ```
+
 Version 7.0.0
 * [DXFC-175] [Breaking changes] Extended Trade and Profile events to support additional fields from QD records
   - the `_52HighPrice` & `_52LowPrice` `IDxProfile` (and `NativeProfile`) properties were renamed to `High52WeekPrice` & 

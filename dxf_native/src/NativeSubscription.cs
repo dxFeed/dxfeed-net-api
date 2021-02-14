@@ -53,7 +53,11 @@ namespace com.dxfeed.native
         {
             var connectionPtr = connection.Handle;
             this.eventType = eventType;
-            eventListener = listener ?? throw new ArgumentNullException(nameof(listener));
+            
+            if (listener != null)
+                eventListener = listener;
+            else
+                throw new ArgumentNullException(nameof(listener));
 
             C.CheckOk(eventSubscriptionFlags == EventSubscriptionFlag.Default
                 ? C.Instance.dxf_create_subscription(connectionPtr, eventType, out subscriptionPtr)
@@ -107,7 +111,11 @@ namespace com.dxfeed.native
         {
             var connectionPtr = connection.Handle;
             this.eventType = eventType;
-            eventListener = listener ?? throw new ArgumentNullException(nameof(listener));
+
+            if (listener == null)
+                throw new ArgumentNullException(nameof(listener));
+            
+            eventListener = listener;
 
             if (eventSubscriptionFlags == EventSubscriptionFlag.Default)
             {
@@ -203,7 +211,11 @@ namespace com.dxfeed.native
         {
             var connectionPtr = connection.Handle;
             eventType = EventType.Candle;
-            eventListener = listener ?? throw new ArgumentNullException(nameof(listener));
+
+            if (listener == null)
+                throw new ArgumentNullException(nameof(listener));
+            
+            eventListener = listener;
 
             var unixTimestamp = time == null ? 0 : Tools.DateToUnixTime((DateTime)time);
 
@@ -379,9 +391,12 @@ namespace com.dxfeed.native
         {
             if (symbol == null)
                 throw new ArgumentException("Invalid symbol parameter.");
+            
+            IntPtr candleAttributesPtr;
+            
             C.CheckOk(C.Instance.dxf_create_candle_symbol_attributes(symbol.BaseSymbol,
                 symbol.ExchangeCode, symbol.PeriodValue, symbol.PeriodId, symbol.PriceId,
-                symbol.SessionId, symbol.AlignmentId, symbol.PriceLevel, out var candleAttributesPtr));
+                symbol.SessionId, symbol.AlignmentId, symbol.PriceLevel, out candleAttributesPtr));
             try
             {
                 C.CheckOk(C.Instance.dxf_add_candle_symbol(subscriptionPtr, candleAttributesPtr));
@@ -513,9 +528,11 @@ namespace com.dxfeed.native
             
             foreach (var symbol in symbols)
             {
+                IntPtr candleAttributesPtr;
+                
                 C.CheckOk(C.Instance.dxf_create_candle_symbol_attributes(symbol.BaseSymbol,
                     symbol.ExchangeCode, symbol.PeriodValue, symbol.PeriodId, symbol.PriceId,
-                    symbol.SessionId, symbol.AlignmentId, symbol.PriceLevel, out var candleAttributesPtr));
+                    symbol.SessionId, symbol.AlignmentId, symbol.PriceLevel, out candleAttributesPtr));
                 try
                 {
                     C.CheckOk(C.Instance.dxf_remove_candle_symbol(subscriptionPtr, candleAttributesPtr));
@@ -608,7 +625,10 @@ namespace com.dxfeed.native
         /// <exception cref="DxException">Internal error.</exception>
         public unsafe IList<string> GetSymbols()
         {
-            C.CheckOk(C.Instance.dxf_get_symbols(subscriptionPtr, out var head, out var len));
+            IntPtr head;
+            int len;
+            
+            C.CheckOk(C.Instance.dxf_get_symbols(subscriptionPtr, out head, out len));
 
             var result = new string[len];
             for (var i = 0; i < len; i++)

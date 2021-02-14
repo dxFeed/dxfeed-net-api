@@ -581,7 +581,9 @@ namespace com.dxfeed.native {
         public IDictionary<string, string> Properties {
             get {
                 IDictionary<string, string> result = new Dictionary<string, string>();
-                C.CheckOk(C.Instance.dxf_get_connection_properties_snapshot(handle, out var properties, out var count));
+                IntPtr properties;
+                int count;
+                C.CheckOk(C.Instance.dxf_get_connection_properties_snapshot(handle, out properties, out count));
                 if (properties == IntPtr.Zero) return result;
                 try {
                     for (var i = 0; i < count; ++i) {
@@ -613,7 +615,8 @@ namespace com.dxfeed.native {
         /// </remarks>
         public string ConnectedAddress {
             get {
-                C.CheckOk(C.Instance.dxf_get_current_connected_address(handle, out var address));
+                IntPtr address;
+                C.CheckOk(C.Instance.dxf_get_current_connected_address(handle, out address));
                 if (address == IntPtr.Zero) {
                     return null;
                 }
@@ -635,7 +638,8 @@ namespace com.dxfeed.native {
         /// </remarks>
         public ConnectionStatus Status {
             get {
-                C.CheckOk(C.Instance.dxf_get_current_connection_status(handle, out var status));
+                ConnectionStatus status;
+                C.CheckOk(C.Instance.dxf_get_current_connection_status(handle, out status));
 
                 return status;
             }

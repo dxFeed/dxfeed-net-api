@@ -57,8 +57,11 @@ namespace com.dxfeed.native
         public NativeSnapshotSubscription(NativeConnection connection, long time,
             IDxSnapshotListener listener)
         {
+            if (listener == null)
+                throw new ArgumentNullException(nameof(listener));
+
             connectionPtr = connection.Handle;
-            this.listener = listener ?? throw new ArgumentNullException(nameof(listener));
+            this.listener = listener;
             this.time = time;
             this.connection = connection;
         }
@@ -78,12 +81,15 @@ namespace com.dxfeed.native
         public NativeSnapshotSubscription(NativeConnection connection, EventType eventType,
             long time, IDxSnapshotListener listener)
         {
+            if (listener == null)
+                throw new ArgumentNullException(nameof(listener));
+            
             if ((eventType & (eventType - 1)) > 0)
                 throw new ArgumentException("Only one event type is allowed for snapshot.");
 
             connectionPtr = connection.Handle;
             this.eventType = eventType;
-            this.listener = listener ?? throw new ArgumentNullException(nameof(listener));
+            this.listener = listener;
             this.time = time;
         }
 
@@ -239,9 +245,11 @@ namespace com.dxfeed.native
             if (eventType != EventType.None && eventType != EventType.Candle)
                 throw new InvalidOperationException("It is allowed only for Candle subscription");
 
+            IntPtr candleAttributesPtr;
+            
             C.CheckOk(C.Instance.dxf_create_candle_symbol_attributes(symbol.BaseSymbol,
                 symbol.ExchangeCode, symbol.PeriodValue, symbol.PeriodId, symbol.PriceId,
-                symbol.SessionId, symbol.AlignmentId, symbol.PriceLevel, out var candleAttributesPtr));
+                symbol.SessionId, symbol.AlignmentId, symbol.PriceLevel, out candleAttributesPtr));
 
             try
             {
@@ -436,7 +444,9 @@ namespace com.dxfeed.native
         /// <exception cref="DxException">Internal error.</exception>
         public IList<string> GetSymbols()
         {
-            C.Instance.dxf_get_snapshot_symbol(snapshotPtr, out var symbolPtr);
+            IntPtr symbolPtr;
+            
+            C.Instance.dxf_get_snapshot_symbol(snapshotPtr, out symbolPtr);
             
             var symbols = new List<string>();
             

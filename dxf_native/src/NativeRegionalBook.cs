@@ -19,91 +19,106 @@ namespace com.dxfeed.native
 {
     public class NativeRegionalBook : IDxRegionalBook
     {
-        public NativeRegionalBook(NativeConnection con, string symbol, IDxRegionalBookListener book_listener,
-            IDxQuoteListener quote_listener)
+        /// <summary>
+        /// Creates the new regional book instance
+        /// </summary>
+        /// <remarks>
+        ///     Don't call this constructor inside any listeners and callbacks of NativeSubscription, NativeConnection,
+        /// NativeRegionalBook, NativeSnapshotSubscription classes
+        /// </remarks>
+        /// <param name="connection">The current connection</param>
+        /// <param name="symbol">The book symbol</param>
+        /// <param name="bookListener">The book listener implementation</param>
+        /// <param name="quoteListener">The quote listener implementation</param>
+        /// <exception cref="ArgumentException"></exception>
+        public NativeRegionalBook(NativeConnection connection, string symbol, IDxRegionalBookListener bookListener,
+            IDxQuoteListener quoteListener)
         {
             if (string.IsNullOrWhiteSpace(symbol))
             {
                 throw new ArgumentException("Invalid symbol parameter.");
             }
-            this.symbol = symbol;
-            this.book_listener = book_listener;
-            this.quote_listener = quote_listener;
+            
+            this.bookListener = bookListener;
+            this.quoteListener = quoteListener;
 
-            if (book_listener != null || quote_listener != null)
+            if (bookListener == null && quoteListener == null) return;
+            
+            C.CheckOk(C.Instance.dxf_create_regional_book(connection.Handle, symbol, out bookHandle));
+            try
             {
-                C.CheckOk(C.Instance.dxf_create_regional_book(con.Handler, this.symbol, out book));
-                try
+                if (this.bookListener != null)
                 {
-                    if (this.book_listener != null)
-                    {
-                        C.CheckOk(C.Instance.dxf_attach_regional_book_listener(book, native_book_listener = OnBook, IntPtr.Zero));
-                    }
-                    if (this.quote_listener != null)
-                    {
-                        C.CheckOk(C.Instance.dxf_attach_regional_book_listener_v2(book, native_quote_listener = OnQuote, IntPtr.Zero));
-                    }
+                    C.CheckOk(C.Instance.dxf_attach_regional_book_listener(bookHandle, nativeBookListener = OnBook, IntPtr.Zero));
                 }
-                catch (DxException)
+                if (this.quoteListener != null)
                 {
-                    C.Instance.dxf_close_regional_book(book);
-                    throw;
+                    C.CheckOk(C.Instance.dxf_attach_regional_book_listener_v2(bookHandle, nativeQuoteListener = OnQuote, IntPtr.Zero));
                 }
+            }
+            catch (DxException)
+            {
+                C.Instance.dxf_close_regional_book(bookHandle);
+                throw;
             }
         }
-
+        
         protected virtual void Dispose(bool disposing)
         {
-            if (!disposedValue)
-            {
-                if (disposing)
-                {
-                }
-                if (book != null)
-                {
-                    C.Instance.dxf_close_regional_book(book);
-                }
-                disposedValue = true;
-            }
+            if (disposedValue) return;
+            
+            C.Instance.dxf_close_regional_book(bookHandle);
+            disposedValue = true;
         }
 
         ~NativeRegionalBook() {
            Dispose(false);
         }
 
+        /// <summary>
+        /// Disposes the regional book
+        /// </summary>
+        /// <remarks>
+        ///     Don't call this method inside any listeners and callbacks of NativeSubscription, NativeConnection,
+        /// NativeRegionalBook, NativeSnapshotSubscription classes
+        /// </remarks>
         public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
 
-        private void OnBook(IntPtr price_level_book, IntPtr user_data)
+        private void OnBook(IntPtr priceLevelBook, IntPtr userData)
         {
-            if (price_level_book == IntPtr.Zero)
+            if (priceLevelBook == IntPtr.Zero)
             {
                 return;
             }
-            DxPriceLevelBook native_book;
+            DxPriceLevelBook nativeBook;
             unsafe
             {
-                native_book = *((DxPriceLevelBook*)price_level_book);
+                nativeBook = *((DxPriceLevelBook*)priceLevelBook);
             }
-            dxfeed.api.events.DxPriceLevelBook.DxPriceLevel[] asks =
-                new dxfeed.api.events.DxPriceLevelBook.DxPriceLevel[native_book.asks_count];
-            for (int i = 0; i < native_book.asks_count; ++i)
+            var asks =
+                new dxfeed.api.events.DxPriceLevelBook.DxPriceLevel[nativeBook.asks_count];
+            
+            for (var i = 0; i < nativeBook.asks_count; ++i)
             {
-                asks[i] = CreateLevel(GetLevel(native_book.asks, i));
+                asks[i] = CreateLevel(GetLevel(nativeBook.asks, i));
             }
-            dxfeed.api.events.DxPriceLevelBook.DxPriceLevel[] bids =
-                new dxfeed.api.events.DxPriceLevelBook.DxPriceLevel[native_book.bids_count];
-            for (int i = 0; i < native_book.bids_count; ++i)
+            
+            var bids =
+                new dxfeed.api.events.DxPriceLevelBook.DxPriceLevel[nativeBook.bids_count];
+            
+            for (var i = 0; i < nativeBook.bids_count; ++i)
             {
-                bids[i] = CreateLevel(GetLevel(native_book.bids, i));
+                bids[i] = CreateLevel(GetLevel(nativeBook.bids, i));
             }
-            dxfeed.api.events.DxPriceLevelBook book = new dxfeed.api.events.DxPriceLevelBook(
-                ToString(native_book.symbol), bids, asks);
+            
+            var book = new dxfeed.api.events.DxPriceLevelBook(
+                ToString(nativeBook.symbol), bids, asks);
 
-            book_listener.OnChanged(book);
+            bookListener.OnChanged(book);
         }
 
         private unsafe DxPriceLevel GetLevel(IntPtr levels, int index)
@@ -122,18 +137,19 @@ namespace com.dxfeed.native
             return new string((char*)str.ToPointer());
         }
 
-        private void OnQuote(IntPtr symbol, IntPtr quote, int count, IntPtr user_data)
+        private void OnQuote(IntPtr symbol, IntPtr quote, int count, IntPtr userData)
         {
             var quoteBuf = NativeBufferFactory.CreateQuoteBuf(symbol, quote, count, null);
-            quote_listener.OnQuote<NativeEventBuffer<NativeQuote>, NativeQuote>(quoteBuf);
+            quoteListener.OnQuote<NativeEventBuffer<NativeQuote>, NativeQuote>(quoteBuf);
         }
 
-        private bool disposedValue = false; // To detect redundant calls
-        private readonly string symbol;
-        private readonly IDxRegionalBookListener book_listener;
-        private readonly IDxQuoteListener quote_listener;
-        private readonly C.dxf_regional_quote_listener_t native_quote_listener;//to prevent from being garbage collected
-        private readonly C.dxf_price_level_book_listener_t native_book_listener;//to prevent from being garbage collected
-        private readonly IntPtr book;        
+        private bool disposedValue; // To detect redundant calls
+        private readonly IDxRegionalBookListener bookListener;
+        private readonly IDxQuoteListener quoteListener;
+        // ReSharper disable once NotAccessedField.Local
+        private readonly C.dxf_regional_quote_listener_t nativeQuoteListener;//to prevent from being garbage collected
+        // ReSharper disable once NotAccessedField.Local
+        private readonly C.dxf_price_level_book_listener_t nativeBookListener;//to prevent from being garbage collected
+        private readonly IntPtr bookHandle;        
     }
 }

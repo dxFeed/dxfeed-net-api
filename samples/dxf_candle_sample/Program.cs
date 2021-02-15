@@ -77,7 +77,8 @@ namespace dxf_candle_sample {
                 "    priceLevel - The candle price level\n" +
                 "                 default: NaN\n\n" +
                 "All missed attributes values will be set to defaults\n" +
-                "example: dxf_candle_sample demo.dxfeed.com:7300 XBT/USD 2016-06-18 exchange=A period=1 type=d price=last session=false alignment=m priceLevel=0.5"
+                "example: dxf_candle_sample demo.dxfeed.com:7300 XBT/USD 2016-06-18 exchange=A period=1 type=d price=last session=false alignment=m priceLevel=0.5\n" +
+                "example: dxf_candle_sample demo.dxfeed.com:7300 XBT/USD&A{=1d,price=last,a=m,pl=0.5} 2016-06-18\n"
             );
         }
 
@@ -101,6 +102,7 @@ namespace dxf_candle_sample {
                 var priceLevel = CandleSymbolAttributes.PriceLevel.DEFAULT;
                 var logDataTransferFlag = false;
 
+                var attributesAreSet = false;
                 for (var i = SYMBOL_INDEX + 1; i < args.Length; i++) {
                     if (!dateTime.IsSet && TryParseDateTimeParam(args[i], dateTime))
                         continue;
@@ -130,24 +132,35 @@ namespace dxf_candle_sample {
 
                     if (match.Groups[1].Value.Equals("exchange")) {
                         if (match.Groups[3].Length == 1 && char.IsLetter(match.Groups[3].Value[0]))
+                        {
                             exchange = CandleSymbolAttributes.Exchange.NewExchange(match.Groups[3].Value[0]);
+                            attributesAreSet = true;
+                        }
                     } else if (match.Groups[1].Value.Equals("period")) {
                         periodValue = double.Parse(match.Groups[3].Value, new CultureInfo("en-US"));
+                        attributesAreSet = true;
                     } else if (match.Groups[1].Value.Equals("type")) {
                         period = CandleSymbolAttributes.Period.NewPeriod(periodValue,
                             CandleType.Parse(match.Groups[3].Value));
+                        attributesAreSet = true;
                     } else if (match.Groups[1].Value.Equals("price")) {
                         price = CandleSymbolAttributes.Price.Parse(match.Groups[3].Value);
+                        attributesAreSet = true;
                     } else if (match.Groups[1].Value.Equals("session")) {
                         session = CandleSymbolAttributes.Session.Parse(match.Groups[3].Value);
+                        attributesAreSet = true;
                     } else if (match.Groups[1].Value.Equals("alignment")) {
                         alignment = CandleSymbolAttributes.Alignment.Parse(match.Groups[3].Value);
+                        attributesAreSet = true;
                     } else if (match.Groups[1].Value.Equals("priceLevel")) {
                         priceLevel = CandleSymbolAttributes.PriceLevel.Parse(match.Groups[3].Value);
+                        attributesAreSet = true;
                     }
                 }
 
-                var symbol = CandleSymbol.ValueOf(baseSymbol, exchange, period, price, session, alignment, priceLevel);
+                var symbol = (attributesAreSet)
+                    ? CandleSymbol.ValueOf(baseSymbol, exchange, period, price, session, alignment, priceLevel)
+                    : CandleSymbol.ValueOf(baseSymbol);
 
                 Console.WriteLine($"Connecting to {address} for Candle on {symbol} ...");
 

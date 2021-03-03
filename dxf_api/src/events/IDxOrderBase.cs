@@ -39,36 +39,40 @@ namespace com.dxfeed.api.events
         int TimeNanoPart { get; }
         
         /// <summary>
-        /// Returns order action if available, otherwise - OrderAction.Undefined.
+        /// Returns order action if available, otherwise - <c>OrderAction.Undefined</c>.
         ///
         /// This field is a part of the FOB ("Full Order Book") support.
         /// </summary>
+        /// <seealso cref="com.dxfeed.api.data.OrderAction"/>
         OrderAction Action { get; }
         
         /// <summary>
-        /// Returns time of the last NativeOrder.Action if available, otherwise - 0.
+        /// Returns time of the last <see cref="com.dxfeed.api.data.OrderAction">OrderAction</see> if available, otherwise - 0.
         ///
         /// This field is a part of the FOB ("Full Order Book") support.
         /// </summary>
+        /// <seealso cref="com.dxfeed.api.data.OrderAction"/>
         DateTime ActionTime { get; }
         
         /// <summary>
-        /// Returns order ID if available, otherwise - 0. Some actions OrderAction.Trade, OrderAction.Bust have no
+        /// Returns order ID if available, otherwise - 0. Some actions <c>OrderAction.Trade</c>, <c>OrderAction.Bust</c> have no
         /// order since they are not related to any order in Order book.
         ///
         /// This field is a part of the FOB ("Full Order Book") support.
         /// </summary>
+        /// <seealso cref="com.dxfeed.api.data.OrderAction"/>
         long OrderId { get; }
         
         /// <summary>
         /// Returns auxiliary order ID if available, otherwise - 0:
-        /// - in OrderAction.New - ID of the order replaced by this new order
-        /// - in OrderAction.Delete - ID of the order that replaces this deleted order
-        /// - in OrderAction.Partial - ID of the aggressor order
-        /// - in OrderAction.Execute - ID of the aggressor order
+        /// - in <c>OrderAction.New</c> - ID of the order replaced by this new order
+        /// - in <c>OrderAction.Delete</c> - ID of the order that replaces this deleted order
+        /// - in <c>OrderAction.Partial</c> - ID of the aggressor order
+        /// - in <c>OrderAction.Execute</c> - ID of the aggressor order
         ///
         /// This field is a part of the FOB ("Full Order Book") support.
         /// </summary>
+        /// <seealso cref="com.dxfeed.api.data.OrderAction"/>
         long AuxOrderId { get; }
         
         /// <summary>
@@ -91,6 +95,7 @@ namespace com.dxfeed.api.events
         ///
         /// This field is a part of the FOB ("Full Order Book") support.
         /// </summary>
+        /// <seealso cref="com.dxfeed.api.data.OrderAction"/>
         long TradeId { get; }
         
         /// <summary>
@@ -98,6 +103,7 @@ namespace com.dxfeed.api.events
         ///
         /// This field is a part of the FOB ("Full Order Book") support.
         /// </summary>
+        /// <seealso cref="com.dxfeed.api.data.OrderAction"/>
         double TradePrice { get; }
         
         /// <summary>
@@ -105,6 +111,7 @@ namespace com.dxfeed.api.events
         ///
         /// This field is a part of the FOB ("Full Order Book") support.
         /// </summary>
+        /// <seealso cref="com.dxfeed.api.data.OrderAction"/>
         double TradeSize { get; }
         
         /// <summary>

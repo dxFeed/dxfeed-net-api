@@ -16,26 +16,103 @@ using com.dxfeed.api.events;
 
 namespace com.dxfeed.native.api
 {
+    /// <summary>
+    /// Trade event is a snapshot of the price and size of the last trade during regular trading hours and an overall day
+    /// volume and day turnover. It represents the most recent information that is available about the regular last trade on
+    /// the market at any given moment of time.
+    /// </summary>
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
     internal struct DxTrade
     {
+        /// <summary>
+        /// Time of the last trade.
+        /// </summary>
         internal long time;
+        
+        /// <summary>
+        /// Sequence number of the last trade to distinguish trades that have the same time.
+        /// </summary>
         internal int sequence;
+        
+        /// <summary>
+        /// Microseconds and nanoseconds part of time of the last trade
+        /// </summary>
         internal int time_nanos;
+        
+        /// <summary>
+        /// Exchange code of the last trade
+        /// </summary>
         internal char exchange_code;
+        
+        /// <summary>
+        /// Price of the last trade
+        /// </summary>
         internal double price;
 
+        /// <summary>
+        /// Size of the last trade as integer number (rounded toward zero)
+        /// </summary>
         internal int size;
 
-        /* This field is absent in TradeETH */
+        /// <summary>
+        /// Trend indicator – in which direction price is moving. The values are: Up (Tick = 1), Down (Tick = 2),
+        /// and Undefined (Tick = 0).
+        /// Should be used if direction is Undefined (Direction.Undefined = 0).
+        ///
+        /// This field is absent in NativeTradeETH
+        /// </summary>
         internal int tick;
+        
+        /// <summary>
+        /// Change of the last trade.
+        /// Value equals price minus NativeSummary.PrevDayClosePrice
+        /// </summary>
         internal double change;
+        
+        /// <summary>
+        /// Identifier of the day that this `trade` or `trade_eth` represents. Identifier of the day is the number of
+        /// days passed since January 1, 1970.
+        /// </summary>
         internal int day_id;
+        
+        /// <summary>
+        /// Total volume traded for a day
+        /// </summary>
         internal double day_volume;
+        
+        /// <summary>
+        /// Total turnover traded for a day
+        /// </summary>
         internal double day_turnover;
+        
+        /// <summary>
+        /// This field contains several individual flags encoded as an integer number the following way:
+        ///
+        /// |31...4|  3 |  2 |  1 |  0 |
+        /// |------|----|----|----|----|
+        /// |      |  Direction |||ETH |
+        ///
+        /// 1. Tick Direction (Direction)
+        /// 2. ETH (extendedTradingHours) - flag that determines current trading session: extended or regular
+        ///    (0 - regular trading hours, 1 - extended trading hours).
+        /// </summary>
         internal int raw_flags;
+        
+        /// <summary>
+        /// Tick direction of the last trade
+        /// </summary>
         internal Direction direction;
+        
+        /// <summary>
+        /// Last trade was in extended trading hours
+        /// </summary>
         internal bool is_eth;
+        
+        /// <summary>
+        /// Last trade scope
+        ///
+        /// Possible values: Scope.Composite (Trade\TradeETH events) , Scope.Regional (Trade&\TradeETH& events)
+        /// </summary>
         internal Scope scope;
     }
 
@@ -101,19 +178,127 @@ namespace com.dxfeed.native.api
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
     internal unsafe struct DxOrder
     {
-        internal EventFlag event_flags;
-        internal long index;
-        internal long time;
-        internal int time_nanos;
-        internal int sequence;
-        internal double price;
-        internal int size;
-        internal int count;
-        internal Scope scope;
-        internal Side side;
-        internal char exchange_code;
+        /// <summary>
+        /// Source of this order
+        /// </summary>
         internal fixed char source[5];
-        internal IntPtr mm_or_ss; // String
+        
+        /// <summary>
+        /// Transactional event flags.
+        /// </summary>
+        internal EventFlag event_flags;
+        
+        /// <summary>
+        /// Unique per-symbol index of this order.
+        /// </summary>
+        internal long index;
+        
+        /// <summary>
+        /// Time of this order. Time is measured in milliseconds between the current time and midnight,
+        /// January 1, 1970 UTC.
+        /// </summary>
+        internal long time;
+        
+        /// <summary>
+        /// Sequence number of this order to distinguish orders that have the same time.
+        /// </summary>
+        internal int sequence;
+
+        /// <summary>
+        /// Microseconds and nanoseconds part of time of this order.
+        /// </summary>
+        internal int time_nanos;
+
+        /// <summary>
+        /// Order action if available, otherwise - OrderAction.Undefined.
+        ///
+        /// This field is a part of the FOB ("Full Order Book") support.
+        /// </summary>
+        internal OrderAction action;
+
+        /// <summary>
+        /// Time of the last NativeOrder.Action if available, otherwise - 0.
+        ///
+        /// This field is a part of the FOB ("Full Order Book") support.
+        /// </summary>
+        internal long action_time;
+
+        /// <summary>
+        /// Contains order ID if available, otherwise - 0. Some actions OrderAction.Trade, OrderAction.Bust have no
+        /// order since they are not related to any order in Order book.
+        ///
+        /// This field is a part of the FOB ("Full Order Book") support.
+        /// </summary>
+        internal long order_id;
+        
+        /// <summary>
+        /// Contains auxiliary order ID if available, otherwise - 0:
+        /// - in OrderAction.New - ID of the order replaced by this new order
+        /// - in OrderAction.Delete - ID of the order that replaces this deleted order
+        /// - in OrderAction.Partial - ID of the aggressor order
+        /// - in OrderAction.Execute - ID of the aggressor order
+        ///
+        /// This field is a part of the FOB ("Full Order Book") support.
+        /// </summary>
+        internal long aux_order_id;
+        
+        /// <summary>
+        /// Price of this order.
+        /// </summary>
+        internal double price;
+        
+        /// <summary>
+        /// Size of this order
+        /// </summary>
+        internal int size;
+        
+        /// <summary>
+        /// Number of individual orders in this aggregate order.
+        /// </summary>
+        internal int count;
+
+        /// <summary>
+        /// Contains trade (order execution) ID for events containing trade-related action if available, otherwise - 0.
+        ///
+        /// This field is a part of the FOB ("Full Order Book") support.
+        /// </summary>
+        internal long trade_id;
+
+        /// <summary>
+        /// Contains trade price for events containing trade-related action.
+        ///
+        /// This field is a part of the FOB ("Full Order Book") support.
+        /// </summary>
+        internal double trade_price;
+
+        /// <summary>
+        /// Contains trade size for events containing trade-related action.
+        ///
+        /// This field is a part of the FOB ("Full Order Book") support.
+        /// </summary>
+        internal double trade_size;
+        
+        /// <summary>
+        /// Exchange code of this order
+        /// </summary>
+        internal char exchange_code;
+        
+        /// <summary>
+        /// Side of this order
+        /// </summary>
+        internal Side side;
+        
+        /// <summary>
+        /// Scope of this order
+        /// </summary>
+        internal Scope scope;
+        
+        /// <summary>
+        /// Market maker of this order or spread symbol of this spread order
+        ///
+        /// String
+        /// </summary>
+        internal IntPtr mm_or_ss;
     }
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]

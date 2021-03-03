@@ -92,6 +92,7 @@
     <Compile Include="src\data\EventFlag.cs" />
     <Compile Include="src\data\EventSubscriptionFlag.cs" />
     <Compile Include="src\data\EventType.cs" />
+    <Compile Include="src\data\OrderAction.cs" />
     <Compile Include="src\events\IDxTradeETH.cs" />
     <Compile Include="src\events\IndexedEventSource.cs" />
     <Compile Include="src\events\market\MarketEventSymbols.cs" />

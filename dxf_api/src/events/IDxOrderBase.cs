@@ -26,38 +26,100 @@ namespace com.dxfeed.api.events
         ///  Returns date time of this order.
         /// </summary>
         DateTime Time { get; }
-        /// <summary>
-        ///  Returns microseconds and nanoseconds time part of the last trade.
-        /// </summary>
-        int TimeNanoPart { get; }
+        
         /// <summary>
         ///   Returns sequence number of this order to distinguish orders that have the same Time.
         ///   This sequence number does not have to be unique and does not need to be sequential.
         /// </summary>
         int Sequence { get; }
+
+        /// <summary>
+        ///  Returns microseconds and nanoseconds time part of the last trade.
+        /// </summary>
+        int TimeNanoPart { get; }
+        
+        /// <summary>
+        /// Returns order action if available, otherwise - OrderAction.Undefined.
+        ///
+        /// This field is a part of the FOB ("Full Order Book") support.
+        /// </summary>
+        OrderAction Action { get; }
+        
+        /// <summary>
+        /// Returns time of the last NativeOrder.Action if available, otherwise - 0.
+        ///
+        /// This field is a part of the FOB ("Full Order Book") support.
+        /// </summary>
+        DateTime ActionTime { get; }
+        
+        /// <summary>
+        /// Returns order ID if available, otherwise - 0. Some actions OrderAction.Trade, OrderAction.Bust have no
+        /// order since they are not related to any order in Order book.
+        ///
+        /// This field is a part of the FOB ("Full Order Book") support.
+        /// </summary>
+        long OrderId { get; }
+        
+        /// <summary>
+        /// Returns auxiliary order ID if available, otherwise - 0:
+        /// - in OrderAction.New - ID of the order replaced by this new order
+        /// - in OrderAction.Delete - ID of the order that replaces this deleted order
+        /// - in OrderAction.Partial - ID of the aggressor order
+        /// - in OrderAction.Execute - ID of the aggressor order
+        ///
+        /// This field is a part of the FOB ("Full Order Book") support.
+        /// </summary>
+        long AuxOrderId { get; }
+        
         /// <summary>
         ///   Returns price of this order.
         /// </summary>
         double Price { get; }
+        
         /// <summary>
         ///   Returns size of this order.
         /// </summary>
         long Size { get; }
+        
         /// <summary>
         ///   Returns number of individual orders in this aggregate order.
         /// </summary>
         int Count { get; }
+        
         /// <summary>
-        ///   Returns scope of this order.
+        /// Returns trade (order execution) ID for events containing trade-related action if available, otherwise - 0.
+        ///
+        /// This field is a part of the FOB ("Full Order Book") support.
         /// </summary>
-        Scope Scope { get; }
+        long TradeId { get; }
+        
         /// <summary>
-        ///   Returns side of this order.
+        /// Returns trade price for events containing trade-related action.
+        ///
+        /// This field is a part of the FOB ("Full Order Book") support.
         /// </summary>
-        Side Side { get; }
+        double TradePrice { get; }
+        
+        /// <summary>
+        /// Returns trade size for events containing trade-related action.
+        ///
+        /// This field is a part of the FOB ("Full Order Book") support.
+        /// </summary>
+        double TradeSize { get; }
+        
         /// <summary>
         ///   Returns exchange code of this order.
         /// </summary>
         char ExchangeCode { get; }
+
+        /// <summary>
+        ///   Returns side of this order.
+        /// </summary>
+        Side Side { get; }
+
+        /// <summary>
+        ///   Returns scope of this order.
+        /// </summary>
+        Scope Scope { get; }
     }
 }

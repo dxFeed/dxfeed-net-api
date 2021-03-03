@@ -30,51 +30,59 @@ namespace com.dxfeed.native.events
         {
             DxOrder order = *o;
 
+            Source = OrderSource.ValueOf(new string(order.source));
             EventFlags = order.event_flags;
             Index = order.index;
             Time = TimeConverter.ToUtcDateTime(order.time);
-            TimeNanoPart = order.time_nanos;
             Sequence = order.sequence;
+            TimeNanoPart = order.time_nanos;
+            Action = order.action;
+            ActionTime = TimeConverter.ToUtcDateTime(order.action_time);
+            OrderId = order.order_id;
+            AuxOrderId = order.aux_order_id;
             Price = order.price;
             Size = order.size;
             Count = order.count;
-            Scope = order.scope;
-            Side = order.side;
+            TradeId = order.trade_id;
+            TradePrice = order.trade_price;
+            TradeSize = order.trade_size;
             ExchangeCode = order.exchange_code;
-            Source = OrderSource.ValueOf(new string(order.source));
+            Side = order.side;
+            Scope = order.scope;
         }
 
         internal NativeOrderBase(IDxOrderBase order) : base(order.EventSymbol)
         {
+            Source = order.Source;
             EventFlags = order.EventFlags;
             Index = order.Index;
             Time = order.Time;
-            TimeNanoPart = order.TimeNanoPart;
             Sequence = order.Sequence;
+            TimeNanoPart = order.TimeNanoPart;
+            Action = order.Action;
+            ActionTime = order.ActionTime;
+            OrderId = order.OrderId;
+            AuxOrderId = order.AuxOrderId;
             Price = order.Price;
             Size = order.Size;
             Count = order.Count;
-            Scope = order.Scope;
-            Side = order.Side;
+            TradeId = order.TradeId;
+            TradePrice = order.TradePrice;
+            TradeSize = order.TradeSize;
             ExchangeCode = order.ExchangeCode;
-            Source = order.Source;
+            Side = order.Side;
+            Scope = order.Scope;
         }
 
         public override string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture,
-                "Source: {0}, "                                   +
-                "EventFlags: 0x{1:x2}, Index: {2:x16}, "          +
-                "Time: {3:o}, TimeNanoPart: {4}, Sequence: {5}, " +
-                "Price: {6}, Size: {7}, Count: {8}, "             +
-                "Scope: {9}, Side: {10}, "                        +
-                "ExchangeCode: {11}",
-                Source,
-                (int) EventFlags, Index,
-                Time, TimeNanoPart, Sequence,
-                Price, Size, Count,
-                Scope, Side,
-                ExchangeCode
+                "Source: {0}, EventFlags: 0x{1:x2}, Index: {2:x16}, Time: {3:o}, Sequence: {4}, TimeNanoPart: {5}, " +
+                "Action: {6}, ActionTime: {7:o}, OrderId: {8}, AuxOrderId: {9}, Price: {10}, Size: {11}, Count: {12}, " +
+                "ExchangeCode: {13}, Side: {14}, Scope: {15}, TradeId: {16}, TradePrice: {17}, TradeSize: {18}",
+                Source, (int) EventFlags, Index, Time, Sequence, TimeNanoPart,
+                Action, ActionTime, OrderId, AuxOrderId, Price, Size, Count,
+                ExchangeCode, Side, Scope, TradeId, TradePrice, TradeSize
             );
         }
 
@@ -90,18 +98,18 @@ namespace com.dxfeed.native.events
         #region Implementation of IDxOrderBase
 
         /// <summary>
-        ///     Returns source of this event.
+        /// Returns source of this event.
         /// </summary>
         public IndexedEventSource Source { get; internal set; }
 
         /// <summary>
-        ///    Gets or sets transactional event flags.
-        ///    See "Event Flags" section from <see cref="IDxIndexedEvent"/>.
+        /// Gets or sets transactional event flags.
+        /// See "Event Flags" section from <see cref="IDxIndexedEvent"/>.
         /// </summary>
         public EventFlag EventFlags { get; set; }
 
         /// <summary>
-        ///     Gets unique per-symbol index of this event.
+        /// Returns unique per-symbol index of this event.
         /// </summary>
         public long Index { get; internal set; }
 
@@ -109,39 +117,101 @@ namespace com.dxfeed.native.events
         ///  Returns date time of this order.
         /// </summary>
         public DateTime Time { get; internal set; }
+        
         /// <summary>
-        ///  Returns microseconds and nanoseconds time part of the last trade.
-        /// </summary>
-        public int TimeNanoPart { get; internal set; }
-        /// <summary>
-        ///   Returns sequence number of this order to distinguish orders that have the same Time.
-        ///   This sequence number does not have to be unique and does not need to be sequential.
+        /// Returns sequence number of this order to distinguish orders that have the same Time.
+        /// This sequence number does not have to be unique and does not need to be sequential.
         /// </summary>
         public int Sequence { get; internal set; }
+
         /// <summary>
-        ///   Returns price of this order.
+        /// Returns microseconds and nanoseconds time part of the last trade.
+        /// </summary>
+        public int TimeNanoPart { get; internal set; }
+        
+        /// <summary>
+        /// Returns order action if available, otherwise - OrderAction.Undefined.
+        ///
+        /// This field is a part of the FOB ("Full Order Book") support.
+        /// </summary>
+        public OrderAction Action { get; internal set; }
+        
+        /// <summary>
+        /// Returns time of the last NativeOrder.Action if available, otherwise - 0.
+        ///
+        /// This field is a part of the FOB ("Full Order Book") support.
+        /// </summary>
+        public DateTime ActionTime { get; internal set; }
+        
+        /// <summary>
+        /// Returns order ID if available, otherwise - 0. Some actions OrderAction.Trade, OrderAction.Bust have no
+        /// order since they are not related to any order in Order book.
+        ///
+        /// This field is a part of the FOB ("Full Order Book") support.
+        /// </summary>
+        public long OrderId { get; internal set; }
+        
+        /// <summary>
+        /// Returns auxiliary order ID if available, otherwise - 0:
+        /// - in OrderAction.New - ID of the order replaced by this new order
+        /// - in OrderAction.Delete - ID of the order that replaces this deleted order
+        /// - in OrderAction.Partial - ID of the aggressor order
+        /// - in OrderAction.Execute - ID of the aggressor order
+        ///
+        /// This field is a part of the FOB ("Full Order Book") support.
+        /// </summary>
+        public long AuxOrderId { get; internal set; }
+        
+        /// <summary>
+        /// Returns price of this order.
         /// </summary>
         public double Price { get; internal set; }
+        
         /// <summary>
-        ///   Returns size of this order.
+        /// Returns size of this order.
         /// </summary>
         public long Size { get; internal set; }
+        
         /// <summary>
-        ///   Returns number of individual orders in this aggregate order.
+        /// Returns number of individual orders in this aggregate order.
         /// </summary>
         public int Count { get; internal set; }
+        
         /// <summary>
-        ///   Returns scope of this order.
+        /// Returns trade (order execution) ID for events containing trade-related action if available, otherwise - 0.
+        ///
+        /// This field is a part of the FOB ("Full Order Book") support.
         /// </summary>
-        public Scope Scope { get; internal set; }
+        public long TradeId { get; internal set; }
+        
         /// <summary>
-        ///   Returns side of this order.
+        /// Returns trade price for events containing trade-related action.
+        ///
+        /// This field is a part of the FOB ("Full Order Book") support.
         /// </summary>
-        public Side Side { get; internal set; }
+        public double TradePrice { get; internal set; }
+        
         /// <summary>
-        ///   Returns exchange code of this order.
+        /// Returns trade size for events containing trade-related action.
+        ///
+        /// This field is a part of the FOB ("Full Order Book") support.
+        /// </summary>
+        public double TradeSize { get; internal set; }
+        
+        /// <summary>
+        /// Returns exchange code of this order.
         /// </summary>
         public char ExchangeCode { get; internal set; }
+
+        /// <summary>
+        /// Returns side of this order.
+        /// </summary>
+        public Side Side { get; internal set; }
+
+        /// <summary>
+        /// Returns scope of this order.
+        /// </summary>
+        public Scope Scope { get; internal set; }
 
         #endregion
     }

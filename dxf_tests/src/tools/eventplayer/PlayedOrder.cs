@@ -65,9 +65,16 @@ namespace com.dxfeed.tests.tools.eventplayer
             this.Time = order.Time;
             this.TimeNanoPart = order.TimeNanoPart;
             this.Sequence = order.Sequence;
+            Action = order.Action;
+            ActionTime = order.ActionTime;
+            OrderId = order.OrderId;
+            AuxOrderId = order.AuxOrderId;
             this.Price = order.Price;
             this.Size = order.Size;
             this.Count = order.Count;
+            TradeId = order.TradeId;
+            TradePrice = order.TradePrice;
+            TradeSize = order.TradeSize;
             this.Scope = order.Scope;
             this.Side = order.Side;
             this.ExchangeCode = order.ExchangeCode;
@@ -84,6 +91,10 @@ namespace com.dxfeed.tests.tools.eventplayer
         {
             get; private set;
         }
+
+        public long TradeId { get; }
+        public double TradePrice { get; }
+        public double TradeSize { get; }
 
         public DxTestOrder Data
         {
@@ -119,6 +130,8 @@ namespace com.dxfeed.tests.tools.eventplayer
         {
             get; private set;
         }
+
+        public long AuxOrderId { get; }
 
         public double Price
         {
@@ -159,6 +172,10 @@ namespace com.dxfeed.tests.tools.eventplayer
         {
             get; private set;
         }
+
+        public OrderAction Action { get; }
+        public DateTime ActionTime { get; }
+        public long OrderId { get; }
 
         object IDxEventType.EventSymbol
         {

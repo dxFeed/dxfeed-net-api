@@ -1,3 +1,8 @@
+Version 7.2.0
+* [DXFC-212] Extended the Order event for Full Order Book
+  - the `Action`, `ActionTime`, `OrderId`, `AuxOrderId`, `TradeId`, `TradePrice`, `TradeSize` fields were added to the Order event
+    See the `OrderAction` enum description (documentation) where it is indicated in which cases which fields will be filled.
+
 Version 7.1.0
 * [DXFC-209] Implemented the heartbeat semantics with payload
   - Added the new method `NativeConnection.SetOnServerHeartbeatHandler(OnServerHeartbeatHandler handler)`

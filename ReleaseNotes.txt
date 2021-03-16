@@ -1,3 +1,14 @@
+Version 7.3.0
+* [DXFC-219] Fixed a bug with broken parsing of negative values
+* [DXFC-202] Added the ability to filter log messages by level
+  The `logger.level` config property was added. This property describes a minimum logging level.
+  Possible values: "error", "warn", "info", "debug", "trace". Default value = "info"
+  An example of limiting the output of logs:
+  ```csharp
+  NativeTools.LoadConfigFromString("logger.level = \"error\"\n");
+  ```
+  See the config file sample: [Sample](https://github.com/dxFeed/dxfeed-net-api/blob/master/dxfeed-api-config.sample.toml)
+
 Version 7.2.0
 * [DXFC-212] Extended the Order event for Full Order Book
   - the `Action`, `ActionTime`, `OrderId`, `AuxOrderId`, `TradeId`, `TradePrice`, `TradeSize` fields were added to the Order event

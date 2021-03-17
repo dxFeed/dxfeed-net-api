@@ -160,7 +160,7 @@ namespace dxf_snapshot_sample {
                     ? new NativeConnection(address, token.Value, DisconnectHandler)
                     : new NativeConnection(address, DisconnectHandler)) {
                     using (var s = con.CreateSnapshotSubscription(eventType, DEFAULT_TIME,
-                        new SnapshotListener(DEFAULT_RECORDS_PRINT_LIMIT))) {
+                        new SnapshotListener(recordsPrintLimit.Value))) {
                         switch (eventType)
                         {
                             case EventType.Order:

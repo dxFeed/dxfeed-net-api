@@ -130,6 +130,15 @@ namespace com.dxfeed.native.api
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate void dxf_snapshot_listener_t(IntPtr snapshotData, IntPtr userData);
 
+        /// <summary>
+        /// Snapshot listener prototype
+        /// </summary>
+        /// <param name="snapshotData">pointer to the received snapshot data</param>
+        /// <param name="new_snapshot">snapshot or update</param>
+        /// <param name="userData">pointer to user struct, use NULL by default</param>
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        internal delegate void dxf_snapshot_inc_listener_t(IntPtr snapshotData, int new_snapshot, IntPtr userData);
+
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate void dxf_price_level_book_listener_t(IntPtr price_level_book, IntPtr user_data);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
@@ -677,6 +686,17 @@ namespace com.dxfeed.native.api
         */
         internal abstract int dxf_attach_snapshot_listener(IntPtr snapshot, dxf_snapshot_listener_t snapshotListener,
                                                            IntPtr userData);
+
+        /*
+         *  Attaches a listener callback to the snapshot.
+         *  This callback will be invoked when the new snapshot arrives or existing updates.
+         *  No error occurs if it's attempted to attach the same listener twice or more.
+         *
+         *  snapshot - a handle of the snapshot to which a listener is to be attached
+         *  snapshot_listener - a listener callback function pointer
+        */
+        internal abstract int dxf_attach_snapshot_inc_listener(IntPtr snapshot, dxf_snapshot_inc_listener_t snapshotListener,
+                                                               IntPtr userData);
 
         /*
          *  Detaches a listener from the snapshot.

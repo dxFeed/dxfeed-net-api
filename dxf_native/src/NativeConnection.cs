@@ -493,6 +493,16 @@ namespace com.dxfeed.native {
             return result;
         }
 
+        public IDxSubscription CreateIncOrderSnapshotSubscription(IDxIncOrderSnapshotListener listener)
+        {
+            if (handle == IntPtr.Zero)
+                throw new NativeDxException("not connected");
+
+            IDxSubscription result = new NativeSnapshotSubscription(this, listener);
+            subscriptions.Add(result);
+            return result;
+        }
+
         /// <summary>
         ///     Creates a snapshot subscription
         /// </summary>

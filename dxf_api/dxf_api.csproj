@@ -152,6 +152,7 @@
     <Compile Include="src\listeners\event\IDxTradeEthListener.cs" />
     <Compile Include="src\listeners\event\IDxEventListener.cs" />
     <Compile Include="src\listeners\snapshot\IDxGreeksSnapshotListener.cs" />
+    <Compile Include="src\listeners\snapshot\IDxOrderIncSnapshotListener.cs" />
     <Compile Include="src\listeners\snapshot\IDxSeriesSnapshotListener.cs" />
     <Compile Include="src\listeners\snapshot\IDxSpreadOrderSnapshotListener.cs" />
     <Compile Include="src\listeners\snapshot\IDxTimeAndSaleSnapshotListener.cs" />

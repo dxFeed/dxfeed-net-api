@@ -33,6 +33,7 @@ namespace com.dxfeed.native
         //to prevent callback from being garbage collected
         // ReSharper disable once NotAccessedField.Local
         private C.dxf_snapshot_listener_t callback;
+        private C.dxf_snapshot_inc_listener_t incCallback;
         private readonly long time;
         private string source = string.Empty;
         private EventType eventType = EventType.None;
@@ -54,15 +55,34 @@ namespace com.dxfeed.native
         /// <param name="time">Milliseconds time in the past.</param>
         /// <param name="listener">Snapshot events listener.</param>
         /// <exception cref="ArgumentNullException">Listener is invalid.</exception>
-        public NativeSnapshotSubscription(NativeConnection connection, long time,
-            IDxSnapshotListener listener)
-        {
+        public NativeSnapshotSubscription(NativeConnection connection, long time, IDxSnapshotListener listener) {
             if (listener == null)
                 throw new ArgumentNullException(nameof(listener));
 
             connectionPtr = connection.Handle;
             this.listener = listener;
             this.time = time;
+            this.connection = connection;
+        }
+
+        /// <summary>
+        /// Creates the new native order subscription on snapshot with incremental updates.
+        /// </summary>
+        /// <remarks>
+        ///     Don't call this constructor inside any listeners and callbacks of NativeSubscription, NativeConnection,
+        /// NativeRegionalBook, NativeSnapshotSubscription classes
+        /// </remarks>
+        /// <param name="connection">Native connection pointer.</param>
+        /// <param name="listener">Snapshot or update events listener.</param>
+        /// <exception cref="ArgumentNullException">Listener is invalid.</exception>
+        public NativeSnapshotSubscription(NativeConnection connection, IDxIncOrderSnapshotListener listener)
+        {
+            if (listener == null)
+                throw new ArgumentNullException(nameof(listener));
+
+            connectionPtr = connection.Handle;
+            this.listener = listener;
+            this.time = 0;
             this.connection = connection;
         }
 
@@ -78,9 +98,7 @@ namespace com.dxfeed.native
         /// <param name="time">Milliseconds time in the past.</param>
         /// <param name="listener">Snapshot events listener.</param>
         /// <exception cref="ArgumentNullException">Listener is invalid.</exception>
-        public NativeSnapshotSubscription(NativeConnection connection, EventType eventType,
-            long time, IDxSnapshotListener listener)
-        {
+        public NativeSnapshotSubscription(NativeConnection connection, EventType eventType, long time, IDxSnapshotListener listener) {
             if (listener == null)
                 throw new ArgumentNullException(nameof(listener));
             
@@ -128,6 +146,17 @@ namespace com.dxfeed.native
                     if (listener is IDxSeriesSnapshotListener)
                         (listener as IDxSeriesSnapshotListener).OnSeriesSnapshot<NativeEventBuffer<NativeSeries>, NativeSeries>(seriesBuf);
                     break;
+            }
+        }
+
+        private void OnIncOrderSnapshot(IntPtr snapshotDataPtr, int newSnapshot, IntPtr userData)
+        {
+            var snapshotData = (DxSnapshotData)Marshal.PtrToStructure(snapshotDataPtr, typeof(DxSnapshotData));
+
+            if (snapshotData.event_type == EventType.Order) {
+                var orderBuf = NativeBufferFactory.CreateOrderBuf(snapshotData.symbol, snapshotData.records, snapshotData.records_count, null);
+                if (listener is IDxIncOrderSnapshotListener)
+                    (listener as IDxIncOrderSnapshotListener).OnOrderSnapshot<NativeEventBuffer<NativeOrder>, NativeOrder>(orderBuf, newSnapshot != 0);
             }
         }
 
@@ -216,7 +245,10 @@ namespace com.dxfeed.native
 
             try
             {
-                C.CheckOk(C.Instance.dxf_attach_snapshot_listener(snapshotPtr, callback = OnEvent, IntPtr.Zero));
+                if (listener is IDxIncOrderSnapshotListener)
+                    C.CheckOk(C.Instance.dxf_attach_snapshot_inc_listener(snapshotPtr, incCallback = OnIncOrderSnapshot, IntPtr.Zero));
+                else
+                    C.CheckOk(C.Instance.dxf_attach_snapshot_listener(snapshotPtr, callback = OnEvent, IntPtr.Zero));
             }
             catch (DxException)
             {

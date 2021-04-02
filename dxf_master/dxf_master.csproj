@@ -64,6 +64,10 @@
       <Name>dxf_events_sample</Name>
       <Label>BuildPublish</Label>
     </ProjectReference>
+    <ProjectReference Include="..\samples\dxf_inc_order_snapshot_sample\dxf_inc_order_snapshot_sample.csproj">
+      <Name>dxf_inc_order_snapshot_sample</Name>
+      <Label>BuildPublish</Label>
+    </ProjectReference>
     <ProjectReference Include="..\samples\dxf_snapshot_sample\dxf_snapshot_sample.csproj">
       <Name>dxf_snapshot_sample</Name>
       <Label>BuildPublish</Label>

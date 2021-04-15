@@ -1,3 +1,6 @@
+Version 7.5.0
+* The new price level order source was added: iex.
+
 Version 7.4.0
 * [DXFC-221] Added the ability to receive incremental snapshot changes
   - Added `IDxIncOrderSnapshotListener` interface for subscribing to incremental snapshot changes

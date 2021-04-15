@@ -218,6 +218,11 @@ namespace com.dxfeed.api.events
         public static readonly OrderSource SMFE = new OrderSource("SMFE");
 
         /// <summary>
+        /// Investors exchange. Record for price level book.
+        /// </summary>
+        public static readonly OrderSource iex = new OrderSource("iex");
+
+        /// <summary>
         ///     Create a new order source
         /// </summary>
         /// <param name="id">Id of the new order source.</param>

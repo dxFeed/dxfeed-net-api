@@ -50,9 +50,10 @@ namespace dxf_candle_sample {
 
         private static void WriteHelp() {
             Console.WriteLine(
-                "Usage: dxf_candle_sample <host:port> <base symbol> [<date>] [-T <token>] [-p] [<attributes> ...] \n" +
+                "Usage: dxf_candle_sample <host:port>|<path> <base symbol> [<date>] [-T <token>] [-p] [<attributes> ...] \n" +
                 "where\n" +
                 "    host:port   - The address of dxfeed server (demo.dxfeed.com:7300)\n" +
+                "    path        - The path to file with candle data (tape or non zipped Candle Web Service output)\n" +
                 "    base symbol - The base market symbol without attributes\n" +
                 "    date        - The date of Candle in the format YYYY-MM-DD (may be empty)\n" +
                 "    -T <token>  - The authorization token\n" +
@@ -77,13 +78,16 @@ namespace dxf_candle_sample {
                 "    priceLevel - The candle price level\n" +
                 "                 default: NaN\n\n" +
                 "All missed attributes values will be set to defaults\n" +
-                "example: dxf_candle_sample demo.dxfeed.com:7300 XBT/USD 2016-06-18 exchange=A period=1 type=d price=last session=false alignment=m priceLevel=0.5\n" +
-                "example: dxf_candle_sample demo.dxfeed.com:7300 XBT/USD&A{=1d,price=last,a=m,pl=0.5} 2016-06-18\n"
+                "examples: \n" +
+                "    dxf_candle_sample demo.dxfeed.com:7300 XBT/USD 2016-06-18 exchange=A period=1 type=d price=last session=false alignment=m priceLevel=0.5\n" +
+                "    dxf_candle_sample demo.dxfeed.com:7300 XBT/USD&A{=1d,price=last,a=m,pl=0.5} 2016-06-18\n" +
+                "    dxf_candle_sample ./candledata_file AAPL type=m exchange=Q\n" +
+                "    dxf_candle_sample ./candledata_file AAPL&Q{=m}\n"
             );
         }
 
         private static void Main(string[] args) {
-            if (args.Length < 3) {
+            if (args.Length < 2) {
                 WriteHelp();
                 return;
             }

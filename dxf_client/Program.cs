@@ -243,9 +243,10 @@ namespace dxf_client {
         static void Main(string[] args) {
             if (args.Length < 3 || args.Length > 13) {
                 Console.WriteLine(
-                    "Usage: dxf_client <host:port> <event> <symbol> [<date>] [<source>] [snapshot] [-l <records_print_limit>] [-T <token>] [-s <subscr_data>] [-p]\n" +
+                    "Usage: dxf_client <host:port>|<path> <event> <symbol> [<date>] [<source>] [snapshot] [-l <records_print_limit>] [-T <token>] [-s <subscr_data>] [-p] [-b]\n" +
                     "where\n" +
                     "    host:port - The address of dxfeed server (demo.dxfeed.com:7300)\n" +
+                    "    path      - The path to file with candle data (non zipped Candle Web Service output) or `tape` file\n" +
                     "    event     - Any of the {Profile,Order,Quote,Trade,TimeAndSale,Summary,\n" +
                     "                TradeETH,SpreadOrder,Candle,Greeks,TheoPrice,Underlying,Series,\n" +
                     "                Configuration}\n" +
@@ -267,13 +268,14 @@ namespace dxf_client {
                     $"    -l <records_print_limit> - The number of displayed records (0 - unlimited, default: {DEFAULT_RECORDS_PRINT_LIMIT})\n" +
                     "    -T <token>               - The authorization token\n\n" +
                     "    -s <subscr_data>         - The subscription data: ticker|TICKER, stream|STREAM, history|HISTORY\n" +
-                    "    -p                       - Enables the data transfer logging\n\n" +
+                    "    -p                       - Enables the data transfer logging\n" +
+                    "    -b                       - Enables the server's heartbeat logging to console\n\n" +
                     "examples:\n" +
                     "  events: dxf_client demo.dxfeed.com:7300 Quote,Trade MSFT.TEST,IBM.TEST\n" +
                     "  events: dxf_client demo.dxfeed.com:7300 Quote,Trade MSFT.TEST,IBM.TEST -s stream\n" +
                     "  order: dxf_client demo.dxfeed.com:7300 Order MSFT.TEST,IBM.TEST NTV,IST\n" +
                     "  candle: dxf_client demo.dxfeed.com:7300 Candle XBT/USD{=d} 2016-10-10\n" +
-                    "  underlying: dxf_client demo.dxfeed.com:7300 Underlyingn AAPL\n" +
+                    "  underlying: dxf_client demo.dxfeed.com:7300 Underlying AAPL\n" +
                     "  series: dxf_client demo.dxfeed.com:7300 Series AAPL\n" +
                     "  order snapshot: dxf_client demo.dxfeed.com:7300 Order AAPL NTV snapshot\n" +
                     "  order snapshot: dxf_client demo.dxfeed.com:7300 Order AAPL NTV snapshot -l 0\n" +
@@ -281,7 +283,9 @@ namespace dxf_client {
                     "  market maker snapshot: dxf_client demo.dxfeed.com:7300 Order AAPL AGGREGATE_BID snapshot -l 3\n" +
                     "  candle snapshot: dxf_client demo.dxfeed.com:7300 Candle XBT/USD{=d} 2016-10-10 snapshot\n" + 
                     "  candle snapshot: dxf_client demo.dxfeed.com:7300 Candle XBT/USD{=d} 2016-10-10 snapshot -l 10\n" +
-                    "  candle snapshot: dxf_client demo.dxfeed.com:7300 Candle XBT/USD{=d,pl=0.5} 2016-10-10 snapshot -l 10\n"
+                    "  candle snapshot: dxf_client demo.dxfeed.com:7300 Candle XBT/USD{=d,pl=0.5} 2016-10-10 snapshot -l 10\n" + 
+                    "  tape file: dxf_client ./tape_file Order,TimeAndSale AAPL\n" +
+                    "  candle data: dxf_client ./candledata.bin Candle AIV{=d}\n"
                 );
                 return;
             }
@@ -302,6 +306,7 @@ namespace dxf_client {
             var token = new InputParam<string>(null);
             var subscriptionData = new InputParam<EventSubscriptionFlag>(EventSubscriptionFlag.Default);
             var logDataTransferFlag = false;
+            var logServerHeartbeatsFlag = false;
 
             for (var i = SYMBOL_INDEX + 1; i < args.Length; i++) {
                 if (!dateTime.IsSet && TryParseDateTimeParam(args[i], dateTime))
@@ -331,8 +336,14 @@ namespace dxf_client {
 
                 if (logDataTransferFlag == false && args[i].Equals("-p")) {
                     logDataTransferFlag = true;
-                    i++;
 
+                    continue;
+                }
+
+                if (logServerHeartbeatsFlag == false && args[i].Equals("-b"))
+                {
+                    logServerHeartbeatsFlag = true;
+                    
                     continue;
                 }
 
@@ -353,10 +364,16 @@ namespace dxf_client {
             using (var con = token.IsSet
                 ? new NativeConnection(address, token.Value, DisconnectHandler, ConnectionStatusChangeHandler)
                 : new NativeConnection(address, DisconnectHandler, ConnectionStatusChangeHandler)) {
-                con.SetOnServerHeartbeatHandler((connection, time, lagMark, rtt) =>
+                
+                if (logServerHeartbeatsFlag)
                 {
-                    Console.Error.WriteLine($"##### Server time (UTC) = {time}, Server lag = {lagMark} us, RTT = {rtt} us #####");
-                });
+                    con.SetOnServerHeartbeatHandler((connection, time, lagMark, rtt) =>
+                    {
+                        Console.Error.WriteLine(
+                            $"##### Server time (UTC) = {time}, Server lag = {lagMark} us, RTT = {rtt} us #####");
+                    });
+                }
+
                 IDxSubscription s = null;
                 try {
                     if (isSnapshot.Value)

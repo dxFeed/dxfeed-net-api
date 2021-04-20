@@ -144,6 +144,12 @@ xcopy /Y /I %C_API_PATH%\%C_API_BIN_DIR_NAME%\x86\%C_API_DEBUG_DIR_NAME%%C_API_L
 if %ERRORLEVEL% GEQ 1 goto exit_error
 xcopy /Y /I %C_API_PATH%\%C_API_BIN_DIR_NAME%\x86\%C_API_DEBUG_DIR_NAME%%C_API_LIB_NAME%d%C_API_LIB_PDB_EXT% %~dp0\lib
 if %ERRORLEVEL% GEQ 1 goto exit_error
+xcopy /Y /I %C_API_PATH%\%C_API_BIN_DIR_NAME%\x86\libcrypto*.dll %~dp0\lib
+if %ERRORLEVEL% GEQ 1 goto exit_error
+xcopy /Y /I %C_API_PATH%\%C_API_BIN_DIR_NAME%\x86\libssl*.dll %~dp0\lib
+if %ERRORLEVEL% GEQ 1 goto exit_error
+xcopy /Y /I %C_API_PATH%\%C_API_BIN_DIR_NAME%\x86\libtls*.dll %~dp0\lib
+if %ERRORLEVEL% GEQ 1 goto exit_error
 xcopy /Y /I %C_API_PATH%\%C_API_BIN_DIR_NAME%\x64\%C_API_RELEASE_DIR_NAME%%C_API_LIB_NAME%_64%C_API_LIB_EXT% %~dp0\lib
 if %ERRORLEVEL% GEQ 1 goto exit_error
 xcopy /Y /I %C_API_PATH%\%C_API_BIN_DIR_NAME%\x64\%C_API_RELEASE_DIR_NAME%%C_API_LIB_NAME%_64%C_API_LIB_PDB_EXT% %~dp0\lib
@@ -151,6 +157,12 @@ if %ERRORLEVEL% GEQ 1 goto exit_error
 xcopy /Y /I %C_API_PATH%\%C_API_BIN_DIR_NAME%\x64\%C_API_DEBUG_DIR_NAME%%C_API_LIB_NAME%d_64%C_API_LIB_EXT% %~dp0\lib
 if %ERRORLEVEL% GEQ 1 goto exit_error
 xcopy /Y /I %C_API_PATH%\%C_API_BIN_DIR_NAME%\x64\%C_API_DEBUG_DIR_NAME%%C_API_LIB_NAME%d_64%C_API_LIB_PDB_EXT% %~dp0\lib
+if %ERRORLEVEL% GEQ 1 goto exit_error
+xcopy /Y /I %C_API_PATH%\%C_API_BIN_DIR_NAME%\x64\libcrypto*.dll %~dp0\lib
+if %ERRORLEVEL% GEQ 1 goto exit_error
+xcopy /Y /I %C_API_PATH%\%C_API_BIN_DIR_NAME%\x64\libssl*.dll %~dp0\lib
+if %ERRORLEVEL% GEQ 1 goto exit_error
+xcopy /Y /I %C_API_PATH%\%C_API_BIN_DIR_NAME%\x64\libtls*.dll %~dp0\lib
 if %ERRORLEVEL% GEQ 1 goto exit_error
 
 rem === BUILD PROJECTS ===

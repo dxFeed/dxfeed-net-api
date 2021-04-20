@@ -1,5 +1,5 @@
 @echo off
-rem Script builds C API library and configured projects from 
+rem Script builds C API framework and configured projects from 
 rem dxf_master\dxf_master.csproj. The dxf_master project contains references to
 rem all other projects and targets to build.
 rem Dependencies:

@@ -15,7 +15,7 @@ using System.Net;
 namespace com.dxfeed.api
 {
     /// <summary>
-    /// Class provides some helpers for library.
+    /// Class provides some helpers.
     /// </summary>
     public class Tools
     {

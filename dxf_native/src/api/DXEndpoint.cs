@@ -17,7 +17,7 @@ using System.Collections.Generic;
 namespace com.dxfeed.api
 {
     /// <summary>
-    ///     Manages network connections to DXFeed.
+    ///     Manages network connections to dxFeed.
     /// </summary>
     public class DXEndpoint : IDXEndpoint
     {

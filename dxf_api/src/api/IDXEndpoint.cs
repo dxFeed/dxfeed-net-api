@@ -50,7 +50,7 @@ namespace com.dxfeed.api
     public delegate void OnEndpointClosingEventHandler(object sender, EventArgs e);
 
     /// <summary>
-    ///     Manages network connections to DXFeed.
+    ///     Manages network connections to dxFeed.
     /// </summary>
     public interface IDXEndpoint : IDisposable
     {

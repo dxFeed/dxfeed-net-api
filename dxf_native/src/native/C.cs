@@ -147,7 +147,7 @@ namespace com.dxfeed.native.api
         /// <summary>
         /// Initializes the internal logger.
         ///
-        /// Various actions and events, including the errors, are being logged throughout the library. They may be stored into the file.
+        /// Various actions and events, including the errors, are being logged throughout the framework. They may be stored into the file.
         ///
         /// C-API: DXFEED_API ERRORCODE dxf_initialize_logger(const char* file_name, int rewrite_file, int show_timezone_info, int verbose);
         /// </summary>
@@ -161,7 +161,7 @@ namespace com.dxfeed.native.api
         /// <summary>
         /// Initializes the internal logger with data transfer logging.
         ///
-        /// Various actions and events, including the errors, are being logged throughout the library. They may be stored into the file.
+        /// Various actions and events, including the errors, are being logged throughout the framework. They may be stored into the file.
         ///
         /// C-API: DXFEED_API ERRORCODE dxf_initialize_logger_v2(const char* file_name, int rewrite_file, int show_timezone_info, int verbose, int log_data_transfer);
         /// </summary>

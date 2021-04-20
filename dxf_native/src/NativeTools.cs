@@ -18,7 +18,7 @@ namespace com.dxfeed.native
         /// <summary>
         /// Initializes the internal logger.
         ///
-        /// Various actions and events, including the errors, are being logged throughout the library. They may be
+        /// Various actions and events, including the errors, are being logged throughout the fremework. They may be
         /// stored into the file.
         /// </summary>
         /// <param name="fileName">A full path to the file where the log is to be stored</param>

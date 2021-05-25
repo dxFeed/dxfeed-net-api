@@ -39,16 +39,21 @@ namespace dxf_instrument_profile_live_sample
             if (args.Length == 0)
             {
                 Console.WriteLine(
-                    "Usage: dxf_instrument_profile_live_sample <host:port>[update=<time-period>] [<token>]\n" +
+                    "Usage: " +
+                    "    dxf_instrument_profile_live_sample <ipf-url>[update=<time-period>] [<token>]\n" +
                     "where\n" +
-                    "    host:port   - The valid host and port to download instruments (https://tools.dxfeed.com/ipf)\n" +
-                    "    time-period - The update period in ISO8601 duration format (optional)\n" +
+                    "    ipf-url     - The valid url to download instruments (https://tools.dxfeed.com/ipf)\n" +
+                    "    time-period - The update period in ISO8601 duration format (optional, non-live connection)\n" +
                     "    token       - The bearer token\n" +
                     "\n" +
-                    "examples: " +
+                    "Non-live connection (periodical GET requests) examples: " +
                     "    dxf_instrument_profile_live_sample https://tools.dxfeed.com/ipf[update=P30S]\n" +
                     "    dxf_instrument_profile_live_sample https://tools.dxfeed.com/ipf[update=P30S] Z2V0LmR4ZmVlZCxhbW...\n" +
-                    "    dxf_instrument_profile_live_sample https://user:password@tools.dxfeed.com/ipf[update=P30S]\n"
+                    "    dxf_instrument_profile_live_sample https://user:password@tools.dxfeed.com/ipf[update=P30S]\n" +
+                    "Live connection examples (with 'live=true' query parameter): " +
+                    "    dxf_instrument_profile_live_sample https://tools.dxfeed.com/ipf?TYPE=STOCK&live=true\n" +
+                    "    dxf_instrument_profile_live_sample https://tools.dxfeed.com/ipf?TYPE=OPTION&UNDERLYING=AAPL,IBM&live=true Z2V0LmR4ZmVlZCxhbW...\n" +
+                    "    dxf_instrument_profile_live_sample https://user:password@tools.dxfeed.com/ipf?live=true\n\n"
                 );
                 return;
             }

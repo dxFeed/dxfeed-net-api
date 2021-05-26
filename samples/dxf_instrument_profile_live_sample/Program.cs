@@ -51,9 +51,9 @@ namespace dxf_instrument_profile_live_sample
                     "    dxf_instrument_profile_live_sample https://tools.dxfeed.com/ipf[update=P30S] Z2V0LmR4ZmVlZCxhbW...\n" +
                     "    dxf_instrument_profile_live_sample https://user:password@tools.dxfeed.com/ipf[update=P30S]\n" +
                     "Live connection examples (with 'live=true' query parameter): " +
-                    "    dxf_instrument_profile_live_sample https://tools.dxfeed.com/ipf?TYPE=STOCK&live=true\n" +
-                    "    dxf_instrument_profile_live_sample https://tools.dxfeed.com/ipf?TYPE=OPTION&UNDERLYING=AAPL,IBM&live=true Z2V0LmR4ZmVlZCxhbW...\n" +
-                    "    dxf_instrument_profile_live_sample https://user:password@tools.dxfeed.com/ipf?live=true\n\n"
+                    "    dxf_instrument_profile_live_sample https://tools.dxfeed.com/ipf?TYPE=STOCK\n" +
+                    "    dxf_instrument_profile_live_sample https://tools.dxfeed.com/ipf?TYPE=OPTION&UNDERLYING=AAPL,IBM Z2V0LmR4ZmVlZCxhbW...\n" +
+                    "    dxf_instrument_profile_live_sample https://user:password@tools.dxfeed.com/ipf\n\n"
                 );
                 return;
             }

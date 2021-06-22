@@ -405,9 +405,9 @@ namespace dxf_client {
                     Console.WriteLine("Press enter to stop");
                     Console.ReadLine();
                 } catch (DxException dxException) {
-                    Console.WriteLine($"Native exception occured: {dxException.Message}");
+                    Console.WriteLine($"Native exception occurred: {dxException.Message}");
                 } catch (Exception exc) {
-                    Console.WriteLine($"Exception occured: {exc.Message}");
+                    Console.WriteLine($"Exception occurred: {exc.Message}");
                 } finally {
                     s?.Dispose();
                 }

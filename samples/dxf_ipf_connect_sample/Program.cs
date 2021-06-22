@@ -122,7 +122,7 @@ namespace dxf_ipf_connect_sample {
 
                 Console.WriteLine(value: $"Symbols: {string.Join(", ", symbols.Take(42).ToArray())}...");
             } catch (Exception exc) {
-                Console.WriteLine($"Exception occured: {exc}");
+                Console.WriteLine($"Exception occurred: {exc}");
 
                 return;
             }
@@ -145,9 +145,9 @@ namespace dxf_ipf_connect_sample {
                     Console.WriteLine("Press enter to stop");
                     Console.ReadLine();
                 } catch (DxException dxException) {
-                    Console.WriteLine($"Native exception occured: {dxException.Message}");
+                    Console.WriteLine($"Native exception occurred: {dxException.Message}");
                 } catch (Exception exc) {
-                    Console.WriteLine($"Exception occured: {exc.Message}");
+                    Console.WriteLine($"Exception occurred: {exc.Message}");
                 } finally {
                     subscription?.Dispose();
                 }

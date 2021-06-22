@@ -32,8 +32,10 @@ namespace com.dxfeed.api.events
     /// </summary>
     public class OrderSource : IndexedEventSource, IComparable
     {
-        private static Dictionary<int, OrderSource> sourcesById = new Dictionary<int, OrderSource>();
-        private static Dictionary<string, OrderSource> sourcesByName = new Dictionary<string, OrderSource>();
+        private static readonly Dictionary<int, OrderSource> SourcesById = new Dictionary<int, OrderSource>();
+        private static readonly Dictionary<string, OrderSource> SourcesByName = new Dictionary<string, OrderSource>();
+        private static readonly Dictionary<string, OrderSource> DefaultNonSpecialSources =
+            new Dictionary<string, OrderSource>();
 
         /// <summary>
         ///     Bid side of a composite <see cref="IDxQuote"/>.
@@ -85,171 +87,179 @@ namespace com.dxfeed.api.events
         /// <summary>
         /// NASDAQ Total View.
         /// </summary>
-        public static readonly OrderSource NTV = new OrderSource("NTV");
+        public static readonly OrderSource NTV = new OrderSource("NTV", true);
 
         /// <summary>
         /// NASDAQ Total View. Record for price level book.
         /// </summary>
-        public static readonly OrderSource ntv = new OrderSource("ntv");
+        public static readonly OrderSource ntv = new OrderSource("ntv", true);
 
         /// <summary>
         /// NASDAQ Futures Exchange.
         /// </summary>
-        public static readonly OrderSource NFX = new OrderSource("NFX");
+        public static readonly OrderSource NFX = new OrderSource("NFX", true);
 
         /// <summary>
         /// NASDAQ eSpeed.
         /// </summary>
-        public static readonly OrderSource ESPD = new OrderSource("ESPD");
+        public static readonly OrderSource ESPD = new OrderSource("ESPD", true);
 
         /// <summary>
         /// NASDAQ Fixed Income.
         /// </summary>
-        public static readonly OrderSource XNFI = new OrderSource("XNFI");
+        public static readonly OrderSource XNFI = new OrderSource("XNFI", true);
 
         /// <summary>
         /// Intercontinental Exchange.
         /// </summary>
-        public static readonly OrderSource ICE = new OrderSource("ICE");
+        public static readonly OrderSource ICE = new OrderSource("ICE", true);
 
         /// <summary>
         /// International Securities Exchange.
         /// </summary>
-        public static readonly OrderSource ISE = new OrderSource("ISE");
+        public static readonly OrderSource ISE = new OrderSource("ISE", true);
 
         /// <summary>
         /// Direct-Edge EDGA Exchange.
         /// </summary>
-        public static readonly OrderSource DEA = new OrderSource("DEA");
+        public static readonly OrderSource DEA = new OrderSource("DEA", true);
 
         /// <summary>
         /// Direct-Edge EDGX Exchange.
         /// </summary>
-        public static readonly OrderSource DEX = new OrderSource("DEX");
+        public static readonly OrderSource DEX = new OrderSource("DEX", true);
 
         /// <summary>
         /// Bats BYX Exchange.
         /// </summary>
-        public static readonly OrderSource BYX = new OrderSource("BYX");
+        public static readonly OrderSource BYX = new OrderSource("BYX", true);
 
         /// <summary>
         /// Bats BZX Exchange.
         /// </summary>
-        public static readonly OrderSource BZX = new OrderSource("BZX");
+        public static readonly OrderSource BZX = new OrderSource("BZX", true);
 
         /// <summary>
         /// Bats Europe BXE Exchange.
         /// </summary>
-        public static readonly OrderSource BATE = new OrderSource("BATE");
+        public static readonly OrderSource BATE = new OrderSource("BATE", true);
 
         /// <summary>
         /// Bats Europe CXE Exchange.
         /// </summary>
-        public static readonly OrderSource CHIX = new OrderSource("CHIX");
+        public static readonly OrderSource CHIX = new OrderSource("CHIX", true);
 
         /// <summary>
         /// Bats Europe DXE Exchange.
         /// </summary>
-        public static readonly OrderSource CEUX = new OrderSource("CEUX");
+        public static readonly OrderSource CEUX = new OrderSource("CEUX", true);
 
         /// <summary>
         /// Bats Europe TRF.
         /// </summary>
-        public static readonly OrderSource BXTR = new OrderSource("BXTR");
+        public static readonly OrderSource BXTR = new OrderSource("BXTR", true);
 
         /// <summary>
         /// Borsa Istanbul Exchange.
         /// </summary>
-        public static readonly OrderSource IST = new OrderSource("IST");
+        public static readonly OrderSource IST = new OrderSource("IST", true);
 
         /// <summary>
         /// Borsa Istanbul Exchange. Record for particular top 20 order book.
         /// </summary>
-        public static readonly OrderSource BI20 = new OrderSource("BI20");
+        public static readonly OrderSource BI20 = new OrderSource("BI20", true);
 
         /// <summary>
         /// ABE (abe.io) exchange.
         /// </summary>
-        public static readonly OrderSource ABE = new OrderSource("ABE");
+        public static readonly OrderSource ABE = new OrderSource("ABE", true);
 
         /// <summary>
         /// FAIR (FairX) exchange.
         /// </summary>
-        public static readonly OrderSource FAIR = new OrderSource("FAIR");
+        public static readonly OrderSource FAIR = new OrderSource("FAIR", true);
         
         /// <summary>
         /// CME Globex.
         /// </summary>
-        public static readonly OrderSource GLBX = new OrderSource("GLBX");
+        public static readonly OrderSource GLBX = new OrderSource("GLBX", true);
 
         /// <summary>
         /// CME Globex. Record for price level book.
         /// </summary>
-        public static readonly OrderSource glbx = new OrderSource("glbx");
+        public static readonly OrderSource glbx = new OrderSource("glbx", true);
 
         /// <summary>
         /// Eris Exchange group of companies.
         /// </summary>
-        public static readonly OrderSource ERIS = new OrderSource("ERIS");
+        public static readonly OrderSource ERIS = new OrderSource("ERIS", true);
 
         /// <summary>
         /// Eurex Exchange.
         /// </summary>
-        public static readonly OrderSource XEUR = new OrderSource("XEUR");
+        public static readonly OrderSource XEUR = new OrderSource("XEUR", true);
 
         /// <summary>
         /// Eurex Exchange. Record for price level book.
         /// </summary>
-        public static readonly OrderSource xeur = new OrderSource("xeur");
+        public static readonly OrderSource xeur = new OrderSource("xeur", true);
 
         /// <summary>
         /// CBOE Futures Exchange.
         /// </summary>
-        public static readonly OrderSource CFE = new OrderSource("CFE");
+        public static readonly OrderSource CFE = new OrderSource("CFE", true);
 
         /// <summary>
         /// CBOE Options C2 Exchange.
         /// </summary>
-        public static readonly OrderSource C2OX = new OrderSource("C2OX");
+        public static readonly OrderSource C2OX = new OrderSource("C2OX", true);
 
         /// <summary>
         /// Small Exchange.
         /// </summary>
-        public static readonly OrderSource SMFE = new OrderSource("SMFE");
+        public static readonly OrderSource SMFE = new OrderSource("SMFE", true);
 
         /// <summary>
         /// Investors exchange. Record for price level book.
         /// </summary>
-        public static readonly OrderSource iex = new OrderSource("iex");
+        public static readonly OrderSource iex = new OrderSource("iex", true);
 
         /// <summary>
         ///     Create a new order source
         /// </summary>
         /// <param name="id">Id of the new order source.</param>
         /// <param name="name">Name of the new order source.</param>
-        private OrderSource(int id, string name) : base(id, name)
+        /// <param name="defaultNonSpecial">The orders source is default and non special</param>
+        private OrderSource(int id, string name, bool defaultNonSpecial = false) : base(id, name)
         {
-            if (sourcesById.ContainsKey(id))
-                throw new ArgumentException(string.Format("The source id '{0}' is already exist.", id));
-            if (sourcesByName.ContainsKey(name))
-                throw new ArgumentException(string.Format("The source name '{0}' is already exist.", name));
+            if (SourcesById.ContainsKey(id))
+                throw new ArgumentException($"The source id '{id}' is already exist.");
+            if (SourcesByName.ContainsKey(name))
+                throw new ArgumentException($"The source name '{name}' is already exist.");
             Id = id;
             Name = name;
-            sourcesById[Id] = this;
-            sourcesByName[Name] = this;
+            SourcesById[Id] = this;
+            SourcesByName[Name] = this;
+
+            if (defaultNonSpecial)
+            {
+                DefaultNonSpecialSources[Name] = this;
+            }
         }
 
         /// <summary>
         ///     For transient objects only (statically unknown source id)
         /// </summary>
         /// <param name="id">Id of the new order source.</param>
-        private OrderSource(int id) : this(id, DecodeName(id)) { }
+        /// <param name="defaultNonSpecial">The orders source is default and non special</param>
+        private OrderSource(int id, bool defaultNonSpecial = false) : this(id, DecodeName(id), defaultNonSpecial) { }
 
         /// <summary>
         ///     For transient objects only (statically unknown source id)
         /// </summary>
         /// <param name="name">Name of the new order source.</param>
-        private OrderSource(string name) : this(ComposeId(name), name) { }
+        /// <param name="defaultNonSpecial">The orders source is default and non special</param>
+        private OrderSource(string name, bool defaultNonSpecial = false) : this(ComposeId(name), name, defaultNonSpecial) { }
 
         /// <summary>
         ///     Returns order source for the specified source identifier.
@@ -259,8 +269,8 @@ namespace com.dxfeed.api.events
         /// <exception cref="ArgumentException">If sourceId is negative or exceeds MAX_SOURCE_ID.</exception>
         public static OrderSource ValueOf(int sourceId)
         {
-            if (sourcesById.ContainsKey(sourceId))
-                return sourcesById[sourceId];
+            if (SourcesById.ContainsKey(sourceId))
+                return SourcesById[sourceId];
             return new OrderSource(sourceId);
         }
 
@@ -273,10 +283,39 @@ namespace com.dxfeed.api.events
         /// <exception cref="ArgumentException">If name is malformed.</exception>
         public static OrderSource ValueOf(string name)
         {
-            string upName = name.ToUpper();
-            if (sourcesByName.ContainsKey(upName))
-                return sourcesByName[upName];
-            return new OrderSource(upName);
+            return SourcesByName.ContainsKey(name) ? SourcesByName[name] : new OrderSource(name);
+        }
+
+        /// <summary>
+        /// Determines whether specified source name exists in the list of default source names
+        /// </summary>
+        /// <param name="name">The source name</param>
+        /// <returns><c>true</c> if the source name exists in the list of default source names</returns>
+        public static bool HasDefaultSourceName(string name)
+        {
+            return DefaultNonSpecialSources.ContainsKey(name);
+        }
+
+        /// <summary>
+        /// Determines whether specified source identifier refers to special order source.
+        /// Special order sources are used for wrapping non-order events into order events.
+        /// </summary>
+        /// <param name="sourceId">The source identifier.</param>
+        /// <returns><c>true</c> if it is a special source</returns>
+        public static bool IsSpecialSourceId(int sourceId)
+        {
+            return sourceId >= 1 && sourceId <= 6;
+        }
+
+        /// <summary>
+        /// Determines whether specified source name refers to special order source.
+        /// Special order sources are used for wrapping non-order events into order events.
+        /// </summary>
+        /// <param name="name">The source name.</param>
+        /// <returns><c>true</c> if it is a special source</returns>
+        public static bool IsSpecialSourceName(string name)
+        {
+            return SourcesByName.ContainsKey(name) && IsSpecialSourceId(SourcesByName[name].Id);
         }
 
         /// <summary>

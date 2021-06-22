@@ -31,7 +31,7 @@ namespace dxf_instrument_profile_live_sample
     {
         private static void OnErrorHandler(object sender, ErrorEventArgs e)
         {
-            Console.WriteLine($"Error occured: {e.GetException().Message}");
+            Console.WriteLine($"Error occurred: {e.GetException().Message}");
         }
 
         private static void Main(string[] args)
@@ -83,7 +83,7 @@ namespace dxf_instrument_profile_live_sample
             }
             catch (Exception exc)
             {
-                Console.WriteLine($"Exception occured: {exc}");
+                Console.WriteLine($"Exception occurred: {exc}");
             }
         }
     }

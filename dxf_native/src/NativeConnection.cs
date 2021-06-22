@@ -17,6 +17,7 @@ using com.dxfeed.native.api;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using com.dxfeed.api.connection;
+using com.dxfeed.api.events;
 
 namespace com.dxfeed.native {
     /// <summary>
@@ -59,7 +60,7 @@ namespace com.dxfeed.native {
         /// </summary>
         /// <remarks>
         ///     Don't call this constructor inside any listeners and callbacks of NativeSubscription, NativeConnection,
-        /// NativeRegionalBook, NativeSnapshotSubscription classes
+        /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
         /// <param name="address">The server address to connect</param>
         /// <param name="disconnectListener">The listener that will be called when the connection is interrupted</param>
@@ -72,13 +73,13 @@ namespace com.dxfeed.native {
             C.CheckOk(C.Instance.dxf_create_connection(address, terminationNotifier, connectionStatusChangeHandler,
                 null, null, IntPtr.Zero, out handle));
         }
-        
+
         /// <summary>
         /// Creates the new connection
         /// </summary>
         /// <remarks>
         ///     Don't call this constructor inside any listeners and callbacks of NativeSubscription, NativeConnection,
-        /// NativeRegionalBook, NativeSnapshotSubscription classes
+        /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
         /// <param name="address">The server address to connect</param>
         /// <param name="disconnectListener">The listener that will be called when the connection is interrupted</param>
@@ -100,7 +101,7 @@ namespace com.dxfeed.native {
         /// </summary>
         /// <remarks>
         ///     Don't call this constructor inside any listeners and callbacks of NativeSubscription, NativeConnection,
-        /// NativeRegionalBook, NativeSnapshotSubscription classes
+        /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
         /// <param name="address">The server address to connect.</param>
         /// <param name="credential">The user name and password to server access.</param>
@@ -123,7 +124,7 @@ namespace com.dxfeed.native {
         /// </summary>
         /// <remarks>
         ///     Don't call this constructor inside any listeners and callbacks of NativeSubscription, NativeConnection,
-        /// NativeRegionalBook, NativeSnapshotSubscription classes
+        /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
         /// <param name="address">The Server address to connect.</param>
         /// <param name="token">Bearer scheme token to server access.</param>
@@ -137,13 +138,13 @@ namespace com.dxfeed.native {
                 connectionStatusChangeHandler, null, null,
                 IntPtr.Zero, out handle));
         }
-        
+
         /// <summary>
         /// Creates the new connection.
         /// </summary>
         /// <remarks>
         ///     Don't call this constructor inside any listeners and callbacks of NativeSubscription, NativeConnection,
-        /// NativeRegionalBook, NativeSnapshotSubscription classes
+        /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
         /// <param name="address">Server address to connect.</param>
         /// <param name="token">Bearer scheme token to server access.</param>
@@ -166,7 +167,7 @@ namespace com.dxfeed.native {
         /// </summary>
         /// <remarks>
         ///     Don't call this constructor inside any listeners and callbacks of NativeSubscription, NativeConnection,
-        /// NativeRegionalBook, NativeSnapshotSubscription classes
+        /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
         /// <param name="address">The server address to connect.</param>
         /// <param name="authScheme">The authorization scheme.</param>
@@ -198,7 +199,7 @@ namespace com.dxfeed.native {
         /// </summary>
         /// <remarks>
         ///     Don't call this method inside any listeners and callbacks of NativeSubscription, NativeConnection,
-        /// NativeRegionalBook, NativeSnapshotSubscription classes
+        /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
         /// <param name="handler">The handler that will be called</param>
         public void SetOnServerHeartbeatHandler(OnServerHeartbeatHandler handler)
@@ -241,7 +242,7 @@ namespace com.dxfeed.native {
         /// </summary>
         /// <remarks>
         ///     Don't call this method inside any listeners and callbacks of NativeSubscription, NativeConnection,
-        /// NativeRegionalBook, NativeSnapshotSubscription classes
+        /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
         /// <exception cref="DxException"></exception>
         public void Disconnect() {
@@ -257,7 +258,7 @@ namespace com.dxfeed.native {
         /// </summary>
         /// <remarks>
         ///     Don't call this method inside any listeners and callbacks of NativeSubscription, NativeConnection,
-        /// NativeRegionalBook, NativeSnapshotSubscription classes
+        /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
         /// <param name="type">Event type.</param>
         /// <param name="eventSubscriptionFlags">Event subscription flags</param>
@@ -272,13 +273,13 @@ namespace com.dxfeed.native {
             subscriptions.Add(result);
             return result;
         }
-        
+
         /// <summary>
         ///     Creates an event subscription.
         /// </summary>
         /// <remarks>
         ///     Don't call this method inside any listeners and callbacks of NativeSubscription, NativeConnection,
-        /// NativeRegionalBook, NativeSnapshotSubscription classes
+        /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
         /// <param name="type">Event type.</param>
         /// <param name="listener">Event listener callback.</param>
@@ -298,7 +299,7 @@ namespace com.dxfeed.native {
         /// </summary>
         /// <remarks>
         ///     Don't call this method inside any listeners and callbacks of NativeSubscription, NativeConnection,
-        /// NativeRegionalBook, NativeSnapshotSubscription classes
+        /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
         /// <param name="time">Date time in the past.</param>
         /// <param name="eventSubscriptionFlags">Event subscription flags</param>
@@ -314,13 +315,13 @@ namespace com.dxfeed.native {
             subscriptions.Add(result);
             return result;
         }
-        
+
         /// <summary>
         ///     Creates a candle event subscription.
         /// </summary>
         /// <remarks>
         ///     Don't call this method inside any listeners and callbacks of NativeSubscription, NativeConnection,
-        /// NativeRegionalBook, NativeSnapshotSubscription classes
+        /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
         /// <param name="time">Date time in the past.</param>
         /// <param name="listener">Candle listener callback.</param>
@@ -341,7 +342,7 @@ namespace com.dxfeed.native {
         /// </summary>
         /// <remarks>
         ///     Don't call this method inside any listeners and callbacks of NativeSubscription, NativeConnection,
-        /// NativeRegionalBook, NativeSnapshotSubscription classes
+        /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
         /// <param name="type">Event type.</param>
         /// <param name="time">Unix time stamp (the number of milliseconds from 1.1.1970)</param>
@@ -358,13 +359,13 @@ namespace com.dxfeed.native {
             subscriptions.Add(result);
             return result;
         }
-        
+
         /// <summary>
         ///     Creates a time event subscription.
         /// </summary>
         /// <remarks>
         ///     Don't call this method inside any listeners and callbacks of NativeSubscription, NativeConnection,
-        /// NativeRegionalBook, NativeSnapshotSubscription classes
+        /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
         /// <param name="type">Event type.</param>
         /// <param name="time">Unix time stamp (the number of milliseconds from 1.1.1970)</param>
@@ -386,7 +387,7 @@ namespace com.dxfeed.native {
         /// </summary>
         /// <remarks>
         ///     Don't call this method inside any listeners and callbacks of NativeSubscription, NativeConnection,
-        /// NativeRegionalBook, NativeSnapshotSubscription classes
+        /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
         /// <param name="type">Event type.</param>
         /// <param name="time">Date time in the past.</param>
@@ -405,13 +406,13 @@ namespace com.dxfeed.native {
             subscriptions.Add(result);
             return result;
         }
-        
+
         /// <summary>
         ///     Creates a time event subscription.
         /// </summary>
         /// <remarks>
         ///     Don't call this method inside any listeners and callbacks of NativeSubscription, NativeConnection,
-        /// NativeRegionalBook, NativeSnapshotSubscription classes
+        /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
         /// <param name="type">Event type.</param>
         /// <param name="time">Date time in the past.</param>
@@ -435,7 +436,7 @@ namespace com.dxfeed.native {
         /// </summary>
         /// <remarks>
         ///     Don't call this method inside any listeners and callbacks of NativeSubscription, NativeConnection,
-        /// NativeRegionalBook, NativeSnapshotSubscription classes
+        /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
         /// <param name="time">Time in the past - number of milliseconds from 1.1.1970 (unix time)</param>
         /// <param name="listener">snapshot listener callback</param>
@@ -455,7 +456,7 @@ namespace com.dxfeed.native {
         /// </summary>
         /// <remarks>
         ///     Don't call this method inside any listeners and callbacks of NativeSubscription, NativeConnection,
-        /// NativeRegionalBook, NativeSnapshotSubscription classes
+        /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
         /// <param name="time">Date time in the past</param>
         /// <param name="listener">snapshot listener callback</param>
@@ -476,7 +477,7 @@ namespace com.dxfeed.native {
         /// </summary>
         /// <remarks>
         ///     Don't call this method inside any listeners and callbacks of NativeSubscription, NativeConnection,
-        /// NativeRegionalBook, NativeSnapshotSubscription classes
+        /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
         /// <param name="eventType">Single event type.</param>
         /// <param name="time">Time in the past - number of milliseconds from 1.1.1970 (unix time)</param>
@@ -508,7 +509,7 @@ namespace com.dxfeed.native {
         /// </summary>
         /// <remarks>
         ///     Don't call this method inside any listeners and callbacks of NativeSubscription, NativeConnection,
-        /// NativeRegionalBook, NativeSnapshotSubscription classes
+        /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
         /// <param name="eventType">Single event type.</param>
         /// <param name="time">Date time in the past</param>
@@ -531,7 +532,7 @@ namespace com.dxfeed.native {
         /// </summary>
         /// <remarks>
         ///     Don't call this method inside any listeners and callbacks of NativeSubscription, NativeConnection,
-        /// NativeRegionalBook, NativeSnapshotSubscription classes
+        /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
         /// <param name="listener"></param>
         /// <returns>subscription object</returns>
@@ -546,13 +547,13 @@ namespace com.dxfeed.native {
         }
 
         /// <summary>
-        ///     Creates a regional book
+        ///     Creates a regional book (10 levels)
         /// </summary>
         /// <remarks>
         ///     Don't call this method inside any listeners and callbacks of NativeSubscription, NativeConnection,
-        /// NativeRegionalBook, NativeSnapshotSubscription classes
+        /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
-        /// <param name="symbol">Single symbol name</param>
+        /// <param name="symbol">The book symbol</param>
         /// <param name="bookListener">Regional book changes listener. Null is allowed.</param>
         /// <param name="quoteListener">Quotes listener. Null is allowed.</param>
         /// <returns>regional book object</returns>
@@ -562,11 +563,58 @@ namespace com.dxfeed.native {
         }
 
         /// <summary>
+        /// Creates the new price level book (10 levels) instance for the specified symbol and sources
+        /// </summary>
+        /// <remarks>
+        ///     Don't call this method inside any listeners and callbacks of NativeSubscription, NativeConnection,
+        /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
+        /// </remarks>
+        /// <param name="symbol">Single symbol name</param>
+        /// <param name="sources">The order sources</param>
+        /// <param name="listener">Price level book changes listener. Null is allowed.</param>
+        /// <returns>The price level book object</returns>
+        public IDxPriceLevelBook CreatePriceLevelBook(string symbol, string[] sources, IDxPriceLevelBookListener listener)
+        {
+            return new NativePriceLevelBook(this, symbol, sources, listener);
+        }
+
+        /// <summary>
+        /// Creates the new price level book (10 levels) instance for the specified symbol and sources
+        /// </summary>
+        /// <remarks>
+        ///     Don't call this method inside any listeners and callbacks of NativeSubscription, NativeConnection,
+        /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
+        /// </remarks>
+        /// <param name="symbol">Single symbol name</param>
+        /// <param name="sources">The order sources</param>
+        /// <param name="listener">Price level book changes listener. Null is allowed.</param>
+        /// <returns>The price level book object</returns>
+        public IDxPriceLevelBook CreatePriceLevelBook(string symbol, OrderSource[] sources, IDxPriceLevelBookListener listener)
+        {
+            return new NativePriceLevelBook(this, symbol, sources, listener);
+        }
+
+        /// <summary>
+        /// Creates the new price level book (10 levels) instance for the specified symbol and all sources
+        /// </summary>
+        /// <remarks>
+        ///     Don't call this method inside any listeners and callbacks of NativeSubscription, NativeConnection,
+        /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
+        /// </remarks>
+        /// <param name="symbol">Single symbol name</param>
+        /// <param name="listener">Price level book changes listener. Null is allowed.</param>
+        /// <returns>The price level book object</returns>
+        public IDxPriceLevelBook CreatePriceLevelBook(string symbol, IDxPriceLevelBookListener listener)
+        {
+            return new NativePriceLevelBook(this, symbol, listener);
+        }
+
+        /// <summary>
         ///     Enables the dumping raw data of incoming traffic of connection into specific file
         /// </summary>
         /// <remarks>
         ///     Don't call this method inside any listeners and callbacks of NativeSubscription, NativeConnection,
-        /// NativeRegionalBook, NativeSnapshotSubscription classes
+        /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
         /// <param name="rawFileName">file name for raw data</param>
         /// <exception cref="ArgumentException">Invalid argument <c>rawFileName</c></exception>
@@ -586,7 +634,7 @@ namespace com.dxfeed.native {
         /// </summary>
         /// <remarks>
         ///     Don't call this method inside any listeners and callbacks of NativeSubscription, NativeConnection,
-        /// NativeRegionalBook, NativeSnapshotSubscription classes
+        /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
         public IDictionary<string, string> Properties {
             get {
@@ -621,7 +669,7 @@ namespace com.dxfeed.native {
         /// </summary>
         /// <remarks>
         ///     Don't use this property inside any listeners and callbacks of NativeSubscription, NativeConnection,
-        /// NativeRegionalBook, NativeSnapshotSubscription classes
+        /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
         public string ConnectedAddress {
             get {
@@ -644,7 +692,7 @@ namespace com.dxfeed.native {
         /// </summary>
         /// <remarks>
         ///     Don't use this property inside any listeners and callbacks of NativeSubscription, NativeConnection,
-        /// NativeRegionalBook, NativeSnapshotSubscription classes
+        /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
         public ConnectionStatus Status {
             get {
@@ -666,7 +714,7 @@ namespace com.dxfeed.native {
         /// </summary>
         /// <remarks>
         ///     Don't call this method inside any listeners and callbacks of NativeSubscription, NativeConnection,
-        /// NativeRegionalBook, NativeSnapshotSubscription classes
+        /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
         public void Dispose() {
             subscriptions.Clear();

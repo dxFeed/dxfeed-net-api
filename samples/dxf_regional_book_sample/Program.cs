@@ -66,7 +66,7 @@ namespace dxf_regional_book_sample {
                     "Usage: dxf_regional_book_sample <host:port> <symbol> [-T <token>] [-p]\n" +
                     "where\n" +
                     "    host:port  - The address of dxfeed server (demo.dxfeed.com:7300)\n" +
-                    "    symbol     - IBM\n" +
+                    "    symbol     - The regional book symbol (IBM, AAPL etc)\n" +
                     "    -T <token> - The authorization token\n" +
                     "    -p         - Enables the data transfer logging\n\n" +
                     "example: dxf_regional_book_sample demo.dxfeed.com:7300 MSFT\n"

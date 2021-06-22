@@ -17,6 +17,7 @@ using com.dxfeed.native.api;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using com.dxfeed.api.connection;
+using com.dxfeed.api.events;
 
 namespace com.dxfeed.native {
     /// <summary>
@@ -546,19 +547,66 @@ namespace com.dxfeed.native {
         }
 
         /// <summary>
-        ///     Creates a regional book
+        ///     Creates a regional book (10 levels)
         /// </summary>
         /// <remarks>
         ///     Don't call this method inside any listeners and callbacks of NativeSubscription, NativeConnection,
         /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
-        /// <param name="symbol">Single symbol name</param>
+        /// <param name="symbol">The book symbol</param>
         /// <param name="bookListener">Regional book changes listener. Null is allowed.</param>
         /// <param name="quoteListener">Quotes listener. Null is allowed.</param>
         /// <returns>regional book object</returns>
         public IDxRegionalBook CreateRegionalBook(string symbol, IDxRegionalBookListener bookListener,
             IDxQuoteListener quoteListener) {
             return new NativeRegionalBook(this, symbol, bookListener, quoteListener);
+        }
+
+        /// <summary>
+        /// Creates the new price level book (10 levels) instance for the specified symbol and sources
+        /// </summary>
+        /// <remarks>
+        ///     Don't call this method inside any listeners and callbacks of NativeSubscription, NativeConnection,
+        /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
+        /// </remarks>
+        /// <param name="symbol">Single symbol name</param>
+        /// <param name="sources">The order sources</param>
+        /// <param name="listener">Price level book changes listener. Null is allowed.</param>
+        /// <returns>The price level book object</returns>
+        public IDxPriceLevelBook CreatePriceLevelBook(string symbol, string[] sources, IDxPriceLevelBookListener listener)
+        {
+            return new NativePriceLevelBook(this, symbol, sources, listener);
+        }
+
+        /// <summary>
+        /// Creates the new price level book (10 levels) instance for the specified symbol and sources
+        /// </summary>
+        /// <remarks>
+        ///     Don't call this method inside any listeners and callbacks of NativeSubscription, NativeConnection,
+        /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
+        /// </remarks>
+        /// <param name="symbol">Single symbol name</param>
+        /// <param name="sources">The order sources</param>
+        /// <param name="listener">Price level book changes listener. Null is allowed.</param>
+        /// <returns>The price level book object</returns>
+        public IDxPriceLevelBook CreatePriceLevelBook(string symbol, OrderSource[] sources, IDxPriceLevelBookListener listener)
+        {
+            return new NativePriceLevelBook(this, symbol, sources, listener);
+        }
+
+        /// <summary>
+        /// Creates the new price level book (10 levels) instance for the specified symbol and all sources
+        /// </summary>
+        /// <remarks>
+        ///     Don't call this method inside any listeners and callbacks of NativeSubscription, NativeConnection,
+        /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
+        /// </remarks>
+        /// <param name="symbol">Single symbol name</param>
+        /// <param name="listener">Price level book changes listener. Null is allowed.</param>
+        /// <returns>The price level book object</returns>
+        public IDxPriceLevelBook CreatePriceLevelBook(string symbol, IDxPriceLevelBookListener listener)
+        {
+            return new NativePriceLevelBook(this, symbol, listener);
         }
 
         /// <summary>

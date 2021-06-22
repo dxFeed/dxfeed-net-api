@@ -724,7 +724,7 @@ namespace com.dxfeed.native.api
         /// <param name="sources">Order sources for Order. Each element can be one of following:
         /// "NTV", "ntv", "NFX", "ESPD", "XNFI", "ICE", "ISE", "DEA", "DEX", "BYX", "BZX", "BATE", "CHIX",
         /// "CEUX", "BXTR", "IST", "BI20", "ABE", "FAIR", "GLBX", "glbx", "ERIS", "XEUR", "xeur", "CFE",
-        /// "C2OX", "SMFE"</param>
+        /// "C2OX", "SMFE", "iex" etc</param>
         /// <param name="sourcesCount">The number of sources. 0 - all sources</param>
         /// <param name="book">A handle of the created price level book</param>
         /// <returns>DX_OK (1) on successful PLB creation or DX_ERR (0) on error;

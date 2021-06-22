@@ -21,8 +21,22 @@ namespace com.dxfeed.native
 {
     public class NativePriceLevelBook : IDxPriceLevelBook
     {
+        private static void CheckSources(string[] sources)
+        {
+            if (sources == null || sources.Length == 0) return;
+
+            foreach (var source in sources)
+            {
+                var trimmed = source.Trim();
+
+                if (string.IsNullOrEmpty(trimmed)) throw new ArgumentException("Null or empty source");
+                if (OrderSource.IsSpecialSourceName(source)) throw new ArgumentException("The special order source (AGGREGATE_BID|ASK etc)");
+                if (!OrderSource.HasSourceName(source)) throw new ArgumentException($"Unknown order source: '{source}'");
+            }
+        }
+
         /// <summary>
-        /// Creates the new price level book instance for the certain symbol and sources
+        /// Creates the new price level book instance for the specified symbol and sources
         /// </summary>
         /// <remarks>
         ///     Don't call this constructor inside any listeners and callbacks of NativeSubscription, NativeConnection,
@@ -40,15 +54,25 @@ namespace com.dxfeed.native
                 throw new ArgumentException("Invalid symbol parameter.");
             }
             
-            this.bookListener = listener;
+            bookListener = listener;
 
             if (bookListener == null) return;
 
-            C.CheckOk(C.Instance.CreatePriceLevelBook(connection.Handle, symbol, sources, sources.Length, out bookHandle));
+            if (sources == null)
+            {
+                C.CheckOk(C.Instance.CreatePriceLevelBook(connection.Handle, symbol, new string[]{}, 0,
+                    out bookHandle));
+            }
+            else
+            {
+                CheckSources(sources);
+                C.CheckOk(C.Instance.CreatePriceLevelBook(connection.Handle, symbol, sources, sources.Length,
+                    out bookHandle));
+            }
 
             try
             {
-                if (this.bookListener != null)
+                if (bookListener != null)
                 {
                     C.CheckOk(C.Instance.AttachPriceLevelBookListener(bookHandle, nativeBookListener = OnBook, IntPtr.Zero));
                 }
@@ -61,7 +85,7 @@ namespace com.dxfeed.native
         }
 
         /// <summary>
-        /// Creates the new price level book instance for the certain symbol and sources
+        /// Creates the new price level book instance for the specified symbol and sources
         /// </summary>
         /// <remarks>
         ///     Don't call this constructor inside any listeners and callbacks of NativeSubscription, NativeConnection,
@@ -73,12 +97,12 @@ namespace com.dxfeed.native
         /// <param name="listener">The price level book listener implementation</param>
         /// <exception cref="ArgumentException"></exception>
         public NativePriceLevelBook(NativeConnection connection, string symbol, OrderSource[] sources, IDxPriceLevelBookListener listener) :
-            this(connection, symbol, sources.Select(s => s.ToString()).ToArray(), listener)
+            this(connection, symbol, sources?.Select(s => s.ToString()).ToArray(), listener)
         {
         }
 
         /// <summary>
-        /// Creates the new price level book instance for the certain symbol and all known sources
+        /// Creates the new price level book instance for the specified symbol and all known sources
         /// </summary>
         /// <remarks>
         ///     Don't call this constructor inside any listeners and callbacks of NativeSubscription, NativeConnection,
@@ -96,7 +120,12 @@ namespace com.dxfeed.native
         protected virtual void Dispose(bool disposing)
         {
             if (disposedValue) return;
-            
+
+            if (nativeBookListener != null)
+            {
+                C.Instance.DetachPriceLevelBookListener(bookHandle, nativeBookListener);
+            }
+
             C.Instance.ClosePriceLevelBook(bookHandle);
             disposedValue = true;
         }

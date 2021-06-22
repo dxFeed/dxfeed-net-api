@@ -32,8 +32,8 @@ namespace com.dxfeed.api.events
     /// </summary>
     public class OrderSource : IndexedEventSource, IComparable
     {
-        private static Dictionary<int, OrderSource> sourcesById = new Dictionary<int, OrderSource>();
-        private static Dictionary<string, OrderSource> sourcesByName = new Dictionary<string, OrderSource>();
+        private static readonly Dictionary<int, OrderSource> SourcesById = new Dictionary<int, OrderSource>();
+        private static readonly Dictionary<string, OrderSource> SourcesByName = new Dictionary<string, OrderSource>();
 
         /// <summary>
         ///     Bid side of a composite <see cref="IDxQuote"/>.
@@ -229,14 +229,14 @@ namespace com.dxfeed.api.events
         /// <param name="name">Name of the new order source.</param>
         private OrderSource(int id, string name) : base(id, name)
         {
-            if (sourcesById.ContainsKey(id))
-                throw new ArgumentException(string.Format("The source id '{0}' is already exist.", id));
-            if (sourcesByName.ContainsKey(name))
-                throw new ArgumentException(string.Format("The source name '{0}' is already exist.", name));
+            if (SourcesById.ContainsKey(id))
+                throw new ArgumentException($"The source id '{id}' is already exist.");
+            if (SourcesByName.ContainsKey(name))
+                throw new ArgumentException($"The source name '{name}' is already exist.");
             Id = id;
             Name = name;
-            sourcesById[Id] = this;
-            sourcesByName[Name] = this;
+            SourcesById[Id] = this;
+            SourcesByName[Name] = this;
         }
 
         /// <summary>
@@ -259,8 +259,8 @@ namespace com.dxfeed.api.events
         /// <exception cref="ArgumentException">If sourceId is negative or exceeds MAX_SOURCE_ID.</exception>
         public static OrderSource ValueOf(int sourceId)
         {
-            if (sourcesById.ContainsKey(sourceId))
-                return sourcesById[sourceId];
+            if (SourcesById.ContainsKey(sourceId))
+                return SourcesById[sourceId];
             return new OrderSource(sourceId);
         }
 
@@ -273,10 +273,39 @@ namespace com.dxfeed.api.events
         /// <exception cref="ArgumentException">If name is malformed.</exception>
         public static OrderSource ValueOf(string name)
         {
-            string upName = name.ToUpper();
-            if (sourcesByName.ContainsKey(upName))
-                return sourcesByName[upName];
-            return new OrderSource(upName);
+            return SourcesByName.ContainsKey(name) ? SourcesByName[name] : new OrderSource(name);
+        }
+
+        /// <summary>
+        /// Determines whether specified source name exists in the list of default source names
+        /// </summary>
+        /// <param name="name">The source name</param>
+        /// <returns><c>true</c> if the source name exists in the list of default source names</returns>
+        public static bool HasSourceName(string name)
+        {
+            return SourcesByName.ContainsKey(name);
+        }
+
+        /// <summary>
+        /// Determines whether specified source identifier refers to special order source.
+        /// Special order sources are used for wrapping non-order events into order events.
+        /// </summary>
+        /// <param name="sourceId">The source identifier.</param>
+        /// <returns><c>true</c> if it is a special source</returns>
+        public static bool IsSpecialSourceId(int sourceId)
+        {
+            return sourceId >= 1 && sourceId <= 6;
+        }
+
+        /// <summary>
+        /// Determines whether specified source name refers to special order source.
+        /// Special order sources are used for wrapping non-order events into order events.
+        /// </summary>
+        /// <param name="name">The source name.</param>
+        /// <returns><c>true</c> if it is a special source</returns>
+        public static bool IsSpecialSourceName(string name)
+        {
+            return IsSpecialSourceId(ValueOf(name).Id);
         }
 
         /// <summary>

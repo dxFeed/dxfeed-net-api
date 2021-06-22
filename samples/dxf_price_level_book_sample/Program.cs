@@ -15,9 +15,9 @@ using com.dxfeed.api.events;
 using com.dxfeed.native;
 
 namespace dxf_price_level_book_sample {
-    internal class RegionalBookListener : IDxRegionalBookListener {
+    internal class PriceLevelBookListener : IDxPriceLevelBookListener {
         public void OnChanged(DxPriceLevelBook book) {
-            Console.WriteLine($"\nNew Regional Order Book for {book.Symbol}:");
+            Console.WriteLine($"\nNew Price Level Book for {book.Symbol}:");
             Console.WriteLine($"{"Ask",-7} {"Size",-8} {"Time",-15} | {"Bid",-7} {"Size",-8} {"Time",-15}");
             for (var i = 0; i < Math.Max(book.Asks.Length, book.Bids.Length); ++i) {
                 if (i < book.Asks.Length)
@@ -31,15 +31,6 @@ namespace dxf_price_level_book_sample {
                         book.Bids[i].Time);
                 Console.WriteLine();
             }
-        }
-    }
-
-    internal class QuoteListener : IDxQuoteListener {
-        public void OnQuote<TB, TE>(TB buf)
-            where TB : IDxEventBuf<TE>
-            where TE : IDxQuote {
-            foreach (var q in buf)
-                Console.WriteLine("{0} {1}", buf.Symbol, q);
         }
     }
 
@@ -60,22 +51,38 @@ namespace dxf_price_level_book_sample {
             return true;
         }
 
+        private static void TryParseSourcesParam(string stringParam, InputParam<string[]> param)
+        {
+            param.Value = stringParam.Split(',');
+        }
+
+        private static void ShowHelp()
+        {
+            Console.WriteLine(
+                "Usage: dxf_price_level_book_sample <host:port> <symbol> [sources] [-T <token>] [-p]\n" +
+                "where\n" +
+                "    host:port  - The address of dxfeed server (demo.dxfeed.com:7300)\n" +
+                "    symbol     - The price level book symbol (IBM, AAPL etc)\n" +
+                "    sources    - The comma separated list of order sources (empty list = all order sources)\n" +
+                "    -T <token> - The authorization token\n" +
+                "    -p         - Enables the data transfer logging\n\n" +
+                "examples: \n" +
+                "dxf_price_level_book_sample demo.dxfeed.com:7300 MSFT\n" +
+                "dxf_price_level_book_sample demo.dxfeed.com:7300 MSFT NTV,DEX\n" +
+                "\n"
+            );
+        }
+
         private static void Main(string[] args) {
-            if (args.Length < 2 || args.Length > 5) {
-                Console.WriteLine(
-                    "Usage: dxf_regional_book_sample <host:port> <symbol> [-T <token>] [-p]\n" +
-                    "where\n" +
-                    "    host:port  - The address of dxfeed server (demo.dxfeed.com:7300)\n" +
-                    "    symbol     - IBM\n" +
-                    "    -T <token> - The authorization token\n" +
-                    "    -p         - Enables the data transfer logging\n\n" +
-                    "example: dxf_regional_book_sample demo.dxfeed.com:7300 MSFT\n"
-                );
+            if (args.Length < 2 || args.Length > 6) {
+                ShowHelp();
+
                 return;
             }
 
             var address = args[HOST_INDEX];
             var symbol = args[SYMBOL_INDEX];
+            var sources = new InputParam<string[]>(new string[] { });
             var token = new InputParam<string>(null);
             var logDataTransferFlag = false;
 
@@ -90,17 +97,21 @@ namespace dxf_price_level_book_sample {
                 if (logDataTransferFlag == false && args[i].Equals("-p")) {
                     logDataTransferFlag = true;
                     i++;
+                    continue;
                 }
+
+                if (!sources.IsSet)
+                    TryParseSourcesParam(args[i], sources);
             }
 
             Console.WriteLine("Connecting to {0} on {1}...", address, symbol);
 
             try {
-                NativeTools.InitializeLogging("dxf_regional_book_sample.log", true, true, logDataTransferFlag);
+                NativeTools.InitializeLogging("dxf_price_level_book_sample.log", true, true, logDataTransferFlag);
                 using (var con = token.IsSet
                     ? new NativeConnection(address, token.Value, DisconnectHandler)
                     : new NativeConnection(address, DisconnectHandler)) {
-                    using (con.CreateRegionalBook(symbol, new RegionalBookListener(), new QuoteListener())) {
+                    using (con.CreatePriceLevelBook(symbol, sources.Value, new PriceLevelBookListener())) {
                         Console.WriteLine("Press enter to stop");
                         Console.ReadLine();
                     }

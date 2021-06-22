@@ -31,7 +31,7 @@ namespace com.dxfeed.native
 
                 if (string.IsNullOrEmpty(trimmed)) throw new ArgumentException("Null or empty source");
                 if (OrderSource.IsSpecialSourceName(source)) throw new ArgumentException("The special order source (AGGREGATE_BID|ASK etc)");
-                if (!OrderSource.HasSourceName(source)) throw new ArgumentException($"Unknown order source: '{source}'");
+                if (!OrderSource.HasDefaultSourceName(source)) throw new ArgumentException($"Unknown order source: '{source}'");
             }
         }
 

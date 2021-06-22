@@ -35,8 +35,8 @@ namespace dxf_price_level_book_sample {
     }
 
     internal class Program {
-        private const int HOST_INDEX = 0;
-        private const int SYMBOL_INDEX = 1;
+        private const int HostIndex = 0;
+        private const int SymbolIndex = 1;
 
         private static void DisconnectHandler(IDxConnection con) {
             Console.WriteLine("Disconnected");
@@ -80,13 +80,13 @@ namespace dxf_price_level_book_sample {
                 return;
             }
 
-            var address = args[HOST_INDEX];
-            var symbol = args[SYMBOL_INDEX];
+            var address = args[HostIndex];
+            var symbol = args[SymbolIndex];
             var sources = new InputParam<string[]>(new string[] { });
             var token = new InputParam<string>(null);
             var logDataTransferFlag = false;
 
-            for (var i = SYMBOL_INDEX + 1; i < args.Length; i++) {
+            for (var i = SymbolIndex + 1; i < args.Length; i++) {
                 if (!token.IsSet && i < args.Length - 1 &&
                     TryParseTaggedStringParam("-T", args[i], args[i + 1], token))
                 {
@@ -104,7 +104,9 @@ namespace dxf_price_level_book_sample {
                     TryParseSourcesParam(args[i], sources);
             }
 
-            Console.WriteLine("Connecting to {0} on {1}...", address, symbol);
+            var sourcesString = sources.Value.Length == 0 ? "all" : string.Join(", ", sources.Value);
+
+            Console.WriteLine($"Connecting to {address} on {symbol}, sources - {sourcesString} ...");
 
             try {
                 NativeTools.InitializeLogging("dxf_price_level_book_sample.log", true, true, logDataTransferFlag);

@@ -402,7 +402,7 @@ namespace com.dxfeed.native.api
 
         [DllImport(DXFEED_DLL, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl,
             EntryPoint = "dxf_create_price_level_book_v2")]
-        private static extern int __CreatePriceLevelBook(IntPtr connection, string symbol, string[] sources, int sourcesCount,
+        private static extern int __CreatePriceLevelBook(IntPtr connection, string symbol, [In][MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.LPStr)] string[] sources, int sourcesCount,
             out IntPtr book);
 
         /// <inheritdoc />

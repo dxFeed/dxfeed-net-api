@@ -133,7 +133,7 @@
     <Compile Include="src\listeners\event\IDxTradeListener.cs" />
     <Compile Include="src\listeners\event\IDxOrderListener.cs" />
     <Compile Include="src\listeners\event\IDxProfileListener.cs" />
-    <Compile Include="src\listeners\event\IDxFundamentalListener.cs" />
+    <Compile Include="src\listeners\event\IDxSummaryListener.cs" />
     <Compile Include="src\listeners\event\IDxTimeAndSaleListener.cs" />
     <Compile Include="src\listeners\event\IDxQuoteListener.cs" />
     <Compile Include="src\listeners\event\IDxFeedListener.cs" />

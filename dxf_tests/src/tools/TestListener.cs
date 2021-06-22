@@ -323,7 +323,7 @@ namespace com.dxfeed.tests.tools
                 AddEvent(new ReceivedEvent<IDxProfile>(buf.Symbol, buf.EventParams, p));
         }
 
-        public void OnFundamental<TB, TE>(TB buf)
+        public void OnSummary<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
             where TE : IDxSummary
         {

@@ -59,7 +59,7 @@ namespace com.dxfeed.api.extras
                 Console.WriteLine($"{buf.Symbol} {p}");
         }
 
-        public void OnFundamental<TB, TE>(TB buf)
+        public void OnSummary<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
             where TE : IDxSummary
         {

@@ -66,7 +66,7 @@ namespace dxf_option_chain_sample {
                     Console.WriteLine();
                 }
             } catch (Exception exc) {
-                Console.WriteLine($"Exception occured: {exc}");
+                Console.WriteLine($"Exception occurred: {exc}");
             }
         }
     }

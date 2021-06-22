@@ -96,6 +96,10 @@
       <Name>dxf_order_view_xcheck</Name>
       <Label>BuildPublish</Label>
     </ProjectReference>
+    <ProjectReference Include="..\samples\dxf_price_level_book_sample\dxf_price_level_book_sample.csproj">
+      <Name>dxf_price_level_book_sample</Name>
+      <Label>BuildPublish</Label>
+    </ProjectReference>
     <ProjectReference Include="..\samples\dxf_promises_sample\dxf_promises_sample.csproj">
       <Name>dxf_promises_sample</Name>
       <Label>BuildPublish</Label>

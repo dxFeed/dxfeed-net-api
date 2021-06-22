@@ -1,3 +1,11 @@
+Version 8.0.0
+* [DXFC-222] Created wrapper for PriceLevelBook.c
+  - Added the `IDxPriceLevelBook`, `IDxPriceLevelBookListener` interfaces
+  - Added the `NativePriceLevelBook` class (see documentation)
+  - Added the `CreatePriceLevelBook` methods to `NativeConnection` class (see documentation)
+  - Added the `dxf_price_level_book_sample` to demostrate how to use this wrapper
+
+
 Version 7.6.0
 * [DXFC-224] Fixed a bug with a race conditions occurred while reading files
 * [DXFC-225] Added initial support for the WideDecimal type. This will allow reading non zipped data coming from CandleWebService

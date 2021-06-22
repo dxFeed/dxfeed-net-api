@@ -159,7 +159,7 @@ namespace dxf_snapshot_sample {
                 using (var con = token.IsSet
                     ? new NativeConnection(address, token.Value, DisconnectHandler)
                     : new NativeConnection(address, DisconnectHandler)) {
-                    using (var s = con.CreateSnapshotSubscription(eventType, DEFAULT_TIME,
+                    using (var s = con.CreateSnapshotSubscription(eventType, DEFAULT_TIME, 
                         new SnapshotListener(recordsPrintLimit.Value))) {
                         switch (eventType)
                         {
@@ -180,9 +180,9 @@ namespace dxf_snapshot_sample {
                     }
                 }
             } catch (DxException dxException) {
-                Console.WriteLine($"Native exception occured: {dxException.Message}");
+                Console.WriteLine($"Native exception occurred: {dxException.Message}");
             } catch (Exception exc) {
-                Console.WriteLine($"Exception occured: {exc.Message}");
+                Console.WriteLine($"Exception occurred: {exc.Message}");
             }
         }
 

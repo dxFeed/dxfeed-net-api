@@ -400,6 +400,49 @@ namespace com.dxfeed.native.api
             return __dxf_get_snapshot_symbol(snapshot, out symbol);
         }
 
+        [DllImport(DXFEED_DLL, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl,
+            EntryPoint = "dxf_create_price_level_book_v2")]
+        private static extern int __CreatePriceLevelBook(IntPtr connection, string symbol, [In][MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.LPStr)] string[] sources, int sourcesCount,
+            out IntPtr book);
+
+        /// <inheritdoc />
+        internal override int CreatePriceLevelBook(IntPtr connection, string symbol, string[] sources, int sourcesCount, out IntPtr book)
+        {
+            return __CreatePriceLevelBook(connection, symbol, sources, sourcesCount, out book);
+        }
+
+        [DllImport(DXFEED_DLL, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl,
+            EntryPoint = "dxf_close_price_level_book")]
+        private static extern int __ClosePriceLevelBook(IntPtr book);
+
+        /// <inheritdoc />
+        internal override int ClosePriceLevelBook(IntPtr book)
+        {
+            return __ClosePriceLevelBook(book);
+        }
+
+        [DllImport(DXFEED_DLL, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl,
+            EntryPoint = "dxf_attach_price_level_book_listener")]
+        private static extern int __AttachPriceLevelBookListener(IntPtr book, dxf_price_level_book_listener_t bookListener,
+            IntPtr userData);
+
+        /// <inheritdoc />
+        internal override int AttachPriceLevelBookListener(IntPtr book, dxf_price_level_book_listener_t bookListener,
+            IntPtr userData)
+        {
+            return __AttachPriceLevelBookListener(book, bookListener, userData);
+        }
+
+        [DllImport(DXFEED_DLL, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl,
+            EntryPoint = "dxf_detach_price_level_book_listener")]
+        private static extern int __DetachPriceLevelBookListener(IntPtr book, dxf_price_level_book_listener_t bookListener);
+
+        /// <inheritdoc />
+        internal override int DetachPriceLevelBookListener(IntPtr book, dxf_price_level_book_listener_t bookListener)
+        {
+            return __DetachPriceLevelBookListener(book, bookListener);
+        }
+
         [DllImport(DXFEED_DLL, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl, EntryPoint = "dxf_write_raw_data")]
         private static extern int __dxf_write_raw_data(IntPtr connection, byte[] raw_file_name);
         internal override int dxf_write_raw_data(IntPtr connection, byte[] raw_file_name)

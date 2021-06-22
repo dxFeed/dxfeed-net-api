@@ -24,7 +24,7 @@ namespace com.dxfeed.native
         /// </summary>
         /// <remarks>
         ///     Don't call this constructor inside any listeners and callbacks of NativeSubscription, NativeConnection,
-        /// NativeRegionalBook, NativeSnapshotSubscription classes
+        /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
         /// <param name="connection">The current connection</param>
         /// <param name="symbol">The book symbol</param>
@@ -80,7 +80,7 @@ namespace com.dxfeed.native
         /// </summary>
         /// <remarks>
         ///     Don't call this method inside any listeners and callbacks of NativeSubscription, NativeConnection,
-        /// NativeRegionalBook, NativeSnapshotSubscription classes
+        /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
         public void Dispose()
         {

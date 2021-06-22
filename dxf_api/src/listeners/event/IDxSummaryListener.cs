@@ -14,17 +14,17 @@ using com.dxfeed.api.events;
 namespace com.dxfeed.api
 {
     /// <summary>
-    /// Interface provides receiving fundamental events.
+    /// Interface provides receiving Summary events.
     /// </summary>
-    public interface IDxFundamentalListener : IDxEventListener
+    public interface IDxSummaryListener : IDxEventListener
     {
         /// <summary>
-        /// On Fundamental event received.
+        /// On Summary event received.
         /// </summary>
         /// <typeparam name="TB">Event buffer type.</typeparam>
         /// <typeparam name="TE">Event type.</typeparam>
         /// <param name="buf">Event buffer object.</param>
-        void OnFundamental<TB, TE>(TB buf)
+        void OnSummary<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
             where TE : IDxSummary;
     }

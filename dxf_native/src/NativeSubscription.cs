@@ -283,7 +283,7 @@ namespace com.dxfeed.native
                     break;
                 case EventType.Summary:
                     var sBuf = NativeBufferFactory.CreateSummaryBuf(symbol, data, dataCount, nativeEventParams);
-                    (eventListener as IDxFundamentalListener)?.OnFundamental<NativeEventBuffer<NativeSummary>, NativeSummary>(sBuf);
+                    (eventListener as IDxSummaryListener)?.OnSummary<NativeEventBuffer<NativeSummary>, NativeSummary>(sBuf);
                     break;
                 case EventType.Candle:
                     var cBuf = NativeBufferFactory.CreateCandleBuf(symbol, data, dataCount, nativeEventParams);

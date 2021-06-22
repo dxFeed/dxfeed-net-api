@@ -1,9 +1,10 @@
 Version 8.0.0
+* [DXFC-215] [Breaking changes] The `IDxFundamentalListener` interface renamed to `IDxSummaryListener` and  the `OnFundamental` method renamed to `OnSummary`
 * [DXFC-222] Created wrapper for PriceLevelBook.c
   - Added the `IDxPriceLevelBook`, `IDxPriceLevelBookListener` interfaces
   - Added the `NativePriceLevelBook` class (see documentation)
   - Added the `CreatePriceLevelBook` methods to `NativeConnection` class (see documentation)
-  - Added the `dxf_price_level_book_sample` to demostrate how to use this wrapper
+  - Added the `dxf_price_level_book_sample` to demonstrate how to use this wrapper
 
 
 Version 7.6.0
@@ -20,7 +21,7 @@ Version 7.4.0
 * [DXFC-221] Added the ability to receive incremental snapshot changes
   - Added `IDxIncOrderSnapshotListener` interface for subscribing to incremental snapshot changes
   - Added the additional NativeSnapshotSubscription constructor and the `NativeConnection.CrateIncOrderSnapshotSubscription` method for creating of subscriptions with incremental snapshot changes
-  - Added the `dxf_inc_order_snapshot_sample` to demostrate how to use this feature
+  - Added the `dxf_inc_order_snapshot_sample` to demonstrate how to use this feature
 
 Version 7.3.0
 * [DXFC-219] Fixed a bug with broken parsing of negative values

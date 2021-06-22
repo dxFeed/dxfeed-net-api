@@ -194,12 +194,12 @@ namespace dxf_events_sample {
         }
 
         /// <summary>
-        ///     On Fundamental event received.
+        ///     On Summary event received.
         /// </summary>
         /// <typeparam name="TB">Event buffer type.</typeparam>
         /// <typeparam name="TE">Event type.</typeparam>
         /// <param name="buf">Event buffer object.</param>
-        public void OnFundamental<TB, TE>(TB buf)
+        public void OnSummary<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
             where TE : IDxSummary {
             foreach (var f in buf)

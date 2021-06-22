@@ -19,7 +19,7 @@ namespace com.dxfeed.api
         IDxTradeListener,
         IDxOrderListener,
         IDxProfileListener,
-        IDxFundamentalListener,
+        IDxSummaryListener,
         IDxTimeAndSaleListener
     {
         //Note: no extra methods in this interface.

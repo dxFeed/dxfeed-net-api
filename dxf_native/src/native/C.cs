@@ -716,6 +716,51 @@ namespace com.dxfeed.native.api
          */
         internal abstract int dxf_get_snapshot_symbol(IntPtr snapshot, out IntPtr symbol);
 
+        /// <summary>
+        /// Creates Price Level book with the specified parameters.
+        /// </summary>
+        /// <param name="connection">A handle of a previously created connection which the subscription will be using</param>
+        /// <param name="symbol">The symbol to use</param>
+        /// <param name="sources">Order sources for Order. Each element can be one of following:
+        /// "NTV", "ntv", "NFX", "ESPD", "XNFI", "ICE", "ISE", "DEA", "DEX", "BYX", "BZX", "BATE", "CHIX",
+        /// "CEUX", "BXTR", "IST", "BI20", "ABE", "FAIR", "GLBX", "glbx", "ERIS", "XEUR", "xeur", "CFE",
+        /// "C2OX", "SMFE"</param>
+        /// <param name="sourcesCount">The number of sources. 0 - all sources</param>
+        /// <param name="book">A handle of the created price level book</param>
+        /// <returns>DX_OK (1) on successful PLB creation or DX_ERR (0) on error;
+        /// dxf_get_last_error can be used to retrieve the error code and description in case of failure</returns>
+        internal abstract int CreatePriceLevelBook(IntPtr connection, string symbol, string[] sources, int sourcesCount, out IntPtr book);
+
+        /// <summary>
+        /// Closes a price level book.
+        /// </summary>
+        /// <param name="book">A handle of the price level book to close</param>
+        /// <returns>DX_OK (1) if price level book has been successfully closed or DX_ERR (0) on error;
+        /// dxf_get_last_error can be used to retrieve the error code and description in case of failure</returns>
+        internal abstract int ClosePriceLevelBook(IntPtr book);
+
+        /// <summary>
+        /// Attaches a listener callback to the price level book.
+        /// </summary>
+        /// <param name="book">A handle of the book to which a listener is to be attached</param>
+        /// <param name="bookListener">A listener callback function pointer</param>
+        /// <param name="userData">Data to be passed to the callback function</param>
+        /// <returns>DX_OK (1) if listener has been successfully attached or DX_ERR (0) on error;
+        /// dxf_get_last_error can be used to retrieve the error code and description in case of failure</returns>
+        internal abstract int AttachPriceLevelBookListener(IntPtr book, dxf_price_level_book_listener_t bookListener,
+            IntPtr userData);
+
+        /// <summary>
+        /// Detaches a listener from the price level book.
+        ///
+        /// No error occurs if it's attempted to detach a listener which wasn't previously attached.
+        /// </summary>
+        /// <param name="book">A handle of the book to which a listener is to be detached</param>
+        /// <param name="bookListener">A listener callback function pointer</param>
+        /// <returns>DX_OK (1) if listener has been successfully detached or DX_ERR (0) on error;
+        /// dxf_get_last_error can be used to retrieve the error code and description in case of failure</returns>
+        internal abstract int DetachPriceLevelBookListener(IntPtr book, dxf_price_level_book_listener_t bookListener);
+
         /*
          *  Add dumping of incoming traffic into specific file
          *

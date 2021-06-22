@@ -180,9 +180,9 @@ namespace dxf_candle_sample {
                     }
                 }
             } catch (DxException dxException) {
-                Console.WriteLine($"Native exception occured: {dxException.Message}");
+                Console.WriteLine($"Native exception occurred: {dxException.Message}");
             } catch (Exception exc) {
-                Console.WriteLine($"Exception occured: {exc.GetType()}, message: {exc.Message}");
+                Console.WriteLine($"Exception occurred: {exc.GetType()}, message: {exc.Message}");
             }
         }
 

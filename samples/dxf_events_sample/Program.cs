@@ -112,9 +112,9 @@ namespace dxf_events_sample {
                     }
                 }
             } catch (DxException dxException) {
-                Console.WriteLine($"Native exception occured: {dxException.Message}");
+                Console.WriteLine($"Native exception occurred: {dxException.Message}");
             } catch (Exception exc) {
-                Console.WriteLine($"Exception occured: {exc.Message}");
+                Console.WriteLine($"Exception occurred: {exc.Message}");
             }
         }
 

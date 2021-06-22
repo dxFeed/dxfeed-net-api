@@ -49,7 +49,7 @@ namespace com.dxfeed.native
         /// </summary>
         /// <remarks>
         ///     Don't call this constructor inside any listeners and callbacks of NativeSubscription, NativeConnection,
-        /// NativeRegionalBook, NativeSnapshotSubscription classes
+        /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
         /// <param name="connection">Native connection pointer.</param>
         /// <param name="time">Milliseconds time in the past.</param>
@@ -70,7 +70,7 @@ namespace com.dxfeed.native
         /// </summary>
         /// <remarks>
         ///     Don't call this constructor inside any listeners and callbacks of NativeSubscription, NativeConnection,
-        /// NativeRegionalBook, NativeSnapshotSubscription classes
+        /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
         /// <param name="connection">Native connection pointer.</param>
         /// <param name="listener">Snapshot or update events listener.</param>
@@ -91,7 +91,7 @@ namespace com.dxfeed.native
         /// </summary>
         /// <remarks>
         ///     Don't call this constructor inside any listeners and callbacks of NativeSubscription, NativeConnection,
-        /// NativeRegionalBook, NativeSnapshotSubscription classes
+        /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
         /// <param name="connection">Native connection pointer.</param>
         /// <param name="eventType">Single event type.</param>
@@ -179,7 +179,7 @@ namespace com.dxfeed.native
         /// </summary>
         /// <remarks>
         ///     Don't call this method inside any listeners and callbacks of NativeSubscription, NativeConnection,
-        /// NativeRegionalBook, NativeSnapshotSubscription classes
+        /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
         public void Dispose()
         {
@@ -205,7 +205,7 @@ namespace com.dxfeed.native
         /// </summary>
         /// <remarks>
         ///     Don't call this method inside any listeners and callbacks of NativeSubscription, NativeConnection,
-        /// NativeRegionalBook, NativeSnapshotSubscription classes
+        /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
         /// <param name="symbol">Symbol.</param>
         /// <exception cref="ArgumentException">Invalid <paramref name="symbol"/> parameter.</exception>
@@ -262,7 +262,7 @@ namespace com.dxfeed.native
         /// </summary>
         /// <remarks>
         ///     Don't call this method inside any listeners and callbacks of NativeSubscription, NativeConnection,
-        /// NativeRegionalBook, NativeSnapshotSubscription classes
+        /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
         /// <param name="symbol"><see cref="CandleSymbol"/>.</param>
         /// <exception cref="ArgumentException">Invalid <paramref name="symbol"/> parameter.</exception>
@@ -310,7 +310,7 @@ namespace com.dxfeed.native
         /// </summary>
         /// <remarks>
         ///     Don't call this method inside any listeners and callbacks of NativeSubscription, NativeConnection,
-        /// NativeRegionalBook, NativeSnapshotSubscription classes
+        /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
         /// <param name="symbols">List of symbols.</param>
         /// <exception cref="ArgumentException">Invalid <paramref name="symbols"/> parameter.</exception>
@@ -330,7 +330,7 @@ namespace com.dxfeed.native
         /// </summary>
         /// <remarks>
         ///     Don't call this method inside any listeners and callbacks of NativeSubscription, NativeConnection,
-        /// NativeRegionalBook, NativeSnapshotSubscription classes
+        /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
         /// <param name="symbols">List of <see cref="CandleSymbol"/>.</param>
         /// <exception cref="ArgumentException">Invalid <paramref name="symbols"/> parameter.</exception>
@@ -355,7 +355,7 @@ namespace com.dxfeed.native
         /// </summary>
         /// <remarks>
         ///     Don't call this method inside any listeners and callbacks of NativeSubscription, NativeConnection,
-        /// NativeRegionalBook, NativeSnapshotSubscription classes
+        /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
         /// <param name="symbols">List of symbols.</param>
         /// <exception cref="ArgumentException">Invalid <paramref name="symbols"/> parameter.</exception>
@@ -379,7 +379,7 @@ namespace com.dxfeed.native
         /// </summary>
         /// <remarks>
         ///     Don't call this method inside any listeners and callbacks of NativeSubscription, NativeConnection,
-        /// NativeRegionalBook, NativeSnapshotSubscription classes
+        /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
         /// <param name="symbols">List of <see cref="CandleSymbol"/>.</param>
         /// <exception cref="ArgumentException">Invalid <paramref name="symbols"/> parameter.</exception>
@@ -403,7 +403,7 @@ namespace com.dxfeed.native
         /// <param name="symbols">List of symbols.</param>
         /// <remarks>
         ///     Don't call this method inside any listeners and callbacks of NativeSubscription, NativeConnection,
-        /// NativeRegionalBook, NativeSnapshotSubscription classes
+        /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
         /// <exception cref="ArgumentException">Invalid <paramref name="symbols"/> parameter.</exception>
         /// <exception cref="InvalidOperationException">You try to add more than one symbol to snapshot subscription.</exception>
@@ -426,7 +426,7 @@ namespace com.dxfeed.native
         /// </summary>
         /// <remarks>
         ///     Don't call this method inside any listeners and callbacks of NativeSubscription, NativeConnection,
-        /// NativeRegionalBook, NativeSnapshotSubscription classes
+        /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
         /// <param name="symbols">List of <see cref="CandleSymbol"/>.</param>
         /// <exception cref="ArgumentException">Invalid <paramref name="symbols"/> parameter.</exception>
@@ -457,7 +457,7 @@ namespace com.dxfeed.native
         /// </summary>
         /// <remarks>
         ///     Don't call this method inside any listeners and callbacks of NativeSubscription, NativeConnection,
-        /// NativeRegionalBook, NativeSnapshotSubscription classes
+        /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
         /// <exception cref="DxException">Internal error.</exception>
         public void Clear()
@@ -470,7 +470,7 @@ namespace com.dxfeed.native
         /// </summary>
         /// <remarks>
         ///     Don't call this method inside any listeners and callbacks of NativeSubscription, NativeConnection,
-        /// NativeRegionalBook, NativeSnapshotSubscription classes
+        /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
         /// <returns>List of subscribed symbols.</returns>
         /// <exception cref="DxException">Internal error.</exception>
@@ -493,7 +493,7 @@ namespace com.dxfeed.native
         /// </summary>
         /// <remarks>
         ///     Don't call this method inside any listeners and callbacks of NativeSubscription, NativeConnection,
-        /// NativeRegionalBook, NativeSnapshotSubscription classes
+        /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
         /// <param name="sources">List of <see cref="com.dxfeed.api.events.OrderSource"/> names.</param>
         /// <exception cref="ArgumentException">Invalid <paramref name="sources"/> parameter.</exception>
@@ -515,7 +515,7 @@ namespace com.dxfeed.native
         /// </summary>
         /// <remarks>
         ///     Don't call this method inside any listeners and callbacks of NativeSubscription, NativeConnection,
-        /// NativeRegionalBook, NativeSnapshotSubscription classes
+        /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
         /// <param name="sources">List of <see cref="com.dxfeed.api.events.OrderSource"/> names.</param>
         /// <exception cref="ArgumentException">Invalid <paramref name="sources"/> parameter.</exception>

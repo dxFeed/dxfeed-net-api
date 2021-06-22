@@ -123,7 +123,7 @@ namespace dxf_instrument_profile_sample
             }
             catch (Exception exc)
             {
-                Console.WriteLine($"Exception occured: {exc}");
+                Console.WriteLine($"Exception occurred: {exc}");
             }
         }
     }

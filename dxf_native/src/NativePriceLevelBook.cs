@@ -10,17 +10,19 @@ If a copy of the MPL was not distributed with this file, You can obtain one at h
 #endregion
 
 using System;
+using System.Linq;
 using com.dxfeed.api;
+using com.dxfeed.api.events;
 using com.dxfeed.api.extras;
 using com.dxfeed.native.api;
-using com.dxfeed.native.events;
+using DxPriceLevelBook = com.dxfeed.native.api.DxPriceLevelBook;
 
 namespace com.dxfeed.native
 {
-    public class NativeRegionalBook : IDxRegionalBook
+    public class NativePriceLevelBook : IDxPriceLevelBook
     {
         /// <summary>
-        /// Creates the new regional book instance
+        /// Creates the new price level book instance for the certain symbol and sources
         /// </summary>
         /// <remarks>
         ///     Don't call this constructor inside any listeners and callbacks of NativeSubscription, NativeConnection,
@@ -28,55 +30,83 @@ namespace com.dxfeed.native
         /// </remarks>
         /// <param name="connection">The current connection</param>
         /// <param name="symbol">The book symbol</param>
-        /// <param name="bookListener">The book listener implementation</param>
-        /// <param name="quoteListener">The quote listener implementation</param>
+        /// <param name="sources">The order sources</param>
+        /// <param name="listener">The price level book listener implementation</param>
         /// <exception cref="ArgumentException"></exception>
-        public NativeRegionalBook(NativeConnection connection, string symbol, IDxRegionalBookListener bookListener,
-            IDxQuoteListener quoteListener)
+        public NativePriceLevelBook(NativeConnection connection, string symbol, string[] sources, IDxPriceLevelBookListener listener)
         {
             if (string.IsNullOrWhiteSpace(symbol))
             {
                 throw new ArgumentException("Invalid symbol parameter.");
             }
             
-            this.bookListener = bookListener;
-            this.quoteListener = quoteListener;
+            this.bookListener = listener;
 
-            if (bookListener == null && quoteListener == null) return;
-            
-            C.CheckOk(C.Instance.dxf_create_regional_book(connection.Handle, symbol, out bookHandle));
+            if (bookListener == null) return;
+
+            C.CheckOk(C.Instance.CreatePriceLevelBook(connection.Handle, symbol, sources, sources.Length, out bookHandle));
+
             try
             {
                 if (this.bookListener != null)
                 {
-                    C.CheckOk(C.Instance.dxf_attach_regional_book_listener(bookHandle, nativeBookListener = OnBook, IntPtr.Zero));
-                }
-                if (this.quoteListener != null)
-                {
-                    C.CheckOk(C.Instance.dxf_attach_regional_book_listener_v2(bookHandle, nativeQuoteListener = OnQuote, IntPtr.Zero));
+                    C.CheckOk(C.Instance.AttachPriceLevelBookListener(bookHandle, nativeBookListener = OnBook, IntPtr.Zero));
                 }
             }
             catch (DxException)
             {
-                C.Instance.dxf_close_regional_book(bookHandle);
+                C.Instance.ClosePriceLevelBook(bookHandle);
                 throw;
             }
         }
-        
+
+        /// <summary>
+        /// Creates the new price level book instance for the certain symbol and sources
+        /// </summary>
+        /// <remarks>
+        ///     Don't call this constructor inside any listeners and callbacks of NativeSubscription, NativeConnection,
+        /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
+        /// </remarks>
+        /// <param name="connection">The current connection</param>
+        /// <param name="symbol">The book symbol</param>
+        /// <param name="sources">The order sources</param>
+        /// <param name="listener">The price level book listener implementation</param>
+        /// <exception cref="ArgumentException"></exception>
+        public NativePriceLevelBook(NativeConnection connection, string symbol, OrderSource[] sources, IDxPriceLevelBookListener listener) :
+            this(connection, symbol, sources.Select(s => s.ToString()).ToArray(), listener)
+        {
+        }
+
+        /// <summary>
+        /// Creates the new price level book instance for the certain symbol and all known sources
+        /// </summary>
+        /// <remarks>
+        ///     Don't call this constructor inside any listeners and callbacks of NativeSubscription, NativeConnection,
+        /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
+        /// </remarks>
+        /// <param name="connection">The current connection</param>
+        /// <param name="symbol">The book symbol</param>
+        /// <param name="listener">The price level book listener implementation</param>
+        /// <exception cref="ArgumentException"></exception>
+        public NativePriceLevelBook(NativeConnection connection, string symbol, IDxPriceLevelBookListener listener):
+            this(connection, symbol, new OrderSource[]{}, listener)
+        {
+        }
+
         protected virtual void Dispose(bool disposing)
         {
             if (disposedValue) return;
             
-            C.Instance.dxf_close_regional_book(bookHandle);
+            C.Instance.ClosePriceLevelBook(bookHandle);
             disposedValue = true;
         }
 
-        ~NativeRegionalBook() {
+        ~NativePriceLevelBook() {
            Dispose(false);
         }
 
         /// <summary>
-        /// Disposes the regional book
+        /// Disposes the price level book
         /// </summary>
         /// <remarks>
         ///     Don't call this method inside any listeners and callbacks of NativeSubscription, NativeConnection,
@@ -97,7 +127,7 @@ namespace com.dxfeed.native
             DxPriceLevelBook nativeBook;
             unsafe
             {
-                nativeBook = *((DxPriceLevelBook*)priceLevelBook);
+                nativeBook = *(DxPriceLevelBook*)priceLevelBook;
             }
             var asks =
                 new dxfeed.api.events.DxPriceLevelBook.DxPriceLevel[nativeBook.asks_count];
@@ -121,9 +151,9 @@ namespace com.dxfeed.native
             bookListener.OnChanged(book);
         }
 
-        private unsafe DxPriceLevel GetLevel(IntPtr levels, int index)
+        private static unsafe DxPriceLevel GetLevel(IntPtr levels, int index)
         {
-            return *((DxPriceLevel*)IntPtr.Add(levels, sizeof(DxPriceLevel) * index));
+            return *(DxPriceLevel*)IntPtr.Add(levels, sizeof(DxPriceLevel) * index);
         }
 
         private dxfeed.api.events.DxPriceLevelBook.DxPriceLevel CreateLevel(DxPriceLevel level)
@@ -132,24 +162,15 @@ namespace com.dxfeed.native
                         level.price, level.size, TimeConverter.ToUtcDateTime(level.time));
         }
 
-        private unsafe string ToString(IntPtr str)
+        private static unsafe string ToString(IntPtr str)
         {
             return new string((char*)str.ToPointer());
         }
 
-        private void OnQuote(IntPtr symbol, IntPtr quote, int count, IntPtr userData)
-        {
-            var quoteBuf = NativeBufferFactory.CreateQuoteBuf(symbol, quote, count, null);
-            quoteListener.OnQuote<NativeEventBuffer<NativeQuote>, NativeQuote>(quoteBuf);
-        }
-
         private bool disposedValue; // To detect redundant calls
-        private readonly IDxRegionalBookListener bookListener;
-        private readonly IDxQuoteListener quoteListener;
-        // ReSharper disable once NotAccessedField.Local
-        private readonly C.dxf_regional_quote_listener_t nativeQuoteListener;//to prevent from being garbage collected
+        private readonly IDxPriceLevelBookListener bookListener;
         // ReSharper disable once NotAccessedField.Local
         private readonly C.dxf_price_level_book_listener_t nativeBookListener;//to prevent from being garbage collected
-        private readonly IntPtr bookHandle;        
+        private readonly IntPtr bookHandle;
     }
 }

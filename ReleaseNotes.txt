@@ -21,7 +21,7 @@ Version 7.4.0
 * [DXFC-221] Added the ability to receive incremental snapshot changes
   - Added `IDxIncOrderSnapshotListener` interface for subscribing to incremental snapshot changes
   - Added the additional NativeSnapshotSubscription constructor and the `NativeConnection.CrateIncOrderSnapshotSubscription` method for creating of subscriptions with incremental snapshot changes
-  - Added the `dxf_inc_order_snapshot_sample` to demostrate how to use this feature
+  - Added the `dxf_inc_order_snapshot_sample` to demonstrate how to use this feature
 
 Version 7.3.0
 * [DXFC-219] Fixed a bug with broken parsing of negative values

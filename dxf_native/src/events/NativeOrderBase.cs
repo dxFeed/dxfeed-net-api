@@ -42,6 +42,7 @@ namespace com.dxfeed.native.events
             AuxOrderId = order.aux_order_id;
             Price = order.price;
             Size = order.size;
+            ExecutedSize = order.executed_size;
             Count = order.count;
             TradeId = order.trade_id;
             TradePrice = order.trade_price;
@@ -65,6 +66,7 @@ namespace com.dxfeed.native.events
             AuxOrderId = order.AuxOrderId;
             Price = order.Price;
             Size = order.Size;
+            ExecutedSize = order.ExecutedSize;
             Count = order.Count;
             TradeId = order.TradeId;
             TradePrice = order.TradePrice;
@@ -78,10 +80,10 @@ namespace com.dxfeed.native.events
         {
             return string.Format(CultureInfo.InvariantCulture,
                 "Source: {0}, EventFlags: 0x{1:x2}, Index: {2:x16}, Time: {3:o}, Sequence: {4}, TimeNanoPart: {5}, " +
-                "Action: {6}, ActionTime: {7:o}, OrderId: {8}, AuxOrderId: {9}, Price: {10}, Size: {11}, Count: {12}, " +
-                "ExchangeCode: {13}, Side: {14}, Scope: {15}, TradeId: {16}, TradePrice: {17}, TradeSize: {18}",
+                "Action: {6}, ActionTime: {7:o}, OrderId: {8}, AuxOrderId: {9}, Price: {10}, Size: {11}, ExecutedSize: {12}, Count: {13}, " +
+                "ExchangeCode: {14}, Side: {15}, Scope: {16}, TradeId: {17}, TradePrice: {18}, TradeSize: {19}",
                 Source, (int) EventFlags, Index, Time, Sequence, TimeNanoPart,
-                Action, ActionTime, OrderId, AuxOrderId, Price, Size, Count,
+                Action, ActionTime, OrderId, AuxOrderId, Price, Size, ExecutedSize, Count,
                 ExchangeCode, Side, Scope, TradeId, TradePrice, TradeSize
             );
         }
@@ -170,12 +172,19 @@ namespace com.dxfeed.native.events
         /// <summary>
         /// Returns size of this order.
         /// </summary>
-        public long Size { get; internal set; }
-        
+        public double Size { get; internal set; }
+
+        /// <summary>
+        /// Returns executed size of this order.
+        ///
+        /// This field is a part of the FOB ("Full Order Book") support.
+        /// </summary>
+        public double ExecutedSize { get; internal set; }
+
         /// <summary>
         /// Returns number of individual orders in this aggregate order.
         /// </summary>
-        public int Count { get; internal set; }
+        public double Count { get; internal set; }
         
         /// <summary>
         /// Returns trade (order execution) ID for events containing trade-related action if available, otherwise - 0.

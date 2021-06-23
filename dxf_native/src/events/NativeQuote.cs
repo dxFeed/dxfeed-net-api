@@ -117,7 +117,7 @@ namespace com.dxfeed.native.events
         /// <summary>
         /// Returns bid size.
         /// </summary>
-        public long BidSize { get; private set; }
+        public double BidSize { get; private set; }
         /// <summary>
         /// Returns date time of the last ask change.
         /// This time is always transmitted with seconds precision, so the result of this method
@@ -135,7 +135,7 @@ namespace com.dxfeed.native.events
         /// <summary>
         /// Returns ask size.
         /// </summary>
-        public long AskSize { get; private set; }
+        public double AskSize { get; private set; }
         /// <summary>
         /// Returns whether quote is composite or regional (other constants are not used here)
         /// </summary>

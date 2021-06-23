@@ -70,7 +70,7 @@ namespace dxf_simple_order_book_sample
             public Side Side { get; set; }
             public double Price { get; set; }
             public DateTime Timestamp { get; set; }
-            public long Size { get; set; }
+            public double Size { get; set; }
             public long Sequence { get; set; }
             public string Source { get; set; }
             public string MarketMaker { get; set; }

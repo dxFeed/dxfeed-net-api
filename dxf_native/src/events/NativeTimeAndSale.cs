@@ -147,7 +147,7 @@ namespace com.dxfeed.native.events
         /// <summary>
         ///   Returns size of this time and sale event.
         /// </summary>
-        public long Size { get; private set; }
+        public double Size { get; private set; }
         /// <summary>
         ///   Returns the current bid price on the market when this time and sale event had occurred.
         /// </summary>

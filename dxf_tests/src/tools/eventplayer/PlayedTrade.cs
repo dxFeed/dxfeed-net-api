@@ -22,7 +22,7 @@ namespace com.dxfeed.tests.tools.eventplayer
     internal class PlayedTrade : IPlayedEvent<DxTestTrade>, IDxTrade
     {
         internal PlayedTrade(string symbol, long time, int sequence, int time_nanos, char exchange_code, double price,
-            int size, int tick, double change, int dayId, double day_volume, double day_turnover, int raw_flags,
+            double size, int tick, double change, int dayId, double day_volume, double day_turnover, int raw_flags,
             Direction direction, bool is_eth, Scope scope)
         {
             this.EventSymbol = symbol;
@@ -95,7 +95,7 @@ namespace com.dxfeed.tests.tools.eventplayer
 
         public double Price { get; private set; }
 
-        public long Size { get; private set; }
+        public double Size { get; private set; }
 
         public int Tick { get; private set; }
 

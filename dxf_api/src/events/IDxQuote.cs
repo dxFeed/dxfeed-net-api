@@ -58,7 +58,7 @@ namespace com.dxfeed.api.events
         /// <summary>
         /// Returns bid size.
         /// </summary>
-        long BidSize { get; }
+        double BidSize { get; }
         /// <summary>
         /// Returns date time of the last ask change.
         /// This time is always transmitted with seconds precision, so the result of this method
@@ -76,7 +76,7 @@ namespace com.dxfeed.api.events
         /// <summary>
         /// Returns ask size.
         /// </summary>
-        long AskSize { get; }
+        double AskSize { get; }
         /// <summary>
         /// Returns scope
         /// </summary>

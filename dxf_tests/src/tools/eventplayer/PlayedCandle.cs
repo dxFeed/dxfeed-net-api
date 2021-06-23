@@ -43,7 +43,7 @@ namespace com.dxfeed.tests.tools.eventplayer
         /// <param name="eventFlags"></param>
         internal PlayedCandle(string symbol, long time, int sequence, double count, double open,
             double high, double low, double close, double volume, double vwap, double bidVolume,
-            double askVolume, long index, long openInterest, double impVolatility,
+            double askVolume, long index, double openInterest, double impVolatility,
             EventFlag eventFlags)
         {
             EventSymbol = CandleSymbol.ValueOf(symbol);
@@ -165,7 +165,7 @@ namespace com.dxfeed.tests.tools.eventplayer
             get; private set;
         }
 
-        public long OpenInterest
+        public double OpenInterest
         {
             get; private set;
         }

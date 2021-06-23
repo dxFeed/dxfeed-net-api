@@ -79,16 +79,23 @@ namespace com.dxfeed.api.events
         ///   Returns price of this order.
         /// </summary>
         double Price { get; }
-        
+
         /// <summary>
         ///   Returns size of this order.
         /// </summary>
-        long Size { get; }
-        
+        double Size { get; }
+
+        /// <summary>
+        ///   Returns executed size of this order.
+        ///
+        /// This field is a part of the FOB ("Full Order Book") support.
+        /// </summary>
+        double ExecutedSize { get; }
+
         /// <summary>
         ///   Returns number of individual orders in this aggregate order.
         /// </summary>
-        int Count { get; }
+        double Count { get; }
         
         /// <summary>
         /// Returns trade (order execution) ID for events containing trade-related action if available, otherwise - 0.

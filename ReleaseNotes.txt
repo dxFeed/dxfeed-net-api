@@ -1,9 +1,9 @@
 Version 8.0.0
 * [DXFC-231] [Breaking changes] Converted the types and representations of certain event fields to store WideDecimal
-  - Fields that are now of type double: `IDxOrderBase.Size`, `IDxOrderBase.Size`, `IDxTradeBase.Size`,
+  - Fields that are now of type `double`: `IDxOrderBase.Size`, `IDxOrderBase.Size`, `IDxTradeBase.Size`,
     `IDxQuote.BidSize`, `IDxQuote.AskSize`, `IDxSummary.OpenInterest`, `IDxProfile.DivFreq`,
     `IDxTimeAndSale.Size`, `IDxCandle.OpenInterest`
-  - Added field 'IDxOrderBase.ExecutedSize' (`double`) which is related to FOB support
+  - Added the `IDxOrderBase.ExecutedSize` (`double`) field which is related to FOB support
 * [DXFC-215] [Breaking changes] The `IDxFundamentalListener` interface renamed to `IDxSummaryListener` and  the `OnFundamental` method renamed to `OnSummary`
 * [DXFC-222] Created wrapper for PriceLevelBook.c
   - Added the `IDxPriceLevelBook`, `IDxPriceLevelBookListener` interfaces

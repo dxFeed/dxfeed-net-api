@@ -34,7 +34,7 @@ namespace com.dxfeed.api.events
         /// <summary>
         ///   Returns size of this time and sale event.
         /// </summary>
-        long Size { get; }
+        double Size { get; }
         /// <summary>
         ///   Returns the current bid price on the market when this time and sale event had occurred.
         /// </summary>

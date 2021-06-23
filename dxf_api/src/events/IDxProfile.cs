@@ -33,7 +33,7 @@ namespace com.dxfeed.api.events
         /// <summary>
         /// Returns Dividend Payment Frequency of the security instrument.
         /// </summary>
-        long DivFreq { get; }
+        double DivFreq { get; }
         /// <summary>
         /// Returns Latest paid dividends for the security instrument.
         /// </summary>

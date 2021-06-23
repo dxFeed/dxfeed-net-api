@@ -24,7 +24,7 @@ namespace dxf_order_view_xcheck {
         private readonly long index;
         public readonly double price;
         public readonly Side side;
-        private readonly long size;
+        private readonly double size;
 
         public SimpleOrder(IDxOrder dxo) {
             index = dxo.Index;

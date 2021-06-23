@@ -18,10 +18,10 @@ namespace com.dxfeed.api.events
         public struct DxPriceLevel
         {
             public double Price { get; }
-            public long Size { get; }
+            public double Size { get; }
             public DateTime Time { get; }
 
-            public DxPriceLevel(double price, long size, DateTime time)
+            public DxPriceLevel(double price, double size, DateTime time)
             {
                 this.Price = price;
                 this.Size = size;

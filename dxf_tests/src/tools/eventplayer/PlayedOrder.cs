@@ -9,11 +9,11 @@ If a copy of the MPL was not distributed with this file, You can obtain one at h
 
 #endregion
 
+using System;
+using System.Runtime.InteropServices;
 using com.dxfeed.api;
 using com.dxfeed.api.data;
 using com.dxfeed.api.events;
-using System;
-using System.Runtime.InteropServices;
 
 namespace com.dxfeed.tests.tools.eventplayer
 {
@@ -22,6 +22,11 @@ namespace com.dxfeed.tests.tools.eventplayer
     /// </summary>
     internal class PlayedOrder : IPlayedEvent<DxTestOrder>, IDxOrder
     {
+        #region Private fields
+
+        private readonly char[] marketMakerCharArray;
+
+        #endregion
 
         internal unsafe PlayedOrder(string symbol, EventFlag event_flags, long index,
             long time, int time_nanos, int sequence,
@@ -29,28 +34,29 @@ namespace com.dxfeed.tests.tools.eventplayer
             Scope scope, Side side, char exchange_code,
             IndexedEventSource source, string mm)
         {
-            this.EventSymbol = symbol;
-            this.EventFlags = event_flags;
-            this.Index = index;
-            this.Time = Tools.UnixTimeToDate(time);
-            this.TimeNanoPart = time_nanos;
-            this.Sequence = sequence;
-            this.Price = price;
-            this.Size = size;
-            this.Count = count;
-            this.Scope = scope;
-            this.Side = side;
-            this.ExchangeCode = exchange_code;
-            this.Source = source;
+            EventSymbol = symbol;
+            EventFlags = event_flags;
+            Index = index;
+            Time = Tools.UnixTimeToDate(time);
+            TimeNanoPart = time_nanos;
+            Sequence = sequence;
+            Price = price;
+            Size = size;
+            Count = count;
+            Scope = scope;
+            Side = side;
+            ExchangeCode = exchange_code;
+            Source = source;
             fixed (char* pMarketMaker = mm.ToCharArray())
             {
-                this.MarketMaker = new string(pMarketMaker);
+                MarketMaker = new string(pMarketMaker);
             }
 
             marketMakerCharArray = mm.ToCharArray();
-            IntPtr marketMakerCharsPtr = Marshal.UnsafeAddrOfPinnedArrayElement(marketMakerCharArray, 0);
-            Params = new EventParams(EventFlags, (ulong)Index, 0);
-            Data = new DxTestOrder(event_flags, index, time, time_nanos, sequence, price, size, count, scope, side, exchange_code, source, marketMakerCharsPtr);
+            var marketMakerCharsPtr = Marshal.UnsafeAddrOfPinnedArrayElement(marketMakerCharArray, 0);
+            Params = new EventParams(EventFlags, (ulong) Index, 0);
+            Data = new DxTestOrder(source, event_flags, index, time, sequence, time_nanos, OrderAction.Undefined, 0, 0,
+                0, price, size, 0, count, 0, 0, 0, exchange_code, side, scope, marketMakerCharsPtr);
         }
 
         /// <summary>
@@ -59,150 +65,87 @@ namespace com.dxfeed.tests.tools.eventplayer
         /// <param name="order">Other Order object.</param>
         internal PlayedOrder(IDxOrder order)
         {
-            this.EventSymbol = order.EventSymbol;
-            this.EventFlags = order.EventFlags;
-            this.Index = order.Index;
-            this.Time = order.Time;
-            this.TimeNanoPart = order.TimeNanoPart;
-            this.Sequence = order.Sequence;
+            EventSymbol = order.EventSymbol;
+            EventFlags = order.EventFlags;
+            Index = order.Index;
+            Time = order.Time;
+            TimeNanoPart = order.TimeNanoPart;
+            Sequence = order.Sequence;
             Action = order.Action;
             ActionTime = order.ActionTime;
             OrderId = order.OrderId;
             AuxOrderId = order.AuxOrderId;
-            this.Price = order.Price;
-            this.Size = order.Size;
-            this.Count = order.Count;
+            Price = order.Price;
+            Size = order.Size;
+            Count = order.Count;
             TradeId = order.TradeId;
             TradePrice = order.TradePrice;
             TradeSize = order.TradeSize;
-            this.Scope = order.Scope;
-            this.Side = order.Side;
-            this.ExchangeCode = order.ExchangeCode;
-            this.Source = order.Source;
-            this.MarketMaker = order.MarketMaker;
+            Scope = order.Scope;
+            Side = order.Side;
+            ExchangeCode = order.ExchangeCode;
+            Source = order.Source;
+            MarketMaker = order.MarketMaker;
 
-            marketMakerCharArray = MarketMaker.ToString().ToCharArray();
-            IntPtr marketMakerCharsPtr = Marshal.UnsafeAddrOfPinnedArrayElement(marketMakerCharArray, 0);
-            Params = new EventParams(EventFlags, (ulong)Index, 0);
-            Data = new DxTestOrder(EventFlags, Index, Tools.DateToUnixTime(Time), TimeNanoPart, Sequence, Price, (int)Size, Count, Scope, Side, ExchangeCode, Source, marketMakerCharsPtr);
+            marketMakerCharArray = MarketMaker.ToCharArray();
+            var marketMakerCharsPtr = Marshal.UnsafeAddrOfPinnedArrayElement(marketMakerCharArray, 0);
+            Params = new EventParams(EventFlags, (ulong) Index, 0);
+            Data = new DxTestOrder(Source, EventFlags, Index, Tools.DateToUnixTime(Time), Sequence, TimeNanoPart,
+                Action, Tools.DateToUnixTime(ActionTime), OrderId, AuxOrderId, Price, Size, ExecutedSize, Count,
+                TradeId, TradePrice, TradeSize, ExchangeCode, Side, Scope, marketMakerCharsPtr);
         }
 
-        public int Count
-        {
-            get; private set;
-        }
+        public double Count { get; }
 
         public long TradeId { get; }
         public double TradePrice { get; }
         public double TradeSize { get; }
 
-        public DxTestOrder Data
-        {
-            get; private set;
-        }
+        public EventFlag EventFlags { get; set; }
 
-        public EventFlag EventFlags
-        {
-            get; set;
-        }
+        public string EventSymbol { get; }
 
-        public string EventSymbol
-        {
-            get; private set;
-        }
+        public char ExchangeCode { get; }
 
-        public char ExchangeCode
-        {
-            get; private set;
-        }
+        public long Index { get; }
 
-        public long Index
-        {
-            get; private set;
-        }
-
-        public string MarketMaker
-        {
-            get; private set;
-        }
-
-        public EventParams Params
-        {
-            get; private set;
-        }
+        public string MarketMaker { get; }
 
         public long AuxOrderId { get; }
 
-        public double Price
-        {
-            get; private set;
-        }
+        public double Price { get; }
 
-        public Scope Scope
-        {
-            get; private set;
-        }
+        public Scope Scope { get; }
 
-        public int Sequence
-        {
-            get; private set;
-        }
+        public int Sequence { get; }
 
-        public Side Side
-        {
-            get; private set;
-        }
+        public Side Side { get; }
 
-        public long Size
-        {
-            get; private set;
-        }
+        public double ExecutedSize { get; private set; }
 
-        public IndexedEventSource Source
-        {
-            get; private set;
-        }
+        public double Size { get; }
 
-        public DateTime Time
-        {
-            get; private set;
-        }
+        public IndexedEventSource Source { get; }
 
-        public int TimeNanoPart
-        {
-            get; private set;
-        }
+        public DateTime Time { get; }
+
+        public int TimeNanoPart { get; }
 
         public OrderAction Action { get; }
         public DateTime ActionTime { get; }
         public long OrderId { get; }
 
-        object IDxEventType.EventSymbol
-        {
-            get
-            {
-                return EventSymbol as object;
-            }
-        }
-
-        object IPlayedEvent.Data
-        {
-            get
-            {
-                return Data as object;
-            }
-        }
+        object IDxEventType.EventSymbol => EventSymbol;
 
         public object Clone()
         {
             return new PlayedOrder(this);
         }
 
-        #region Private fields
+        public DxTestOrder Data { get; }
 
-        private char[] marketMakerCharArray;
+        public EventParams Params { get; }
 
-        #endregion
-
+        object IPlayedEvent.Data => Data;
     }
 }

@@ -52,7 +52,7 @@ namespace com.dxfeed.native.api
         /// <summary>
         /// Size of the last trade as integer number (rounded toward zero)
         /// </summary>
-        internal int size;
+        internal double size;
 
         /// <summary>
         /// Trend indicator – in which direction price is moving. The values are: Up (Tick = 1), Down (Tick = 2),
@@ -125,11 +125,11 @@ namespace com.dxfeed.native.api
         internal long bid_time;
         internal char bid_exchange_code;
         internal double bid_price;
-        internal int bid_size;
+        internal double bid_size;
         internal long ask_time;
         internal char ask_exchange_code;
         internal double ask_price;
-        internal int ask_size;
+        internal double ask_size;
         internal Scope scope;
     }
 
@@ -144,7 +144,7 @@ namespace com.dxfeed.native.api
         internal int prev_day_id;
         internal double prev_day_close_price;
         internal double prev_day_volume;
-        internal int open_interest;
+        internal double open_interest;
         internal int raw_flags;
         internal char exchange_code;
         internal PriceType day_close_price_type;
@@ -157,7 +157,7 @@ namespace com.dxfeed.native.api
     {
         internal double beta;
         internal double eps;
-        internal int div_freq;
+        internal double div_freq;
         internal double exd_div_amount;
         internal int exd_div_date;
         internal double high_52_week_price;
@@ -250,12 +250,19 @@ namespace com.dxfeed.native.api
         /// <summary>
         /// Size of this order
         /// </summary>
-        internal int size;
+        internal double size;
+
+        /// <summary>
+        /// Executed size of this order
+        ///
+        /// This field is a part of the FOB ("Full Order Book") support.
+        /// </summary>
+        internal double executed_size;
         
         /// <summary>
         /// Number of individual orders in this aggregate order.
         /// </summary>
-        internal int count;
+        internal double count;
 
         /// <summary>
         /// Contains trade (order execution) ID for events containing trade-related action if available, otherwise - 0.
@@ -309,7 +316,7 @@ namespace com.dxfeed.native.api
         internal long time;
         internal char exchange_code;
         internal double price;
-        internal int size;
+        internal double size;
         internal double bid_price;
         internal double ask_price;
         internal IntPtr exchange_sale_conditions; // String
@@ -341,7 +348,7 @@ namespace com.dxfeed.native.api
         internal double vwap;
         internal double bid_volume;
         internal double ask_volume;
-        internal int open_interest;
+        internal double open_interest;
         internal double imp_volatility;
     }
 
@@ -442,7 +449,7 @@ namespace com.dxfeed.native.api
     internal struct DxPriceLevel
     {
         internal double price;
-        internal long size;
+        internal double size;
         internal long time;
     }
 }

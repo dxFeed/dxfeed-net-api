@@ -136,7 +136,7 @@ namespace com.dxfeed.native.events
         /// <summary>
         /// Returns open interest of the symbol as the number of open contracts.
         /// </summary>
-        public long OpenInterest { get; private set; }
+        public double OpenInterest { get; private set; }
         /// <summary>
         /// Returns exchange code
         /// </summary>

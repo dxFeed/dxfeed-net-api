@@ -18,16 +18,16 @@ namespace dxf_price_level_book_sample {
     internal class PriceLevelBookListener : IDxPriceLevelBookListener {
         public void OnChanged(DxPriceLevelBook book) {
             Console.WriteLine($"\nNew Price Level Book for {book.Symbol}:");
-            Console.WriteLine($"{"Ask",-7} {"Size",-8} {"Time",-15} | {"Bid",-7} {"Size",-8} {"Time",-15}");
+            Console.WriteLine($"{"Ask",-10} {"Size",-10} {"Time",-15} | {"Bid",-10} {"Size",-10} {"Time",-15}");
             for (var i = 0; i < Math.Max(book.Asks.Length, book.Bids.Length); ++i) {
                 if (i < book.Asks.Length)
-                    Console.Write("{0,-7:n2} {1,-8} {2,-15:yyyyMMdd-HHmmss}", book.Asks[i].Price, book.Asks[i].Size,
+                    Console.Write("{0,-10:n4} {1,-10:n4} {2,-15:yyyyMMdd-HHmmss}", book.Asks[i].Price, book.Asks[i].Size,
                         book.Asks[i].Time);
                 else
-                    Console.Write("{0,-7} {1,-8} {2,-15}", "", "", "");
+                    Console.Write("{0,-10} {1,-10} {2,-15}", "", "", "");
                 Console.Write(" | ");
                 if (i < book.Bids.Length)
-                    Console.Write("{0,-7:n2} {1,-8} {2,-15:yyyyMMdd-HHmmss}", book.Bids[i].Price, book.Bids[i].Size,
+                    Console.Write("{0,-10:n4} {1,-10:n4} {2,-15:yyyyMMdd-HHmmss}", book.Bids[i].Price, book.Bids[i].Size,
                         book.Bids[i].Time);
                 Console.WriteLine();
             }

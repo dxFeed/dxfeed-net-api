@@ -66,7 +66,7 @@ namespace com.dxfeed.api.events
         /// <summary>
         /// Returns open interest of the symbol as the number of open contracts.
         /// </summary>
-        long OpenInterest { get; }
+        double OpenInterest { get; }
         /// <summary>
         /// Returns exchange code
         /// </summary>

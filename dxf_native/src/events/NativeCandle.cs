@@ -174,7 +174,7 @@ namespace com.dxfeed.native.events
         /// <summary>
         /// Returns open interest.
         /// </summary>
-        public long OpenInterest { get; private set; }
+        public double OpenInterest { get; private set; }
         /// <summary>
         /// Returns implied volatility.
         /// </summary>

@@ -58,7 +58,7 @@ namespace com.dxfeed.api.events
         /// <summary>
         /// Returns size of the last trade.
         /// </summary>
-        long Size { get; }
+        double Size { get; }
 
         /// <summary>
         /// Returns price change of the last trade, if available.
@@ -78,7 +78,7 @@ namespace com.dxfeed.api.events
 
         /// <summary>
         /// Returns total turnover traded for a day.
-        /// Day VWAP can be computed with getDayTurnover() / getDayVolume}().
+        /// Day VWAP can be computed with DayTurnover / DayVolume.
         /// </summary>
         double DayTurnover { get; }
 

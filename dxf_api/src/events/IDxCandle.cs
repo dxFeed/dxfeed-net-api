@@ -69,7 +69,7 @@ namespace com.dxfeed.api.events
         /// <summary>
         /// Returns open interest.
         /// </summary>
-        long OpenInterest { get; }
+        double OpenInterest { get; }
         /// <summary>
         /// Returns implied volatility.
         /// </summary>

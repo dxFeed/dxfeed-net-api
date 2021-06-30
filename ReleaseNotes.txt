@@ -1,3 +1,7 @@
+Version 8.0.1
+* [DXFC-236] Fixed the ancient glitch with random garbage data in fields of removed events' (TX_REMOVE flag = 1).
+* Fixed the EventFlag, IndexedEvent documentation
+
 Version 8.0.0
 * [DXFC-231] [Breaking changes] Converted the types and representations of certain event fields to store WideDecimal
   - Fields that are now of type `double`: `IDxOrderBase.Size`, `IDxOrderBase.Size`, `IDxTradeBase.Size`,

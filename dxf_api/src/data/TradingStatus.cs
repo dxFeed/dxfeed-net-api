@@ -14,7 +14,7 @@ namespace com.dxfeed.api.data
     /// <summary>
     /// Trading status of an instrument.
     /// </summary>
-    public enum TradingStatus : int
+    public enum TradingStatus
     {
         /// <summary>
         /// Trading status is undefined, unknown or inapplicable.

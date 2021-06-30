@@ -19,7 +19,8 @@ using System.Runtime.InteropServices;
 using com.dxfeed.api.connection;
 using com.dxfeed.api.events;
 
-namespace com.dxfeed.native {
+namespace com.dxfeed.native
+{
     /// <summary>
     /// The handler type of a connection's incoming heartbeat notification
     ///
@@ -31,15 +32,18 @@ namespace com.dxfeed.native {
     /// <param name="connectionRtt">The calculated connection RTT in microseconds</param>
     public delegate void OnServerHeartbeatHandler(IDxConnection connection, DateTime serverDateTime, int serverLagMark,
         int connectionRtt);
-    
+
     /// <inheritdoc />
     /// <summary>
     ///   Class provides operations with event subscription
     /// </summary>
-    public class NativeConnection : IDxConnection {
+    public class NativeConnection : IDxConnection
+    {
         private IntPtr handle;
+
         // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private readonly C.dxf_conn_termination_notifier_t terminationNotifier;
+
         // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private readonly C.dxf_conn_status_notifier_t connectionStatusChangeHandler;
         private readonly C.dxf_socket_thread_creation_notifier_t creationNotifier;
@@ -65,7 +69,8 @@ namespace com.dxfeed.native {
         /// <param name="address">The server address to connect</param>
         /// <param name="disconnectListener">The listener that will be called when the connection is interrupted</param>
         /// <exception cref="DxException"></exception>
-        public NativeConnection(string address, Action<IDxConnection> disconnectListener) {
+        public NativeConnection(string address, Action<IDxConnection> disconnectListener)
+        {
             this.terminationNotifier = OnDisconnect;
             this.connectionStatusChangeHandler = ConnectionStatusChangeHandler;
             this.creationNotifier = OnNativeCreate;
@@ -86,7 +91,8 @@ namespace com.dxfeed.native {
         /// <param name="connectionStatusListener">The listener that will be called when the connection status is changed</param>
         /// <exception cref="DxException"></exception>
         public NativeConnection(string address, Action<IDxConnection> disconnectListener,
-            Action<IDxConnection, ConnectionStatus, ConnectionStatus> connectionStatusListener) {
+            Action<IDxConnection, ConnectionStatus, ConnectionStatus> connectionStatusListener)
+        {
             this.terminationNotifier = OnDisconnect;
             this.connectionStatusChangeHandler = ConnectionStatusChangeHandler;
             this.creationNotifier = OnNativeCreate;
@@ -110,7 +116,8 @@ namespace com.dxfeed.native {
         /// <exception cref="DxException">The connection creation was failed.</exception>
         public NativeConnection(string address, System.Net.NetworkCredential credential,
             Action<IDxConnection> disconnectListener,
-            Action<IDxConnection, ConnectionStatus, ConnectionStatus> connectionStatusListener) {
+            Action<IDxConnection, ConnectionStatus, ConnectionStatus> connectionStatusListener)
+        {
             this.terminationNotifier = OnDisconnect;
             this.connectionStatusChangeHandler = ConnectionStatusChangeHandler;
             this.disconnectListener = disconnectListener;
@@ -130,7 +137,8 @@ namespace com.dxfeed.native {
         /// <param name="token">Bearer scheme token to server access.</param>
         /// <param name="disconnectListener">The listener that will be called when the connection is interrupted.</param>
         /// <exception cref="DxException">The connection creation was failed.</exception>
-        public NativeConnection(string address, string token, Action<IDxConnection> disconnectListener) {
+        public NativeConnection(string address, string token, Action<IDxConnection> disconnectListener)
+        {
             this.terminationNotifier = OnDisconnect;
             this.connectionStatusChangeHandler = ConnectionStatusChangeHandler;
             this.disconnectListener = disconnectListener;
@@ -152,7 +160,8 @@ namespace com.dxfeed.native {
         /// <param name="connectionStatusListener">The listener that will be called when the connection status is changed</param>
         /// <exception cref="DxException">The connection creation was failed.</exception>
         public NativeConnection(string address, string token, Action<IDxConnection> disconnectListener,
-            Action<IDxConnection, ConnectionStatus, ConnectionStatus> connectionStatusListener) {
+            Action<IDxConnection, ConnectionStatus, ConnectionStatus> connectionStatusListener)
+        {
             this.terminationNotifier = OnDisconnect;
             this.connectionStatusChangeHandler = ConnectionStatusChangeHandler;
             this.disconnectListener = disconnectListener;
@@ -177,7 +186,8 @@ namespace com.dxfeed.native {
         /// <exception cref="DxException">The connection creation was failed.</exception>
         public NativeConnection(string address, string authScheme, string authData,
             Action<IDxConnection> disconnectListener,
-            Action<IDxConnection, ConnectionStatus, ConnectionStatus> connectionStatusListener) {
+            Action<IDxConnection, ConnectionStatus, ConnectionStatus> connectionStatusListener)
+        {
             this.terminationNotifier = OnDisconnect;
             this.connectionStatusChangeHandler = ConnectionStatusChangeHandler;
             this.disconnectListener = disconnectListener;
@@ -213,25 +223,31 @@ namespace com.dxfeed.native {
             onServerHeartbeatHandler = handler;
         }
 
-        private void OnDisconnect(IntPtr connection, IntPtr userData) {
+        private void OnDisconnect(IntPtr connection, IntPtr userData)
+        {
             disconnectListener?.Invoke(this);
         }
 
         private void ConnectionStatusChangeHandler(IntPtr connection, ConnectionStatus oldStatus,
-            ConnectionStatus newStatus, IntPtr userData) {
+            ConnectionStatus newStatus, IntPtr userData)
+        {
             connectionStatusListener?.Invoke(this, oldStatus, newStatus);
         }
-        
-        private void OnServerHeartbeat(IntPtr connection, long serverMillis, int serverLagMark, int connectionRtt, IntPtr userData) {
+
+        private void OnServerHeartbeat(IntPtr connection, long serverMillis, int serverLagMark, int connectionRtt,
+            IntPtr userData)
+        {
             onServerHeartbeatHandler?.Invoke(this, Tools.UnixTimeToDate(serverMillis), serverLagMark, connectionRtt);
         }
 
-        private int OnNativeCreate(IntPtr connection, IntPtr userData) {
+        private int OnNativeCreate(IntPtr connection, IntPtr userData)
+        {
             OnCreation?.Invoke(this, new EventArgs());
             return 0;
         }
 
-        internal void RemoveSubscription(IDxSubscription subscription) {
+        internal void RemoveSubscription(IDxSubscription subscription)
+        {
             subscriptions.Remove(subscription);
         }
 
@@ -245,7 +261,8 @@ namespace com.dxfeed.native {
         /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
         /// <exception cref="DxException"></exception>
-        public void Disconnect() {
+        public void Disconnect()
+        {
             if (handle == IntPtr.Zero)
                 return;
 
@@ -266,7 +283,9 @@ namespace com.dxfeed.native {
         /// <returns>Subscription object.</returns>
         /// <exception cref="ArgumentNullException">Listener is null.</exception>
         /// <exception cref="DxException"></exception>
-        public IDxSubscription CreateSubscription(EventType type, EventSubscriptionFlag eventSubscriptionFlags, IDxEventListener listener) {
+        public IDxSubscription CreateSubscription(EventType type, EventSubscriptionFlag eventSubscriptionFlags,
+            IDxEventListener listener)
+        {
             if (handle == IntPtr.Zero)
                 throw new NativeDxException("not connected");
             IDxSubscription result = new NativeSubscription(this, type, eventSubscriptionFlags, listener);
@@ -286,7 +305,8 @@ namespace com.dxfeed.native {
         /// <returns>Subscription object.</returns>
         /// <exception cref="ArgumentNullException">Listener is null.</exception>
         /// <exception cref="DxException"></exception>
-        public IDxSubscription CreateSubscription(EventType type, IDxEventListener listener) {
+        public IDxSubscription CreateSubscription(EventType type, IDxEventListener listener)
+        {
             if (handle == IntPtr.Zero)
                 throw new NativeDxException("not connected");
             IDxSubscription result = new NativeSubscription(this, type, listener);
@@ -307,7 +327,9 @@ namespace com.dxfeed.native {
         /// <returns>Subscription object.</returns>
         /// <exception cref="ArgumentNullException">Listener is null.</exception>
         /// <exception cref="DxException"></exception>
-        public IDxSubscription CreateSubscription(DateTime? time, EventSubscriptionFlag eventSubscriptionFlags, IDxCandleListener listener) {
+        public IDxSubscription CreateSubscription(DateTime? time, EventSubscriptionFlag eventSubscriptionFlags,
+            IDxCandleListener listener)
+        {
             if (handle == IntPtr.Zero)
                 throw new NativeDxException("not connected");
 
@@ -328,7 +350,8 @@ namespace com.dxfeed.native {
         /// <returns>Subscription object.</returns>
         /// <exception cref="ArgumentNullException">Listener is null.</exception>
         /// <exception cref="DxException"></exception>
-        public IDxSubscription CreateSubscription(DateTime? time, IDxCandleListener listener) {
+        public IDxSubscription CreateSubscription(DateTime? time, IDxCandleListener listener)
+        {
             if (handle == IntPtr.Zero)
                 throw new NativeDxException("not connected");
 
@@ -351,7 +374,9 @@ namespace com.dxfeed.native {
         /// <returns>Subscription object.</returns>
         /// <exception cref="ArgumentNullException">Listener is null.</exception>
         /// <exception cref="DxException"></exception>
-        public IDxSubscription CreateSubscription(EventType type, long time, EventSubscriptionFlag eventSubscriptionFlags, IDxEventListener listener) {
+        public IDxSubscription CreateSubscription(EventType type, long time,
+            EventSubscriptionFlag eventSubscriptionFlags, IDxEventListener listener)
+        {
             if (handle == IntPtr.Zero)
                 throw new NativeDxException("not connected");
 
@@ -373,7 +398,8 @@ namespace com.dxfeed.native {
         /// <returns>Subscription object.</returns>
         /// <exception cref="ArgumentNullException">Listener is null.</exception>
         /// <exception cref="DxException"></exception>
-        public IDxSubscription CreateSubscription(EventType type, long time, IDxEventListener listener) {
+        public IDxSubscription CreateSubscription(EventType type, long time, IDxEventListener listener)
+        {
             if (handle == IntPtr.Zero)
                 throw new NativeDxException("not connected");
 
@@ -396,7 +422,9 @@ namespace com.dxfeed.native {
         /// <returns>Subscription object.</returns>
         /// <exception cref="ArgumentNullException">Listener is null.</exception>
         /// <exception cref="DxException"></exception>
-        public IDxSubscription CreateSubscription(EventType type, DateTime? time, EventSubscriptionFlag eventSubscriptionFlags, IDxEventListener listener) {
+        public IDxSubscription CreateSubscription(EventType type, DateTime? time,
+            EventSubscriptionFlag eventSubscriptionFlags, IDxEventListener listener)
+        {
             if (handle == IntPtr.Zero)
                 throw new NativeDxException("not connected");
 
@@ -420,7 +448,8 @@ namespace com.dxfeed.native {
         /// <returns>Subscription object.</returns>
         /// <exception cref="ArgumentNullException">Listener is null.</exception>
         /// <exception cref="DxException"></exception>
-        public IDxSubscription CreateSubscription(EventType type, DateTime? time, IDxEventListener listener) {
+        public IDxSubscription CreateSubscription(EventType type, DateTime? time, IDxEventListener listener)
+        {
             if (handle == IntPtr.Zero)
                 throw new NativeDxException("not connected");
 
@@ -442,7 +471,8 @@ namespace com.dxfeed.native {
         /// <param name="listener">snapshot listener callback</param>
         /// <returns>subscription object</returns>
         /// <exception cref="DxException"></exception>
-        public IDxSubscription CreateSnapshotSubscription(long time, IDxSnapshotListener listener) {
+        public IDxSubscription CreateSnapshotSubscription(long time, IDxSnapshotListener listener)
+        {
             if (handle == IntPtr.Zero)
                 throw new NativeDxException("not connected");
 
@@ -462,7 +492,8 @@ namespace com.dxfeed.native {
         /// <param name="listener">snapshot listener callback</param>
         /// <returns>subscription object</returns>
         /// <exception cref="DxException"></exception>
-        public IDxSubscription CreateSnapshotSubscription(DateTime? time, IDxSnapshotListener listener) {
+        public IDxSubscription CreateSnapshotSubscription(DateTime? time, IDxSnapshotListener listener)
+        {
             if (handle == IntPtr.Zero)
                 throw new NativeDxException("not connected");
 
@@ -485,7 +516,8 @@ namespace com.dxfeed.native {
         /// <returns>subscription object</returns>
         /// <exception cref="DxException"></exception>
         public IDxSubscription CreateSnapshotSubscription(EventType eventType, long time,
-            IDxSnapshotListener listener) {
+            IDxSnapshotListener listener)
+        {
             if (handle == IntPtr.Zero)
                 throw new NativeDxException("not connected");
 
@@ -494,6 +526,16 @@ namespace com.dxfeed.native {
             return result;
         }
 
+        /// <summary>
+        /// Creates the new native order subscription on snapshot with incremental updates.
+        /// </summary>
+        /// <remarks>
+        /// Don't call this constructor inside any listeners and callbacks of NativeSubscription, NativeConnection,
+        /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
+        /// </remarks>
+        /// <param name="listener">The incremental snapshot listener callback</param>
+        /// <returns>The subscription object</returns>
+        /// <exception cref="NativeDxException">There isn't an active connection</exception>
         public IDxSubscription CreateIncOrderSnapshotSubscription(IDxIncOrderSnapshotListener listener)
         {
             if (handle == IntPtr.Zero)
@@ -517,7 +559,8 @@ namespace com.dxfeed.native {
         /// <returns>subscription object</returns>
         /// <exception cref="DxException"></exception>
         public IDxSubscription CreateSnapshotSubscription(EventType eventType, DateTime? time,
-            IDxSnapshotListener listener) {
+            IDxSnapshotListener listener)
+        {
             if (handle == IntPtr.Zero)
                 throw new NativeDxException("not connected");
 
@@ -537,7 +580,8 @@ namespace com.dxfeed.native {
         /// <param name="listener"></param>
         /// <returns>subscription object</returns>
         /// <exception cref="DxException"></exception>
-        public IDxSubscription CreateOrderViewSubscription(IDxOrderViewListener listener) {
+        public IDxSubscription CreateOrderViewSubscription(IDxOrderViewListener listener)
+        {
             if (handle == IntPtr.Zero)
                 throw new NativeDxException("not connected");
 
@@ -558,7 +602,8 @@ namespace com.dxfeed.native {
         /// <param name="quoteListener">Quotes listener. Null is allowed.</param>
         /// <returns>regional book object</returns>
         public IDxRegionalBook CreateRegionalBook(string symbol, IDxRegionalBookListener bookListener,
-            IDxQuoteListener quoteListener) {
+            IDxQuoteListener quoteListener)
+        {
             return new NativeRegionalBook(this, symbol, bookListener, quoteListener);
         }
 
@@ -573,7 +618,8 @@ namespace com.dxfeed.native {
         /// <param name="sources">The order sources</param>
         /// <param name="listener">Price level book changes listener. Null is allowed.</param>
         /// <returns>The price level book object</returns>
-        public IDxPriceLevelBook CreatePriceLevelBook(string symbol, string[] sources, IDxPriceLevelBookListener listener)
+        public IDxPriceLevelBook CreatePriceLevelBook(string symbol, string[] sources,
+            IDxPriceLevelBookListener listener)
         {
             return new NativePriceLevelBook(this, symbol, sources, listener);
         }
@@ -589,7 +635,8 @@ namespace com.dxfeed.native {
         /// <param name="sources">The order sources</param>
         /// <param name="listener">Price level book changes listener. Null is allowed.</param>
         /// <returns>The price level book object</returns>
-        public IDxPriceLevelBook CreatePriceLevelBook(string symbol, OrderSource[] sources, IDxPriceLevelBookListener listener)
+        public IDxPriceLevelBook CreatePriceLevelBook(string symbol, OrderSource[] sources,
+            IDxPriceLevelBookListener listener)
         {
             return new NativePriceLevelBook(this, symbol, sources, listener);
         }
@@ -619,13 +666,14 @@ namespace com.dxfeed.native {
         /// <param name="rawFileName">file name for raw data</param>
         /// <exception cref="ArgumentException">Invalid argument <c>rawFileName</c></exception>
         /// <exception cref="NativeDxException"></exception>
-        public void WriteRawData(string rawFileName) {
+        public void WriteRawData(string rawFileName)
+        {
             if (string.IsNullOrEmpty(rawFileName))
                 throw new ArgumentException("Invalid file name");
-            
+
             var ascii = Encoding.ASCII;
             var fileName = ascii.GetBytes(rawFileName);
-            
+
             C.CheckOk(C.Instance.dxf_write_raw_data(handle, fileName));
         }
 
@@ -636,27 +684,35 @@ namespace com.dxfeed.native {
         ///     Don't call this method inside any listeners and callbacks of NativeSubscription, NativeConnection,
         /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
-        public IDictionary<string, string> Properties {
-            get {
+        public IDictionary<string, string> Properties
+        {
+            get
+            {
                 IDictionary<string, string> result = new Dictionary<string, string>();
                 IntPtr properties;
                 int count;
                 C.CheckOk(C.Instance.dxf_get_connection_properties_snapshot(handle, out properties, out count));
                 if (properties == IntPtr.Zero) return result;
-                try {
-                    for (var i = 0; i < count; ++i) {
+                try
+                {
+                    for (var i = 0; i < count; ++i)
+                    {
                         var elem = properties + i * 2 * IntPtr.Size;
-                        unsafe {
+                        unsafe
+                        {
                             var key = new IntPtr(*(char**) elem.ToPointer());
                             var value = new IntPtr(*(char**) (elem + IntPtr.Size).ToPointer());
                             var keyString = Marshal.PtrToStringUni(key);
 
-                            if (keyString != null) {
+                            if (keyString != null)
+                            {
                                 result.Add(keyString, Marshal.PtrToStringUni(value));
                             }
                         }
                     }
-                } finally {
+                }
+                finally
+                {
                     C.Instance.dxf_free_connection_properties_snapshot(properties, count);
                 }
 
@@ -671,17 +727,23 @@ namespace com.dxfeed.native {
         ///     Don't use this property inside any listeners and callbacks of NativeSubscription, NativeConnection,
         /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
-        public string ConnectedAddress {
-            get {
+        public string ConnectedAddress
+        {
+            get
+            {
                 IntPtr address;
                 C.CheckOk(C.Instance.dxf_get_current_connected_address(handle, out address));
-                if (address == IntPtr.Zero) {
+                if (address == IntPtr.Zero)
+                {
                     return null;
                 }
 
-                try {
+                try
+                {
                     return Marshal.PtrToStringAnsi(address);
-                } finally {
+                }
+                finally
+                {
                     C.Instance.dxf_free(address);
                 }
             }
@@ -694,8 +756,10 @@ namespace com.dxfeed.native {
         ///     Don't use this property inside any listeners and callbacks of NativeSubscription, NativeConnection,
         /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
-        public ConnectionStatus Status {
-            get {
+        public ConnectionStatus Status
+        {
+            get
+            {
                 ConnectionStatus status;
                 C.CheckOk(C.Instance.dxf_get_current_connection_status(handle, out status));
 
@@ -716,7 +780,8 @@ namespace com.dxfeed.native {
         ///     Don't call this method inside any listeners and callbacks of NativeSubscription, NativeConnection,
         /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
-        public void Dispose() {
+        public void Dispose()
+        {
             subscriptions.Clear();
             if (handle != IntPtr.Zero)
                 Disconnect();

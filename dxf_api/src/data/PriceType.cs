@@ -14,7 +14,7 @@ namespace com.dxfeed.api.data
     /// <summary>
     /// Price type enumeration
     /// </summary>
-    public enum PriceType : int
+    public enum PriceType
     {
         /// <summary>
         /// Regular price.

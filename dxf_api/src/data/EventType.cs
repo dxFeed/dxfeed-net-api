@@ -13,8 +13,11 @@ using System;
 
 namespace com.dxfeed.api.data
 {
+    /// <summary>
+    /// Event types
+    /// </summary>
     [Flags]
-    public enum EventType : int
+    public enum EventType
     {
         None          = 0,
         Trade         = (1 << 0),

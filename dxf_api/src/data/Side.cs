@@ -14,7 +14,7 @@ namespace com.dxfeed.api.data
     /// <summary>
     /// Side of an order or a trade.
     /// </summary>
-    public enum Side : int
+    public enum Side
     {
         /// <summary>
         /// Undefined side.

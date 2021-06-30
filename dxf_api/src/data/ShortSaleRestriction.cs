@@ -14,7 +14,7 @@ namespace com.dxfeed.api.data
     /// <summary>
     /// Short sale restriction on an instrument.
     /// </summary>
-    public enum ShortSaleRestriction : int
+    public enum ShortSaleRestriction
     {
         /// <summary>
         /// Short sale restriction is undefined, unknown or inapplicable.

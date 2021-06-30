@@ -21,21 +21,29 @@ namespace com.dxfeed.api.data
     {
         /// <summary>
         /// Used for default subscription
+        /// 
+        /// Integer value = 0x0
         /// </summary>
         Default = 0x0,
         
         /// <summary>
         /// Used for forcing subscription to ticker data
+        /// 
+        /// Integer value = 0x20
         /// </summary>
         ForceTicker = 0x20,
         
         /// <summary>
         /// Used for forcing subscription to stream data
+        /// 
+        /// Integer value = 0x40
         /// </summary>
         ForceStream = 0x40,
 
         /// <summary>
         /// Used for forcing subscription to history data
+        /// 
+        /// Integer value = 0x80
         /// </summary>
         ForceHistory = 0x80
     }

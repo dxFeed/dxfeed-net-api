@@ -14,7 +14,7 @@ namespace com.dxfeed.api.data
     /// <summary>
     /// Direction of a trade.
     /// </summary>
-    public enum Direction : int
+    public enum Direction
     {
         /// <summary>
         /// Direction is undefined, unknown or inapplicable.

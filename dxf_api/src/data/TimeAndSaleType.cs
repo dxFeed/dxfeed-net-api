@@ -14,7 +14,7 @@ namespace com.dxfeed.api.data
     /// <summary>
     /// Type of a time and sale event.
     /// </summary>
-    public enum TimeAndSaleType : int
+    public enum TimeAndSaleType
     {
         /// <summary>
         /// Represents new time and sale event.

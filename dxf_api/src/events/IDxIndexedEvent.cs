@@ -51,13 +51,14 @@ namespace com.dxfeed.api.events
     ///          feature.
     ///     </para>
     ///     <para>
-    ///          The value of <see cref="IDxIndexedEvent.EventFlags"/> property has several
+    ///          The value of <see cref="com.dxfeed.api.events.IDxIndexedEvent.EventFlags">EventFlags</see> property has several
     ///          significant bits that are packed into an integer in the following way:
     ///     </para>
-    ///     <para>31    ...          4    3    2    1    0</para>
-    ///     <para>+----------------+----+----+----+----+----+</para>
-    ///     <para>|                | SS | SE | SB | RE | TX |</para>
-    ///     <para>+----------------+----+----+----+----+----+</para>
+    ///     <para>
+    /// |31...5| 4 | 3 | 2 | 1 | 0 |
+    /// |------|---|---|---|---|---|
+    /// |      |SS |SE |SB |RE |TX | 
+    ///     </para>
     ///     <para>
     ///          Each source updates its transactional state using these bits separately.
     ///          The state of each source has to be tracked separately in a map for each source.
@@ -67,12 +68,12 @@ namespace com.dxfeed.api.events
     ///          <see cref="IndexedEventSource.Id"/>.
     ///     </para>
     ///     <para>
-    ///          <c>TX</c> (bit 0) - <see cref="EventFlag.TxPending"/> is an indicator of
+    ///          <b><c>TX</c></b> (bit 0) - <see cref="EventFlag.TxPending"/> is an indicator of
     ///          pending transactional update. It can be retrieved from <c>eventFlags</c> with the
     ///          following piece of code:
     ///     </para>
     ///     <para>
-    ///          <c>bool txPending = (<see cref="IDxIndexedEvent.EventFlags"/> &amp; <see cref="EventFlag.TxPending"/>) != 0;</c>
+    ///          <c>bool txPending = (<see cref="com.dxfeed.api.events.IDxIndexedEvent.EventFlags">EventFlags</see> &amp; <see cref="EventFlag.TxPending"/>) != 0;</c>
     ///     </para>
     ///     <para>
     ///          When <c>txPending</c> is <c>true</c> it means, that an ongoing transaction update
@@ -86,14 +87,14 @@ namespace com.dxfeed.api.events
     ///          that that the event with the corresponding index has to be removed.
     ///     </para>
     ///     <para>
-    ///          <c>bool removeEvent = (<see cref="IDxIndexedEvent.EventFlags"/> &amp; <see cref="EventFlag.RemoveEvent"/>) != 0;</c>
+    ///          <c>bool removeEvent = (<see cref="com.dxfeed.api.events.IDxIndexedEvent.EventFlags">EventFlags</see> &amp; <see cref="EventFlag.RemoveEvent"/>) != 0;</c>
     ///     </para>
     ///     <para>
     ///          <c>SB</c> (bit 2) - <see cref="EventFlag.SnapshotBegin"/> is used to
     ///          indicate when the loading of a snapshot starts.
     ///     </para>
     ///     <para>
-    ///          <c>bool snapshotBegin = (<see cref="IDxIndexedEvent.EventFlags"/> &amp; <see cref="EventFlag.SnapshotBegin"/>) != 0;</c>
+    ///          <c>bool snapshotBegin = (<see cref="com.dxfeed.api.events.IDxIndexedEvent.EventFlags">EventFlags</see> &amp; <see cref="EventFlag.SnapshotBegin"/>) != 0;</c>
     ///     </para>
     ///     <para>
     ///          Snapshot load starts on new subscription and the first indexed event that arrives
@@ -108,8 +109,8 @@ namespace com.dxfeed.api.events
     ///          indicate the end of a snapshot.
     ///     </para>
     ///     <para>
-    ///          <c> bool snapshotEnd = (<see cref="IDxIndexedEvent.EventFlags"/> &amp; <see cref="EventFlag.SnapshotEnd"/>) != 0;</c>
-    ///          <c> bool snapshotSnip = (<see cref="IDxIndexedEvent.EventFlags"/> &amp; <see cref="EventFlag.SnapshotSnip"/>) != 0;</c>
+    ///          <c> bool snapshotEnd = (<see cref="com.dxfeed.api.events.IDxIndexedEvent.EventFlags">EventFlags</see> &amp; <see cref="EventFlag.SnapshotEnd"/>) != 0;</c><br/>
+    ///          <c> bool snapshotSnip = (<see cref="com.dxfeed.api.events.IDxIndexedEvent.EventFlags">EventFlags</see> &amp; <see cref="EventFlag.SnapshotSnip"/>) != 0;</c>
     ///     </para>
     ///     <para>
     ///          The last event of a snapshot is marked with either <c>snapshotEnd</c> or

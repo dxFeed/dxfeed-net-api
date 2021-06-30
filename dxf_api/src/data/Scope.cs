@@ -14,7 +14,7 @@ namespace com.dxfeed.api.data
     /// <summary>
     /// Scope of an order.
     /// </summary>
-    public enum Scope : int
+    public enum Scope
     {
         /// <summary>
         /// Represents best bid or best offer for the whole market.

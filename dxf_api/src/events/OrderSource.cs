@@ -220,9 +220,24 @@ namespace com.dxfeed.api.events
         public static readonly OrderSource SMFE = new OrderSource("SMFE", true);
 
         /// <summary>
+        /// Small Exchange. Record for price level book.
+        /// </summary>
+        public static readonly OrderSource smfe = new OrderSource("smfe", true);
+
+        /// <summary>
         /// Investors exchange. Record for price level book.
         /// </summary>
         public static readonly OrderSource iex = new OrderSource("iex", true);
+
+        /// <summary>
+        /// Members Exchange.
+        /// </summary>
+        public static readonly OrderSource MEMX = new OrderSource("MEMX", true);
+
+        /// <summary>
+        /// Members Exchange. Record for price level book.
+        /// </summary>
+        public static readonly OrderSource memx = new OrderSource("memx", true);
 
         /// <summary>
         ///     Create a new order source

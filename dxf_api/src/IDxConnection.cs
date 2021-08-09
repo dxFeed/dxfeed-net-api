@@ -12,7 +12,9 @@ If a copy of the MPL was not distributed with this file, You can obtain one at h
 using System;
 using com.dxfeed.api.data;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using com.dxfeed.api.connection;
+using com.dxfeed.api.events;
 
 namespace com.dxfeed.api
 {
@@ -124,6 +126,17 @@ namespace com.dxfeed.api
             IDxQuoteListener quote_listener);
 
         /// <summary>
+        /// Returns a "snapshot" of data for the specified period
+        /// </summary>
+        /// <param name="eventType">The event type. Now supported all IDxIndexedEvent types. TheoPrice and Underlying are not supported</param>
+        /// <param name="symbol">The event symbol. Single symbol name</param>
+        /// <param name="fromTime">The time, inclusive, to request events from</param>
+        /// <param name="toTime">The time, inclusive, to request events to</param>
+        /// <returns>The task for the result of the request</returns>
+        Task<List<IDxIndexedEvent>> GetDataForPeriod(EventType eventType, string symbol, DateTime fromTime,
+            DateTime toTime);
+
+        /// <summary>
         ///   Add dumping raw data of incoming traffic of connection into specific file
         /// </summary>
         /// <param name="rawFileName">file name for raw data</param>
@@ -142,7 +155,7 @@ namespace com.dxfeed.api
         ///   then connection is not connected (reconnection, no valid addresses, closed connection and others).
         /// </summary>
         string ConnectedAddress { get; }
-        
+
         /// <summary>
         ///   Retrieves the current connection status
         /// </summary>

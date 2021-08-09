@@ -16,6 +16,7 @@ using com.dxfeed.api.data;
 using com.dxfeed.native.api;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using com.dxfeed.api.connection;
 using com.dxfeed.api.events;
 
@@ -605,6 +606,21 @@ namespace com.dxfeed.native
             IDxQuoteListener quoteListener)
         {
             return new NativeRegionalBook(this, symbol, bookListener, quoteListener);
+        }
+
+        /// <summary>
+        /// Returns a "snapshot" of data for the specified period
+        /// </summary>
+        /// <param name="eventType">The event type. Now supported all IDxIndexedEvent types. TheoPrice and Underlying are not supported</param>
+        /// <param name="symbol">The event symbol. Single symbol name</param>
+        /// <param name="fromTime">The time, inclusive, to request events from</param>
+        /// <param name="toTime">The time, inclusive, to request events to</param>
+        /// <returns>The task for the result of the request</returns>
+        public async Task<List<IDxIndexedEvent>> GetDataForPeriod(EventType eventType, string symbol, DateTime fromTime, DateTime toTime)
+        {
+            var provider = new SnapshotDataProvider(this, eventType, OrderSource.EMPTY, symbol, fromTime, toTime);
+
+            return await provider.Run();
         }
 
         /// <summary>

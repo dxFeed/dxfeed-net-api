@@ -100,7 +100,7 @@ namespace dxf_events_sample {
             Console.WriteLine($"Connecting to {address} for [{events}] on [{string.Join(", ", symbols)}] ...");
 
             using var c = new NativeConnection(address, con => {});
-            var result = c.GetDataForPeriod(EventType.Candle, "AAPL&Q{=1m}", DateTime.Now.Subtract(TimeSpan.FromDays(3)),
+            var result = c.GetDataForPeriod(EventType.Candle, "AAPL&Q{=1m}", DateTime.Now.Subtract(TimeSpan.FromDays(5)),
                 DateTime.Now.Subtract(TimeSpan.FromDays(1)));
             
             result.Result.ForEach(Console.WriteLine);

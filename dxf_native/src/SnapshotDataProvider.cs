@@ -44,41 +44,44 @@ namespace com.dxfeed.native
         {
             return await Task.Run(() =>
             {
-                sub = connection.CreateSnapshotSubscription(eventType, fromTime, this);
-
-                if (eventType == EventType.Order || eventType == EventType.SpreadOrder)
+                using (sub = connection.CreateSnapshotSubscription(eventType, fromTime, this))
                 {
-                    sub.AddSource(source);
-                    sub.AddSymbol(symbol);
-                }
-                else if (eventType == EventType.Candle)
-                {
-                    sub.AddSymbol(CandleSymbol.ValueOf(symbol));
-                }
-                else
-                {
-                    sub.AddSymbol(symbol);
-                }
-
-                while (true)
-                {
-                    lock (locker)
+                    if (eventType == EventType.Order || eventType == EventType.SpreadOrder)
                     {
-                        if (!subscribe)
+                        if (source.Equals(OrderSource.EMPTY))
                         {
-                            sub.Clear();
-                            sub.Dispose();
-                            sub = null;
-                            connection = null;
-                            
-                            break;
-                        }
+                            return new List<IDxIndexedEvent>();
+                        } 
+                        
+                        sub.AddSource(source);
+                        sub.AddSymbol(symbol);
+                    }
+                    else if (eventType == EventType.Candle)
+                    {
+                        sub.AddSymbol(CandleSymbol.ValueOf(symbol));
+                    }
+                    else
+                    {
+                        sub.AddSymbol(symbol);
                     }
 
-                    Task.Delay(100).Wait();
-                }
+                    while (true)
+                    {
+                        lock (locker)
+                        {
+                            if (!subscribe)
+                            {
+                                break;
+                            }
+                        }
 
-                return events;
+                        Task.Delay(100).Wait();
+                    }
+                    
+                    sub.Clear();
+
+                    return events;
+                }
             });
         }
 

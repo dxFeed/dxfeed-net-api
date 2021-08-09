@@ -128,12 +128,24 @@ namespace com.dxfeed.api
         /// <summary>
         /// Returns a "snapshot" of data for the specified period
         /// </summary>
-        /// <param name="eventType">The event type. Now supported all IDxIndexedEvent types. TheoPrice and Underlying are not supported</param>
+        /// <param name="eventType">The event type. Now supported all IDxIndexedEvent types except Order & SpreadOrder. TheoPrice and Underlying are not supported yet</param>
         /// <param name="symbol">The event symbol. Single symbol name</param>
         /// <param name="fromTime">The time, inclusive, to request events from</param>
         /// <param name="toTime">The time, inclusive, to request events to</param>
         /// <returns>The task for the result of the request</returns>
         Task<List<IDxIndexedEvent>> GetDataForPeriod(EventType eventType, string symbol, DateTime fromTime,
+            DateTime toTime);
+
+        /// <summary>
+        /// Returns a "snapshot" of data for the specified period
+        /// </summary>
+        /// <param name="eventType">Order or SpreadOrder</param>
+        /// <param name="orderSource">The order source</param>
+        /// <param name="symbol">The event symbol. Single symbol name</param>
+        /// <param name="fromTime">The time, inclusive, to request events from</param>
+        /// <param name="toTime">The time, inclusive, to request events to</param>
+        /// <returns>The task for the result of the request</returns>
+        Task<List<IDxIndexedEvent>> GetOrderDataForPeriod(EventType eventType, OrderSource orderSource, string symbol, DateTime fromTime,
             DateTime toTime);
 
         /// <summary>

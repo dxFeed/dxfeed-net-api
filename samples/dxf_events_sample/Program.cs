@@ -99,11 +99,11 @@ namespace dxf_events_sample {
 
             Console.WriteLine($"Connecting to {address} for [{events}] on [{string.Join(", ", symbols)}] ...");
 
-            // using var c = new NativeConnection(address, con => {});
-            // var result = c.GetDataForPeriod(EventType.Candle, "XBT/USD{=d}", DateTime.Now.Subtract(TimeSpan.FromDays(3)),
-            //     DateTime.Now);
-            //
-            // result.Result.ForEach(Console.WriteLine);
+            using var c = new NativeConnection(address, con => {});
+            var result = c.GetDataForPeriod(EventType.Candle, "AAPL&Q{=1m}", DateTime.Now.Subtract(TimeSpan.FromDays(3)),
+                DateTime.Now.Subtract(TimeSpan.FromDays(1)));
+            
+            result.Result.ForEach(Console.WriteLine);
             
             try {
                 NativeTools.InitializeLogging("dxf_events_sample.log", true, true, logDataTransferFlag);

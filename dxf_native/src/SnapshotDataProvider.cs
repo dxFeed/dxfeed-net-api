@@ -75,7 +75,7 @@ namespace com.dxfeed.native
                         }
                     }
 
-                    Thread.Sleep(100);
+                    Task.Delay(100).Wait();
                 }
 
                 return events;
@@ -89,7 +89,7 @@ namespace com.dxfeed.native
 
             lock (locker)
             {
-                events = new List<IDxIndexedEvent>((IEnumerable<IDxIndexedEvent>)buf.Skip(1).ToList());
+                events = new List<IDxIndexedEvent>((IEnumerable<IDxOrder>)buf.Skip(1).ToList());
                 subscribe = false;
             }
         }
@@ -101,7 +101,7 @@ namespace com.dxfeed.native
 
             lock (locker)
             {
-                events = new List<IDxIndexedEvent>((IEnumerable<IDxIndexedEvent>)buf.Skip(1).ToList());
+                events = new List<IDxIndexedEvent>((IEnumerable<IDxCandle>)buf.Where(e => e.Time < toTime));
                 subscribe = false;
             }
         }
@@ -113,7 +113,7 @@ namespace com.dxfeed.native
 
             lock (locker)
             {
-                events = new List<IDxIndexedEvent>((IEnumerable<IDxIndexedEvent>)buf.Skip(1).ToList());
+                events = new List<IDxIndexedEvent>((IEnumerable<IDxTimeAndSale>)buf.Where(e => e.Time < toTime));
                 subscribe = false;
             }
         }
@@ -125,7 +125,7 @@ namespace com.dxfeed.native
 
             lock (locker)
             {
-                events = new List<IDxIndexedEvent>((IEnumerable<IDxIndexedEvent>)buf.Skip(1).ToList());
+                events = new List<IDxIndexedEvent>((IEnumerable<IDxSpreadOrder>)buf.Where(e => e.Time < toTime));
                 subscribe = false;
             }
         }
@@ -137,7 +137,7 @@ namespace com.dxfeed.native
 
             lock (locker)
             {
-                events = new List<IDxIndexedEvent>((IEnumerable<IDxIndexedEvent>)buf.Skip(1).ToList());
+                events = new List<IDxIndexedEvent>((IEnumerable<IDxGreeks>)buf.Where(e => e.Time < toTime));
                 subscribe = false;
             }
         }
@@ -149,7 +149,7 @@ namespace com.dxfeed.native
 
             lock (locker)
             {
-                events = new List<IDxIndexedEvent>((IEnumerable<IDxIndexedEvent>)buf.Skip(1).ToList());
+                events = new List<IDxIndexedEvent>((IEnumerable<IDxSeries>)buf.Where(e => e.Time < toTime));
                 subscribe = false;
             }
         }

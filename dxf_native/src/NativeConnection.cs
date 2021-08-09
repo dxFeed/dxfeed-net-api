@@ -678,6 +678,9 @@ namespace com.dxfeed.native
         public IDxPriceLevelBook CreatePriceLevelBook(string symbol, string[] sources,
             IDxPriceLevelBookListener listener)
         {
+            if (handle == IntPtr.Zero)
+                throw new NativeDxException("not connected");
+
             return new NativePriceLevelBook(this, symbol, sources, listener);
         }
 
@@ -695,6 +698,9 @@ namespace com.dxfeed.native
         public IDxPriceLevelBook CreatePriceLevelBook(string symbol, OrderSource[] sources,
             IDxPriceLevelBookListener listener)
         {
+            if (handle == IntPtr.Zero)
+                throw new NativeDxException("not connected");
+
             return new NativePriceLevelBook(this, symbol, sources, listener);
         }
 

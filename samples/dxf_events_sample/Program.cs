@@ -12,6 +12,7 @@ If a copy of the MPL was not distributed with this file, You can obtain one at h
 using System;
 using com.dxfeed.api;
 using com.dxfeed.api.data;
+using com.dxfeed.api.events;
 using com.dxfeed.native;
 
 namespace dxf_events_sample {
@@ -99,12 +100,6 @@ namespace dxf_events_sample {
 
             Console.WriteLine($"Connecting to {address} for [{events}] on [{string.Join(", ", symbols)}] ...");
 
-            using var c = new NativeConnection(address, con => {});
-            var result = c.GetDataForPeriod(EventType.Candle, "AAPL&Q{=1m}", DateTime.Now.Subtract(TimeSpan.FromDays(5)),
-                DateTime.Now.Subtract(TimeSpan.FromDays(1)));
-            
-            result.Result.ForEach(Console.WriteLine);
-            
             try {
                 NativeTools.InitializeLogging("dxf_events_sample.log", true, true, logDataTransferFlag);
                 using (var con = token.IsSet

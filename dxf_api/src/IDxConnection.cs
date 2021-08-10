@@ -12,6 +12,7 @@ If a copy of the MPL was not distributed with this file, You can obtain one at h
 using System;
 using com.dxfeed.api.data;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using com.dxfeed.api.connection;
 using com.dxfeed.api.events;
@@ -126,27 +127,114 @@ namespace com.dxfeed.api
             IDxQuoteListener quote_listener);
 
         /// <summary>
-        /// Returns a "snapshot" of data for the specified period
+        /// Returns a "snapshot" of data for the specified period.
+        ///
+        /// By default, the algorithm is used on the completion of the timeout request. Default Timeout: 5000 ms.
         /// </summary>
-        /// <param name="eventType">The event type. Now supported all IDxIndexedEvent types except Order & SpreadOrder. TheoPrice and Underlying are not supported yet</param>
-        /// <param name="symbol">The event symbol. Single symbol name</param>
-        /// <param name="fromTime">The time, inclusive, to request events from</param>
-        /// <param name="toTime">The time, inclusive, to request events to</param>
-        /// <returns>The task for the result of the request</returns>
+        /// <param name="eventType">The event type. Now supported all IDxIndexedEvent types except Order & SpreadOrder. TheoPrice and Underlying are not supported yet.</param>
+        /// <param name="symbol">The event symbol. Single symbol name.</param>
+        /// <param name="fromTime">The time, inclusive, to request events from.</param>
+        /// <param name="toTime">The time, inclusive, to request events to.</param>
+        /// <returns>The task for the result of the request.</returns>
+        /// <exception cref="DxException"></exception>
         Task<List<IDxIndexedEvent>> GetDataForPeriod(EventType eventType, string symbol, DateTime fromTime,
             DateTime toTime);
 
         /// <summary>
         /// Returns a "snapshot" of data for the specified period
         /// </summary>
-        /// <param name="eventType">Order or SpreadOrder</param>
-        /// <param name="orderSource">The order source</param>
-        /// <param name="symbol">The event symbol. Single symbol name</param>
-        /// <param name="fromTime">The time, inclusive, to request events from</param>
-        /// <param name="toTime">The time, inclusive, to request events to</param>
-        /// <returns>The task for the result of the request</returns>
+        /// <param name="eventType">The event type. Now supported all IDxIndexedEvent types except Order & SpreadOrder. TheoPrice and Underlying are not supported yet.</param>
+        /// <param name="symbol">The event symbol. Single symbol name.</param>
+        /// <param name="fromTime">The time, inclusive, to request events from.</param>
+        /// <param name="toTime">The time, inclusive, to request events to.</param>
+        /// <param name="timeout">The timespan to wait before the request times out.</param>
+        /// <returns>The task for the result of the request.</returns>
+        /// <exception cref="DxException"></exception>
+        Task<List<IDxIndexedEvent>> GetDataForPeriod(EventType eventType, string symbol, DateTime fromTime,
+            DateTime toTime, TimeSpan timeout);
+
+        /// <summary>
+        /// Returns a "snapshot" of data for the specified period.
+        /// </summary>
+        /// <param name="eventType">The event type. Now supported all IDxIndexedEvent types except Order & SpreadOrder. TheoPrice and Underlying are not supported yet.</param>
+        /// <param name="symbol">The event symbol. Single symbol name.</param>
+        /// <param name="fromTime">The time, inclusive, to request events from.</param>
+        /// <param name="toTime">The time, inclusive, to request events to.</param>
+        /// <param name="timeout">The length of time, in milliseconds, before the request times out.</param>
+        /// <returns>The task for the result of the request.</returns>
+        /// <exception cref="DxException"></exception>
+        Task<List<IDxIndexedEvent>> GetDataForPeriod(EventType eventType, string symbol, DateTime fromTime,
+            DateTime toTime, long timeout);
+        
+        /// <summary>
+        /// Returns a "snapshot" of data for the specified period.
+        /// </summary>
+        /// <param name="eventType">The event type. Now supported all IDxIndexedEvent types except Order & SpreadOrder. TheoPrice and Underlying are not supported yet.</param>
+        /// <param name="symbol">The event symbol. Single symbol name.</param>
+        /// <param name="fromTime">The time, inclusive, to request events from.</param>
+        /// <param name="toTime">The time, inclusive, to request events to.</param>
+        /// <param name="cancellationToken">The cancellation token to cancel the operation.</param>
+        /// <returns>The task for the result of the request.</returns>
+        /// <exception cref="DxException"></exception>
+        Task<List<IDxIndexedEvent>> GetDataForPeriod(EventType eventType, string symbol, DateTime fromTime,
+            DateTime toTime, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Returns a "snapshot" of data for the specified period
+        ///
+        /// By default, the algorithm is used on the completion of the timeout request. Default Timeout: 5000 ms.
+        /// </summary>
+        /// <param name="eventType">Order or SpreadOrder.</param>
+        /// <param name="orderSource">The order source.</param>
+        /// <param name="symbol">The event symbol. Single symbol name.</param>
+        /// <param name="fromTime">The time, inclusive, to request events from.</param>
+        /// <param name="toTime">The time, inclusive, to request events to.</param>
+        /// <returns>The task for the result of the request.</returns>
+        /// <exception cref="DxException"></exception>
         Task<List<IDxIndexedEvent>> GetOrderDataForPeriod(EventType eventType, OrderSource orderSource, string symbol, DateTime fromTime,
             DateTime toTime);
+
+        /// <summary>
+        /// Returns a "snapshot" of data for the specified period.
+        /// </summary>
+        /// <param name="eventType">Order or SpreadOrder.</param>
+        /// <param name="orderSource">The order source.</param>
+        /// <param name="symbol">The event symbol. Single symbol name.</param>
+        /// <param name="fromTime">The time, inclusive, to request events from.</param>
+        /// <param name="toTime">The time, inclusive, to request events to.</param>
+        /// <param name="timeout">The timespan to wait before the request times out.</param>
+        /// <returns>The task for the result of the request.</returns>
+        /// <exception cref="DxException"></exception>
+        Task<List<IDxIndexedEvent>> GetOrderDataForPeriod(EventType eventType, OrderSource orderSource, string symbol, DateTime fromTime,
+            DateTime toTime, TimeSpan timeout);
+
+        /// <summary>
+        /// Returns a "snapshot" of data for the specified period.
+        /// </summary>
+        /// <param name="eventType">Order or SpreadOrder.</param>
+        /// <param name="orderSource">The order source.</param>
+        /// <param name="symbol">The event symbol. Single symbol name.</param>
+        /// <param name="fromTime">The time, inclusive, to request events from.</param>
+        /// <param name="toTime">The time, inclusive, to request events to.</param>
+        /// <param name="timeout">The length of time, in milliseconds, before the request times out.</param>
+        /// <returns>The task for the result of the request.</returns>
+        /// <exception cref="DxException"></exception>
+        Task<List<IDxIndexedEvent>> GetOrderDataForPeriod(EventType eventType, OrderSource orderSource, string symbol, DateTime fromTime,
+            DateTime toTime, long timeout);
+
+        /// <summary>
+        /// Returns a "snapshot" of data for the specified period.
+        /// </summary>
+        /// <param name="eventType">Order or SpreadOrder.</param>
+        /// <param name="orderSource">The order source.</param>
+        /// <param name="symbol">The event symbol. Single symbol name.</param>
+        /// <param name="fromTime">The time, inclusive, to request events from.</param>
+        /// <param name="toTime">The time, inclusive, to request events to.</param>
+        /// <param name="cancellationToken">The cancellation token to cancel the operation.</param>
+        /// <returns>The task for the result of the request.</returns>
+        /// <exception cref="DxException"></exception>
+        Task<List<IDxIndexedEvent>> GetOrderDataForPeriod(EventType eventType, OrderSource orderSource, string symbol, DateTime fromTime,
+            DateTime toTime, CancellationToken cancellationToken);
 
         /// <summary>
         ///   Add dumping raw data of incoming traffic of connection into specific file

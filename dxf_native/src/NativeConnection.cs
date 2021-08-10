@@ -16,6 +16,7 @@ using com.dxfeed.api.data;
 using com.dxfeed.native.api;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Threading.Tasks;
 using com.dxfeed.api.connection;
 using com.dxfeed.api.events;
@@ -611,16 +612,9 @@ namespace com.dxfeed.native
             return new NativeRegionalBook(this, symbol, bookListener, quoteListener);
         }
 
-        /// <summary>
-        /// Returns a "snapshot" of data for the specified period
-        /// </summary>
-        /// <param name="eventType">The event type. Now supported all IDxIndexedEvent types. TheoPrice and Underlying are not supported</param>
-        /// <param name="symbol">The event symbol. Single symbol name</param>
-        /// <param name="fromTime">The time, inclusive, to request events from</param>
-        /// <param name="toTime">The time, inclusive, to request events to</param>
-        /// <returns>The task for the result of the request</returns>
-        public async Task<List<IDxIndexedEvent>> GetDataForPeriod(EventType eventType, string symbol, DateTime fromTime,
-            DateTime toTime)
+        private async Task<List<IDxIndexedEvent>> GetDataForPeriodImpl(EventType eventType, string symbol,
+            DateTime fromTime,
+            DateTime toTime, TimeSpan timeout, CancellationToken cancellationToken)
         {
             if (handle == IntPtr.Zero)
                 throw new NativeDxException("not connected");
@@ -632,9 +626,95 @@ namespace com.dxfeed.native
                     "The event type must be equal to one of these values: TimeAndSale, Candle, Series, Greeks. ");
             }
 
-            var provider = new SnapshotDataProvider(this, eventType, OrderSource.EMPTY, symbol, fromTime, toTime);
+            var provider =
+                new SnapshotDataProvider(this, eventType, OrderSource.EMPTY, symbol, fromTime, toTime, timeout);
 
-            return await provider.Run();
+            return await provider.Run(cancellationToken);
+        }
+
+        /// <summary>
+        /// Returns a "snapshot" of data for the specified period
+        /// </summary>
+        /// <param name="eventType">The event type. Now supported all IDxIndexedEvent types. TheoPrice and Underlying are not supported</param>
+        /// <param name="symbol">The event symbol. Single symbol name</param>
+        /// <param name="fromTime">The time, inclusive, to request events from</param>
+        /// <param name="toTime">The time, inclusive, to request events to</param>
+        /// <returns>The task for the result of the request</returns>
+        public async Task<List<IDxIndexedEvent>> GetDataForPeriod(EventType eventType, string symbol, DateTime fromTime,
+            DateTime toTime)
+        {
+            return await GetDataForPeriodImpl(eventType, symbol, fromTime, toTime, Timeout.InfiniteTimeSpan,
+                CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Returns a "snapshot" of data for the specified period
+        /// </summary>
+        /// <param name="eventType">The event type. Now supported all IDxIndexedEvent types except Order & SpreadOrder. TheoPrice and Underlying are not supported yet.</param>
+        /// <param name="symbol">The event symbol. Single symbol name.</param>
+        /// <param name="fromTime">The time, inclusive, to request events from.</param>
+        /// <param name="toTime">The time, inclusive, to request events to.</param>
+        /// <param name="timeout">The timespan to wait before the request times out.</param>
+        /// <returns>The task for the result of the request.</returns>
+        /// <exception cref="DxException"></exception>
+        public async Task<List<IDxIndexedEvent>> GetDataForPeriod(EventType eventType, string symbol, DateTime fromTime,
+            DateTime toTime, TimeSpan timeout)
+        {
+            return await GetDataForPeriodImpl(eventType, symbol, fromTime, toTime, timeout, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Returns a "snapshot" of data for the specified period.
+        /// </summary>
+        /// <param name="eventType">The event type. Now supported all IDxIndexedEvent types except Order & SpreadOrder. TheoPrice and Underlying are not supported yet.</param>
+        /// <param name="symbol">The event symbol. Single symbol name.</param>
+        /// <param name="fromTime">The time, inclusive, to request events from.</param>
+        /// <param name="toTime">The time, inclusive, to request events to.</param>
+        /// <param name="timeout">The length of time, in milliseconds, before the request times out.</param>
+        /// <returns>The task for the result of the request.</returns>
+        /// <exception cref="DxException"></exception>
+        public async Task<List<IDxIndexedEvent>> GetDataForPeriod(EventType eventType, string symbol, DateTime fromTime,
+            DateTime toTime, long timeout)
+        {
+            return await GetDataForPeriodImpl(eventType, symbol, fromTime, toTime, TimeSpan.FromMilliseconds(timeout),
+                CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Returns a "snapshot" of data for the specified period.
+        /// </summary>
+        /// <param name="eventType">The event type. Now supported all IDxIndexedEvent types except Order & SpreadOrder. TheoPrice and Underlying are not supported yet.</param>
+        /// <param name="symbol">The event symbol. Single symbol name.</param>
+        /// <param name="fromTime">The time, inclusive, to request events from.</param>
+        /// <param name="toTime">The time, inclusive, to request events to.</param>
+        /// <param name="cancellationToken">The cancellation token to cancel the operation.</param>
+        /// <returns>The task for the result of the request.</returns>
+        /// <exception cref="DxException"></exception>
+        public async Task<List<IDxIndexedEvent>> GetDataForPeriod(EventType eventType, string symbol, DateTime fromTime,
+            DateTime toTime,
+            CancellationToken cancellationToken)
+        {
+            return await GetDataForPeriodImpl(eventType, symbol, fromTime, toTime, Timeout.InfiniteTimeSpan,
+                cancellationToken);
+        }
+
+        private async Task<List<IDxIndexedEvent>> GetOrderDataForPeriodImpl(EventType eventType,
+            OrderSource orderSource,
+            string symbol,
+            DateTime fromTime,
+            DateTime toTime, TimeSpan timeout, CancellationToken cancellationToken)
+        {
+            if (handle == IntPtr.Zero)
+                throw new NativeDxException("not connected");
+
+            if (eventType != EventType.Order && eventType != EventType.SpreadOrder)
+            {
+                throw new NativeDxException("The event type should be either Order or SpreadOrder");
+            }
+
+            var provider = new SnapshotDataProvider(this, eventType, orderSource, symbol, fromTime, toTime, timeout);
+
+            return await provider.Run(cancellationToken);
         }
 
         /// <summary>
@@ -651,17 +731,65 @@ namespace com.dxfeed.native
             DateTime fromTime,
             DateTime toTime)
         {
-            if (handle == IntPtr.Zero)
-                throw new NativeDxException("not connected");
+            return await GetOrderDataForPeriodImpl(eventType, orderSource, symbol, fromTime, toTime,
+                Timeout.InfiniteTimeSpan, CancellationToken.None);
+        }
 
-            if (eventType != EventType.Order && eventType != EventType.SpreadOrder)
-            {
-                throw new NativeDxException("The event type should be either Order or SpreadOrder");
-            }
+        /// <summary>
+        /// Returns a "snapshot" of data for the specified period.
+        /// </summary>
+        /// <param name="eventType">Order or SpreadOrder.</param>
+        /// <param name="orderSource">The order source.</param>
+        /// <param name="symbol">The event symbol. Single symbol name.</param>
+        /// <param name="fromTime">The time, inclusive, to request events from.</param>
+        /// <param name="toTime">The time, inclusive, to request events to.</param>
+        /// <param name="timeout">The timespan to wait before the request times out.</param>
+        /// <returns>The task for the result of the request.</returns>
+        /// <exception cref="DxException"></exception>
+        public async Task<List<IDxIndexedEvent>> GetOrderDataForPeriod(EventType eventType, OrderSource orderSource,
+            string symbol, DateTime fromTime,
+            DateTime toTime, TimeSpan timeout)
+        {
+            return await GetOrderDataForPeriodImpl(eventType, orderSource, symbol, fromTime, toTime, timeout,
+                CancellationToken.None);
+        }
 
-            var provider = new SnapshotDataProvider(this, eventType, orderSource, symbol, fromTime, toTime);
+        /// <summary>
+        /// Returns a "snapshot" of data for the specified period.
+        /// </summary>
+        /// <param name="eventType">Order or SpreadOrder.</param>
+        /// <param name="orderSource">The order source.</param>
+        /// <param name="symbol">The event symbol. Single symbol name.</param>
+        /// <param name="fromTime">The time, inclusive, to request events from.</param>
+        /// <param name="toTime">The time, inclusive, to request events to.</param>
+        /// <param name="timeout">The length of time, in milliseconds, before the request times out.</param>
+        /// <returns>The task for the result of the request.</returns>
+        /// <exception cref="DxException"></exception>
+        public async Task<List<IDxIndexedEvent>> GetOrderDataForPeriod(EventType eventType, OrderSource orderSource,
+            string symbol, DateTime fromTime,
+            DateTime toTime, long timeout)
+        {
+            return await GetOrderDataForPeriodImpl(eventType, orderSource, symbol, fromTime, toTime,
+                TimeSpan.FromMilliseconds(timeout), CancellationToken.None);
+        }
 
-            return await provider.Run();
+        /// <summary>
+        /// Returns a "snapshot" of data for the specified period.
+        /// </summary>
+        /// <param name="eventType">Order or SpreadOrder.</param>
+        /// <param name="orderSource">The order source.</param>
+        /// <param name="symbol">The event symbol. Single symbol name.</param>
+        /// <param name="fromTime">The time, inclusive, to request events from.</param>
+        /// <param name="toTime">The time, inclusive, to request events to.</param>
+        /// <param name="cancellationToken">The cancellation token to cancel the operation.</param>
+        /// <returns>The task for the result of the request.</returns>
+        /// <exception cref="DxException"></exception>
+        public async Task<List<IDxIndexedEvent>> GetOrderDataForPeriod(EventType eventType, OrderSource orderSource,
+            string symbol, DateTime fromTime,
+            DateTime toTime, CancellationToken cancellationToken)
+        {
+            return await GetOrderDataForPeriodImpl(eventType, orderSource, symbol, fromTime, toTime,
+                Timeout.InfiniteTimeSpan, cancellationToken);
         }
 
         /// <summary>

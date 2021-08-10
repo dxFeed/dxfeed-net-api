@@ -130,6 +130,14 @@ namespace com.dxfeed.api
         /// Returns a "snapshot" of data for the specified period.
         ///
         /// By default, the algorithm is used on the completion of the timeout request. Default Timeout: 5000 ms.
+        ///
+        /// <example>
+        /// <code>
+        /// using var c = new NativeConnection(address, con => {});
+        /// var result = c.GetDataForPeriod(EventType.Candle, "AAPL&Q{=1m}", DateTime.Now.Subtract(TimeSpan.FromDays(5)), DateTime.Now.Subtract(TimeSpan.FromDays(1)));
+        /// result.Result.ForEach(Console.WriteLine);
+        /// </code>
+        /// </example>
         /// </summary>
         /// <param name="eventType">The event type. Now supported all IDxIndexedEvent types except Order & SpreadOrder. TheoPrice and Underlying are not supported yet.</param>
         /// <param name="symbol">The event symbol. Single symbol name.</param>

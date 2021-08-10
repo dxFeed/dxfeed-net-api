@@ -202,12 +202,13 @@ namespace com.dxfeed.native
         /// <summary>
         /// Sets a handler that will be called when a server heartbeat arrives and contains non empty payload
         ///
-        /// Example:
-        /// ```csharp
+        /// <example>
+        /// <code>
         /// connection.SetOnServerHeartbeatHandler((connection, time, lagMark, rtt) => {
         ///    Console.Error.WriteLine($"##### Server time (UTC) = {time}, Server lag = {lagMark} us, RTT = {rtt} us #####");
         /// });
-        /// ```
+        /// </code>
+        /// </example>
         /// </summary>
         /// <remarks>
         ///     Don't call this method inside any listeners and callbacks of NativeSubscription, NativeConnection,
@@ -632,14 +633,7 @@ namespace com.dxfeed.native
             return await provider.Run(cancellationToken);
         }
 
-        /// <summary>
-        /// Returns a "snapshot" of data for the specified period
-        /// </summary>
-        /// <param name="eventType">The event type. Now supported all IDxIndexedEvent types. TheoPrice and Underlying are not supported</param>
-        /// <param name="symbol">The event symbol. Single symbol name</param>
-        /// <param name="fromTime">The time, inclusive, to request events from</param>
-        /// <param name="toTime">The time, inclusive, to request events to</param>
-        /// <returns>The task for the result of the request</returns>
+        /// <inheritdoc />
         public async Task<List<IDxIndexedEvent>> GetDataForPeriod(EventType eventType, string symbol, DateTime fromTime,
             DateTime toTime)
         {
@@ -719,13 +713,16 @@ namespace com.dxfeed.native
 
         /// <summary>
         /// Returns a "snapshot" of data for the specified period
+        ///
+        /// By default, the algorithm is used on the completion of the timeout request. Default Timeout: 5000 ms.
         /// </summary>
-        /// <param name="eventType">Order or SpreadOrder</param>
-        /// <param name="orderSource">The order source</param>
-        /// <param name="symbol">The event symbol. Single symbol name</param>
-        /// <param name="fromTime">The time, inclusive, to request events from</param>
-        /// <param name="toTime">The time, inclusive, to request events to</param>
-        /// <returns>The task for the result of the request</returns>
+        /// <param name="eventType">Order or SpreadOrder.</param>
+        /// <param name="orderSource">The order source.</param>
+        /// <param name="symbol">The event symbol. Single symbol name.</param>
+        /// <param name="fromTime">The time, inclusive, to request events from.</param>
+        /// <param name="toTime">The time, inclusive, to request events to.</param>
+        /// <returns>The task for the result of the request.</returns>
+        /// <exception cref="DxException"></exception>
         public async Task<List<IDxIndexedEvent>> GetOrderDataForPeriod(EventType eventType, OrderSource orderSource,
             string symbol,
             DateTime fromTime,

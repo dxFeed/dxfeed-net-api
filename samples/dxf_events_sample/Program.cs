@@ -100,6 +100,20 @@ namespace dxf_events_sample {
 
             Console.WriteLine($"Connecting to {address} for [{events}] on [{string.Join(", ", symbols)}] ...");
 
+            using var c = new NativeConnection(address, con => {});
+            var result = c.GetDataForPeriod(EventType.Candle, "AAPL&Q{=1m}", DateTime.Now.Subtract(TimeSpan.FromDays(5)),
+                DateTime.Now.Subtract(TimeSpan.FromDays(1)));
+            var result2 = c.GetOrderDataForPeriod(EventType.Order, OrderSource.NTV, "AAPL", DateTime.Now.Subtract(TimeSpan.FromDays(5)),
+                DateTime.Now.Subtract(TimeSpan.FromDays(1)));
+            var result3 = c.GetDataForPeriod(EventType.TimeAndSale, "AAPL", DateTime.Now.Subtract(TimeSpan.FromDays(5)),
+                DateTime.Now.Subtract(TimeSpan.FromDays(1)), TimeSpan.FromSeconds(10));
+            result.Result.ForEach(Console.WriteLine);
+            Console.WriteLine("----");
+            result2.Result.ForEach(Console.WriteLine);
+            Console.WriteLine("----");
+            result3.Result.ForEach(Console.WriteLine);
+            Console.WriteLine("----");
+
             try {
                 NativeTools.InitializeLogging("dxf_events_sample.log", true, true, logDataTransferFlag);
                 using (var con = token.IsSet

@@ -133,9 +133,13 @@ namespace com.dxfeed.api
         ///
         /// <example>
         /// <code>
-        /// using var c = new NativeConnection(address, con => {});
-        /// var result = c.GetDataForPeriod(EventType.Candle, "AAPL&Q{=1m}", DateTime.Now.Subtract(TimeSpan.FromDays(5)), DateTime.Now.Subtract(TimeSpan.FromDays(1)));
-        /// result.Result.ForEach(Console.WriteLine);
+        /// using (var c = new NativeConnection(address, con => {})) {
+        ///     var result = c.GetDataForPeriod(EventType.Candle, "AAPL&Q{=1m}",
+        ///         DateTime.Now.Subtract(TimeSpan.FromDays(5)),
+        ///         DateTime.Now.Subtract(TimeSpan.FromDays(1)));
+        /// 
+        ///     result.Result.ForEach(Console.WriteLine);
+        /// }
         /// </code>
         /// </example>
         /// </summary>
@@ -150,6 +154,19 @@ namespace com.dxfeed.api
 
         /// <summary>
         /// Returns a "snapshot" of data for the specified period
+        /// 
+        /// <example>
+        /// <code>
+        /// using (var c = new NativeConnection(address, con => {})) {
+        ///     var result = c.GetDataForPeriod(EventType.Candle, "AAPL&Q{=1m}",
+        ///         DateTime.Now.Subtract(TimeSpan.FromDays(5)),
+        ///         DateTime.Now.Subtract(TimeSpan.FromDays(1)),
+        ///         TimeSpan.FromSeconds(10));
+        /// 
+        ///     result.Result.ForEach(Console.WriteLine);
+        /// }
+        /// </code>
+        /// </example>
         /// </summary>
         /// <param name="eventType">The event type. Now supported all IDxIndexedEvent types except Order & SpreadOrder. TheoPrice and Underlying are not supported yet.</param>
         /// <param name="symbol">The event symbol. Single symbol name.</param>
@@ -163,6 +180,19 @@ namespace com.dxfeed.api
 
         /// <summary>
         /// Returns a "snapshot" of data for the specified period.
+        /// 
+        /// <example>
+        /// <code>
+        /// using (var c = new NativeConnection(address, con => {})) {
+        ///     var result = c.GetDataForPeriod(EventType.Candle, "AAPL&Q{=1m}",
+        ///         DateTime.Now.Subtract(TimeSpan.FromDays(5)),
+        ///         DateTime.Now.Subtract(TimeSpan.FromDays(1)),
+        ///         10000);
+        /// 
+        ///     result.Result.ForEach(Console.WriteLine);
+        /// }
+        /// </code>
+        /// </example>
         /// </summary>
         /// <param name="eventType">The event type. Now supported all IDxIndexedEvent types except Order & SpreadOrder. TheoPrice and Underlying are not supported yet.</param>
         /// <param name="symbol">The event symbol. Single symbol name.</param>
@@ -176,6 +206,22 @@ namespace com.dxfeed.api
         
         /// <summary>
         /// Returns a "snapshot" of data for the specified period.
+        /// <example>
+        /// <code>
+        /// var cancellationTokenSource = new CancellationTokenSource();
+        /// var cancellationToken = cancellationTokenSource.Token;
+        /// 
+        /// using (var c = new NativeConnection(address, con => { })) {
+        ///     var result = c.GetDataForPeriod(EventType.Candle, "AAPL&Q{=1m}",
+        ///         DateTime.Now.Subtract(TimeSpan.FromDays(5)),
+        ///         DateTime.Now.Subtract(TimeSpan.FromDays(1)),
+        ///         cancellationToken);
+        ///       
+        ///     cancellationTokenSource.CancelAfter(TimeSpan.FromSeconds(10));
+        ///     result.Result.ForEach(Console.WriteLine);
+        /// }
+        /// </code>
+        /// </example>
         /// </summary>
         /// <param name="eventType">The event type. Now supported all IDxIndexedEvent types except Order & SpreadOrder. TheoPrice and Underlying are not supported yet.</param>
         /// <param name="symbol">The event symbol. Single symbol name.</param>

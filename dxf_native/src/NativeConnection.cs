@@ -641,32 +641,14 @@ namespace com.dxfeed.native
                 CancellationToken.None);
         }
 
-        /// <summary>
-        /// Returns a "snapshot" of data for the specified period
-        /// </summary>
-        /// <param name="eventType">The event type. Now supported all IDxIndexedEvent types except Order & SpreadOrder. TheoPrice and Underlying are not supported yet.</param>
-        /// <param name="symbol">The event symbol. Single symbol name.</param>
-        /// <param name="fromTime">The time, inclusive, to request events from.</param>
-        /// <param name="toTime">The time, inclusive, to request events to.</param>
-        /// <param name="timeout">The timespan to wait before the request times out.</param>
-        /// <returns>The task for the result of the request.</returns>
-        /// <exception cref="DxException"></exception>
+        /// <inheritdoc />
         public async Task<List<IDxIndexedEvent>> GetDataForPeriod(EventType eventType, string symbol, DateTime fromTime,
             DateTime toTime, TimeSpan timeout)
         {
             return await GetDataForPeriodImpl(eventType, symbol, fromTime, toTime, timeout, CancellationToken.None);
         }
 
-        /// <summary>
-        /// Returns a "snapshot" of data for the specified period.
-        /// </summary>
-        /// <param name="eventType">The event type. Now supported all IDxIndexedEvent types except Order & SpreadOrder. TheoPrice and Underlying are not supported yet.</param>
-        /// <param name="symbol">The event symbol. Single symbol name.</param>
-        /// <param name="fromTime">The time, inclusive, to request events from.</param>
-        /// <param name="toTime">The time, inclusive, to request events to.</param>
-        /// <param name="timeout">The length of time, in milliseconds, before the request times out.</param>
-        /// <returns>The task for the result of the request.</returns>
-        /// <exception cref="DxException"></exception>
+        /// <inheritdoc />
         public async Task<List<IDxIndexedEvent>> GetDataForPeriod(EventType eventType, string symbol, DateTime fromTime,
             DateTime toTime, long timeout)
         {
@@ -674,16 +656,7 @@ namespace com.dxfeed.native
                 CancellationToken.None);
         }
 
-        /// <summary>
-        /// Returns a "snapshot" of data for the specified period.
-        /// </summary>
-        /// <param name="eventType">The event type. Now supported all IDxIndexedEvent types except Order & SpreadOrder. TheoPrice and Underlying are not supported yet.</param>
-        /// <param name="symbol">The event symbol. Single symbol name.</param>
-        /// <param name="fromTime">The time, inclusive, to request events from.</param>
-        /// <param name="toTime">The time, inclusive, to request events to.</param>
-        /// <param name="cancellationToken">The cancellation token to cancel the operation.</param>
-        /// <returns>The task for the result of the request.</returns>
-        /// <exception cref="DxException"></exception>
+        /// <inheritdoc />
         public async Task<List<IDxIndexedEvent>> GetDataForPeriod(EventType eventType, string symbol, DateTime fromTime,
             DateTime toTime,
             CancellationToken cancellationToken)
@@ -711,18 +684,7 @@ namespace com.dxfeed.native
             return await provider.Run(cancellationToken);
         }
 
-        /// <summary>
-        /// Returns a "snapshot" of data for the specified period
-        ///
-        /// By default, the algorithm is used on the completion of the timeout request. Default Timeout: 5000 ms.
-        /// </summary>
-        /// <param name="eventType">Order or SpreadOrder.</param>
-        /// <param name="orderSource">The order source.</param>
-        /// <param name="symbol">The event symbol. Single symbol name.</param>
-        /// <param name="fromTime">The time, inclusive, to request events from.</param>
-        /// <param name="toTime">The time, inclusive, to request events to.</param>
-        /// <returns>The task for the result of the request.</returns>
-        /// <exception cref="DxException"></exception>
+        /// <inheritdoc />
         public async Task<List<IDxIndexedEvent>> GetOrderDataForPeriod(EventType eventType, OrderSource orderSource,
             string symbol,
             DateTime fromTime,
@@ -732,17 +694,7 @@ namespace com.dxfeed.native
                 Timeout.InfiniteTimeSpan, CancellationToken.None);
         }
 
-        /// <summary>
-        /// Returns a "snapshot" of data for the specified period.
-        /// </summary>
-        /// <param name="eventType">Order or SpreadOrder.</param>
-        /// <param name="orderSource">The order source.</param>
-        /// <param name="symbol">The event symbol. Single symbol name.</param>
-        /// <param name="fromTime">The time, inclusive, to request events from.</param>
-        /// <param name="toTime">The time, inclusive, to request events to.</param>
-        /// <param name="timeout">The timespan to wait before the request times out.</param>
-        /// <returns>The task for the result of the request.</returns>
-        /// <exception cref="DxException"></exception>
+        /// <inheritdoc />
         public async Task<List<IDxIndexedEvent>> GetOrderDataForPeriod(EventType eventType, OrderSource orderSource,
             string symbol, DateTime fromTime,
             DateTime toTime, TimeSpan timeout)
@@ -751,17 +703,7 @@ namespace com.dxfeed.native
                 CancellationToken.None);
         }
 
-        /// <summary>
-        /// Returns a "snapshot" of data for the specified period.
-        /// </summary>
-        /// <param name="eventType">Order or SpreadOrder.</param>
-        /// <param name="orderSource">The order source.</param>
-        /// <param name="symbol">The event symbol. Single symbol name.</param>
-        /// <param name="fromTime">The time, inclusive, to request events from.</param>
-        /// <param name="toTime">The time, inclusive, to request events to.</param>
-        /// <param name="timeout">The length of time, in milliseconds, before the request times out.</param>
-        /// <returns>The task for the result of the request.</returns>
-        /// <exception cref="DxException"></exception>
+        /// <inheritdoc />
         public async Task<List<IDxIndexedEvent>> GetOrderDataForPeriod(EventType eventType, OrderSource orderSource,
             string symbol, DateTime fromTime,
             DateTime toTime, long timeout)
@@ -770,17 +712,7 @@ namespace com.dxfeed.native
                 TimeSpan.FromMilliseconds(timeout), CancellationToken.None);
         }
 
-        /// <summary>
-        /// Returns a "snapshot" of data for the specified period.
-        /// </summary>
-        /// <param name="eventType">Order or SpreadOrder.</param>
-        /// <param name="orderSource">The order source.</param>
-        /// <param name="symbol">The event symbol. Single symbol name.</param>
-        /// <param name="fromTime">The time, inclusive, to request events from.</param>
-        /// <param name="toTime">The time, inclusive, to request events to.</param>
-        /// <param name="cancellationToken">The cancellation token to cancel the operation.</param>
-        /// <returns>The task for the result of the request.</returns>
-        /// <exception cref="DxException"></exception>
+        /// <inheritdoc />
         public async Task<List<IDxIndexedEvent>> GetOrderDataForPeriod(EventType eventType, OrderSource orderSource,
             string symbol, DateTime fromTime,
             DateTime toTime, CancellationToken cancellationToken)

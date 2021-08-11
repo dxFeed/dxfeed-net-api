@@ -127,7 +127,7 @@ namespace com.dxfeed.api
             IDxQuoteListener quote_listener);
 
         /// <summary>
-        /// Returns a "snapshot" of data for the specified period.
+        /// Asynchronously returns a "snapshot" of data for the specified period.
         ///
         /// By default, the algorithm is used on the completion of the timeout request. Default Timeout: 5000 ms.
         ///
@@ -153,7 +153,7 @@ namespace com.dxfeed.api
             DateTime toTime);
 
         /// <summary>
-        /// Returns a "snapshot" of data for the specified period
+        /// Asynchronously returns a "snapshot" of data for the specified period
         /// 
         /// <example>
         /// <code>
@@ -179,7 +179,7 @@ namespace com.dxfeed.api
             DateTime toTime, TimeSpan timeout);
 
         /// <summary>
-        /// Returns a "snapshot" of data for the specified period.
+        /// Asynchronously returns a "snapshot" of data for the specified period.
         /// 
         /// <example>
         /// <code>
@@ -205,7 +205,7 @@ namespace com.dxfeed.api
             DateTime toTime, long timeout);
         
         /// <summary>
-        /// Returns a "snapshot" of data for the specified period.
+        /// Asynchronously returns a "snapshot" of data for the specified period.
         /// <example>
         /// <code>
         /// var cancellationTokenSource = new CancellationTokenSource();
@@ -234,7 +234,7 @@ namespace com.dxfeed.api
             DateTime toTime, CancellationToken cancellationToken);
 
         /// <summary>
-        /// Returns a "snapshot" of data for the specified period
+        /// Asynchronously returns a "snapshot" of data for the specified period
         ///
         /// By default, the algorithm is used on the completion of the timeout request. Default Timeout: 5000 ms.
         /// </summary>
@@ -249,7 +249,7 @@ namespace com.dxfeed.api
             DateTime toTime);
 
         /// <summary>
-        /// Returns a "snapshot" of data for the specified period.
+        /// Asynchronously returns a "snapshot" of order data for the specified period.
         /// </summary>
         /// <param name="eventType">Order or SpreadOrder.</param>
         /// <param name="orderSource">The order source.</param>
@@ -263,7 +263,7 @@ namespace com.dxfeed.api
             DateTime toTime, TimeSpan timeout);
 
         /// <summary>
-        /// Returns a "snapshot" of data for the specified period.
+        /// Asynchronously returns a "snapshot" of order data for the specified period.
         /// </summary>
         /// <param name="eventType">Order or SpreadOrder.</param>
         /// <param name="orderSource">The order source.</param>
@@ -277,7 +277,7 @@ namespace com.dxfeed.api
             DateTime toTime, long timeout);
 
         /// <summary>
-        /// Returns a "snapshot" of data for the specified period.
+        /// Asynchronously returns a "snapshot" of order data for the specified period.
         /// </summary>
         /// <param name="eventType">Order or SpreadOrder.</param>
         /// <param name="orderSource">The order source.</param>

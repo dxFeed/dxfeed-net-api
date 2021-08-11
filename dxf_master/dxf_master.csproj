@@ -116,6 +116,10 @@
       <Name>dxf_simple_order_book_sample</Name>
       <Label>BuildPublish</Label>
     </ProjectReference>
+    <ProjectReference Include="..\samples\dxf_simple_data_retrieving_sample\dxf_simple_data_retrieving_sample.csproj">
+      <Name>dxf_simple_data_retrieving_sample</Name>
+      <Label>BuildPublish</Label>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="..\lib\DXFeedd.dll">

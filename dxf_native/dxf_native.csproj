@@ -74,6 +74,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="src\api\DXFeedEventHandler.cs" />
     <Compile Include="src\api\DXFeedTimeSeriesSubscription.cs" />
+    <Compile Include="src\SnapshotDataProvider.cs" />
     <Compile Include="src\events\NativeSpreadOrder.cs" />
     <Compile Include="src\NativePriceLevelBook.cs" />
     <Compile Include="src\NativeRegionalBook.cs" />

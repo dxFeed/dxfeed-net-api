@@ -41,22 +41,25 @@ namespace com.dxfeed.native
         /// 
         /// The TOML format specification: https://toml.io/en/v1.0.0-rc.2
         ///
+        /// <example>
         /// Example #1
-        /// ```csharp
+        /// <code>
         /// NativeTools.LoadConfigFromString(@"
         /// network.heartbeatPeriod = 10
         /// network.heartbeatTimeout = 120
         /// ");
-        /// ```
-        ///
+        /// </code>
+        /// </example>
+        /// <example>
         /// Example #2
-        /// ```csharp
+        /// <code>
         /// NativeTools.LoadConfigFromString(@"
         /// [network]
         /// heartbeatPeriod = 10
         /// heartbeatTimeout = 120
         /// ");
-        /// ```
+        /// </code>
+        /// </example>
         /// </summary>
         /// <param name="config">The config (in TOML format) string</param>
         public static void LoadConfigFromString(string config)
@@ -71,10 +74,11 @@ namespace com.dxfeed.native
         /// The config file sample: [Sample](https://github.com/dxFeed/dxfeed-net-api/dxfeed-api-config.sample.toml)
         /// The TOML format specification: https://toml.io/en/v1.0.0-rc.2
         ///
-        /// Example:
-        /// ```csharp
+        /// <example>
+        /// <code>
         /// NativeTools.LoadConfigFromFile("./dxfeed-api-config.toml");
-        /// ```
+        /// </code>
+        /// </example>
         /// </summary>
         /// <param name="fileName">The config (in TOML format) file name</param>
         public static void LoadConfigFromFile(string fileName)

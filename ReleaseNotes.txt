@@ -1,3 +1,12 @@
+Version 8.2.0
+* Added the ability to retrieve events starting from a specific date and ending with a specific date. 
+  Added the new methods: 
+  - `IDxConnection.GetDataForPeriod(EventType eventType, string symbol, DateTime fromTime, DateTime toTime)`
+  - `IDxConnection.GetDataForPeriod(EventType eventType, string symbol, DateTime fromTime, DateTime toTime, TimeSpan timeout)`
+  - `IDxConnection.GetDataForPeriod(EventType eventType, string symbol, DateTime fromTime, DateTime toTime, long timout)` 
+  - `IDxConnection.GetDataForPeriod(EventType eventType, string symbol, DateTime fromTime, DateTime toTime, CancellationToken cancellationToken)`
+  See documentation and the dxf_simple_data_retrieving_sample 
+
 Version 8.1.0
 * [DXFC-251] Fixed a bug with receiving gap-filling data every time the user subscribed to symbols that he had already subscribed to earlier.
 * [DXFC-237] Added the new order sources: `MEMX` (Members Exchange' order source), `memx` (Members Exchange' price level source)

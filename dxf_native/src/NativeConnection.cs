@@ -613,7 +613,7 @@ namespace com.dxfeed.native
             return new NativeRegionalBook(this, symbol, bookListener, quoteListener);
         }
 
-        private async Task<List<IDxIndexedEvent>> GetDataForPeriodImpl(EventType eventType, string symbol,
+        private Task<List<IDxIndexedEvent>> GetDataForPeriodImpl(EventType eventType, string symbol,
             DateTime fromTime,
             DateTime toTime, TimeSpan timeout, CancellationToken cancellationToken)
         {
@@ -630,42 +630,42 @@ namespace com.dxfeed.native
             var provider =
                 new SnapshotDataProvider(this, eventType, OrderSource.EMPTY, symbol, fromTime, toTime, timeout);
 
-            return await provider.Run(cancellationToken);
+            return provider.Run(cancellationToken);
         }
 
         /// <inheritdoc />
-        public async Task<List<IDxIndexedEvent>> GetDataForPeriod(EventType eventType, string symbol, DateTime fromTime,
+        public Task<List<IDxIndexedEvent>> GetDataForPeriod(EventType eventType, string symbol, DateTime fromTime,
             DateTime toTime)
         {
-            return await GetDataForPeriodImpl(eventType, symbol, fromTime, toTime, Timeout.InfiniteTimeSpan,
+            return GetDataForPeriodImpl(eventType, symbol, fromTime, toTime, Timeout.InfiniteTimeSpan,
                 CancellationToken.None);
         }
 
         /// <inheritdoc />
-        public async Task<List<IDxIndexedEvent>> GetDataForPeriod(EventType eventType, string symbol, DateTime fromTime,
+        public Task<List<IDxIndexedEvent>> GetDataForPeriod(EventType eventType, string symbol, DateTime fromTime,
             DateTime toTime, TimeSpan timeout)
         {
-            return await GetDataForPeriodImpl(eventType, symbol, fromTime, toTime, timeout, CancellationToken.None);
+            return GetDataForPeriodImpl(eventType, symbol, fromTime, toTime, timeout, CancellationToken.None);
         }
 
         /// <inheritdoc />
-        public async Task<List<IDxIndexedEvent>> GetDataForPeriod(EventType eventType, string symbol, DateTime fromTime,
+        public Task<List<IDxIndexedEvent>> GetDataForPeriod(EventType eventType, string symbol, DateTime fromTime,
             DateTime toTime, long timeout)
         {
-            return await GetDataForPeriodImpl(eventType, symbol, fromTime, toTime, TimeSpan.FromMilliseconds(timeout),
+            return GetDataForPeriodImpl(eventType, symbol, fromTime, toTime, TimeSpan.FromMilliseconds(timeout),
                 CancellationToken.None);
         }
 
         /// <inheritdoc />
-        public async Task<List<IDxIndexedEvent>> GetDataForPeriod(EventType eventType, string symbol, DateTime fromTime,
+        public Task<List<IDxIndexedEvent>> GetDataForPeriod(EventType eventType, string symbol, DateTime fromTime,
             DateTime toTime,
             CancellationToken cancellationToken)
         {
-            return await GetDataForPeriodImpl(eventType, symbol, fromTime, toTime, Timeout.InfiniteTimeSpan,
+            return GetDataForPeriodImpl(eventType, symbol, fromTime, toTime, Timeout.InfiniteTimeSpan,
                 cancellationToken);
         }
 
-        private async Task<List<IDxIndexedEvent>> GetOrderDataForPeriodImpl(EventType eventType,
+        private Task<List<IDxIndexedEvent>> GetOrderDataForPeriodImpl(EventType eventType,
             OrderSource orderSource,
             string symbol,
             DateTime fromTime,
@@ -681,43 +681,43 @@ namespace com.dxfeed.native
 
             var provider = new SnapshotDataProvider(this, eventType, orderSource, symbol, fromTime, toTime, timeout);
 
-            return await provider.Run(cancellationToken);
+            return provider.Run(cancellationToken);
         }
 
         /// <inheritdoc />
-        public async Task<List<IDxIndexedEvent>> GetOrderDataForPeriod(EventType eventType, OrderSource orderSource,
+        public Task<List<IDxIndexedEvent>> GetOrderDataForPeriod(EventType eventType, OrderSource orderSource,
             string symbol,
             DateTime fromTime,
             DateTime toTime)
         {
-            return await GetOrderDataForPeriodImpl(eventType, orderSource, symbol, fromTime, toTime,
+            return GetOrderDataForPeriodImpl(eventType, orderSource, symbol, fromTime, toTime,
                 Timeout.InfiniteTimeSpan, CancellationToken.None);
         }
 
         /// <inheritdoc />
-        public async Task<List<IDxIndexedEvent>> GetOrderDataForPeriod(EventType eventType, OrderSource orderSource,
+        public Task<List<IDxIndexedEvent>> GetOrderDataForPeriod(EventType eventType, OrderSource orderSource,
             string symbol, DateTime fromTime,
             DateTime toTime, TimeSpan timeout)
         {
-            return await GetOrderDataForPeriodImpl(eventType, orderSource, symbol, fromTime, toTime, timeout,
+            return GetOrderDataForPeriodImpl(eventType, orderSource, symbol, fromTime, toTime, timeout,
                 CancellationToken.None);
         }
 
         /// <inheritdoc />
-        public async Task<List<IDxIndexedEvent>> GetOrderDataForPeriod(EventType eventType, OrderSource orderSource,
+        public Task<List<IDxIndexedEvent>> GetOrderDataForPeriod(EventType eventType, OrderSource orderSource,
             string symbol, DateTime fromTime,
             DateTime toTime, long timeout)
         {
-            return await GetOrderDataForPeriodImpl(eventType, orderSource, symbol, fromTime, toTime,
+            return GetOrderDataForPeriodImpl(eventType, orderSource, symbol, fromTime, toTime,
                 TimeSpan.FromMilliseconds(timeout), CancellationToken.None);
         }
 
         /// <inheritdoc />
-        public async Task<List<IDxIndexedEvent>> GetOrderDataForPeriod(EventType eventType, OrderSource orderSource,
+        public Task<List<IDxIndexedEvent>> GetOrderDataForPeriod(EventType eventType, OrderSource orderSource,
             string symbol, DateTime fromTime,
             DateTime toTime, CancellationToken cancellationToken)
         {
-            return await GetOrderDataForPeriodImpl(eventType, orderSource, symbol, fromTime, toTime,
+            return GetOrderDataForPeriodImpl(eventType, orderSource, symbol, fromTime, toTime,
                 Timeout.InfiniteTimeSpan, cancellationToken);
         }
 

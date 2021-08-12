@@ -43,10 +43,10 @@ namespace com.dxfeed.native
             this.timeout = timeout;
         }
 
-        public async Task<List<IDxIndexedEvent>> Run(CancellationToken cancellationToken)
+        public Task<List<IDxIndexedEvent>> Run(CancellationToken cancellationToken)
         {
             // ReSharper disable once MethodSupportsCancellation
-            return await Task.Run(() =>
+            return Task.Run(() =>
             {
                 if (timeout == Timeout.InfiniteTimeSpan && cancellationToken == CancellationToken.None)
                 {

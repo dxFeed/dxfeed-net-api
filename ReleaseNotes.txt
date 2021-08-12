@@ -1,11 +1,18 @@
 Version 8.2.0
-* Added the ability to retrieve events starting from a specific date and ending with a specific date. 
-  Added the new methods: 
+* [DXFC-220] Added the ability to retrieve events starting from a specific date and ending with a specific date.  
+  Added the new methods:  
   - `IDxConnection.GetDataForPeriod(EventType eventType, string symbol, DateTime fromTime, DateTime toTime)`
   - `IDxConnection.GetDataForPeriod(EventType eventType, string symbol, DateTime fromTime, DateTime toTime, TimeSpan timeout)`
   - `IDxConnection.GetDataForPeriod(EventType eventType, string symbol, DateTime fromTime, DateTime toTime, long timout)` 
   - `IDxConnection.GetDataForPeriod(EventType eventType, string symbol, DateTime fromTime, DateTime toTime, CancellationToken cancellationToken)`
-  See documentation and the dxf_simple_data_retrieving_sample 
+  See documentation and the dxf_simple_data_retrieving_sample  
+* [DXFC-252] Fixed bug with "freezing" the `IDxConnection.Dispose` method if not called immediately after disconnecting the connection.  
+  The `network.reestablishConnections` config property was added. This property describes a flag that allows to disable the connection  
+  reestablishment mechanism. (default value = true)  
+  An example of disabling:  
+  ```csharp
+  NativeTools.LoadConfigFromString("network.reestablishConnections = false\n");
+  ```
 
 Version 8.1.0
 * [DXFC-251] Fixed a bug with receiving gap-filling data every time the user subscribed to symbols that he had already subscribed to earlier.

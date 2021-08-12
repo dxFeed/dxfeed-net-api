@@ -132,14 +132,27 @@ namespace com.dxfeed.api
         /// By default, the algorithm is used on the completion of the timeout request. Default Timeout: 5000 ms.
         ///
         /// <example>
+        /// Example #1
         /// <code>
         /// using (var c = new NativeConnection(address, con => {})) {
         ///     var result = c.GetDataForPeriod(EventType.Candle, "AAPL&Q{=1m}",
         ///         DateTime.Now.Subtract(TimeSpan.FromDays(5)),
+        ///         DateTime.Now.Subtract(TimeSpan.FromDays(1))).Result;
+        /// 
+        ///     result.ForEach(Console.WriteLine);
+        /// }
+        /// </code>
+        /// </example>
+        /// 
+        /// <example>
+        /// Example #2
+        /// <code>
+        /// using var c = new NativeConnection(address, con => {});
+        /// var result = await c.GetDataForPeriod(EventType.Candle, "AAPL&Q{=1m}",
+        ///         DateTime.Now.Subtract(TimeSpan.FromDays(5)),
         ///         DateTime.Now.Subtract(TimeSpan.FromDays(1)));
         /// 
-        ///     result.Result.ForEach(Console.WriteLine);
-        /// }
+        /// result.ForEach(Console.WriteLine);
         /// </code>
         /// </example>
         /// </summary>
@@ -156,15 +169,29 @@ namespace com.dxfeed.api
         /// Asynchronously returns a "snapshot" of data for the specified period
         /// 
         /// <example>
+        /// Example #1
         /// <code>
         /// using (var c = new NativeConnection(address, con => {})) {
         ///     var result = c.GetDataForPeriod(EventType.Candle, "AAPL&Q{=1m}",
         ///         DateTime.Now.Subtract(TimeSpan.FromDays(5)),
         ///         DateTime.Now.Subtract(TimeSpan.FromDays(1)),
+        ///         TimeSpan.FromSeconds(10)).Result;
+        /// 
+        ///     result.ForEach(Console.WriteLine);
+        /// }
+        /// </code>
+        /// </example>
+        /// 
+        /// <example>
+        /// Example #2
+        /// <code>
+        /// using var c = new NativeConnection(address, con => {});
+        /// var result = await c.GetDataForPeriod(EventType.Candle, "AAPL&Q{=1m}",
+        ///         DateTime.Now.Subtract(TimeSpan.FromDays(5)),
+        ///         DateTime.Now.Subtract(TimeSpan.FromDays(1)),
         ///         TimeSpan.FromSeconds(10));
         /// 
-        ///     result.Result.ForEach(Console.WriteLine);
-        /// }
+        /// result.ForEach(Console.WriteLine);
         /// </code>
         /// </example>
         /// </summary>
@@ -182,15 +209,29 @@ namespace com.dxfeed.api
         /// Asynchronously returns a "snapshot" of data for the specified period.
         /// 
         /// <example>
+        /// Example #1
         /// <code>
         /// using (var c = new NativeConnection(address, con => {})) {
         ///     var result = c.GetDataForPeriod(EventType.Candle, "AAPL&Q{=1m}",
         ///         DateTime.Now.Subtract(TimeSpan.FromDays(5)),
         ///         DateTime.Now.Subtract(TimeSpan.FromDays(1)),
+        ///         10000).Result;
+        /// 
+        ///     result.ForEach(Console.WriteLine);
+        /// }
+        /// </code>
+        /// </example>
+        /// 
+        /// <example>
+        /// Example #2
+        /// <code>
+        /// using var c = new NativeConnection(address, con => {});
+        /// var result = await c.GetDataForPeriod(EventType.Candle, "AAPL&Q{=1m}",
+        ///         DateTime.Now.Subtract(TimeSpan.FromDays(5)),
+        ///         DateTime.Now.Subtract(TimeSpan.FromDays(1)),
         ///         10000);
         /// 
-        ///     result.Result.ForEach(Console.WriteLine);
-        /// }
+        /// result.ForEach(Console.WriteLine);
         /// </code>
         /// </example>
         /// </summary>
@@ -207,6 +248,7 @@ namespace com.dxfeed.api
         /// <summary>
         /// Asynchronously returns a "snapshot" of data for the specified period.
         /// <example>
+        /// Example #1
         /// <code>
         /// var cancellationTokenSource = new CancellationTokenSource();
         /// var cancellationToken = cancellationTokenSource.Token;
@@ -220,6 +262,23 @@ namespace com.dxfeed.api
         ///     cancellationTokenSource.CancelAfter(TimeSpan.FromSeconds(10));
         ///     result.Result.ForEach(Console.WriteLine);
         /// }
+        /// </code>
+        /// </example>
+        /// <example>
+        /// Example #2
+        /// <code>
+        /// var cancellationTokenSource = new CancellationTokenSource();
+        /// var cancellationToken = cancellationTokenSource.Token;
+        /// 
+        /// cancellationTokenSource.CancelAfter(TimeSpan.FromSeconds(10));
+        /// 
+        /// using var c = new NativeConnection(address, con => { });
+        /// var result = await c.GetDataForPeriod(EventType.Candle, "AAPL&Q{=1m}",
+        ///     DateTime.Now.Subtract(TimeSpan.FromDays(5)),
+        ///     DateTime.Now.Subtract(TimeSpan.FromDays(1)),
+        ///     cancellationToken);
+        ///       
+        /// result.ForEach(Console.WriteLine);
         /// </code>
         /// </example>
         /// </summary>

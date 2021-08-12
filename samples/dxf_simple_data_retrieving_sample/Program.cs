@@ -22,7 +22,7 @@ namespace dxf_simple_data_retrieving_sample
     /// </summary>
     internal static class Program
     {
-        private static async Task Main(string[] args)
+        private static void Main(string[] args)
         {
             if (args.Length != 1)
             {
@@ -45,21 +45,21 @@ namespace dxf_simple_data_retrieving_sample
             var connection = new NativeConnection(address, con => { });
 
             // With default timeout
-            var tns = await connection.GetDataForPeriod(EventType.TimeAndSale, "AAPL", from, to);
+            var tns = connection.GetDataForPeriod(EventType.TimeAndSale, "AAPL", from, to).Result;
 
             // With custom timeout
-            var tns2 = await connection.GetDataForPeriod(EventType.TimeAndSale, "AAPL", from2, to,
-                TimeSpan.FromSeconds(7));
+            var tns2 = connection.GetDataForPeriod(EventType.TimeAndSale, "AAPL", from2, to,
+                TimeSpan.FromSeconds(7)).Result;
 
             // With cancellation token
             var cancellationTokenSource = new CancellationTokenSource();
             var cancellationToken = cancellationTokenSource.Token;
 
             var candles =
-                await connection.GetDataForPeriod(EventType.Candle, "AAPL&Q{=1m}", from, to, cancellationToken);
+                connection.GetDataForPeriod(EventType.Candle, "AAPL&Q{=1m}", from, to, cancellationToken);
 
             cancellationTokenSource.CancelAfter(TimeSpan.FromSeconds(10));
-
+            var candlesResult = candles.Result;
 
             Console.WriteLine("--------------------");
             Console.WriteLine($"AAPL TimeAndSales from {from} to {to}:");
@@ -69,7 +69,7 @@ namespace dxf_simple_data_retrieving_sample
             tns2.ForEach(Console.WriteLine);
             Console.WriteLine("--------------------");
             Console.WriteLine($"AAPL&Q{{=1m}} Candles from {from} to {to}:");
-            candles.ForEach(Console.WriteLine);
+            candlesResult.ForEach(Console.WriteLine);
             Console.WriteLine("--------------------");
 
             connection.Dispose();

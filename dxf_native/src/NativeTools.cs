@@ -34,13 +34,13 @@ namespace com.dxfeed.native
 
         /// <summary>
         /// Initializes the C-API configuration and loads a config (in TOML format) from a string
-        /// 
+        /// <br/>
         /// For the successful application of the configuration, this function must be called before creating any connection
-        ///
+        /// <br/>
         /// The config file sample: [Sample](https://github.com/dxFeed/dxfeed-net-api/dxfeed-api-config.sample.toml)
-        /// 
+        /// <br/>
         /// The TOML format specification: https://toml.io/en/v1.0.0-rc.2
-        ///
+        /// <br/>
         /// <example>
         /// Example #1
         /// <code>
@@ -49,8 +49,7 @@ namespace com.dxfeed.native
         /// network.heartbeatTimeout = 120
         /// ");
         /// </code>
-        /// </example>
-        /// <example>
+        /// <br/>
         /// Example #2
         /// <code>
         /// NativeTools.LoadConfigFromString(@"

@@ -11,6 +11,7 @@ If a copy of the MPL was not distributed with this file, You can obtain one at h
 
 using System;
 using System.Threading;
+using System.Threading.Tasks;
 using com.dxfeed.api.data;
 using com.dxfeed.native;
 
@@ -21,7 +22,7 @@ namespace dxf_simple_data_retrieving_sample
     /// </summary>
     internal static class Program
     {
-        private static void Main(string[] args)
+        private static async Task Main(string[] args)
         {
             if (args.Length != 1)
             {
@@ -36,6 +37,7 @@ namespace dxf_simple_data_retrieving_sample
 
             var address = args[0];
             var from = DateTime.Now.Subtract(TimeSpan.FromDays(5));
+            var from2 = DateTime.Now.Subtract(TimeSpan.FromDays(15));
             var to = DateTime.Now.Subtract(TimeSpan.FromDays(1));
 
             NativeTools.InitializeLogging("dxf_simple_data_retrieving_sample.log", true, true);
@@ -43,23 +45,31 @@ namespace dxf_simple_data_retrieving_sample
             var connection = new NativeConnection(address, con => { });
 
             // With default timeout
-            var tns = connection.GetDataForPeriod(EventType.TimeAndSale, "AAPL", from, to);
+            var tns = await connection.GetDataForPeriod(EventType.TimeAndSale, "AAPL", from, to);
+
+            // With custom timeout
+            var tns2 = await connection.GetDataForPeriod(EventType.TimeAndSale, "AAPL", from2, to,
+                TimeSpan.FromSeconds(7));
 
             // With cancellation token
             var cancellationTokenSource = new CancellationTokenSource();
             var cancellationToken = cancellationTokenSource.Token;
 
-            var candles = connection.GetDataForPeriod(EventType.Candle, "AAPL&Q{=1m}", from, to, cancellationToken);
+            var candles =
+                await connection.GetDataForPeriod(EventType.Candle, "AAPL&Q{=1m}", from, to, cancellationToken);
 
             cancellationTokenSource.CancelAfter(TimeSpan.FromSeconds(10));
 
 
             Console.WriteLine("--------------------");
             Console.WriteLine($"AAPL TimeAndSales from {from} to {to}:");
-            tns.Result.ForEach(Console.WriteLine);
+            tns.ForEach(Console.WriteLine);
+            Console.WriteLine("--------------------");
+            Console.WriteLine($"AAPL TimeAndSales from {from2} to {to}:");
+            tns2.ForEach(Console.WriteLine);
             Console.WriteLine("--------------------");
             Console.WriteLine($"AAPL&Q{{=1m}} Candles from {from} to {to}:");
-            candles.Result.ForEach(Console.WriteLine);
+            candles.ForEach(Console.WriteLine);
             Console.WriteLine("--------------------");
 
             connection.Dispose();

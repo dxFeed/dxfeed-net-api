@@ -1,19 +1,19 @@
 #  ![logo1][]![logo2][] dxFeed .NET API 
 
 
-[logo1]: https://github.com/Strotsev/dxfeed-net-api/blob/master/feed_logo.png
-[logo2]: https://github.com/Strotsev/dxfeed-net-api/blob/master/csharp_logo.png
+[logo1]: docs/img/feed_logo.png
+[logo2]: docs/img/csharp_logo.png
 
 
 This package provides access to **[dxFeed](https://www.dxfeed.com/)** market data. The library is build as a thin wrapper over dxFeed **[C API library](https://github.com/dxFeed/dxfeed-c-api)**. 
 
-[![Release](https://img.shields.io/badge/release-8.3.0-blue)](https://github.com/dxFeed/dxfeed-net-api/releases/latest)
+[![Release](https://img.shields.io/github/v/release/dxFeed/dxfeed-net-api)](https://github.com/dxFeed/dxfeed-net-api/releases/latest)
 [![License](https://img.shields.io/badge/license-MPL--2.0-orange)](https://github.com/dxFeed/dxfeed-net-api/blob/master/LICENSE)
 [![Downloads](https://img.shields.io/badge/downloads-347-green)](https://githubstats0.firebaseapp.com/)
 
 
 ## Table of Сontents
-- [Documnetation](#documentation)
+- [Documentation](#documentation)
 - [Installation](#installation)
   * [Windows](#windows)
   * [Linux](#linux)
@@ -344,5 +344,4 @@ AAPL Quote: {AAPL, AskExchangeCode: 'K', Ask: 4@144.96, AskTime: 2021-07-29T12:4
   * [dxf_read_write_raw_data_sample](https://github.com/dxFeed/dxfeed-net-api/tree/master/samples/dxf_read_write_raw_data_sample) - demonstrates how to save/read incoming binary traffic to/from file.
   * [dxf_regional_book_sample](https://github.com/dxFeed/dxfeed-net-api/tree/master/samples/dxf_regional_book_sample) - demonstrates how to subscribe to regional book.
   * [dxf_simple_data_retrieving_sample](https://github.com/dxFeed/dxfeed-net-api/tree/master/samples/dxf_simple_data_retrieving_sample) - demonstrates how to recieve **`TimeAndSale`**, **`Candle`**, **`Series`**, **`Greeks`** snapshots on a given time interval without subscription.
-  * [dxf_simple_order_book_sample](https://github.com/dxFeed/dxfeed-net-api/tree/master/samples/dxf_simple_order_book_sample) - demonstrates how to 
   * [dxf_snapshot_sample](https://github.com/dxFeed/dxfeed-net-api/tree/master/samples/dxf_snapshot_sample) - demonstrates how to subscribe to **`Order`**, **`SpreadOrder`**, **`Candle`**, **`TimeAndSale`**, **`Greeks`**, **`Series`** snapshots.

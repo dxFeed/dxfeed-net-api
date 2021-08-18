@@ -20,18 +20,16 @@ This package provides access to **[dxFeed](https://www.dxfeed.com/)** market dat
   * [macOS](#macos)
 - [Key features](#key-features)
   * [Event types](#event-types)
-  * [Contracts](#event-types)
+  * [Contracts](#contracts)
     * [Ticker](#ticker) 
     * [Stream](#stream) 
     * [History](#history) 
     * [Default](#default) 
-  * [Default contracts for events](#default-contracts-for-events)
   * [Subscription types](#subscription-types)
   * [Order sources](#order-sources)
 - [Usage](#usage)
   * [Create connection](#create-connection)
   * [Create subscription](#create-subscription)
-  * [Create snapshot subscription](#quote-subscription)
   * [Setting up contract type](#setting-up-contract-type)
   * [Setting up symbol](#setting-up-symbol)
   * [Setting up Order source](#setting-up-order-source)
@@ -101,14 +99,14 @@ using com.dxfeed.native;
 
 | №		| EventType			| Short description																				|Purpose of usage	|Interface	|
 | :----:|:------------------|:----------------------------------------------------------------------------------------------|:------|:----------|
-| 1		|[Trade](https://kb.dxfeed.com/en/data-model/qd-model-of-market-events.html#trade)	 			|the price and size of the last trade during regular trading hours and an overall day volume and day turnover						|trade (last sale), trade conditions change messages, volume setting events, index value 		|[IDxTrade](https://docs.dxfeed.com/net-api/interfacecom_1_1dxfeed_1_1api_1_1events_1_1IDxTrade.html)|
+| 1		|[Trade](https://kb.dxfeed.com/en/data-model/qd-model-of-market-events.html#trade-19593)	 			|the price and size of the last trade during regular trading hours and an overall day volume and day turnover						|trade (last sale), trade conditions change messages, volume setting events, index value 		|[IDxTrade](https://docs.dxfeed.com/net-api/interfacecom_1_1dxfeed_1_1api_1_1events_1_1IDxTrade.html)|
 | 2		| [TradeETH](https://kb.dxfeed.com/en/data-model/qd-model-of-market-events.html#tradeeth-19593)			|the price and size of the last trade during extended trading hours, and the extended trading hours day volume and day turnover					|trade (last sale), trade conditions change messages, volume setting events		|[IDxTradeETH](https://docs.dxfeed.com/net-api/interfacecom_1_1dxfeed_1_1api_1_1events_1_1IDxTradeETH.html)|
 | 3		|[TimeAndSale](https://kb.dxfeed.com/en/data-model/qd-model-of-market-events.html#timeandsale-19593)		|a trade or other market event with price, provide information about trades in a continuous time slice (unlike Trade events, which are supposed to provide a snapshot of the current last trade)															|trade, index value|[IDxTimeAndSale](https://docs.dxfeed.com/net-api/interfacecom_1_1dxfeed_1_1api_1_1events_1_1IDxTimeAndSale.html)|
 | 4		|[Quote](https://kb.dxfeed.com/en/data-model/qd-model-of-market-events.html#quote-19593)				|the best bid and ask prices and other fields that may change with each quote, represents the most recent information that is available about the best quote on the market																	|BBO Quote (bid/ask), regional Quote (bid/ask) |[IDxQuote](https://docs.dxfeed.com/net-api/interfacecom_1_1dxfeed_1_1api_1_1events_1_1IDxQuote.html)|
 | 5		|[Order](https://kb.dxfeed.com/en/data-model/dxfeed-api-market-events.html#orders)				|depending on the **`Scope`** flag it could be: composite BBO from the whole market **or** regional BBO from a particular exchange **or** aggregated information (e.g. *PLB - price level book*) **or** individual order (*FOD - full order depth*)																				|regional Quote (bid/ask), depth (order books, price levels, market maker quotes), market depth|[IDxOrder](https://docs.dxfeed.com/net-api/interfacecom_1_1dxfeed_1_1api_1_1events_1_1IDxOrder.html)|
 | 6		|[SpreadOrder](https://kb.dxfeed.com/en/data-model/dxfeed-api-market-events.html#spreadorder)		|similar to Order, but it is designed for a multi-leg order															|regional Quote (bid/ask), depth (order books, price levels, market maker quotes), market depth|[IDxSpreadOrder](https://docs.dxfeed.com/net-api/interfacecom_1_1dxfeed_1_1api_1_1events_1_1IDxSpreadOrder.html)||
 | 7		| Candle			|charting OHLCV candle																					|charting aggregations|[IDxCandle](https://docs.dxfeed.com/net-api/interfacecom_1_1dxfeed_1_1api_1_1events_1_1IDxCandle.html)|
-| 8		|[Profile](https://kb.dxfeed.com/en/data-model/qd-model-of-market-events.html#profile)			|the most recent information that is available about the traded security on the market																		|instrument definition, trading halt/resume messages|[IDxProfile](https://docs.dxfeed.com/net-api/interfacecom_1_1dxfeed_1_1api_1_1events_1_1IDxProfile.html)|
+| 8		|[Profile](https://kb.dxfeed.com/en/data-model/qd-model-of-market-events.html#profile-19593)			|the most recent information that is available about the traded security on the market																		|instrument definition, trading halt/resume messages|[IDxProfile](https://docs.dxfeed.com/net-api/interfacecom_1_1dxfeed_1_1api_1_1events_1_1IDxProfile.html)|
 | 9		|[Summary](https://kb.dxfeed.com/en/data-model/qd-model-of-market-events.html#summary-19593)			|the most recent OHLC information about the trading session on the market														|OHLC setting events (trades, explicit hi/lo update messages, explicit summary messages)|[IDxSummary](https://docs.dxfeed.com/net-api/interfacecom_1_1dxfeed_1_1api_1_1events_1_1IDxSummary.html)|
 | 10	|[Greeks](https://kb.dxfeed.com/en/data-model/dxfeed-api-market-events.html#greeks)			|the differential values that show how the price of an option depends on other market parameters		|Greeks and Black-Scholes implied volatility|[IDxGreeks](https://docs.dxfeed.com/net-api/interfacecom_1_1dxfeed_1_1api_1_1events_1_1IDxGreeks.html)|
 | 11	|[TheoPrice](https://kb.dxfeed.com/en/data-model/dxfeed-api-market-events.html#theoprice)			|the theoretical option price  the current time mode					|theoretical prices|[IDxTheoPrice](https://docs.dxfeed.com/net-api/interfacecom_1_1dxfeed_1_1api_1_1events_1_1IDxTheoPrice.html)|
@@ -153,7 +151,7 @@ Default contracts for events:
 |Underlying			|					|			|	
 
 
-|:information_source: CODE SAMPLE: take a look at `EventSubscriptionFlag` usage in [dxf_client](https://github.com/dxFeed/dxfeed-net-api/tree/master/dxf_client) (`-s <subscr_data>` argument)|
+|:information_source: CODE SAMPLE: take a look at `EventSubscriptionFlag` usage in [dxf_client](https://github.com/dxFeed/dxfeed-net-api/blob/master/dxf_client/Program.cs#L309)|
 | --- |
 
 |:white_check_mark: READ MORE: [Event delivery contracts](https://kb.dxfeed.com/en/data-model/model-of-event-publishing.html#event-delivery-contracts)|

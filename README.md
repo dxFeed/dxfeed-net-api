@@ -1,7 +1,7 @@
 #  ![logo1][]![logo2][] dxFeed .NET API 
 
 
-[logo1]: docs/img/feed_logo.png
+[logo1]: docs/img/dxfeed_logo.png
 [logo2]: docs/img/csharp_logo.png
 
 

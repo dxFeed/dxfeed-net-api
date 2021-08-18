@@ -9,7 +9,7 @@ This package provides access to **[dxFeed](https://www.dxfeed.com/)** market dat
 
 [![Release](https://img.shields.io/github/v/release/dxFeed/dxfeed-net-api)](https://github.com/dxFeed/dxfeed-net-api/releases/latest)
 [![License](https://img.shields.io/badge/license-MPL--2.0-orange)](https://github.com/dxFeed/dxfeed-net-api/blob/master/LICENSE)
-[![Downloads](https://img.shields.io/badge/downloads-347-green)](https://githubstats0.firebaseapp.com/)
+[![Downloads](https://img.shields.io/github/downloads/dxFeed/dxfeed-net-api/total)](https://github.com/dxFeed/dxfeed-net-api/releases/latest)
 
 
 ## Table of Сontents

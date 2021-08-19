@@ -48,6 +48,7 @@ namespace com.dxfeed.api
     ///     </para>
     /// </summary>
     /// <typeparam name="E">The type of events.</typeparam>
+    [Obsolete("DXFeedTimeSeriesSubscription class is deprecated and will removed in 9.0.0 version. Please use NativeConnection\\NativeSubscription")]
     public class DXFeedTimeSeriesSubscription<E> : DXFeedSubscription<E>, IDXFeedTimeSeriesSubscription<E>
         where E : IDxTimeSeriesEvent
     {

@@ -20,6 +20,7 @@ namespace com.dxfeed.api
     /// </summary>
     /// <param name="sender">Subscription object.</param>
     /// <param name="args">Event arguments.</param>
+    [Obsolete("DXFeedSymbolsUpdateEventHandler delegate is deprecated and will removed in 9.0.0 version. Please use NativeConnection\\NativeSubscription")]
     public delegate void DXFeedSymbolsUpdateEventHandler(object sender, DXFeedSymbolsUpdateEventArgs args);
 
     /// <summary>
@@ -27,12 +28,14 @@ namespace com.dxfeed.api
     /// </summary>
     /// <param name="sender">Subscription object.</param>
     /// <param name="args">Event arguments.</param>
+    [Obsolete("DXFeedSubscriptionClosedEventHandler delegate is deprecated and will removed in 9.0.0 version. Please use NativeConnection\\NativeSubscription")]
     public delegate void DXFeedSubscriptionClosedEventHandler(object sender, EventArgs args);
 
     /// <summary>
     ///     Subscription for a set of symbols and event types.
     /// </summary>
     /// <typeparam name="E">The type of events.</typeparam>
+    [Obsolete("IDXFeedSubscription interface is deprecated and will removed in 9.0.0 version. Please use NativeConnection\\NativeSubscription")]
     public interface IDXFeedSubscription<E> where E : IDxEventType
     {
         /// <summary>

@@ -23,6 +23,7 @@ namespace com.dxfeed.api
     ///     Subscription for a set of symbols and event types.
     /// </summary>
     /// <typeparam name="E">The type of events.</typeparam>
+    [Obsolete("DXFeedSubscription class is deprecated and will removed in 9.0.0 version. Please use NativeConnection\\NativeSubscription")]
     public class DXFeedSubscription<E> : IDXFeedSubscription<E>
         where E : IDxEventType
     {

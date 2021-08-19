@@ -9,6 +9,7 @@ If a copy of the MPL was not distributed with this file, You can obtain one at h
 
 #endregion
 
+using System;
 using System.Collections.Generic;
 
 namespace com.dxfeed.api
@@ -17,6 +18,7 @@ namespace com.dxfeed.api
     ///     The listener interface for receiving events of the specified type E.
     /// </summary>
     /// <typeparam name="E">The type of events.</typeparam>
+    [Obsolete("IDXFeedEventListener interface is deprecated and will removed in 9.0.0 version. Please use NativeConnection\\NativeSubscription")]
     public interface IDXFeedEventListener<E>
     {
         /// <summary>

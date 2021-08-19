@@ -10,10 +10,28 @@ If a copy of the MPL was not distributed with this file, You can obtain one at h
 #endregion
 
 using System;
+using com.dxfeed.api.events;
 
 namespace com.dxfeed.api
 {
     public interface IDxPriceLevelBook : IDisposable
     {
+        /// <summary>
+        /// Sets the price level book symbol
+        /// </summary>
+        /// <param name="newSymbol">The new symbol</param>
+        void SetSymbol(string newSymbol);
+
+        /// <summary>
+        /// Sets the price level book sources
+        /// </summary>
+        /// <param name="newSources">The new sources. null or empty array is equivalent to all sources.</param>
+        void SetSources(string[] newSources);
+
+        /// <summary>
+        /// Sets the price level book sources
+        /// </summary>
+        /// <param name="newSources">The new sources. null or empty array is equivalent to all sources.</param>
+        void SetSources(OrderSource[] newSources);
     }
 }

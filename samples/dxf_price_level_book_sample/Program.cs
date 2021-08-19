@@ -10,6 +10,7 @@ If a copy of the MPL was not distributed with this file, You can obtain one at h
 #endregion
 
 using System;
+using System.Threading;
 using com.dxfeed.api;
 using com.dxfeed.api.events;
 using com.dxfeed.native;
@@ -112,8 +113,10 @@ namespace dxf_price_level_book_sample {
                 NativeTools.InitializeLogging("dxf_price_level_book_sample.log", true, true, logDataTransferFlag);
                 using (var con = token.IsSet
                     ? new NativeConnection(address, token.Value, DisconnectHandler)
-                    : new NativeConnection(address, DisconnectHandler)) {
-                    using (con.CreatePriceLevelBook(symbol, sources.Value, new PriceLevelBookListener())) {
+                    : new NativeConnection(address, DisconnectHandler))
+                {
+                    using (con.CreatePriceLevelBook(symbol, sources.Value, new PriceLevelBookListener()))
+                    {
                         Console.WriteLine("Press enter to stop");
                         Console.ReadLine();
                     }

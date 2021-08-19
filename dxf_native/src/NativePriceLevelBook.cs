@@ -30,8 +30,10 @@ namespace com.dxfeed.native
                 var trimmed = source.Trim();
 
                 if (string.IsNullOrEmpty(trimmed)) throw new ArgumentException("Null or empty source");
-                if (OrderSource.IsSpecialSourceName(source)) throw new ArgumentException("The special order source (AGGREGATE_BID|ASK etc)");
-                if (!OrderSource.HasDefaultSourceName(source)) throw new ArgumentException($"Unknown order source: '{source}'");
+                if (OrderSource.IsSpecialSourceName(source))
+                    throw new ArgumentException("The special order source (AGGREGATE_BID|ASK etc)");
+                if (!OrderSource.HasDefaultSourceName(source))
+                    throw new ArgumentException($"Unknown order source: '{source}'");
             }
         }
 
@@ -47,20 +49,24 @@ namespace com.dxfeed.native
         /// <param name="sources">The order sources</param>
         /// <param name="listener">The price level book listener implementation</param>
         /// <exception cref="ArgumentException"></exception>
-        public NativePriceLevelBook(NativeConnection connection, string symbol, string[] sources, IDxPriceLevelBookListener listener)
+        public NativePriceLevelBook(NativeConnection connection, string symbol, string[] sources,
+            IDxPriceLevelBookListener listener)
         {
             if (string.IsNullOrWhiteSpace(symbol))
             {
                 throw new ArgumentException("Invalid symbol parameter.");
             }
-            
+
+            this.connection = connection;
             bookListener = listener;
+            this.symbol = symbol;
+            this.sources = sources;
 
             if (bookListener == null) return;
 
             if (sources == null)
             {
-                C.CheckOk(C.Instance.CreatePriceLevelBook(connection.Handle, symbol, new string[]{}, 0,
+                C.CheckOk(C.Instance.CreatePriceLevelBook(connection.Handle, symbol, new string[] { }, 0,
                     out bookHandle));
             }
             else
@@ -72,10 +78,8 @@ namespace com.dxfeed.native
 
             try
             {
-                if (bookListener != null)
-                {
-                    C.CheckOk(C.Instance.AttachPriceLevelBookListener(bookHandle, nativeBookListener = OnBook, IntPtr.Zero));
-                }
+                C.CheckOk(C.Instance.AttachPriceLevelBookListener(bookHandle, nativeBookListener = OnBook,
+                    IntPtr.Zero));
             }
             catch (DxException)
             {
@@ -96,7 +100,8 @@ namespace com.dxfeed.native
         /// <param name="sources">The order sources</param>
         /// <param name="listener">The price level book listener implementation</param>
         /// <exception cref="ArgumentException"></exception>
-        public NativePriceLevelBook(NativeConnection connection, string symbol, OrderSource[] sources, IDxPriceLevelBookListener listener) :
+        public NativePriceLevelBook(NativeConnection connection, string symbol, OrderSource[] sources,
+            IDxPriceLevelBookListener listener) :
             this(connection, symbol, sources?.Select(s => s.ToString()).ToArray(), listener)
         {
         }
@@ -112,8 +117,8 @@ namespace com.dxfeed.native
         /// <param name="symbol">The book symbol</param>
         /// <param name="listener">The price level book listener implementation</param>
         /// <exception cref="ArgumentException"></exception>
-        public NativePriceLevelBook(NativeConnection connection, string symbol, IDxPriceLevelBookListener listener):
-            this(connection, symbol, new OrderSource[]{}, listener)
+        public NativePriceLevelBook(NativeConnection connection, string symbol, IDxPriceLevelBookListener listener) :
+            this(connection, symbol, new OrderSource[] { }, listener)
         {
         }
 
@@ -127,11 +132,13 @@ namespace com.dxfeed.native
             }
 
             C.Instance.ClosePriceLevelBook(bookHandle);
+            connection = null;
             disposedValue = true;
         }
 
-        ~NativePriceLevelBook() {
-           Dispose(false);
+        ~NativePriceLevelBook()
+        {
+            Dispose(false);
         }
 
         /// <summary>
@@ -147,33 +154,113 @@ namespace com.dxfeed.native
             GC.SuppressFinalize(this);
         }
 
+        /// <inheritdoc />
+        public void SetSymbol(string newSymbol)
+        {
+            if (string.IsNullOrWhiteSpace(symbol))
+            {
+                throw new ArgumentException("Invalid symbol parameter.");
+            }
+            
+            if (nativeBookListener != null)
+            {
+                C.Instance.DetachPriceLevelBookListener(bookHandle, nativeBookListener);
+            }
+
+            C.Instance.ClosePriceLevelBook(bookHandle);
+
+            symbol = newSymbol;
+            C.CheckOk(C.Instance.CreatePriceLevelBook(connection.Handle, symbol, sources, sources.Length,
+                out bookHandle));
+
+            try
+            {
+                if (bookListener != null)
+                {
+                    C.CheckOk(C.Instance.AttachPriceLevelBookListener(bookHandle, nativeBookListener = OnBook,
+                        IntPtr.Zero));
+                }
+            }
+            catch (DxException)
+            {
+                C.Instance.ClosePriceLevelBook(bookHandle);
+                throw;
+            }
+        }
+
+        /// <inheritdoc />
+        public void SetSources(string[] newSources)
+        {
+            if (nativeBookListener != null)
+            {
+                C.Instance.DetachPriceLevelBookListener(bookHandle, nativeBookListener);
+            }
+            
+            if (bookListener == null) return;
+
+            sources = newSources;
+
+            C.Instance.ClosePriceLevelBook(bookHandle);
+            
+            if (sources == null)
+            {
+                C.CheckOk(C.Instance.CreatePriceLevelBook(connection.Handle, symbol, new string[] { }, 0,
+                    out bookHandle));
+            }
+            else
+            {
+                CheckSources(sources);
+                C.CheckOk(C.Instance.CreatePriceLevelBook(connection.Handle, symbol, sources, sources.Length,
+                    out bookHandle));
+            }
+            
+            try
+            {
+                C.CheckOk(C.Instance.AttachPriceLevelBookListener(bookHandle, nativeBookListener = OnBook,
+                    IntPtr.Zero));
+            }
+            catch (DxException)
+            {
+                C.Instance.ClosePriceLevelBook(bookHandle);
+                throw;
+            }
+        }
+
+        /// <inheritdoc />
+        public void SetSources(OrderSource[] newSources)
+        {
+            SetSources(sources?.Select(s => s.ToString()).ToArray());
+        }
+
         private void OnBook(IntPtr priceLevelBook, IntPtr userData)
         {
             if (priceLevelBook == IntPtr.Zero)
             {
                 return;
             }
+
             DxPriceLevelBook nativeBook;
             unsafe
             {
                 nativeBook = *(DxPriceLevelBook*)priceLevelBook;
             }
+
             var asks =
                 new dxfeed.api.events.DxPriceLevelBook.DxPriceLevel[nativeBook.asks_count];
-            
+
             for (var i = 0; i < nativeBook.asks_count; ++i)
             {
                 asks[i] = CreateLevel(GetLevel(nativeBook.asks, i));
             }
-            
+
             var bids =
                 new dxfeed.api.events.DxPriceLevelBook.DxPriceLevel[nativeBook.bids_count];
-            
+
             for (var i = 0; i < nativeBook.bids_count; ++i)
             {
                 bids[i] = CreateLevel(GetLevel(nativeBook.bids, i));
             }
-            
+
             var book = new dxfeed.api.events.DxPriceLevelBook(
                 ToString(nativeBook.symbol), bids, asks);
 
@@ -188,7 +275,7 @@ namespace com.dxfeed.native
         private dxfeed.api.events.DxPriceLevelBook.DxPriceLevel CreateLevel(DxPriceLevel level)
         {
             return new dxfeed.api.events.DxPriceLevelBook.DxPriceLevel(
-                        level.price, level.size, TimeConverter.ToUtcDateTime(level.time));
+                level.price, level.size, TimeConverter.ToUtcDateTime(level.time));
         }
 
         private static unsafe string ToString(IntPtr str)
@@ -198,8 +285,12 @@ namespace com.dxfeed.native
 
         private bool disposedValue; // To detect redundant calls
         private readonly IDxPriceLevelBookListener bookListener;
+        private string symbol;
+        private string[] sources;
+
         // ReSharper disable once NotAccessedField.Local
-        private readonly C.dxf_price_level_book_listener_t nativeBookListener;//to prevent from being garbage collected
-        private readonly IntPtr bookHandle;
+        private C.dxf_price_level_book_listener_t nativeBookListener; //to prevent from being garbage collected
+        private IntPtr bookHandle;
+        private NativeConnection connection;
     }
 }

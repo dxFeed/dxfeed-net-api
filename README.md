@@ -99,7 +99,7 @@ using com.dxfeed.native;
 
 #### Event types
 
-| №		| EventType			| Short description																				|Purpose of usage	|Interface	|
+| #		| EventType			| Short description																				|Examples of original feed events	|Interface	|
 | :----:|:------------------|:----------------------------------------------------------------------------------------------|:------|:----------|
 | 1		|[Trade](https://kb.dxfeed.com/en/data-model/qd-model-of-market-events.html#trade-19593)	 			|The price and size of the last trade during regular trading hours, an overall day volume and day turnover						|Trade (last sale), trade conditions change messages, volume setting events, index value 		|[IDxTrade](https://docs.dxfeed.com/net-api/interfacecom_1_1dxfeed_1_1api_1_1events_1_1IDxTrade.html)|
 | 2		| [TradeETH](https://kb.dxfeed.com/en/data-model/qd-model-of-market-events.html#tradeeth-19593)			|The price and size of the last trade during extended trading hours, and the extended trading hours day volume and day turnover					|Trade (last sale), trade conditions change messages, volume setting events		|[IDxTradeETH](https://docs.dxfeed.com/net-api/interfacecom_1_1dxfeed_1_1api_1_1events_1_1IDxTradeETH.html)|
@@ -112,7 +112,7 @@ using com.dxfeed.native;
 | 9		|[Summary](https://kb.dxfeed.com/en/data-model/qd-model-of-market-events.html#summary-19593)			|The most recent OHLC information about the trading session on the market														|OHLC setting events (trades, explicit hi/lo update messages, explicit summary messages)|[IDxSummary](https://docs.dxfeed.com/net-api/interfacecom_1_1dxfeed_1_1api_1_1events_1_1IDxSummary.html)|
 | 10	|[Greeks](https://kb.dxfeed.com/en/data-model/dxfeed-api-market-events.html#greeks)			|Differential values that show how the price of an option depends on other market parameters		|Greeks and Black-Scholes implied volatility|[IDxGreeks](https://docs.dxfeed.com/net-api/interfacecom_1_1dxfeed_1_1api_1_1events_1_1IDxGreeks.html)|
 | 11	|[TheoPrice](https://kb.dxfeed.com/en/data-model/dxfeed-api-market-events.html#theoprice)			|The theoretical option price					|Theoretical prices|[IDxTheoPrice](https://docs.dxfeed.com/net-api/interfacecom_1_1dxfeed_1_1api_1_1events_1_1IDxTheoPrice.html)|
-| 12	|[Underlying](https://kb.dxfeed.com/en/data-model/dxfeed-api-market-events.html#underlying)		|Calculation for the underlying options																|VIX methodology implied volatility, P/C ratios|[IDxUnderlying](https://docs.dxfeed.com/net-api/interfacecom_1_1dxfeed_1_1api_1_1events_1_1IDxUnderlying.html)||
+| 12	|[Underlying](https://kb.dxfeed.com/en/data-model/dxfeed-api-market-events.html#underlying)		|Calculated values that are available for an option underlying symbol based on the option prices on the market																|VIX methodology implied volatility, P/C ratios|[IDxUnderlying](https://docs.dxfeed.com/net-api/interfacecom_1_1dxfeed_1_1api_1_1events_1_1IDxUnderlying.html)||
 | 13	|[Series](https://kb.dxfeed.com/en/data-model/dxfeed-api-market-events.html#series)			|Properties of the underlying																	|VIX methodology implied volatility, P/C ratios|[IDxSeries](https://docs.dxfeed.com/net-api/interfacecom_1_1dxfeed_1_1api_1_1events_1_1IDxSeries.html)|
 
 
@@ -131,13 +131,13 @@ There are three types of delivery contracts: **`Ticker`**, **`Stream`** and **`H
 The main task of this contract is to reliably deliver the latest value for an event (for example, for the last trade of the selected symbol). Queued older events could be conflated to conserve bandwidth and resources.
  
 ##### Stream
-A stream contract delivers a stream of events, i.e. all previous events. Until you start listening to the data stream, it is impossible to know what the last value was.
+A stream contract guaranteedly delivers a stream of events without conflation.
 
 ##### History
-History contract delivers a set of events at once for one symbol simultaneously. 
+History contract first delivers a snapshot (set of previous events) for the specified time range (subject to limitations). After the snapshot is transmitted, the history contract delivers a stream of events.
 
-##### Default
-Used to enable subscription according to the default schema (dxFeed schema),  if  **[EventSubscriptionFlag](https://docs.dxfeed.com/net-api/namespacecom_1_1dxfeed_1_1api_1_1data.html#a5e593e65b38494fc19218527ea9eb4ac)** not set.
+|:information_source: NOTE: if **[EventSubscriptionFlag](https://docs.dxfeed.com/net-api/namespacecom_1_1dxfeed_1_1api_1_1data.html#a5e593e65b38494fc19218527ea9eb4ac)** is not set, the default contract type will be enabled.|
+| --- |
 
 Default contracts for events:
 
@@ -164,7 +164,7 @@ Default contracts for events:
 #### Subscription types
 
 
-|№		|Subscription type			| Description			| Code sample	|
+|#		|Subscription type			| Description			| Code sample	|
 |:-----:|:------------------|:------------------|:----------|
 |1|[CreateSubscription](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1native_1_1NativeConnection.html#a3d6ec48184c5ca089cd1b8df2addbba0)					|Creates subscription to an event 					|[dxf_events_sample](https://github.com/dxFeed/dxfeed-net-api/tree/master/samples/dxf_events_sample)				|
 |2|[CreateSnapshotSubscription](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1native_1_1NativeConnection.html#a7daf40732ea72fd061139ce74fe0889c)			|Creates a snapshot subscription				|[dxf_snapshot_sample](https://github.com/dxFeed/dxfeed-net-api/tree/master/samples/dxf_snapshot_sample)			|
@@ -181,7 +181,7 @@ Order source identifies source of **`IDxOrder`** and **`IDxSpreadOrder`** events
 
 *Aggregated*:
 
-* [AGGREGATE_ASK](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1api_1_1events_1_1OrderSource.html#ae4b3536e7c787718c3017175f0a3eb85), [AGGREGATE_BID](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1api_1_1events_1_1OrderSource.html#a6f740564e75018a1dea27d33ba1850ad) - Ask, Bid side of an aggregate order book (futures depth and NASDAQ Level II).
+* [AGGREGATE_ASK](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1api_1_1events_1_1OrderSource.html#ae4b3536e7c787718c3017175f0a3eb85), [AGGREGATE_BID](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1api_1_1events_1_1OrderSource.html#a6f740564e75018a1dea27d33ba1850ad) - Ask, Bid side of an aggregate order book (futures depth and Nasdaq Level II).
 
   ---
  *Full order depth*:
@@ -287,7 +287,7 @@ using (var connection = new NativeConnection("demo.dxfeed.com:7300", DisconnectH
            {
            //creating subscription handler,
            //passing object of type 'EventPrinter' as an argument 
-           //to invoke callback method when data recieved 
+           //to invoke callback method when data received 
                using (var subscription = connection.CreateSubscription(EventType.Quote, new EventPrinter()))
                {
                	   //adding subscription to 'AAPL' symbol

@@ -38,6 +38,8 @@ This package provides access to **[dxFeed](https://www.dxfeed.com/)** market dat
 
 
 ## Documentation
+Find useful information in self-service dxFeed Knowledge Base, or .NET API framework documentation:
+
 - [dxFeed Knowledge Base](https://kb.dxfeed.com/index.html?lang=en)
   * [Getting started](https://kb.dxfeed.com/en/getting-started.html)
   * [Troubleshooting](https://kb.dxfeed.com/en/troubleshooting-guidelines.html)
@@ -123,7 +125,7 @@ using com.dxfeed.native;
 ---
 #### Contracts
 
-There are three types of delivery contracts: **`Ticker`**, **`Stream`** and **`History`**. Contract type settings up by **[EventSubscriptionFlag](https://docs.dxfeed.com/net-api/namespacecom_1_1dxfeed_1_1api_1_1data.html#a5e593e65b38494fc19218527ea9eb4ac)** as a parameter of **[NativeConnection](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1native_1_1NativeConnection.html)**.
+There are three types of delivery contracts: **`Ticker`**, **`Stream`** and **`History`**. You can set up the contract type by **[EventSubscriptionFlag](https://docs.dxfeed.com/net-api/namespacecom_1_1dxfeed_1_1api_1_1data.html#a5e593e65b38494fc19218527ea9eb4ac)** as a parameter of **[NativeConnection](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1native_1_1NativeConnection.html)**.
   
 ##### Ticker
 The main task of this contract is to reliably deliver the latest value for an event (for example, for the last trade of the selected symbol). Queued older events could be conflated to conserve bandwidth and resources.
@@ -166,7 +168,7 @@ Default contracts for events:
 |:-----:|:------------------|:------------------|:----------|
 |1|[CreateSubscription](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1native_1_1NativeConnection.html#a3d6ec48184c5ca089cd1b8df2addbba0)					|Creates subscription to an event 					|[dxf_events_sample](https://github.com/dxFeed/dxfeed-net-api/tree/master/samples/dxf_events_sample)				|
 |2|[CreateSnapshotSubscription](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1native_1_1NativeConnection.html#a7daf40732ea72fd061139ce74fe0889c)			|Creates a snapshot subscription				|[dxf_snapshot_sample](https://github.com/dxFeed/dxfeed-net-api/tree/master/samples/dxf_snapshot_sample)			|
-|3|[CreateIncOrderSnapshotSubscription](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1native_1_1NativeConnection.html#ad34451234590a5727fea7284ff24f5b4) |Creates the new native order subscription on snapshot with incremental updates 		|[dxf_inc_order_snapshot_sample](https://github.com/dxFeed/dxfeed-net-api/tree/master/samples/dxf_inc_order_snapshot_sample)|
+|3|[CreateIncOrderSnapshotSubscription](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1native_1_1NativeConnection.html#ad34451234590a5727fea7284ff24f5b4) |Creates the new native subscription to Order snapshot with incremental updates 		|[dxf_inc_order_snapshot_sample](https://github.com/dxFeed/dxfeed-net-api/tree/master/samples/dxf_inc_order_snapshot_sample)|
 |4|[CreatePriceLevelBook](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1native_1_1NativeConnection.html#a836f311b5f0ea07dbeb40a49d34f7dfb) |Creates the new price level book (10 levels) for the specified symbol and sources 		|[dxf_price_level_book_sample](https://github.com/dxFeed/dxfeed-net-api/tree/master/samples/dxf_price_level_book_sample)|
 |5|[CreateRegionalBook](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1native_1_1NativeConnection.html#a9548fc1f0ad480a4e1259366d30afdeb) |Creates a regional price level book (10 levels) 		|[dxf_regional_book_sample](https://github.com/dxFeed/dxfeed-net-api/tree/master/samples/dxf_regional_book_sample)|
 
@@ -175,7 +177,7 @@ Default contracts for events:
 
 #### Order sources
 
-Order source identifies source of **`IDxOrder`** and **`IDxSpreadOrder`** events. Order source settings up by **[SetSource()](https://docs.dxfeed.com/net-api/interfacecom_1_1dxfeed_1_1api_1_1IDxSubscription.html#a56e276e3e36cc2e2fcb42de8f3f0bc95)** method of **[IDxSubscription](https://docs.dxfeed.com/net-api/interfacecom_1_1dxfeed_1_1api_1_1IDxSubscription.html)**. Several supported sources are listed below. Please find the full list **[here](https://kb.dxfeed.com/en/data-model/qd-model-of-market-events.html#UUID-858ebdb1-0127-8577-162a-860e97bfe408_para-idm53255963764388)**.
+Order source identifies source of **`IDxOrder`** and **`IDxSpreadOrder`** events. You can set Order source by **[SetSource()](https://docs.dxfeed.com/net-api/interfacecom_1_1dxfeed_1_1api_1_1IDxSubscription.html#a56e276e3e36cc2e2fcb42de8f3f0bc95)** method of **[IDxSubscription](https://docs.dxfeed.com/net-api/interfacecom_1_1dxfeed_1_1api_1_1IDxSubscription.html)**. Several supported sources are listed below. Please find the full list **[here](https://kb.dxfeed.com/en/data-model/qd-model-of-market-events.html#UUID-858ebdb1-0127-8577-162a-860e97bfe408_para-idm53255963764388)**.
 
 *Aggregated*:
 
@@ -213,7 +215,7 @@ Order source identifies source of **`IDxOrder`** and **`IDxSpreadOrder`** events
   * [glbx](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1api_1_1events_1_1OrderSource.html#aec52a8353354ce8ffe842796b254eaab) - CME Globex.
   * [iex](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1api_1_1events_1_1OrderSource.html#a595576f4a4e0e03f3c72d05c8f20dfb2) - IEX.
   * [memx](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1api_1_1events_1_1OrderSource.html#ab156ad040eb3abd3724537b557794f59) - Members Exchange.
-  * [ntv](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1api_1_1events_1_1OrderSource.html#aa595f38f874a185d97b78d7f4fc51b78) - NASDAQ Total View. Record for price level book.
+  * [ntv](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1api_1_1events_1_1OrderSource.html#aa595f38f874a185d97b78d7f4fc51b78) - Nasdaq TotalView.
    * [smfe](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1api_1_1events_1_1OrderSource.html#a41e87bde8b836f1519b623079ba7767b) - SmallEx.
   * [xeur](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1api_1_1events_1_1OrderSource.html#ae5b162c893b6bc58695cdd57e2259902) - Eurex.
     

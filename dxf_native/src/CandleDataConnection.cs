@@ -89,7 +89,7 @@ namespace com.dxfeed.native
         }
 
         /// <inheritdoc />
-        public Task<Dictionary<CandleSymbol, List<IDxCandle>>> GetCandleData(CandleSymbol[] symbols, DateTime fromTime, DateTime toTime,
+        public Task<Dictionary<CandleSymbol, List<IDxCandle>>> GetCandleData(List<CandleSymbol> symbols, DateTime fromTime, DateTime toTime,
             CancellationToken cancellationToken)
         {
             return Task.Run(async () =>

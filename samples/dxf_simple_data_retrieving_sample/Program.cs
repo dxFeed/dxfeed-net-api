@@ -11,7 +11,6 @@ If a copy of the MPL was not distributed with this file, You can obtain one at h
 
 using System;
 using System.Threading;
-using System.Threading.Tasks;
 using com.dxfeed.api.data;
 using com.dxfeed.native;
 

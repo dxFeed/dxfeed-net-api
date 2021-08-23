@@ -189,6 +189,7 @@
     <Compile Include="src\util\EventTypeUtil.cs" />
     <Compile Include="src\util\MathUtil.cs" />
     <Compile Include="src\util\StringCache.cs" />
+    <Compile Include="src\util\StringUtil.cs" />
     <Compile Include="src\util\TimePeriod.cs" />
   </ItemGroup>
   <ItemGroup />

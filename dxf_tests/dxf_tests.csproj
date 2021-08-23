@@ -74,17 +74,12 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="src\api\CandleSymbolTest.cs" />
-    <Compile Include="src\api\DXEndpointTest.cs" />
-    <Compile Include="src\api\DXFeedSubscriptionTest.cs" />
-    <Compile Include="src\api\DXFeedTest.cs" />
-    <Compile Include="src\api\DXFeedTimeSeriesSubscriptionTest.cs" />
     <Compile Include="src\api\FullTest.cs" />
     <Compile Include="src\api\InstrumentProfileLiveTest.cs" />
     <Compile Include="src\api\InstrumentProfileTest.cs" />
     <Compile Include="src\api\NativeCandleSubscriptionTest.cs" />
     <Compile Include="src\api\NativeSnapshotTest.cs" />
     <Compile Include="src\api\NativeSubscriptionTest.cs" />
-    <Compile Include="src\tools\eventplayer\EventPlayer.cs" />
     <Compile Include="src\tools\eventplayer\IPlayedEvent.cs" />
     <Compile Include="src\tools\eventplayer\MarshalDataTypes.cs" />
     <Compile Include="src\tools\eventplayer\PlayedCandle.cs" />

@@ -31,7 +31,7 @@ namespace com.dxfeed.api
         /// <param name="toTime">The time, inclusive, to request events to.</param>
         /// <param name="cancellationToken">The cancellation token to cancel the operation.</param>
         /// <returns>The task for the result of the request.</returns>
-        Task<Dictionary<CandleSymbol, List<IDxCandle>>> GetCandleData(CandleSymbol[] symbols, DateTime fromTime, DateTime toTime,
+        Task<Dictionary<CandleSymbol, List<IDxCandle>>> GetCandleData(List<CandleSymbol> symbols, DateTime fromTime, DateTime toTime,
             CancellationToken cancellationToken);
     }
 }

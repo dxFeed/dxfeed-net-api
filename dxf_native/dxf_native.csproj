@@ -77,6 +77,7 @@
     <Compile Include="src\api\DXFeedEventHandler.cs" />
     <Compile Include="src\api\DXFeedTimeSeriesSubscription.cs" />
     <Compile Include="src\CandleDataConnection.cs" />
+    <Compile Include="src\SimpleCandleDataProvider.cs" />
     <Compile Include="src\SnapshotDataProvider.cs" />
     <Compile Include="src\events\NativeSpreadOrder.cs" />
     <Compile Include="src\NativePriceLevelBook.cs" />

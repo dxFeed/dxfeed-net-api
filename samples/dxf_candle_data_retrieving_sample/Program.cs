@@ -32,8 +32,8 @@ namespace dxf_candle_data_retrieving_sample
                 "    password  - The user password.\n" +
                 "    token     - The connection token.\n" +
                 "    symbols   - The candle symbols, comma separated list (IBM,AAPL&Q,AAPL&Q{=1m} etc)\n" +
-                "    from-date-time - The date\\time, inclusive, to request events from. (format: yyyyMMdd-HHmmss)\n" +
-                "    to-date-time   - The date\\time, inclusive, to request events to. (format: yyyyMMdd-HHmmss)\n" +
+                "    from-date-time - The UTC date\\time, inclusive, to request events from. (format: yyyyMMdd-HHmmss)\n" +
+                "    to-date-time   - The UTC date\\time, inclusive, to request events to. (format: yyyyMMdd-HHmmss)\n" +
                 "Example: dxf_candle_data_retrieving_sample https://tools.dxfeed.com/candledata-preview demo demo \"IBM{=d},IBM{=m}\" 20210819-030000 20210823-100000\n\n"
             );
         }
@@ -103,7 +103,6 @@ namespace dxf_candle_data_retrieving_sample
                 ? new CandleDataConnection(address, login, password)
                 : new CandleDataConnection(address, token);
 
-            // With cancellation token
             var cancellationTokenSource = new CancellationTokenSource();
             var cancellationToken = cancellationTokenSource.Token;
             var getCandleDataResultTask = con.GetCandleData(symbols,

@@ -18,7 +18,7 @@ using com.dxfeed.native;
 namespace dxf_candle_data_retrieving_sample
 {
     /// <summary>
-    ///     This sample class demonstrates the simple retrieving of candle data from the candle web service.
+    ///     This sample class demonstrates how to retrieve candle data from the candle web service.
     /// </summary>
     internal static class Program
     {

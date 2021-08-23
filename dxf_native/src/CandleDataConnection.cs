@@ -36,8 +36,12 @@ namespace com.dxfeed.native
 
         private CandleDataConnection(string address, string login, string password, string token)
         {
-            this.address = address ?? throw new ArgumentNullException(nameof(address));
+            if (address == null)
+            {
+                throw new ArgumentNullException(nameof(address));
+            }
 
+            this.address = address;
             this.login = login;
             this.password = password;
             this.token = token;

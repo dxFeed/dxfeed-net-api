@@ -75,8 +75,10 @@ namespace dxf_candle_data_retrieving_sample
                 return;
             }
 
+            DateTime fromDateTime;
+            
             if (!DateTime.TryParseExact(args[symbolsIndex + 1], "yyyyMMdd-HHmmss",
-                CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var fromDateTime))
+                CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out fromDateTime))
             {
                 Console.Error.WriteLine("Can't parse the <from-date-time>\n");
                 ShowUsage();
@@ -84,8 +86,10 @@ namespace dxf_candle_data_retrieving_sample
                 return;
             }
 
+            DateTime toDateTime;
+
             if (!DateTime.TryParseExact(args[symbolsIndex + 2], "yyyyMMdd-HHmmss",
-                CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var toDateTime))
+                CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out toDateTime))
             {
                 Console.Error.WriteLine("Can't parse the <to-date-time>\n");
                 ShowUsage();

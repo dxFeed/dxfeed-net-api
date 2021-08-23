@@ -52,12 +52,17 @@ namespace com.dxfeed.api.util
                         sb.Append(t);
                         symbolParams = false;
                         break;
-                    case ',' when symbolParams:
-                        sb.Append(t);
-                        break;
                     case ',':
-                        result.Add(CandleSymbol.ValueOf(sb.ToString()));
-                        sb.Clear();
+                        if (symbolParams)
+                        {
+                            sb.Append(t);
+                        }
+                        else
+                        {
+                            result.Add(CandleSymbol.ValueOf(sb.ToString()));
+                            sb.Clear();
+                        }
+
                         break;
                     default:
                         sb.Append(t);

@@ -9,6 +9,7 @@ If a copy of the MPL was not distributed with this file, You can obtain one at h
 
 #endregion
 
+using System;
 using com.dxfeed.api.events;
 
 namespace com.dxfeed.api
@@ -16,6 +17,7 @@ namespace com.dxfeed.api
     /// <summary>
     /// Interface provides receiving Order View events.
     /// </summary>
+    [Obsolete("IDxOrderViewListener interface is deprecated and will removed in 9.0.0 version. Please use NativeConnection\\NativeSubscription")]
     public interface IDxOrderViewListener
     {
         /// <summary>

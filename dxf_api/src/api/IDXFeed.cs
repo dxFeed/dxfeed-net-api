@@ -20,6 +20,7 @@ namespace com.dxfeed.api
     /// <summary>
     /// Main entry class for dxFeed API (read it first).
     /// </summary>
+    [Obsolete("IDXFeed interface is deprecated and will removed in 9.0.0 version. Please use NativeConnection\\NativeSubscription")]
     public interface IDXFeed
     {
         /// <summary>

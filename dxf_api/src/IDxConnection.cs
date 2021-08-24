@@ -114,6 +114,7 @@ namespace com.dxfeed.api
         /// </summary>
         /// <param name="listener"></param>
         /// <returns></returns>
+        [Obsolete("CreateOrderViewSubscription method is deprecated and will removed in 9.0.0 version. Please use NativeConnection\\NativeSubscription")]
         IDxSubscription CreateOrderViewSubscription(IDxOrderViewListener listener);
 
         /// <summary>

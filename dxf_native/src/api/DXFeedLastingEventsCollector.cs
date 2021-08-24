@@ -9,6 +9,7 @@ If a copy of the MPL was not distributed with this file, You can obtain one at h
 
 #endregion
 
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using com.dxfeed.api.candle;
@@ -22,6 +23,7 @@ namespace com.dxfeed.api
     /// <summary>
     ///     Class provides methods for collecting and storing lasting events.
     /// </summary>
+    [Obsolete("DXFeedLastingEventsCollector class is deprecated and will removed in 9.0.0 version. Please use NativeConnection\\NativeSubscription")]
     internal class DXFeedLastingEventsCollector :
         IDxCandleListener,
         IDxGreeksListener,
@@ -259,6 +261,7 @@ namespace com.dxfeed.api
     ///     expands with universal event listener.
     /// </summary>
     /// <typeparam name="E">The type of event.</typeparam>
+    [Obsolete("LastingEventsCollector class is deprecated and will removed in 9.0.0 version. Please use NativeConnection\\NativeSubscription")]
     internal class LastingEventsCollector<E> : DXFeedLastingEventsCollector, IDXFeedEventListener<E>
         where E : class, IDxEventType
     {

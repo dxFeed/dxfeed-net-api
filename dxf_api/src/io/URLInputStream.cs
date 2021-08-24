@@ -17,7 +17,7 @@ using com.dxfeed.api;
 
 namespace com.dxfeed.io
 {
-    class URLInputStream
+    public class URLInputStream
     {
         private static readonly int READ_TIMEOUT = 60000;
 

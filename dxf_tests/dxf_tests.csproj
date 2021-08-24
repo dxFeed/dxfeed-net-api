@@ -86,7 +86,6 @@
     <Compile Include="src\tools\eventplayer\PlayedGreeks.cs" />
     <Compile Include="src\tools\eventplayer\PlayedOrder.cs" />
     <Compile Include="src\tools\eventplayer\PlayedTrade.cs" />
-    <Compile Include="src\tools\OrderViewTestListener.cs" />
     <Compile Include="src\tools\SnapshotTestListener.cs" />
     <Compile Include="src\tools\TestListener.cs" />
   </ItemGroup>

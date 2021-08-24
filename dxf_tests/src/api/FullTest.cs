@@ -30,10 +30,10 @@ namespace com.dxfeed.api
         private class SnapshotCase : IDisposable
         {
             private readonly CandleSymbol candleSymbol;
-            private IDxSubscription snapshotSubscription;
             private readonly string source = string.Empty;
             private readonly string symbol = string.Empty;
             private readonly DateTime? time;
+            private IDxSubscription snapshotSubscription;
 
             private SnapshotCase(DateTime? time)
             {
@@ -133,9 +133,6 @@ namespace com.dxfeed.api
             new SnapshotCase(CandleSymbol.ValueOf("XBT/USD{=d}"), oneMonth)
         };
 
-        private static readonly string[] orderViewSymbols = { "AAPL", "IBM" };
-        private static readonly string[] orderViewSources = { "NTV", "DEA", "DEX" };
-
         private static void OnDisconnect(IDxConnection con)
         {
             Interlocked.Exchange(ref isConnected, 0);
@@ -170,21 +167,12 @@ namespace com.dxfeed.api
                         listener.GetSnapshotsCount<IDxCandle>(snapshotCase.Symbol));
             }
         }
-
-        private void PrintOrderViews(OrderViewTestListener listener, params string[] symbols)
-        {
-            Console.WriteLine("OrderViews, count: {0}", listener.GetOrderViewsCount());
-            foreach (var symbol in symbols)
-                Console.WriteLine("    symbol {0}: snapshot size: {1}, updates size: {2}",
-                    symbol, listener.GetOrderViewEventsCount(symbol), listener.GetOrderViewUpdatesCount(symbol));
-        }
-
+        
         [Test]
         public void TestAll()
         {
             var eventListener = new TestListener(eventsTimeout, eventsSleepTime, IsConnected);
             var snapshotListener = new SnapshotTestListener(eventsTimeout, eventsSleepTime, IsConnected);
-            var orderViewListener = new OrderViewTestListener(eventsTimeout, eventsSleepTime, IsConnected);
             var events = EventType.Order | EventType.Profile |
                          EventType.Quote | EventType.Summary | EventType.TimeAndSale | EventType.Series |
                          EventType.Trade;
@@ -192,14 +180,11 @@ namespace com.dxfeed.api
             {
                 Interlocked.Exchange(ref isConnected, 1);
                 using (IDxSubscription eventSubscription = con.CreateSubscription(events, eventListener),
-                    candleSubscription = con.CreateSubscription(oneMonth, eventListener),
-                    orderViewSubscription = con.CreateOrderViewSubscription(orderViewListener))
+                    candleSubscription = con.CreateSubscription(oneMonth, eventListener))
                 using (var snapshotCollection = new SnapshotCollection(con, snapshotListener, snapshotCases))
                 {
                     eventSubscription.AddSymbols(eventSymbols);
                     candleSubscription.AddSymbol(CandleSymbol.ValueOf(candleSymbols[0]));
-                    orderViewSubscription.AddSource(orderViewSources);
-                    orderViewSubscription.AddSymbols(orderViewSymbols);
 
                     var startTime = DateTime.Now;
                     while (testCommonTime >= (DateTime.Now - startTime).TotalMilliseconds)
@@ -217,7 +202,6 @@ namespace com.dxfeed.api
                         PrintSnapshots<IDxOrder>(snapshotListener, snapshotCases);
                         PrintSnapshots<IDxCandle>(snapshotListener, snapshotCases);
 
-                        PrintOrderViews(orderViewListener, orderViewSymbols);
                         Thread.Sleep(testPrintInterval);
                     }
                 }

@@ -25,6 +25,7 @@ namespace com.dxfeed.native {
     ///     sources, and, after that, about separate orders
     ///   </para>
     /// </summary>
+    [Obsolete("OrderViewSubscription class is deprecated and will removed in 9.0.0 version. Please use NativeConnection\\NativeSubscription")]
     public class OrderViewSubscription : IDxSubscription, IDxOrderListener {
         private readonly IDxOrderViewListener listener;
         private NativeConnection connection;

@@ -16,6 +16,8 @@ using com.dxfeed.api.data;
 using com.dxfeed.native.api;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System.Threading;
+using System.Threading.Tasks;
 using com.dxfeed.api.connection;
 using com.dxfeed.api.events;
 
@@ -200,12 +202,13 @@ namespace com.dxfeed.native
         /// <summary>
         /// Sets a handler that will be called when a server heartbeat arrives and contains non empty payload
         ///
-        /// Example:
-        /// ```csharp
+        /// <example>
+        /// <code>
         /// connection.SetOnServerHeartbeatHandler((connection, time, lagMark, rtt) => {
         ///    Console.Error.WriteLine($"##### Server time (UTC) = {time}, Server lag = {lagMark} us, RTT = {rtt} us #####");
         /// });
-        /// ```
+        /// </code>
+        /// </example>
         /// </summary>
         /// <remarks>
         ///     Don't call this method inside any listeners and callbacks of NativeSubscription, NativeConnection,
@@ -430,7 +433,7 @@ namespace com.dxfeed.native
 
             IDxSubscription result = (time == null)
                 ? new NativeSubscription(this, type, 0L, eventSubscriptionFlags, listener)
-                : new NativeSubscription(this, type, (DateTime) time, eventSubscriptionFlags, listener);
+                : new NativeSubscription(this, type, (DateTime)time, eventSubscriptionFlags, listener);
             subscriptions.Add(result);
             return result;
         }
@@ -455,7 +458,7 @@ namespace com.dxfeed.native
 
             IDxSubscription result = (time == null)
                 ? new NativeSubscription(this, type, 0L, listener)
-                : new NativeSubscription(this, type, (DateTime) time, listener);
+                : new NativeSubscription(this, type, (DateTime)time, listener);
             subscriptions.Add(result);
             return result;
         }
@@ -497,7 +500,7 @@ namespace com.dxfeed.native
             if (handle == IntPtr.Zero)
                 throw new NativeDxException("not connected");
 
-            var unixTime = time == null ? 0 : Tools.DateToUnixTime((DateTime) time);
+            var unixTime = time == null ? 0 : Tools.DateToUnixTime((DateTime)time);
             IDxSubscription result = new NativeSnapshotSubscription(this, unixTime, listener);
             subscriptions.Add(result);
             return result;
@@ -564,7 +567,7 @@ namespace com.dxfeed.native
             if (handle == IntPtr.Zero)
                 throw new NativeDxException("not connected");
 
-            var unixTime = time == null ? 0 : Tools.DateToUnixTime((DateTime) time);
+            var unixTime = time == null ? 0 : Tools.DateToUnixTime((DateTime)time);
             IDxSubscription result = new NativeSnapshotSubscription(this, eventType, unixTime, listener);
             subscriptions.Add(result);
             return result;
@@ -580,6 +583,7 @@ namespace com.dxfeed.native
         /// <param name="listener"></param>
         /// <returns>subscription object</returns>
         /// <exception cref="DxException"></exception>
+        [Obsolete("CreateOrderViewSubscription method is deprecated and will removed in 9.0.0 version. Please use NativeConnection\\NativeSubscription")]
         public IDxSubscription CreateOrderViewSubscription(IDxOrderViewListener listener)
         {
             if (handle == IntPtr.Zero)
@@ -604,7 +608,118 @@ namespace com.dxfeed.native
         public IDxRegionalBook CreateRegionalBook(string symbol, IDxRegionalBookListener bookListener,
             IDxQuoteListener quoteListener)
         {
+            if (handle == IntPtr.Zero)
+                throw new NativeDxException("not connected");
+
             return new NativeRegionalBook(this, symbol, bookListener, quoteListener);
+        }
+
+        private Task<List<IDxIndexedEvent>> GetDataForPeriodImpl(EventType eventType, string symbol,
+            DateTime fromTime,
+            DateTime toTime, TimeSpan timeout, CancellationToken cancellationToken)
+        {
+            if (handle == IntPtr.Zero)
+                throw new NativeDxException("not connected");
+
+            if (eventType != EventType.TimeAndSale && eventType != EventType.Candle && eventType != EventType.Series &&
+                eventType != EventType.Greeks)
+            {
+                throw new NativeDxException(
+                    "The event type must be equal to one of these values: TimeAndSale, Candle, Series, Greeks. ");
+            }
+
+            var provider =
+                new SnapshotDataProvider(this, eventType, OrderSource.EMPTY, symbol, fromTime, toTime, timeout);
+
+            return provider.Run(cancellationToken);
+        }
+
+        /// <inheritdoc />
+        public Task<List<IDxIndexedEvent>> GetDataForPeriod(EventType eventType, string symbol, DateTime fromTime,
+            DateTime toTime)
+        {
+            return GetDataForPeriodImpl(eventType, symbol, fromTime, toTime, Timeout.InfiniteTimeSpan,
+                CancellationToken.None);
+        }
+
+        /// <inheritdoc />
+        public Task<List<IDxIndexedEvent>> GetDataForPeriod(EventType eventType, string symbol, DateTime fromTime,
+            DateTime toTime, TimeSpan timeout)
+        {
+            return GetDataForPeriodImpl(eventType, symbol, fromTime, toTime, timeout, CancellationToken.None);
+        }
+
+        /// <inheritdoc />
+        public Task<List<IDxIndexedEvent>> GetDataForPeriod(EventType eventType, string symbol, DateTime fromTime,
+            DateTime toTime, long timeout)
+        {
+            return GetDataForPeriodImpl(eventType, symbol, fromTime, toTime, TimeSpan.FromMilliseconds(timeout),
+                CancellationToken.None);
+        }
+
+        /// <inheritdoc />
+        public Task<List<IDxIndexedEvent>> GetDataForPeriod(EventType eventType, string symbol, DateTime fromTime,
+            DateTime toTime,
+            CancellationToken cancellationToken)
+        {
+            return GetDataForPeriodImpl(eventType, symbol, fromTime, toTime, Timeout.InfiniteTimeSpan,
+                cancellationToken);
+        }
+
+        private Task<List<IDxIndexedEvent>> GetOrderDataForPeriodImpl(EventType eventType,
+            OrderSource orderSource,
+            string symbol,
+            DateTime fromTime,
+            DateTime toTime, TimeSpan timeout, CancellationToken cancellationToken)
+        {
+            if (handle == IntPtr.Zero)
+                throw new NativeDxException("not connected");
+
+            if (eventType != EventType.Order && eventType != EventType.SpreadOrder)
+            {
+                throw new NativeDxException("The event type should be either Order or SpreadOrder");
+            }
+
+            var provider = new SnapshotDataProvider(this, eventType, orderSource, symbol, fromTime, toTime, timeout);
+
+            return provider.Run(cancellationToken);
+        }
+
+        /// <inheritdoc />
+        public Task<List<IDxIndexedEvent>> GetOrderDataForPeriod(EventType eventType, OrderSource orderSource,
+            string symbol,
+            DateTime fromTime,
+            DateTime toTime)
+        {
+            return GetOrderDataForPeriodImpl(eventType, orderSource, symbol, fromTime, toTime,
+                Timeout.InfiniteTimeSpan, CancellationToken.None);
+        }
+
+        /// <inheritdoc />
+        public Task<List<IDxIndexedEvent>> GetOrderDataForPeriod(EventType eventType, OrderSource orderSource,
+            string symbol, DateTime fromTime,
+            DateTime toTime, TimeSpan timeout)
+        {
+            return GetOrderDataForPeriodImpl(eventType, orderSource, symbol, fromTime, toTime, timeout,
+                CancellationToken.None);
+        }
+
+        /// <inheritdoc />
+        public Task<List<IDxIndexedEvent>> GetOrderDataForPeriod(EventType eventType, OrderSource orderSource,
+            string symbol, DateTime fromTime,
+            DateTime toTime, long timeout)
+        {
+            return GetOrderDataForPeriodImpl(eventType, orderSource, symbol, fromTime, toTime,
+                TimeSpan.FromMilliseconds(timeout), CancellationToken.None);
+        }
+
+        /// <inheritdoc />
+        public Task<List<IDxIndexedEvent>> GetOrderDataForPeriod(EventType eventType, OrderSource orderSource,
+            string symbol, DateTime fromTime,
+            DateTime toTime, CancellationToken cancellationToken)
+        {
+            return GetOrderDataForPeriodImpl(eventType, orderSource, symbol, fromTime, toTime,
+                Timeout.InfiniteTimeSpan, cancellationToken);
         }
 
         /// <summary>
@@ -621,6 +736,9 @@ namespace com.dxfeed.native
         public IDxPriceLevelBook CreatePriceLevelBook(string symbol, string[] sources,
             IDxPriceLevelBookListener listener)
         {
+            if (handle == IntPtr.Zero)
+                throw new NativeDxException("not connected");
+
             return new NativePriceLevelBook(this, symbol, sources, listener);
         }
 
@@ -638,6 +756,9 @@ namespace com.dxfeed.native
         public IDxPriceLevelBook CreatePriceLevelBook(string symbol, OrderSource[] sources,
             IDxPriceLevelBookListener listener)
         {
+            if (handle == IntPtr.Zero)
+                throw new NativeDxException("not connected");
+
             return new NativePriceLevelBook(this, symbol, sources, listener);
         }
 
@@ -700,8 +821,8 @@ namespace com.dxfeed.native
                         var elem = properties + i * 2 * IntPtr.Size;
                         unsafe
                         {
-                            var key = new IntPtr(*(char**) elem.ToPointer());
-                            var value = new IntPtr(*(char**) (elem + IntPtr.Size).ToPointer());
+                            var key = new IntPtr(*(char**)elem.ToPointer());
+                            var value = new IntPtr(*(char**)(elem + IntPtr.Size).ToPointer());
                             var keyString = Marshal.PtrToStringUni(key);
 
                             if (keyString != null)

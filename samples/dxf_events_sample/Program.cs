@@ -10,8 +10,10 @@ If a copy of the MPL was not distributed with this file, You can obtain one at h
 #endregion
 
 using System;
+using System.Threading;
 using com.dxfeed.api;
 using com.dxfeed.api.data;
+using com.dxfeed.api.events;
 using com.dxfeed.native;
 
 namespace dxf_events_sample {

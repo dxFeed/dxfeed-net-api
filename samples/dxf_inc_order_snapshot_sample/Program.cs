@@ -75,20 +75,17 @@ namespace dxf_inc_order_snapshot_sample {
 
         private static void Main(string[] args)
         {
-            if (args.Length < 3 || args.Length > 9)
+            if (args.Length < 2 || args.Length > 8)
             {
                 Console.WriteLine(
                     "Usage: dxf_inc_order_snapshot_sample <host:port> <symbol> [<source>] [-l <records_print_limit>] [-T <token>] [-p]\n" +
                     "where\n" +
-                    "    host:port - address of dxfeed server (demo.dxfeed.com:7300)\n" +
-                    "    symbol    - symbol string, it is allowed to use only one symbol\n" +
-                    "                a) event symbol: IBM, MSFT, ...\n" +
-                    "                b) candle symbol attribute: XBT/USD{=d},\n" +
-                    "                   AAPL{=d,price=mark}, ...\n" +
-                    "    source    - used only for Order or MarketMaker subscription,\n" +
+                    "    host:port - The address of dxfeed server (demo.dxfeed.com:7300)\n" +
+                    "    symbol    - The symbol string, it is allowed to use only one symbol (IBM, MSFT, etc)\n" +
+                    "    source    - The source of Order or MarketMaker subscription,\n" +
                     "                also it is allowed to use only one source\n" +
                     "                a) source for Order, e.g. NTV, BYX, BZX, DEA, ISE, \n" +
-                    "                   DEX, IST\n" +
+                    "                   DEX, IST, etc\n" +
                     "                b) source for MarketMaker, one of following: AGGREGATE_ASK\n" +
                     "                   or AGGREGATE_BID (default value for Order snapshots)\n" +
                     "                If source is not specified MarketMaker snapshot will be\n" +

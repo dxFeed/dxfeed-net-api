@@ -1,3 +1,44 @@
+Version 8.3.0
+* [DXFC-254] The amount of memory used to store the symbols required for a subscription has been reduced by several times.
+* [DXFC-238] Added the ability to set PriceLevelBook symbol or orders sources. Added the new methods:
+  - `IDxPriceLevelBook.SetSymbol(string newSymbol)`
+  - `IDxPriceLevelBook.SetSources(string[] newSources)`
+  - `IDxPriceLevelBook.AddSymbols(params CandleSymbol[] symbols)`
+  
+  See documentation.
+* [DXFC-255] Added a simple way to get data from CandleWebService.
+  - Added the `CandleDataConnection` class with method 
+  `Task<Dictionary<CandleSymbol, List<IDxCandle>>> GetCandleData(List<CandleSymbol> symbols, DateTime fromTime, DateTime toTime, CancellationToken cancellationToken)` 
+  that retrieves candles by symbols and start\stop DateTime. See documentation.
+  - Add the `dxf_candle_data_retrieving_sample` that demonstrates how to use `CandleDataConnection`
+* [Deprecated] These classes, enums, interfaces, delegates and methods are deprecated and will be removed in 9.0.0 version:
+  - DXFeedSymbolsUpdateEventArgs
+  - OnEndpointClosingEventHandler
+  - IDXEndpoint, DXEndpoint, IDXFeed, DXFeed
+  - IDXFeedEventListener, IDxOrderViewListener, DXFeedEventHandler
+  - DXFeedSymbolsUpdateEventHandler, DXFeedSubscriptionClosedEventHandler
+  - IDXFeedSubscription, IDXFeedTimeSeriesSubscription, DXFeedSubscription, DXFeedTimeSeriesSubscription
+  - CreateOrderViewSubscription, OrderViewSubscription
+  - DXFeedLastingEventsCollector, LastingEventsCollector, DXFeedSnapshotCollector
+  
+  Please use NativeConnection, NativeSubscription classes and their methods:
+
+Version 8.2.0
+* [DXFC-220] Added the ability to retrieve events starting from a specific date and ending with a specific date.  
+  Added the new methods:  
+  - `IDxConnection.GetDataForPeriod(EventType eventType, string symbol, DateTime fromTime, DateTime toTime)`
+  - `IDxConnection.GetDataForPeriod(EventType eventType, string symbol, DateTime fromTime, DateTime toTime, TimeSpan timeout)`
+  - `IDxConnection.GetDataForPeriod(EventType eventType, string symbol, DateTime fromTime, DateTime toTime, long timout)` 
+  - `IDxConnection.GetDataForPeriod(EventType eventType, string symbol, DateTime fromTime, DateTime toTime, CancellationToken cancellationToken)`
+  See documentation and the dxf_simple_data_retrieving_sample  
+* [DXFC-252] Fixed bug with "freezing" the `IDxConnection.Dispose` method if not called immediately after disconnecting the connection.  
+  The `network.reestablishConnections` config property was added. This property describes a flag that allows to disable the connection  
+  reestablishment mechanism. (default value = true)  
+  An example of disabling:  
+  ```csharp
+  NativeTools.LoadConfigFromString("network.reestablishConnections = false\n");
+  ```
+
 Version 8.1.0
 * [DXFC-251] Fixed a bug with receiving gap-filling data every time the user subscribed to symbols that he had already subscribed to earlier.
 * [DXFC-237] Added the new order sources: `MEMX` (Members Exchange' order source), `memx` (Members Exchange' price level source)

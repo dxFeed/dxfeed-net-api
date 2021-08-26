@@ -22,6 +22,7 @@ namespace com.dxfeed.api
     ///     high-level event listener.
     /// </summary>
     /// <typeparam name="E">The type of event.</typeparam>
+    [Obsolete("DXFeedEventHandler interface is deprecated and will removed in 9.0.0 version. Please use NativeConnection\\NativeSubscription")]
     internal class DXFeedEventHandler<E> :
         IDxCandleListener,
         IDxGreeksListener,

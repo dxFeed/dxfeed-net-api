@@ -60,6 +60,10 @@
       <Name>dxf_candle_sample</Name>
       <Label>BuildPublish</Label>
     </ProjectReference>
+    <ProjectReference Include="..\samples\dxf_candle_data_retrieving_sample\dxf_candle_data_retrieving_sample.csproj">
+      <Name>dxf_candle_data_retrieving_sample</Name>
+      <Label>BuildPublish</Label>
+    </ProjectReference>
     <ProjectReference Include="..\samples\dxf_events_sample\dxf_events_sample.csproj">
       <Name>dxf_events_sample</Name>
       <Label>BuildPublish</Label>
@@ -114,6 +118,10 @@
     </ProjectReference>
     <ProjectReference Include="..\samples\dxf_simple_order_book_sample\dxf_simple_order_book_sample.csproj">
       <Name>dxf_simple_order_book_sample</Name>
+      <Label>BuildPublish</Label>
+    </ProjectReference>
+    <ProjectReference Include="..\samples\dxf_simple_data_retrieving_sample\dxf_simple_data_retrieving_sample.csproj">
+      <Name>dxf_simple_data_retrieving_sample</Name>
       <Label>BuildPublish</Label>
     </ProjectReference>
   </ItemGroup>
@@ -201,6 +209,13 @@
   <ItemGroup>
     <Content Include="..\ReleaseNotes.txt">
       <Link>ReleaseNotes.txt</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Label>ToRoot</Label>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\dxfeed-api-config.sample.toml">
+      <Link>dxfeed-api-config.sample.toml</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Label>ToRoot</Label>
     </Content>

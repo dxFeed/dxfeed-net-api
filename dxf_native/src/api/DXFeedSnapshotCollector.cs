@@ -26,6 +26,7 @@ namespace com.dxfeed.api
     ///     </para>
     /// </summary>
     /// <typeparam name="E">The event type.</typeparam>
+    [Obsolete("DXFeedSnapshotCollector class is deprecated and will removed in 9.0.0 version. Please use NativeConnection\\NativeSubscription")]
     class DXFeedSnapshotCollector<E> :
         IDxOrderSnapshotListener,
         IDxCandleSnapshotListener,

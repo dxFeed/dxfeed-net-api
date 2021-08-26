@@ -338,7 +338,7 @@ namespace com.dxfeed.native.api
         /// <param name="subscription">A handle of the created subscription</param>
         /// <returns>DX_OK (1) on successful subscription creation or DX_ERR (0) on error;
         /// dxf_get_last_error can be used to retrieve the error code and description in case of failure; a handle to
-        /// newly created subscription is returned via ```subscription``` out parameter</returns>
+        /// newly created subscription is returned via <paramref name="subscription"/> out parameter</returns>
         internal abstract int dxf_create_subscription_with_flags(IntPtr connection, EventType event_types,
             EventSubscriptionFlag subscr_flags, out IntPtr subscription);
         
@@ -364,7 +364,7 @@ namespace com.dxfeed.native.api
         /// <param name="subscription">A handle of the created subscription</param>
         /// <returns>DX_OK (1) on successful subscription creation or DX_ERR (0) on error;
         /// dxf_get_last_error can be used to retrieve the error code and description in case of failure; a handle to
-        /// newly created subscription is returned via ```subscription``` out parameter</returns>
+        /// newly created subscription is returned via <paramref name="subscription"/> out parameter</returns>
         internal abstract int dxf_create_subscription_timed_with_flags(IntPtr connection, EventType event_types,
             Int64 time, EventSubscriptionFlag subscr_flags, out IntPtr subscription);
 

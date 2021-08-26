@@ -9,6 +9,7 @@ If a copy of the MPL was not distributed with this file, You can obtain one at h
 
 #endregion
 
+using System;
 using com.dxfeed.api.events;
 
 namespace com.dxfeed.api
@@ -44,6 +45,7 @@ namespace com.dxfeed.api
     ///     </para>
     /// </summary>
     /// <typeparam name="E">The type of events.</typeparam>
+    [Obsolete("IDXFeedTimeSeriesSubscription interface is deprecated and will removed in 9.0.0 version. Please use NativeConnection\\NativeSubscription")]
     public interface IDXFeedTimeSeriesSubscription<E> : IDXFeedSubscription<E>
         where E : IDxTimeSeriesEvent
     {

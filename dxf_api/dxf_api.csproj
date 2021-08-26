@@ -124,6 +124,7 @@
     <Compile Include="src\events\DxPriceLevelBook.cs" />
     <Compile Include="src\extras\EventPrinter.cs" />
     <Compile Include="src\extras\TimeConverter.cs" />
+    <Compile Include="src\IDxCandleDataConnection.cs" />
     <Compile Include="src\IDxPriceLevelBook.cs" />
     <Compile Include="src\IDxRegionalBook.cs" />
     <Compile Include="src\listeners\event\IDxCandleListener.cs" />
@@ -188,6 +189,7 @@
     <Compile Include="src\util\EventTypeUtil.cs" />
     <Compile Include="src\util\MathUtil.cs" />
     <Compile Include="src\util\StringCache.cs" />
+    <Compile Include="src\util\StringUtil.cs" />
     <Compile Include="src\util\TimePeriod.cs" />
   </ItemGroup>
   <ItemGroup />

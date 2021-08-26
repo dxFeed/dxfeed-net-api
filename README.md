@@ -1,9 +1,4 @@
-#  ![logo1][]![logo2][] dxFeed .NET API 
-
-
-[logo1]: docs/img/dxfeed_logo.png
-[logo2]: docs/img/csharp_logo.png
-
+#  ![](docs/img/dxfeed_logo.png)![](docs/img/csharp_logo.png) dxFeed .NET API 
 
 This package provides access to **[dxFeed](https://www.dxfeed.com/)** market data. The library is build as a thin wrapper over dxFeed **[C API library](https://github.com/dxFeed/dxfeed-c-api)**. 
 

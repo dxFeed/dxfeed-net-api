@@ -133,7 +133,7 @@ History contract first delivers a snapshot (set of previous events) for the spec
 |:information_source: NOTE: if **[EventSubscriptionFlag](https://docs.dxfeed.com/net-api/namespacecom_1_1dxfeed_1_1api_1_1data.html#a5e593e65b38494fc19218527ea9eb4ac)** is not set, the default contract type will be enabled.|
 | --- |
 
-Default contracts for events:
+Default contracts for events (*in most cases*):
 
 | Ticker			| Stream			| History	|
 |:-----------------:|:-----------------:|:---------:|
@@ -175,43 +175,43 @@ Order source identifies source of **`IDxOrder`** and **`IDxSpreadOrder`** events
 
 *Aggregated*:
 
-* [AGGREGATE_ASK](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1api_1_1events_1_1OrderSource.html#ae4b3536e7c787718c3017175f0a3eb85), [AGGREGATE_BID](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1api_1_1events_1_1OrderSource.html#a6f740564e75018a1dea27d33ba1850ad) - Ask, Bid side of an aggregate order book (futures depth and Nasdaq Level II).
+* [AGGREGATE_ASK](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1api_1_1events_1_1OrderSource.html#ae4b3536e7c787718c3017175f0a3eb85), [AGGREGATE_BID](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1api_1_1events_1_1OrderSource.html#a6f740564e75018a1dea27d33ba1850ad) - Ask, Bid side of an aggregate order book (futures depth and Nasdaq Level II)
 
   ---
  *Full order depth*:
    
-  * [BATE](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1api_1_1events_1_1OrderSource.html#a23a77d857f81a924ec39e95c9ad47b64) - Cboe EU BXE (BATE).
-  * [BYX](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1api_1_1events_1_1OrderSource.html#ab9c99c1863c2dab4d75be6f2cafbf65f) - Cboe BYX.
-  * [BZX](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1api_1_1events_1_1OrderSource.html#a45a3a3743efd52a4c876297eb4c93530) - Cboe BZX.
-  * [BXTR](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1api_1_1events_1_1OrderSource.html#a000409309a79719d6c0b234bfa0cb216) - Cboe EU SI (Systematic Internaliser).
-  * [BI20](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1api_1_1events_1_1OrderSource.html#a401d886cdfc55c8f45d0a2ebe01c19df) - BIST Top20 Orders (Level2+).
-  * [CHIX](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1api_1_1events_1_1OrderSource.html#aab1c4c58295eebc0d120fceaab012f31) - Cboe EU CXE (Chi-X).
-  * [CEUX](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1api_1_1events_1_1OrderSource.html#aebd2fc2105aabd678cd7ecfb10f4a27d) - Cboe EU DXE.
-  * [CFE](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1api_1_1events_1_1OrderSource.html#aa9b0a589becd027f99abd7d8b41903ec) - Cboe CFE.
-  * [C2OX](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1api_1_1events_1_1OrderSource.html#a624d1551b9707dfc066fca87799b644e) - Cboe C2.
-  * [DEA](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1api_1_1events_1_1OrderSource.html#a4ac50b91676018000d78ef92f74fcd80) - Cboe EDGA.
-  * [DEX](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1api_1_1events_1_1OrderSource.html#a4851ca2f77f277f2bab72ef70a85f8c5) - Cboe EDGX.
-  * [ERIS](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1api_1_1events_1_1OrderSource.html#ab7291c6871603b715c3eb3a8349d1d52) - ErisX.
-  * [ESPD](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1api_1_1events_1_1OrderSource.html#a77c2576868b1d961683b8b07d544bc81) - Nasdaq E-speed.
-  * [FAIR](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1api_1_1events_1_1OrderSource.html#a2f381c0b42adba5a684f71657a4808ec) - FairX.
-  * [GLBX](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1api_1_1events_1_1OrderSource.html#aa59fc116ea5f2da46db2154d9d0188db) - Globex.
-  * [ICE](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1api_1_1events_1_1OrderSource.html#ae5831b47c22cb18cc7df8154ab2b93aa) - ICE Futures US/EU.
-  * [IST](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1api_1_1events_1_1OrderSource.html#aa6b876caba3ec65fae6864e63a68054b) - Borsa Istanbul.
-  * [MEMX](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1api_1_1events_1_1OrderSource.html#a30869000432bedf174b1fba4cbfa619e) - Members Exchange.
-  * [NTV](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1api_1_1events_1_1OrderSource.html#a5f01007b4cffede27b46cfc36a972755) - Nasdaq TotalView.
-  * [NFX](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1api_1_1events_1_1OrderSource.html#a7afd6f000a026f553c067fad6bc1ec26) - Nasdaq NFX.
-  * [SMFE](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1api_1_1events_1_1OrderSource.html#aa4cf474b8549ab33d534ce01f3fa6fa0) - SmallEx.
-  * [XNFI](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1api_1_1events_1_1OrderSource.html#ae375ce1b060b648eae6b2ea4e187114f) - Nasdaq NFI.
-  * [XEUR](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1api_1_1events_1_1OrderSource.html#ac906af21e36f9ff86433c0b6b5959101) - Eurex.
+  * [BATE](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1api_1_1events_1_1OrderSource.html#a23a77d857f81a924ec39e95c9ad47b64) - Cboe EU BXE (BATE)
+  * [BYX](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1api_1_1events_1_1OrderSource.html#ab9c99c1863c2dab4d75be6f2cafbf65f) - Cboe BYX
+  * [BZX](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1api_1_1events_1_1OrderSource.html#a45a3a3743efd52a4c876297eb4c93530) - Cboe BZX
+  * [BXTR](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1api_1_1events_1_1OrderSource.html#a000409309a79719d6c0b234bfa0cb216) - Cboe EU SI (Systematic Internaliser)
+  * [BI20](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1api_1_1events_1_1OrderSource.html#a401d886cdfc55c8f45d0a2ebe01c19df) - BIST Top20 Orders (Level2+)
+  * [CHIX](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1api_1_1events_1_1OrderSource.html#aab1c4c58295eebc0d120fceaab012f31) - Cboe EU CXE (Chi-X)
+  * [CEUX](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1api_1_1events_1_1OrderSource.html#aebd2fc2105aabd678cd7ecfb10f4a27d) - Cboe EU DXE
+  * [CFE](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1api_1_1events_1_1OrderSource.html#aa9b0a589becd027f99abd7d8b41903ec) - Cboe CFE
+  * [C2OX](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1api_1_1events_1_1OrderSource.html#a624d1551b9707dfc066fca87799b644e) - Cboe C2
+  * [DEA](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1api_1_1events_1_1OrderSource.html#a4ac50b91676018000d78ef92f74fcd80) - Cboe EDGA
+  * [DEX](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1api_1_1events_1_1OrderSource.html#a4851ca2f77f277f2bab72ef70a85f8c5) - Cboe EDGX
+  * [ERIS](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1api_1_1events_1_1OrderSource.html#ab7291c6871603b715c3eb3a8349d1d52) - ErisX
+  * [ESPD](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1api_1_1events_1_1OrderSource.html#a77c2576868b1d961683b8b07d544bc81) - Nasdaq E-speed
+  * [FAIR](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1api_1_1events_1_1OrderSource.html#a2f381c0b42adba5a684f71657a4808ec) - FairX
+  * [GLBX](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1api_1_1events_1_1OrderSource.html#aa59fc116ea5f2da46db2154d9d0188db) - Globex
+  * [ICE](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1api_1_1events_1_1OrderSource.html#ae5831b47c22cb18cc7df8154ab2b93aa) - ICE Futures US/EU
+  * [IST](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1api_1_1events_1_1OrderSource.html#aa6b876caba3ec65fae6864e63a68054b) - Borsa Istanbul
+  * [MEMX](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1api_1_1events_1_1OrderSource.html#a30869000432bedf174b1fba4cbfa619e) - Members Exchange
+  * [NTV](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1api_1_1events_1_1OrderSource.html#a5f01007b4cffede27b46cfc36a972755) - Nasdaq TotalView
+  * [NFX](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1api_1_1events_1_1OrderSource.html#a7afd6f000a026f553c067fad6bc1ec26) - Nasdaq NFX
+  * [SMFE](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1api_1_1events_1_1OrderSource.html#aa4cf474b8549ab33d534ce01f3fa6fa0) - SmallEx
+  * [XNFI](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1api_1_1events_1_1OrderSource.html#ae375ce1b060b648eae6b2ea4e187114f) - Nasdaq NFI
+  * [XEUR](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1api_1_1events_1_1OrderSource.html#ac906af21e36f9ff86433c0b6b5959101) - Eurex
  ---
 *Price level book*:
  
-  * [glbx](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1api_1_1events_1_1OrderSource.html#aec52a8353354ce8ffe842796b254eaab) - CME Globex.
-  * [iex](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1api_1_1events_1_1OrderSource.html#a595576f4a4e0e03f3c72d05c8f20dfb2) - IEX.
-  * [memx](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1api_1_1events_1_1OrderSource.html#ab156ad040eb3abd3724537b557794f59) - Members Exchange.
-  * [ntv](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1api_1_1events_1_1OrderSource.html#aa595f38f874a185d97b78d7f4fc51b78) - Nasdaq TotalView.
-   * [smfe](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1api_1_1events_1_1OrderSource.html#a41e87bde8b836f1519b623079ba7767b) - SmallEx.
-  * [xeur](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1api_1_1events_1_1OrderSource.html#ae5b162c893b6bc58695cdd57e2259902) - Eurex.
+  * [glbx](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1api_1_1events_1_1OrderSource.html#aec52a8353354ce8ffe842796b254eaab) - CME Globex
+  * [iex](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1api_1_1events_1_1OrderSource.html#a595576f4a4e0e03f3c72d05c8f20dfb2) - IEX
+  * [memx](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1api_1_1events_1_1OrderSource.html#ab156ad040eb3abd3724537b557794f59) - Members Exchange
+  * [ntv](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1api_1_1events_1_1OrderSource.html#aa595f38f874a185d97b78d7f4fc51b78) - Nasdaq TotalView
+  * [smfe](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1api_1_1events_1_1OrderSource.html#a41e87bde8b836f1519b623079ba7767b) - SmallEx
+  * [xeur](https://docs.dxfeed.com/net-api/classcom_1_1dxfeed_1_1api_1_1events_1_1OrderSource.html#ae5b162c893b6bc58695cdd57e2259902) - Eurex
     
 
 | :information_source: CODE SAMPLE: take a look at `OrderSource` usage in  [dxf_price_level_book_sample](https://github.com/dxFeed/dxfeed-net-api/tree/master/samples/dxf_price_level_book_sample)|

@@ -1,3 +1,6 @@
+Version 8.4.0
+* [DXFC-258] Fixed a bug with the impossibility of receiving candledata when changing the order of candle symbol attributes 
+
 Version 8.3.0
 * [DXFC-254] The amount of memory used to store the symbols required for a subscription has been reduced by several times.
 * [DXFC-238] Added the ability to set PriceLevelBook symbol or orders sources. Added the new methods:
@@ -21,7 +24,7 @@ Version 8.3.0
   - CreateOrderViewSubscription, OrderViewSubscription
   - DXFeedLastingEventsCollector, LastingEventsCollector, DXFeedSnapshotCollector
   
-  Please use NativeConnection, NativeSubscription classes and their methods:
+  Please use NativeConnection, NativeSubscription classes and their methods.
 
 Version 8.2.0
 * [DXFC-220] Added the ability to retrieve events starting from a specific date and ending with a specific date.  

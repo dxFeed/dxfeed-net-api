@@ -392,19 +392,7 @@ namespace com.dxfeed.native
             if (symbol == null)
                 throw new ArgumentException("Invalid symbol parameter.");
             
-            IntPtr candleAttributesPtr;
-            
-            C.CheckOk(C.Instance.dxf_create_candle_symbol_attributes(symbol.BaseSymbol,
-                symbol.ExchangeCode, symbol.PeriodValue, symbol.PeriodId, symbol.PriceId,
-                symbol.SessionId, symbol.AlignmentId, symbol.PriceLevel, out candleAttributesPtr));
-            try
-            {
-                C.CheckOk(C.Instance.dxf_add_candle_symbol(subscriptionPtr, candleAttributesPtr));
-            }
-            finally
-            {
-                C.CheckOk(C.Instance.dxf_delete_candle_symbol_attributes(candleAttributesPtr));
-            }
+            C.CheckOk(C.Instance.dxf_add_symbol(subscriptionPtr, symbol.ToString()));
         }
 
         /// <summary>

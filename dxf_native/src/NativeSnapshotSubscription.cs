@@ -277,20 +277,7 @@ namespace com.dxfeed.native
             if (eventType != EventType.None && eventType != EventType.Candle)
                 throw new InvalidOperationException("It is allowed only for Candle subscription");
 
-            IntPtr candleAttributesPtr;
-            
-            C.CheckOk(C.Instance.dxf_create_candle_symbol_attributes(symbol.BaseSymbol,
-                symbol.ExchangeCode, symbol.PeriodValue, symbol.PeriodId, symbol.PriceId,
-                symbol.SessionId, symbol.AlignmentId, symbol.PriceLevel, out candleAttributesPtr));
-
-            try
-            {
-                C.CheckOk(C.Instance.dxf_create_candle_snapshot(connectionPtr, candleAttributesPtr, time, out snapshotPtr));
-            }
-            finally
-            {
-                C.CheckOk(C.Instance.dxf_delete_candle_symbol_attributes(candleAttributesPtr));
-            }
+            C.CheckOk(C.Instance.dxf_create_snapshot(connectionPtr, EventTypeUtil.GetEventId(eventType), symbol.ToString(), null, time, out snapshotPtr));
 
             try
             {

@@ -134,8 +134,15 @@ namespace com.dxfeed.native
                         {
                             result = await dataProvider.Run(fileToWriteTo, symbols, cancellationToken);
                         }
-                        
-                        File.Delete(fileToWriteTo);
+
+                        try
+                        {
+                            File.Delete(fileToWriteTo);
+                        }
+                        catch (Exception)
+                        {
+                            // ignored
+                        }
                     }
                 }
                 

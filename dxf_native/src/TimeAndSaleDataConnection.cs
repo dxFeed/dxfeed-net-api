@@ -27,7 +27,7 @@ namespace com.dxfeed.native
     /// <summary>
     /// Class provides operations with candle data retrieving
     /// </summary>
-    public class CandleDataConnection : DataConnection, IDxCandleDataConnection
+    public class TimeAndSaleDataConnection : DataConnection, IDxTimeAndSaleDataConnection
     {
         /// <summary>
         /// Creates the new candle data connection
@@ -35,7 +35,7 @@ namespace com.dxfeed.native
         /// <param name="address">Candle web service address</param>
         /// <param name="login">The user login</param>
         /// <param name="password">The user password</param>
-        public CandleDataConnection(string address, string login, string password) : base(address, login, password)
+        public TimeAndSaleDataConnection(string address, string login, string password) : base(address, login, password)
         {
         }
 
@@ -44,16 +44,15 @@ namespace com.dxfeed.native
         /// </summary>
         /// <param name="address">Candle web service address</param>
         /// <param name="token">The connection token (optional)</param>
-        public CandleDataConnection(string address, string token = null) : base(address, token)
+        public TimeAndSaleDataConnection(string address, string token = null) : base(address, token)
         {
         }
 
-        private static string CreateQuery(IEnumerable<CandleSymbol> symbols, DateTime fromTime, DateTime toTime)
+        private static string CreateQuery(IEnumerable<string> symbols, DateTime fromTime, DateTime toTime)
         {
-            var builder = new StringBuilder("records=Candle&symbols=");
+            var builder = new StringBuilder("records=TimeAndSale&symbols=");
 
-            builder.Append(string.Join(",", symbols.Select(candleSymbol => candleSymbol.ToString()))
-                .Replace("&", "[%26]"));
+            builder.Append(string.Join(",", symbols).Replace("&", "[%26]"));
             builder.Append("&start=").Append(fromTime.ToUniversalTime().ToString("yyyyMMdd-HHmmss"));
             builder.Append("&stop=").Append(toTime.ToUniversalTime().ToString("yyyyMMdd-HHmmss"));
             builder.Append("&format=binary&compression=zip&skipServerTimeCheck");
@@ -62,12 +61,12 @@ namespace com.dxfeed.native
         }
 
         /// <inheritdoc />
-        public Task<Dictionary<CandleSymbol, List<IDxCandle>>> GetCandleData(List<CandleSymbol> symbols, DateTime fromTime, DateTime toTime,
+        public Task<Dictionary<string, List<IDxTimeAndSale>>> GetTimeAndSaleData(List<string> symbols, DateTime fromTime, DateTime toTime,
             CancellationToken cancellationToken)
         {
             return Task.Run(async () =>
             {
-                var result = new Dictionary<CandleSymbol, List<IDxCandle>>();
+                var result = new Dictionary<string, List<IDxTimeAndSale>>();
                 var connectionAddress = address;
 
                 var uri = new Uri(address);
@@ -99,7 +98,7 @@ namespace com.dxfeed.native
                             await decompressedIn.CopyToAsync(streamToWriteTo);
                         }
 
-                        using (var dataProvider = new SimpleCandleDataProvider())
+                        using (var dataProvider = new SimpleTimeAndSaleDataProvider())
                         {
                             result = await dataProvider.Run(fileToWriteTo, symbols, cancellationToken);
                         }

@@ -335,6 +335,7 @@ AAPL Quote: {AAPL, AskExchangeCode: 'K', Ask: 4@144.96, AskTime: 2021-07-29T12:4
 
   * [dxf_candle_sample](https://github.com/dxFeed/dxfeed-net-api/tree/master/samples/dxf_candle_sample) - demonstrates how to subscribe to **`Candle`** event.
   * [dxf_candle_data_retrieving_sample](https://github.com/dxFeed/dxfeed-net-api/tree/master/samples/dxf_candle_data_retrieving_sample) - demonstrates how to retrieve **`Candle`** data from the candle web service.
+  * [dxf_tns_data_retrieving_sample](https://github.com/dxFeed/dxfeed-net-api/tree/master/samples/dxf_tns_data_retrieving_sample) - demonstrates how to retrieve **`TimeAndSale`** data from the candle web service.
   * [dxf_events_sample](https://github.com/dxFeed/dxfeed-net-api/tree/master/samples/dxf_events_sample) - demonstrates how to subscribe to **`Quote`**, **`Trade`**, **`TradeETH`**, **`Order`**, **`SpreadOrder`**, **`Profile`**, **`Summary`**, **`TimeAndSale`**, **`Underlying`**, **`TheoPrice`**, **`Series`**, **`Greeks`**, **`Configuration`** events.
   * [dxf_inc_order_snapshot_sample](https://github.com/dxFeed/dxfeed-net-api/tree/master/samples/dxf_inc_order_snapshot_sample) - demonstrates how to subscribe to order snapshot with incremental updates.
   * [dxf_instrument_profile_live_sample](https://github.com/dxFeed/dxfeed-net-api/tree/master/samples/dxf_instrument_profile_live_sample) - demonstrates how to subscribe to IPF live updates.

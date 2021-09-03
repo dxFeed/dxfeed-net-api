@@ -25,7 +25,7 @@ namespace com.dxfeed.native
     internal class SimpleTimeAndSaleDataProvider : IDxTimeAndSaleListener, IDisposable
     {
         private static readonly TimeSpan DefaultTimeout = TimeSpan.FromMilliseconds(5000);
-        private IDxConnection connection;
+        private NativeConnection connection;
         private readonly object locker = new object();
 
 
@@ -43,14 +43,7 @@ namespace com.dxfeed.native
                 
                 foreach (var tns in buf)
                 {
-                    if (tns.Scope == Scope.Composite)
-                    {
-                        events[tns.EventSymbol].Add(tns);
-                    }
-                    else
-                    {
-                        events[tns.EventSymbol + '&' + tns.ExchangeCode].Add(tns);
-                    }
+                    events[tns.EventSymbol].Add(tns);
                 }
             }
         }
@@ -81,19 +74,10 @@ namespace com.dxfeed.native
                         }
                     });
 
-                    var subscriptionSymbols = new HashSet<string>();
-
                     foreach (var s in symbols)
                     {
-                        var exchangeSeparatorIdx = s.LastIndexOf('&');
-
-                        subscriptionSymbols.Add(exchangeSeparatorIdx == -1 ? s : s.Substring(0, exchangeSeparatorIdx));
                         events[s] = new List<IDxTimeAndSale>();
-                    }
-
-                    foreach (var s in subscriptionSymbols)
-                    {
-                        subs[s] = connection.CreateSubscription(EventType.TimeAndSale, 0, this);
+                        subs[s] = connection.CreateSubscription(EventType.TimeAndSale, 0L, this);
                         subs[s].AddSymbol(s);
                     }
                 }

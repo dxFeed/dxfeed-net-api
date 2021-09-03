@@ -1,5 +1,12 @@
 Version 8.4.0
-* [DXFC-258] Fixed a bug with the impossibility of receiving candledata when changing the order of candle symbol attributes 
+* [DXFC-258] Fixed a bug with the impossibility of receiving candledata when changing the order of candle symbol attributes
+* [DXFC-260] Added the ability to retrieve TnS data from CandleWebService
+  - Added the `TimeAndSaleDataConnection` class with method
+  `Task<Dictionary<string, List<IDxTimeAndSale>>> GetTimeAndSaleData(List<string> symbols, DateTime fromTime, DateTime toTime, CancellationToken cancellationToken)`
+  that retrieves candles by symbols and start\stop DateTime. See documentation. 
+  - Add the `dxf_tns_data_retrieving_sample` that demonstrates how to use `TimeAndSaleDataConnection`
+  It is worth noting that you can subscribe to regional TnS by specifying, for example, the AAPL&Q symbol. 
+  In this case, the service will return composite (Scope = Composite !) TnS with the TimeAndSale (not TimeAndSale&Q) record type and the AAPL&Q symbol (like a candle)  
 
 Version 8.3.0
 * [DXFC-254] The amount of memory used to store the symbols required for a subscription has been reduced by several times.

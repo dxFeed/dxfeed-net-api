@@ -64,6 +64,10 @@
       <Name>dxf_candle_data_retrieving_sample</Name>
       <Label>BuildPublish</Label>
     </ProjectReference>
+    <ProjectReference Include="..\samples\dxf_tns_data_retrieving_sample\dxf_tns_data_retrieving_sample.csproj">
+      <Name>dxf_tns_data_retrieving_sample</Name>
+      <Label>BuildPublish</Label>
+    </ProjectReference>
     <ProjectReference Include="..\samples\dxf_events_sample\dxf_events_sample.csproj">
       <Name>dxf_events_sample</Name>
       <Label>BuildPublish</Label>

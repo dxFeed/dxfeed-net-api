@@ -11,6 +11,7 @@ If a copy of the MPL was not distributed with this file, You can obtain one at h
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -50,70 +51,74 @@ namespace com.dxfeed.native
 
         private static string CreateQuery(IEnumerable<string> symbols, DateTime fromTime, DateTime toTime)
         {
-            var builder = new StringBuilder("records=TimeAndSale&symbols=");
-
-            builder.Append(string.Join(",", symbols).Replace("&", "[%26]"));
-            builder.Append("&start=").Append(fromTime.ToUniversalTime().ToString("yyyyMMdd-HHmmss"));
-            builder.Append("&stop=").Append(toTime.ToUniversalTime().ToString("yyyyMMdd-HHmmss"));
-            builder.Append("&format=binary&compression=zip&skipServerTimeCheck");
-
-            return builder.ToString();
+            return "records=TimeAndSale&" +
+                   $"symbols={string.Join(",", symbols).Replace("&", "[%26]")}&" +
+                   $"start={fromTime.ToUniversalTime():yyyyMMdd-HHmmss}&" +
+                   $"stop={toTime.ToUniversalTime():yyyyMMdd-HHmmss}&" +
+                   "format=binary&" +
+                   "compression=zip&" +
+                   "skipServerTimeCheck";
         }
 
         /// <inheritdoc />
-        public Task<Dictionary<string, List<IDxTimeAndSale>>> GetTimeAndSaleData(List<string> symbols, DateTime fromTime, DateTime toTime,
+        public Task<Dictionary<string, List<IDxTimeAndSale>>> GetTimeAndSaleData(List<string> symbols,
+            DateTime fromTime, DateTime toTime,
             CancellationToken cancellationToken)
         {
             return Task.Run(async () =>
             {
                 var result = new Dictionary<string, List<IDxTimeAndSale>>();
                 var connectionAddress = address;
-
                 var uri = new Uri(address);
+                
                 if (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps)
                 {
-                    var uriBuilder = new UriBuilder(uri)
-                    {
-                        Query = CreateQuery(symbols, fromTime, toTime)
-                    };
-
-                    connectionAddress = uriBuilder.ToString();
+                    connectionAddress = $"{address}?{CreateQuery(symbols, fromTime, toTime)}";
                 }
 
-                var request = OpenConnection(connectionAddress);
-                var response = await request.GetResponseAsync();
-                var isFileStream = request.GetType() == typeof(FileWebResponse);
-
-                using (var inputStream = response.GetResponseStream())
+                try
                 {
-                    var compression = isFileStream
-                        ? StreamCompression.DetectCompressionByExtension(new Uri(address))
-                        : StreamCompression.DetectCompressionByMimeType(response.ContentType);
-                    using (var decompressedIn = compression.Decompress(inputStream))
+                    var request = OpenConnection(connectionAddress);
+                    var response = await request.GetResponseAsync();
+                    var isFileStream = request.GetType() == typeof(FileWebResponse);
+
+                    using (var inputStream = response.GetResponseStream())
                     {
-                        var fileToWriteTo = Path.GetTempFileName();
-                        
-                        using (var streamToWriteTo = File.Open(fileToWriteTo, FileMode.Create))
+                        var compression = isFileStream
+                            ? StreamCompression.DetectCompressionByExtension(new Uri(address))
+                            : StreamCompression.DetectCompressionByMimeType(response.ContentType);
+                        using (var decompressedIn = compression.Decompress(inputStream))
                         {
-                            await decompressedIn.CopyToAsync(streamToWriteTo);
-                        }
+                            var fileToWriteTo = Path.GetTempFileName();
 
-                        using (var dataProvider = new SimpleTimeAndSaleDataProvider())
-                        {
-                            result = await dataProvider.Run(fileToWriteTo, symbols, cancellationToken);
-                        }
+                            using (var streamToWriteTo = File.Open(fileToWriteTo, FileMode.Create))
+                            {
+                                await decompressedIn.CopyToAsync(streamToWriteTo);
+                            }
 
-                        try
-                        {
-                            File.Delete(fileToWriteTo);
-                        }
-                        catch (Exception)
-                        {
-                            // ignored
+                            using (var dataProvider = new SimpleTimeAndSaleDataProvider())
+                            {
+                                result = await dataProvider.Run(fileToWriteTo, symbols, cancellationToken);
+                            }
+
+                            try
+                            {
+                                File.Delete(fileToWriteTo);
+                            }
+                            catch (Exception)
+                            {
+                                // ignored
+                            }
                         }
                     }
                 }
-                
+                catch (WebException e)
+                {
+#if DEBUG
+                    Debug.WriteLine(e);
+#endif
+                }
+
                 return result;
             }, cancellationToken);
         }

@@ -119,7 +119,7 @@ namespace dxf_candle_data_retrieving_sample
                 Console.WriteLine($"{candles.Key}, {candles.Value.Count} events:");
                 foreach (var candle in candles.Value.Take(Math.Min(LIMIT, candles.Value.Count)))
                 {
-                    Console.WriteLine("  " + candle);
+                    Console.WriteLine($"  candle");
                 }
                 
                 if (candles.Value.Count > LIMIT)

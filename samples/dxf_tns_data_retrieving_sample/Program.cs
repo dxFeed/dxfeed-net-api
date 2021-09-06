@@ -116,9 +116,10 @@ namespace dxf_tns_data_retrieving_sample
             foreach (var timeAndSales in tnsResult)
             {
                 Console.WriteLine($"{timeAndSales.Key}, {timeAndSales.Value.Count} events:");
+                
                 foreach (var timeAndSale in timeAndSales.Value.Take(Math.Min(LIMIT, timeAndSales.Value.Count)))
                 {
-                    Console.WriteLine("  " + timeAndSale);
+                    Console.WriteLine($"  {timeAndSale}");
                 }
 
                 if (timeAndSales.Value.Count > LIMIT)

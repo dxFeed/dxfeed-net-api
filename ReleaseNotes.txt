@@ -5,7 +5,7 @@ Version 8.4.0
   `Task<Dictionary<string, List<IDxTimeAndSale>>> GetTimeAndSaleData(List<string> symbols, DateTime fromTime, DateTime toTime, CancellationToken cancellationToken)`
   that retrieves candles by symbols and start\stop DateTime. See documentation. 
   - Add the `dxf_tns_data_retrieving_sample` that demonstrates how to use `TimeAndSaleDataConnection`
-  It is worth noting that you can subscribe to regional TnS by specifying, for example, the AAPL&Q symbol. 
+  It is possible to subscribe to regional TnS by specifying, for example, the AAPL&Q symbol. 
   In this case, the service will return composite (Scope = Composite !) TnS with the TimeAndSale (not TimeAndSale&Q) record type and the AAPL&Q symbol (like a candle)  
 
 Version 8.3.0

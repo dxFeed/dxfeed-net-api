@@ -16,6 +16,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Net;
+using System.Text;
 using com.dxfeed.api;
 using com.dxfeed.api.candle;
 using com.dxfeed.api.events;
@@ -112,9 +113,22 @@ namespace com.dxfeed.native
                 }
                 catch (WebException e)
                 {
-#if DEBUG
-                    Debug.WriteLine(e);
-#endif
+                    var response = e.Response as HttpWebResponse;
+
+                    if (response == null) throw;
+                    
+                    if (response.StatusCode != HttpStatusCode.BadRequest) throw;
+                        
+                    using (var stream = response.GetResponseStream())
+                    {
+                        if (stream == null) throw;
+                                
+                        using (var reader = new StreamReader(stream, Encoding.ASCII))
+                        {
+                            var line = await reader.ReadLineAsync();
+                            throw new WebException(line, e);
+                        }
+                    }
                 }
 
                 return result;

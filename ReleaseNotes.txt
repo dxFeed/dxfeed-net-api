@@ -6,7 +6,8 @@ Version 8.4.0
   that retrieves candles by symbols and start\stop DateTime. See documentation. 
   - Add the `dxf_tns_data_retrieving_sample` that demonstrates how to use `TimeAndSaleDataConnection`
   It is possible to subscribe to regional TnS by specifying, for example, the AAPL&Q symbol. 
-  In this case, the service will return composite (Scope = Composite !) TnS with the TimeAndSale (not TimeAndSale&Q) record type and the AAPL&Q symbol (like a candle)  
+  In this case, the service will return composite (Scope = Composite !) TnS with the TimeAndSale (not TimeAndSale&Q) record type and the AAPL&Q symbol (like a candle)
+  For such a case, the `Normalized` method has been added for the TimeAndSale, Quote, Summary events, which will return a normalized (Regional) copy of the event. See example and documentation. 
 
 Version 8.3.0
 * [DXFC-254] The amount of memory used to store the symbols required for a subscription has been reduced by several times.

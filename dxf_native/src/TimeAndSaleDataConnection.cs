@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Net;
@@ -27,7 +28,7 @@ namespace com.dxfeed.native
     /// <summary>
     /// Class provides operations with candle data retrieving
     /// </summary>
-    public class CandleDataConnection : DataConnection, IDxCandleDataConnection
+    public class TimeAndSaleDataConnection : DataConnection, IDxTimeAndSaleDataConnection
     {
         /// <summary>
         /// Creates the new candle data connection
@@ -35,7 +36,7 @@ namespace com.dxfeed.native
         /// <param name="address">Candle web service address</param>
         /// <param name="login">The user login</param>
         /// <param name="password">The user password</param>
-        public CandleDataConnection(string address, string login, string password) : base(address, login, password)
+        public TimeAndSaleDataConnection(string address, string login, string password) : base(address, login, password)
         {
         }
 
@@ -44,13 +45,13 @@ namespace com.dxfeed.native
         /// </summary>
         /// <param name="address">Candle web service address</param>
         /// <param name="token">The connection token (optional)</param>
-        public CandleDataConnection(string address, string token = null) : base(address, token)
+        public TimeAndSaleDataConnection(string address, string token = null) : base(address, token)
         {
         }
 
-        private static string CreateQuery(IEnumerable<CandleSymbol> symbols, DateTime fromTime, DateTime toTime)
+        private static string CreateQuery(IEnumerable<string> symbols, DateTime fromTime, DateTime toTime)
         {
-            return "records=Candle&" +
+            return "records=TimeAndSale&" +
                    $"symbols={string.Join(",", symbols).Replace("&", "[%26]")}&" +
                    $"start={fromTime.ToUniversalTime():yyyyMMdd-HHmmss}&" +
                    $"stop={toTime.ToUniversalTime():yyyyMMdd-HHmmss}&" +
@@ -60,13 +61,13 @@ namespace com.dxfeed.native
         }
 
         /// <inheritdoc />
-        public Task<Dictionary<CandleSymbol, List<IDxCandle>>> GetCandleData(List<CandleSymbol> symbols,
+        public Task<Dictionary<string, List<IDxTimeAndSale>>> GetTimeAndSaleData(List<string> symbols,
             DateTime fromTime, DateTime toTime,
             CancellationToken cancellationToken)
         {
             return Task.Run(async () =>
             {
-                var result = new Dictionary<CandleSymbol, List<IDxCandle>>();
+                var result = new Dictionary<string, List<IDxTimeAndSale>>();
                 var connectionAddress = address;
                 var uri = new Uri(address);
                 
@@ -95,7 +96,7 @@ namespace com.dxfeed.native
                                 await decompressedIn.CopyToAsync(streamToWriteTo);
                             }
 
-                            using (var dataProvider = new SimpleCandleDataProvider())
+                            using (var dataProvider = new SimpleTimeAndSaleDataProvider())
                             {
                                 result = await dataProvider.Run(fileToWriteTo, symbols, cancellationToken);
                             }

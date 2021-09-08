@@ -11,8 +11,10 @@ If a copy of the MPL was not distributed with this file, You can obtain one at h
 
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml.Schema;
 using com.dxfeed.api;
 using com.dxfeed.api.candle;
 using com.dxfeed.api.data;
@@ -20,46 +22,46 @@ using com.dxfeed.api.events;
 
 namespace com.dxfeed.native
 {
-    internal class SimpleCandleDataProvider : IDxCandleListener, IDisposable
+    internal class SimpleTimeAndSaleDataProvider : IDxTimeAndSaleListener, IDisposable
     {
         private static readonly TimeSpan DefaultTimeout = TimeSpan.FromSeconds(60);
-        private IDxConnection connection;
+        private NativeConnection connection;
         private readonly object locker = new object();
 
 
-        private readonly Dictionary<CandleSymbol, List<IDxCandle>> events =
-            new Dictionary<CandleSymbol, List<IDxCandle>>();
+        private readonly Dictionary<string, List<IDxTimeAndSale>> events =
+            new Dictionary<string, List<IDxTimeAndSale>>();
 
         private TimeSpan timeout;
         private bool disconnected;
 
-        public void OnCandle<TB, TE>(TB buf) where TB : IDxEventBuf<TE> where TE : IDxCandle
+        public void OnTimeAndSale<TB, TE>(TB buf) where TB : IDxEventBuf<TE> where TE : IDxTimeAndSale
         {
             lock (locker)
             {
                 if (buf.Size <= 0) return;
                 
-                foreach (var candle in buf)
+                foreach (var tns in buf)
                 {
-                    events[CandleSymbol.ValueOf(buf.Symbol)].Add(candle);
+                    events[tns.EventSymbol].Add(tns);
                 }
             }
         }
 
-        internal SimpleCandleDataProvider()
+        internal SimpleTimeAndSaleDataProvider()
         {
             disconnected = true;
         }
 
-        public Task<Dictionary<CandleSymbol, List<IDxCandle>>> Run(string address,
-            IEnumerable<CandleSymbol> symbols, CancellationToken cancellationToken)
+        public Task<Dictionary<string, List<IDxTimeAndSale>>> Run(string address,
+            IEnumerable<string> symbols, CancellationToken cancellationToken)
         {
             // ReSharper disable once MethodSupportsCancellation
             return Task.Run(() =>
             {
                 timeout = DefaultTimeout;
                 var currentTime = DateTime.Now;
-                var subs = new Dictionary<CandleSymbol, IDxSubscription>();
+                var subs = new Dictionary<string, IDxSubscription>();
 
                 lock (locker)
                 {
@@ -74,8 +76,8 @@ namespace com.dxfeed.native
 
                     foreach (var s in symbols)
                     {
-                        events[s] = new List<IDxCandle>();
-                        subs[s] = connection.CreateSubscription(EventType.Candle, 0, this);
+                        events[s] = new List<IDxTimeAndSale>();
+                        subs[s] = connection.CreateSubscription(EventType.TimeAndSale, 0L, this);
                         subs[s].AddSymbol(s);
                     }
                 }

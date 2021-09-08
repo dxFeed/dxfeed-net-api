@@ -10,41 +10,41 @@ If a copy of the MPL was not distributed with this file, You can obtain one at h
 #endregion
 
 using System;
+using System.Data.SqlTypes;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
-using com.dxfeed.api.util;
 using com.dxfeed.native;
 
-namespace dxf_candle_data_retrieving_sample
+namespace dxf_tns_data_retrieving_sample
 {
     /// <summary>
-    ///     This sample class demonstrates how to retrieve candle data from the candle web service.
+    ///     This sample class demonstrates how to retrieve TnS data from the candle web service.
     /// </summary>
     internal static class Program
     {
         private static void ShowUsage()
         {
             Console.WriteLine(
-                "Usage: dxf_candle_data_retrieving_sample <host:port> [<login> <password>|<token>] <symbols> <from-date-time> <to-date-time>\n" +
+                "Usage: dxf_tns_data_retrieving_sample <host:port> [<login> <password>|<token>] <symbols> <from-date-time> <to-date-time>\n" +
                 "where\n" +
                 "    host:port - The address of candle web service https://tools.dxfeed.com/candledata-preview\n" +
                 "    login     - The user login.\n" +
                 "    password  - The user password.\n" +
                 "    token     - The connection token.\n" +
-                "    symbols   - The candle symbols, comma separated list (IBM,AAPL&Q,AAPL&Q{=1m} etc)\n" +
+                "    symbols   - The tns symbols, comma separated list (composite: AAPL, regional: AAPL&A..AAPL&Z). Example: 'IBM,AAPL&Q,AAPL'\n" +
                 "    from-date-time - The UTC date\\time, inclusive, to request events from. (format: yyyyMMdd-HHmmss)\n" +
                 "    to-date-time   - The UTC date\\time, inclusive, to request events to. (format: yyyyMMdd-HHmmss)\n" +
-                "Example: dxf_candle_data_retrieving_sample https://tools.dxfeed.com/candledata-preview demo demo \"IBM{=d},IBM{=m}\" 20210819-030000 20210823-100000\n\n"
+                "Example: dxf_candle_data_retrieving_sample https://tools.dxfeed.com/candledata-preview demo demo \"IBM,AAPL&Q\" 20210819-030000 20210823-100000\n\n"
             );
         }
-        
+
         private static void Main(string[] args)
         {
             if (args.Length < 4 || args.Length > 6)
             {
                 ShowUsage();
-                
+
                 return;
             }
 
@@ -66,24 +66,24 @@ namespace dxf_candle_data_retrieving_sample
                 symbolsIndex = 3;
             }
 
-            var symbols = StringUtil.ParseCandleSymbols(args[symbolsIndex]);
+            var symbols = args[symbolsIndex].Split(',').Select(s => s.Trim()).Where(s => s.Length > 0).ToList();
 
             if (symbols.Count == 0)
             {
                 Console.Error.WriteLine("The symbols list is empty\n");
                 ShowUsage();
-                
+
                 return;
             }
 
             DateTime fromDateTime;
-            
+
             if (!DateTime.TryParseExact(args[symbolsIndex + 1], "yyyyMMdd-HHmmss",
                 CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out fromDateTime))
             {
                 Console.Error.WriteLine("Can't parse the <from-date-time>\n");
                 ShowUsage();
-                
+
                 return;
             }
 
@@ -94,37 +94,41 @@ namespace dxf_candle_data_retrieving_sample
             {
                 Console.Error.WriteLine("Can't parse the <to-date-time>\n");
                 ShowUsage();
-                
+
                 return;
             }
 
             NativeTools.InitializeLogging("dxf_candle_data_retrieving_sample.log", true, true);
 
             var con = !string.IsNullOrEmpty(login)
-                ? new CandleDataConnection(address, login, password)
-                : new CandleDataConnection(address, token);
+                ? new TimeAndSaleDataConnection(address, login, password)
+                : new TimeAndSaleDataConnection(address, token);
 
             var cancellationTokenSource = new CancellationTokenSource();
             var cancellationToken = cancellationTokenSource.Token;
-            var getCandleDataResultTask = con.GetCandleData(symbols,
+            var getTimeAndSaleDataResultTask = con.GetTimeAndSaleData(symbols,
                 fromDateTime, toDateTime, cancellationToken);
-            
+
             cancellationTokenSource.CancelAfter(TimeSpan.FromSeconds(20));
 
-            var candlesResult = getCandleDataResultTask.Result;
+            var tnsResult = getTimeAndSaleDataResultTask.Result;
             const int LIMIT = 100;
 
-            foreach (var candles in candlesResult)
+            foreach (var timeAndSales in tnsResult)
             {
-                Console.WriteLine($"{candles.Key}, {candles.Value.Count} events:");
-                foreach (var candle in candles.Value.Take(Math.Min(LIMIT, candles.Value.Count)))
+                Console.WriteLine($"{timeAndSales.Key}, {timeAndSales.Value.Count} events:");
+
+                // It is necessary to normalize TnS, since the service can return Composite events with Regional
+                // symbols of the form AAPL&Q for example.
+                foreach (var timeAndSale in timeAndSales.Value.Take(Math.Min(LIMIT, timeAndSales.Value.Count))
+                    .Select(tns => tns.Normalized()))
                 {
-                    Console.WriteLine($"  {candle}");
+                    Console.WriteLine($"  {timeAndSale}");
                 }
-                
-                if (candles.Value.Count > LIMIT)
+
+                if (timeAndSales.Value.Count > LIMIT)
                 {
-                    Console.WriteLine($"... {candles.Value.Count - LIMIT} events were not displayed");
+                    Console.WriteLine($"... {timeAndSales.Value.Count - LIMIT} events were not displayed");
                 }
             }
         }

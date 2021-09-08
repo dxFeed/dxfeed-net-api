@@ -95,6 +95,7 @@
     <Compile Include="src\data\OrderAction.cs" />
     <Compile Include="src\events\IDxTradeETH.cs" />
     <Compile Include="src\events\IndexedEventSource.cs" />
+    <Compile Include="src\events\INormalizable.cs" />
     <Compile Include="src\events\market\MarketEventSymbols.cs" />
     <Compile Include="src\data\Direction.cs" />
     <Compile Include="src\data\PriceType.cs" />
@@ -125,8 +126,10 @@
     <Compile Include="src\extras\EventPrinter.cs" />
     <Compile Include="src\extras\TimeConverter.cs" />
     <Compile Include="src\IDxCandleDataConnection.cs" />
+    <Compile Include="src\IDxDataConnection.cs" />
     <Compile Include="src\IDxPriceLevelBook.cs" />
     <Compile Include="src\IDxRegionalBook.cs" />
+    <Compile Include="src\IDxTimeAndSaleDataConnection.cs" />
     <Compile Include="src\listeners\event\IDxCandleListener.cs" />
     <Compile Include="src\listeners\event\IDxGreeksListener.cs" />
     <Compile Include="src\listeners\event\IDxConfigurationListener.cs" />

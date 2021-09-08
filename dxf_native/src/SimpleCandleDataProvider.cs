@@ -22,7 +22,7 @@ namespace com.dxfeed.native
 {
     internal class SimpleCandleDataProvider : IDxCandleListener, IDisposable
     {
-        private static readonly TimeSpan DefaultTimeout = TimeSpan.FromMilliseconds(5000);
+        private static readonly TimeSpan DefaultTimeout = TimeSpan.FromSeconds(60);
         private IDxConnection connection;
         private readonly object locker = new object();
 

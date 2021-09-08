@@ -10,6 +10,7 @@ If a copy of the MPL was not distributed with this file, You can obtain one at h
 #endregion
 
 using System;
+using System.Data.SqlTypes;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
@@ -37,13 +38,13 @@ namespace dxf_tns_data_retrieving_sample
                 "Example: dxf_candle_data_retrieving_sample https://tools.dxfeed.com/candledata-preview demo demo \"IBM,AAPL&Q\" 20210819-030000 20210823-100000\n\n"
             );
         }
-        
+
         private static void Main(string[] args)
         {
             if (args.Length < 4 || args.Length > 6)
             {
                 ShowUsage();
-                
+
                 return;
             }
 
@@ -71,18 +72,18 @@ namespace dxf_tns_data_retrieving_sample
             {
                 Console.Error.WriteLine("The symbols list is empty\n");
                 ShowUsage();
-                
+
                 return;
             }
 
             DateTime fromDateTime;
-            
+
             if (!DateTime.TryParseExact(args[symbolsIndex + 1], "yyyyMMdd-HHmmss",
                 CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out fromDateTime))
             {
                 Console.Error.WriteLine("Can't parse the <from-date-time>\n");
                 ShowUsage();
-                
+
                 return;
             }
 
@@ -93,7 +94,7 @@ namespace dxf_tns_data_retrieving_sample
             {
                 Console.Error.WriteLine("Can't parse the <to-date-time>\n");
                 ShowUsage();
-                
+
                 return;
             }
 
@@ -107,17 +108,20 @@ namespace dxf_tns_data_retrieving_sample
             var cancellationToken = cancellationTokenSource.Token;
             var getTimeAndSaleDataResultTask = con.GetTimeAndSaleData(symbols,
                 fromDateTime, toDateTime, cancellationToken);
-            
+
             cancellationTokenSource.CancelAfter(TimeSpan.FromSeconds(20));
 
             var tnsResult = getTimeAndSaleDataResultTask.Result;
-            const int LIMIT = 100; 
+            const int LIMIT = 100;
 
             foreach (var timeAndSales in tnsResult)
             {
                 Console.WriteLine($"{timeAndSales.Key}, {timeAndSales.Value.Count} events:");
-                
-                foreach (var timeAndSale in timeAndSales.Value.Take(Math.Min(LIMIT, timeAndSales.Value.Count)))
+
+                // It is necessary to normalize TnS, since the service can return Composite events with Regional
+                // symbols of the form AAPL&Q for example.
+                foreach (var timeAndSale in timeAndSales.Value.Take(Math.Min(LIMIT, timeAndSales.Value.Count))
+                    .Select(tns => tns.Normalized()))
                 {
                     Console.WriteLine($"  {timeAndSale}");
                 }

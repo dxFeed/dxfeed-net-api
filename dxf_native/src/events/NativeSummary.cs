@@ -60,6 +60,48 @@ namespace com.dxfeed.native.events
             PrevDayClosePriceType = summary.PrevDayClosePriceType;
             Scope = summary.Scope;
         }
+        
+        private NativeSummary(IDxSummary summary, string symbol) : base(symbol)
+        {
+            DayId = summary.DayId;
+            DayOpenPrice = summary.DayOpenPrice;
+            DayHighPrice = summary.DayHighPrice;
+            DayLowPrice = summary.DayLowPrice;
+            DayClosePrice = summary.DayClosePrice;
+            PrevDayId = summary.PrevDayId;
+            PrevDayClosePrice = summary.PrevDayClosePrice;
+            PrevDayVolume = summary.PrevDayVolume;
+            OpenInterest = summary.OpenInterest;
+            RawFlags = summary.RawFlags;
+            ExchangeCode = summary.ExchangeCode;
+            DayClosePriceType = summary.DayClosePriceType;
+            PrevDayClosePriceType = summary.PrevDayClosePriceType;
+            Scope = summary.Scope;
+        }
+
+        /// <summary>
+        /// Returns a normalized event. Normalization occurs for events in which Scope = Composite, and the symbol ends
+        /// with & and the exchange code (that is, satisfies the regex: "&[A-Z]") 
+        /// </summary>
+        /// <returns>Normalized event or current event if normalization has not been performed.</returns>
+        public IDxSummary Normalized()
+        {
+            if (Scope == Scope.Regional) return this;
+            
+            var exchangeCodeSeparatorPos = EventSymbol.LastIndexOf('&');
+
+            if (exchangeCodeSeparatorPos < 0 || exchangeCodeSeparatorPos != EventSymbol.Length - 2) return this;
+            
+            var exchangeCode = EventSymbol[exchangeCodeSeparatorPos + 1];
+
+            if (exchangeCode < 'A' || exchangeCode > 'Z') return this;
+
+            return new NativeSummary(this, EventSymbol.Substring(0, exchangeCodeSeparatorPos))
+            {
+                Scope = Scope.Regional,
+                ExchangeCode = exchangeCode
+            };
+        }
 
         public override string ToString()
         {

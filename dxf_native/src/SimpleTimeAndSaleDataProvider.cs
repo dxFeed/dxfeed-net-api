@@ -24,7 +24,7 @@ namespace com.dxfeed.native
 {
     internal class SimpleTimeAndSaleDataProvider : IDxTimeAndSaleListener, IDisposable
     {
-        private static readonly TimeSpan DefaultTimeout = TimeSpan.FromMilliseconds(5000);
+        private static readonly TimeSpan DefaultTimeout = TimeSpan.FromSeconds(60);
         private NativeConnection connection;
         private readonly object locker = new object();
 

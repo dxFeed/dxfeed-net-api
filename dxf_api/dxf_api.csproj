@@ -95,6 +95,7 @@
     <Compile Include="src\data\OrderAction.cs" />
     <Compile Include="src\events\IDxTradeETH.cs" />
     <Compile Include="src\events\IndexedEventSource.cs" />
+    <Compile Include="src\events\INormalizable.cs" />
     <Compile Include="src\events\market\MarketEventSymbols.cs" />
     <Compile Include="src\data\Direction.cs" />
     <Compile Include="src\data\PriceType.cs" />

@@ -21,7 +21,7 @@ namespace com.dxfeed.api.events
     /// the market at any given moment of time.
     /// </summary>
     [EventTypeAttribute("Quote")]
-    public interface IDxQuote : IDxMarketEvent, IDxLastingEvent<string>
+    public interface IDxQuote : IDxMarketEvent, IDxLastingEvent<string>, INormalizable<IDxQuote>
     {
         /// <summary>
         /// Returns time of the last bid or ask change.

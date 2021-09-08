@@ -58,6 +58,46 @@ namespace com.dxfeed.native.events
             AskPrice = quote.AskPrice;
             AskSize = quote.AskSize;
         }
+        
+        private NativeQuote(IDxQuote quote, string symbol) : base(symbol)
+        {
+            Time = quote.Time;
+            Sequence = quote.Sequence;
+            TimeNanoPart = quote.TimeNanoPart;
+            BidTime = quote.BidTime;
+            BidExchangeCode = quote.BidExchangeCode;
+            BidPrice = quote.BidPrice;
+            BidSize = quote.BidSize;
+            AskTime = quote.AskTime;
+            AskExchangeCode = quote.AskExchangeCode;
+            AskPrice = quote.AskPrice;
+            AskSize = quote.AskSize;
+        }
+
+        /// <summary>
+        /// Returns a normalized event. Normalization occurs for events in which Scope = Composite, and the symbol ends
+        /// with & and the exchange code (that is, satisfies the regex: "&[A-Z]") 
+        /// </summary>
+        /// <returns>Normalized event or current event if normalization has not been performed.</returns>
+        public IDxQuote Normalized()
+        {
+            if (Scope == Scope.Regional) return this;
+            
+            var exchangeCodeSeparatorPos = EventSymbol.LastIndexOf('&');
+
+            if (exchangeCodeSeparatorPos < 0 || exchangeCodeSeparatorPos != EventSymbol.Length - 2) return this;
+            
+            var exchangeCode = EventSymbol[exchangeCodeSeparatorPos + 1];
+
+            if (exchangeCode < 'A' || exchangeCode > 'Z') return this;
+
+            return new NativeQuote(this, EventSymbol.Substring(0, exchangeCodeSeparatorPos))
+            {
+                Scope = Scope.Regional,
+                AskExchangeCode = exchangeCode,
+                BidExchangeCode = exchangeCode
+            };
+        }
 
         public override string ToString()
         {

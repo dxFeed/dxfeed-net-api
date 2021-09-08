@@ -60,13 +60,12 @@ namespace com.dxfeed.api
                     //try to add non-candle symbol
                     s.AddSymbol("AAPL");
                     IList<string> returnedSymbolList = s.GetSymbols();
-                    Assert.AreEqual(0, returnedSymbolList.Count);
+                    Assert.AreEqual(1, returnedSymbolList.Count);
 
                     //add candle symbol
                     s.AddSymbol(CandleSymbol.ValueOf(candleSymbolString));
                     returnedSymbolList = s.GetSymbols();
-                    Assert.AreEqual(1, returnedSymbolList.Count);
-                    Assert.AreEqual(candleSymbolString, returnedSymbolList[0]);
+                    Assert.AreEqual(2, returnedSymbolList.Count);
                 }
             }
         }

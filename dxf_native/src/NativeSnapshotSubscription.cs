@@ -29,7 +29,9 @@ namespace com.dxfeed.native
     {
         private readonly IntPtr connectionPtr;
         private IntPtr snapshotPtr = InvalidSnapshot;
+
         private readonly IDxSnapshotListener listener;
+
         //to prevent callback from being garbage collected
         // ReSharper disable once NotAccessedField.Local
         private C.dxf_snapshot_listener_t callback;
@@ -55,7 +57,8 @@ namespace com.dxfeed.native
         /// <param name="time">Milliseconds time in the past.</param>
         /// <param name="listener">Snapshot events listener.</param>
         /// <exception cref="ArgumentNullException">Listener is invalid.</exception>
-        public NativeSnapshotSubscription(NativeConnection connection, long time, IDxSnapshotListener listener) {
+        public NativeSnapshotSubscription(NativeConnection connection, long time, IDxSnapshotListener listener)
+        {
             if (listener == null)
                 throw new ArgumentNullException(nameof(listener));
 
@@ -98,10 +101,12 @@ namespace com.dxfeed.native
         /// <param name="time">Milliseconds time in the past.</param>
         /// <param name="listener">Snapshot events listener.</param>
         /// <exception cref="ArgumentNullException">Listener is invalid.</exception>
-        public NativeSnapshotSubscription(NativeConnection connection, EventType eventType, long time, IDxSnapshotListener listener) {
+        public NativeSnapshotSubscription(NativeConnection connection, EventType eventType, long time,
+            IDxSnapshotListener listener)
+        {
             if (listener == null)
                 throw new ArgumentNullException(nameof(listener));
-            
+
             if ((eventType & (eventType - 1)) > 0)
                 throw new ArgumentException("Only one event type is allowed for snapshot.");
 
@@ -117,34 +122,48 @@ namespace com.dxfeed.native
             switch (snapshotData.event_type)
             {
                 case EventType.Order:
-                    var orderBuf = NativeBufferFactory.CreateOrderBuf(snapshotData.symbol, snapshotData.records, snapshotData.records_count, null);
+                    var orderBuf = NativeBufferFactory.CreateOrderBuf(snapshotData.symbol, snapshotData.records,
+                        snapshotData.records_count, null);
                     if (listener is IDxOrderSnapshotListener)
-                        (listener as IDxOrderSnapshotListener).OnOrderSnapshot<NativeEventBuffer<NativeOrder>, NativeOrder>(orderBuf);
+                        (listener as IDxOrderSnapshotListener)
+                            .OnOrderSnapshot<NativeEventBuffer<NativeOrder>, NativeOrder>(orderBuf);
                     break;
                 case EventType.Candle:
-                    var candleBuf = NativeBufferFactory.CreateCandleBuf(snapshotData.symbol, snapshotData.records, snapshotData.records_count, null);
+                    var candleBuf = NativeBufferFactory.CreateCandleBuf(snapshotData.symbol, snapshotData.records,
+                        snapshotData.records_count, null);
                     if (listener is IDxCandleSnapshotListener)
-                        (listener as IDxCandleSnapshotListener).OnCandleSnapshot<NativeEventBuffer<NativeCandle>, NativeCandle>(candleBuf);
+                        (listener as IDxCandleSnapshotListener)
+                            .OnCandleSnapshot<NativeEventBuffer<NativeCandle>, NativeCandle>(candleBuf);
                     break;
                 case EventType.TimeAndSale:
-                    var timeAndSaleBuf = NativeBufferFactory.CreateTimeAndSaleBuf(snapshotData.symbol, snapshotData.records, snapshotData.records_count, null);
+                    var timeAndSaleBuf = NativeBufferFactory.CreateTimeAndSaleBuf(snapshotData.symbol,
+                        snapshotData.records, snapshotData.records_count, null);
                     if (listener is IDxTimeAndSaleSnapshotListener)
-                        (listener as IDxTimeAndSaleSnapshotListener).OnTimeAndSaleSnapshot<NativeEventBuffer<NativeTimeAndSale>, NativeTimeAndSale>(timeAndSaleBuf);
+                        (listener as IDxTimeAndSaleSnapshotListener)
+                            .OnTimeAndSaleSnapshot<NativeEventBuffer<NativeTimeAndSale>, NativeTimeAndSale>(
+                                timeAndSaleBuf);
                     break;
                 case EventType.SpreadOrder:
-                    var spreadOrderBuf = NativeBufferFactory.CreateSpreadOrderBuf(snapshotData.symbol, snapshotData.records, snapshotData.records_count, null);
+                    var spreadOrderBuf = NativeBufferFactory.CreateSpreadOrderBuf(snapshotData.symbol,
+                        snapshotData.records, snapshotData.records_count, null);
                     if (listener is IDxSpreadOrderSnapshotListener)
-                        (listener as IDxSpreadOrderSnapshotListener).OnSpreadOrderSnapshot<NativeEventBuffer<NativeSpreadOrder>, NativeSpreadOrder>(spreadOrderBuf);
+                        (listener as IDxSpreadOrderSnapshotListener)
+                            .OnSpreadOrderSnapshot<NativeEventBuffer<NativeSpreadOrder>, NativeSpreadOrder>(
+                                spreadOrderBuf);
                     break;
                 case EventType.Greeks:
-                    var greeksBuf = NativeBufferFactory.CreateGreeksBuf(snapshotData.symbol, snapshotData.records, snapshotData.records_count, null);
+                    var greeksBuf = NativeBufferFactory.CreateGreeksBuf(snapshotData.symbol, snapshotData.records,
+                        snapshotData.records_count, null);
                     if (listener is IDxGreeksSnapshotListener)
-                        (listener as IDxGreeksSnapshotListener).OnGreeksSnapshot<NativeEventBuffer<NativeGreeks>, NativeGreeks>(greeksBuf);
+                        (listener as IDxGreeksSnapshotListener)
+                            .OnGreeksSnapshot<NativeEventBuffer<NativeGreeks>, NativeGreeks>(greeksBuf);
                     break;
                 case EventType.Series:
-                    var seriesBuf = NativeBufferFactory.CreateSeriesBuf(snapshotData.symbol, snapshotData.records, snapshotData.records_count, null);
+                    var seriesBuf = NativeBufferFactory.CreateSeriesBuf(snapshotData.symbol, snapshotData.records,
+                        snapshotData.records_count, null);
                     if (listener is IDxSeriesSnapshotListener)
-                        (listener as IDxSeriesSnapshotListener).OnSeriesSnapshot<NativeEventBuffer<NativeSeries>, NativeSeries>(seriesBuf);
+                        (listener as IDxSeriesSnapshotListener)
+                            .OnSeriesSnapshot<NativeEventBuffer<NativeSeries>, NativeSeries>(seriesBuf);
                     break;
             }
         }
@@ -153,10 +172,13 @@ namespace com.dxfeed.native
         {
             var snapshotData = (DxSnapshotData)Marshal.PtrToStructure(snapshotDataPtr, typeof(DxSnapshotData));
 
-            if (snapshotData.event_type == EventType.Order) {
-                var orderBuf = NativeBufferFactory.CreateOrderBuf(snapshotData.symbol, snapshotData.records, snapshotData.records_count, null);
+            if (snapshotData.event_type == EventType.Order)
+            {
+                var orderBuf = NativeBufferFactory.CreateOrderBuf(snapshotData.symbol, snapshotData.records,
+                    snapshotData.records_count, null);
                 if (listener is IDxIncOrderSnapshotListener)
-                    (listener as IDxIncOrderSnapshotListener).OnOrderSnapshot<NativeEventBuffer<NativeOrder>, NativeOrder>(orderBuf, newSnapshot != 0);
+                    (listener as IDxIncOrderSnapshotListener)
+                        .OnOrderSnapshot<NativeEventBuffer<NativeOrder>, NativeOrder>(orderBuf, newSnapshot != 0);
             }
         }
 
@@ -188,6 +210,7 @@ namespace com.dxfeed.native
                 connection.RemoveSubscription(this);
                 connection = null;
             }
+
             if (snapshotPtr == InvalidSnapshot) return;
 
             C.CheckOk(C.Instance.dxf_close_snapshot(snapshotPtr));
@@ -236,17 +259,20 @@ namespace com.dxfeed.native
             if (eventType == EventType.None)
             {
                 eventType = EventType.Order;
-                C.CheckOk(C.Instance.dxf_create_order_snapshot(connectionPtr, symbol, sourceBytes, time, out snapshotPtr));
+                C.CheckOk(C.Instance.dxf_create_order_snapshot(connectionPtr, symbol, sourceBytes, time,
+                    out snapshotPtr));
             }
             else
             {
-                C.CheckOk(C.Instance.dxf_create_snapshot(connectionPtr, EventTypeUtil.GetEventId(eventType), symbol, sourceBytes, time, out snapshotPtr));
+                C.CheckOk(C.Instance.dxf_create_snapshot(connectionPtr, EventTypeUtil.GetEventId(eventType), symbol,
+                    sourceBytes, time, out snapshotPtr));
             }
 
             try
             {
                 if (listener is IDxIncOrderSnapshotListener)
-                    C.CheckOk(C.Instance.dxf_attach_snapshot_inc_listener(snapshotPtr, incCallback = OnIncOrderSnapshot, IntPtr.Zero));
+                    C.CheckOk(C.Instance.dxf_attach_snapshot_inc_listener(snapshotPtr, incCallback = OnIncOrderSnapshot,
+                        IntPtr.Zero));
                 else
                     C.CheckOk(C.Instance.dxf_attach_snapshot_listener(snapshotPtr, callback = OnEvent, IntPtr.Zero));
             }
@@ -274,10 +300,17 @@ namespace com.dxfeed.native
                 throw new InvalidOperationException("It is allowed to add only one symbol to snapshot subscription");
             if (symbol == null)
                 throw new ArgumentException("Invalid symbol parameter");
-            if (eventType != EventType.None && eventType != EventType.Candle)
+
+            if (eventType == EventType.None)
+            {
+                eventType = EventType.Candle;
+            }
+
+            if (eventType != EventType.Candle)
                 throw new InvalidOperationException("It is allowed only for Candle subscription");
 
-            C.CheckOk(C.Instance.dxf_create_snapshot(connectionPtr, EventTypeUtil.GetEventId(eventType), symbol.ToString(), null, time, out snapshotPtr));
+            C.CheckOk(C.Instance.dxf_create_snapshot(connectionPtr, EventTypeUtil.GetEventId(eventType),
+                symbol.ToString(), null, time, out snapshotPtr));
 
             try
             {
@@ -288,8 +321,6 @@ namespace com.dxfeed.native
                 Dispose();
                 throw;
             }
-
-            eventType = EventType.Candle;
         }
 
         /// <summary>
@@ -464,14 +495,14 @@ namespace com.dxfeed.native
         public IList<string> GetSymbols()
         {
             IntPtr symbolPtr;
-            
+
             C.Instance.dxf_get_snapshot_symbol(snapshotPtr, out symbolPtr);
-            
+
             var symbols = new List<string>();
-            
+
             if (symbolPtr != IntPtr.Zero)
                 symbols.Add(Marshal.PtrToStringUni(symbolPtr));
-            
+
             return symbols;
         }
 
@@ -490,7 +521,7 @@ namespace com.dxfeed.native
         {
             if (eventType != EventType.Order && eventType != EventType.None)
                 return;
-            
+
             if (!source.Equals(string.Empty))
                 throw new InvalidOperationException("It is allowed to use up to one source.");
 
@@ -516,7 +547,7 @@ namespace com.dxfeed.native
                 throw new ArgumentException("Invalid source parameter");
             if (sources.Length != 1)
                 throw new InvalidOperationException("It is allowed to use up to one source.");
-            
+
             var newSource = sources[0];
             if (newSource.Length == 0)
                 throw new ArgumentException("Invalid source parameter");
@@ -524,7 +555,7 @@ namespace com.dxfeed.native
             source = newSource;
 
             if (snapshotPtr == InvalidSnapshot) return;
-            
+
             var symbol = Symbol;
             Dispose();
             AddSymbol(symbol);

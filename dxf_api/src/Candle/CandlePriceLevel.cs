@@ -20,13 +20,13 @@ namespace com.dxfeed.api.candle
     /// price interval. The negative or infinite values of price interval are treated as exceptional.
     /// <ul>
     /// <li>Price interval may be equal to zero. It means every unique price creates a particular candle
-    /// to aggregate all events with this price for the chosen {@link CandlePeriod}.
+    /// to aggregate all events with this price for the chosen {@link CandlePeriod}.</li>
     /// <li>Non-zero price level creates sequence of intervals starting from 0:
-    /// ...,[-pl;0),[0;pl),[pl;2*pl),...,[n*pl,n*pl+pl). Events aggregated by chosen {@link CandlePeriod} and price intervals.
+    /// ...,[-pl;0),[0;pl),[pl;2*pl),...,[n*pl,n*pl+pl). Events aggregated by chosen {@link CandlePeriod} and price intervals.</li>
     /// </ul>
     ///
     /// <h3>Implementation details</h3>
-    /// <p>
+    /// <p/>
     /// This attribute is encoded in a symbol string with
     /// {@link MarketEventSymbols#getAttributeStringByKey(String, String) MarketEventSymbols.getAttributeStringByKey},
     /// {@link MarketEventSymbols#changeAttributeStringByKey(String, String, String) changeAttributeStringByKey}, and
@@ -38,7 +38,13 @@ namespace com.dxfeed.api.candle
     /// </summary>
     public class CandlePriceLevel : ICandleSymbolAttribute
     {
+        /// <summary>
+        /// Default candle price level (NaN)
+        /// </summary>
         public static readonly CandlePriceLevel DEFAULT = new CandlePriceLevel(double.NaN);
+        /// <summary>
+        /// The price level attribute key
+        /// </summary>
         public const string ATTRIBUTE_KEY = "pl";
 
         private readonly double value;
@@ -67,11 +73,17 @@ namespace com.dxfeed.api.candle
             return value;
         }
 
+        /// <inheritdoc />
         public override string ToString()
         {
             return stringBuf;
         }
 
+        /// <summary>
+        /// Changes attributes for the symbol
+        /// </summary>
+        /// <param name="symbol">The symbol</param>
+        /// <returns>The new symbol</returns>
         public string ChangeAttributeForSymbol(string symbol)
         {
             return Equals(this, DEFAULT)

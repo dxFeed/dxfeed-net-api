@@ -23,15 +23,15 @@ namespace com.dxfeed.api.candle
     /// <h3>String representation</h3>
     ///
     /// The string representation of the candle symbol consist of a {@link #baseSymbol() baseSymbol} followed by
-    /// an optional '&' with an {@link #exchange() exchange} code letter and followed by
+    /// an optional '&amp;' with an {@link #exchange() exchange} code letter and followed by
     /// a list of comma-separated key=value pairs in curly braces:
     ///
-    /// <p>&lt;baseSymbol&gt; [ '&' &lt;exchange&gt; ] '{' &lt;key1&gt;=&lt;value1&gt; [ ',' &lt;key2&gt;=&lt;value2&gt; [ ',' ... ]] '}'
+    /// <p/>&lt;baseSymbol&gt; [ '&amp;' &lt;exchange&gt; ] '{' &lt;key1&gt;=&lt;value1&gt; [ ',' &lt;key2&gt;=&lt;value2&gt; [ ',' ... ]] '}'
     ///
-    /// <p>Properties of the candle symbol correspond to the keys in the string representation in the following way:
+    /// <p/>Properties of the candle symbol correspond to the keys in the string representation in the following way:
     ///
     /// <ul>
-    /// <li>Empty key corresponds to {@link #period() period} &mdash; aggregation period of this symbol.
+    /// <li>Empty key corresponds to {@link #period() period} — aggregation period of this symbol.
     ///     The period value is composed of an optional
     ///     {@link CandlePeriod#GetValue() value} which defaults to 1 when not specified, followed by
     ///     a {@link CandlePeriod#GetCandleType() type} string which is defined by one of the
@@ -40,24 +40,24 @@ namespace com.dxfeed.api.candle
     ///     possible abbreviation for {@link CandleType#MONTH CandleType.MONTH} is "mo", so the monthly
     ///     candle can be specified as "IBM{=mo}". When period is not specified, then the
     ///     {@link CandlePeriod#TICK TICK} aggregation period is assumed as default. Note, that tick aggregation may
-    ///     not be available on the demo system which is limited to a subset of symbols and aggregation periods.
-    /// <li>"price" key corresponds to {@link #price() price} &mdash; price type attribute of this symbol.
+    ///     not be available on the demo system which is limited to a subset of symbols and aggregation periods.</li>
+    /// <li>"price" key corresponds to {@link #price() price} — price type attribute of this symbol.
     ///     The {@link CandlePrice} enum defines possible values with {@link CandlePrice#LAST LAST} being default.
     ///     For legacy backwards-compatibility purposes, most of the price values cannot be abbreviated, so a one-minute candle
     ///     of "EUR/USD" bid price shall be specified with "EUR/USD{=m,price=bid}" candle symbol string. However,
     ///     the {@link CandlePrice#SETTLEMENT SETTLEMENT} can be abbreviated to "s", so a daily candle on
-    ///     "/ES" futures settlement prices can be specified with "/ES{=d,price=s}" string.
+    ///     "/ES" futures settlement prices can be specified with "/ES{=d,price=s}" string.</li>
     /// <li>"tho" key with a value of "true" corresponds to {@link #session() session} set to {@link CandleSession#REGULAR}
     ///     which limits the candle to trading hours only, so a 133 tick candles on "GOOG" base symbol collected over
     ///     trading hours only can be specified with "GOOG{=133t,tho=true}" string. Note, that the default daily candles for
     ///     US equities are special for historical reasons and correspond to the way US equity exchange report their
     ///     daily summary data. The volume the US equity default daily candle corresponds to the total daily traded volume,
-    ///     while open, high, low, and close correspond to the regular trading hours only.
-    /// <li>"a" key corresponds to {@link #alignment() alignment} &mdash; alignment attribute of this symbol.
+    ///     while open, high, low, and close correspond to the regular trading hours only.</li>
+    /// <li>"a" key corresponds to {@link #alignment() alignment} — alignment attribute of this symbol.
     ///     The {@link CandleAlignment} enum defines possible values with {@link CandleAlignment#MIDNIGHT MIDNIGHT} being default.
     ///     The alignment values can be abbreviated to the first letter. So, a 1 hour candle on a symbol "AAPL" that starts
     ///     at the regular trading session at 9:30 am ET can be specified with "AAPL{=h,a=s,tho=true}". Contrast that
-    ///     to the "AAPL{=h,tho=true}" candle that is aligned at midnight and thus starts at 9:00 am.
+    ///     to the "AAPL{=h,tho=true}" candle that is aligned at midnight and thus starts at 9:00 am.</li>
     /// </ul>
     ///
     /// Keys in the candle symbol are case-sensitive, while values are not. The {@link #ValueOf(string)} method parses

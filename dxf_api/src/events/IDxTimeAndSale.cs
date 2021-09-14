@@ -102,7 +102,7 @@ namespace com.dxfeed.api.events
         bool IsSpreadLeg { get; }
         
         /// <summary>
-        /// Returns whether time&sale was a composite or regional (other constants are not used here).
+        /// Returns whether time&amp;sale was a composite or regional (other constants are not used here).
         /// </summary>
         Scope Scope { get; }
     }

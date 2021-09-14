@@ -23,18 +23,18 @@ namespace com.dxfeed.api.events.market
     /// instead of receiving composite events from all venues (by default). Regional symbol is composed from a
     /// <i>base symbol</i>, ampersand character ('&amp;'), and an exchange code character. For example,
     /// <ul>
-    /// <li>"SPY" is the symbol for composite events for SPDR S&amp;P 500 ETF from all exchanges,
-    /// <li>"SPY&amp;N" is the symbol for event for SPDR S&amp;P 500 ETF that originate only from NYSE marketplace.
+    /// <li>"SPY" is the symbol for composite events for SPDR S&amp;P 500 ETF from all exchanges,</li>
+    /// <li>"SPY&amp;N" is the symbol for event for SPDR S&amp;P 500 ETF that originate only from NYSE marketplace.</li>
     /// </ul>
     ///
     /// <h3>Symbol attributes</h3>
     ///
     /// Market event symbols can have a number of attributes attached to then in curly braces
-    /// with `<key>=<value>` paris separated by commas. For example,
+    /// with "&lt;key&gt;=&lt;value&gt;" paris separated by commas. For example,
     /// <ul>
-    /// <li>"SPY{price=bid}" is the market symbol "SPY" with an attribute key "price" set to value "bid".
+    /// <li>"SPY{price=bid}" is the market symbol "SPY" with an attribute key "price" set to value "bid".</li>
     /// <li>"SPY(=5m,tho=true}" is the market symbol "SPY" with two attributes. One has an empty key and
-    /// value "5m", while the other has key "tho" and value "true".
+    /// value "5m", while the other has key "tho" and value "true".</li>
     /// </ul>
     /// The methods in this class always maintain attribute keys in alphabetic order.
     /// </summary>

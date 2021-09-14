@@ -20,13 +20,27 @@ namespace com.dxfeed.api
     /// </summary>
     public class DXFeedSymbolsUpdateEventArgs : EventArgs
     {
+        /// <summary>
+        /// Creates the new symbols update event's arguments
+        /// </summary>
+        /// <param name="symbols">Event symbols</param>
         public DXFeedSymbolsUpdateEventArgs(ISet<object> symbols) : base()
         {
             Symbols = symbols;
         }
 
-        public DXFeedSymbolsUpdateEventArgs(ICollection<object> symbols) : this(symbols.ToArray()) { }
+        /// <summary>
+        /// Creates the new symbols update event's arguments
+        /// </summary>
+        /// <param name="symbols">Event symbols</param>
+        public DXFeedSymbolsUpdateEventArgs(ICollection<object> symbols) : this(symbols.ToArray())
+        {
+        }
 
+        /// <summary>
+        /// Creates the new symbols update event's arguments
+        /// </summary>
+        /// <param name="symbols">Event symbols</param>
         public DXFeedSymbolsUpdateEventArgs(params object[] symbols) : base()
         {
             Symbols = new HashSet<object>();
@@ -36,10 +50,6 @@ namespace com.dxfeed.api
         /// <summary>
         ///     Gets symbols that was been added or removed via update event.
         /// </summary>
-        public ISet<object> Symbols
-        {
-            get; private set;
-        }
-
+        public ISet<object> Symbols { get; private set; }
     }
 }

@@ -27,8 +27,8 @@ namespace com.dxfeed.api.events
     ///     </para>
     ///
     ///     <para>
-    ///         Lasting events can be used with {@link DXFeed#GetLastEventPromise<E>
-    ///         DXFeed.GetLastEventPromise} and {@link DXFeed#GetLastEventsPromises<E>
+    ///         Lasting events can be used with {@link DXFeed#GetLastEventPromise
+    ///         DXFeed.GetLastEventPromise} and {@link DXFeed#GetLastEventsPromises
     ///         DXFeed.GetLastEventPromises} methods to retrieve last events for each symbol.
     ///         TODO: not implemented
     ///     </para>

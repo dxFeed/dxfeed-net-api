@@ -155,7 +155,7 @@ namespace com.dxfeed.api
         /// </code>
         /// </example>
         /// </summary>
-        /// <param name="eventType">The event type. Now supported all IDxIndexedEvent types except Order & SpreadOrder. TheoPrice and Underlying are not supported yet.</param>
+        /// <param name="eventType">The event type. Now supported all IDxIndexedEvent types except Order &amp; SpreadOrder. TheoPrice and Underlying are not supported yet.</param>
         /// <param name="symbol">The event symbol. Single symbol name.</param>
         /// <param name="fromTime">The time, inclusive, to request events from.</param>
         /// <param name="toTime">The time, inclusive, to request events to.</param>

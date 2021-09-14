@@ -10,6 +10,7 @@ If a copy of the MPL was not distributed with this file, You can obtain one at h
 #endregion
 
 using System;
+using com.dxfeed.api.data;
 
 namespace com.dxfeed.api.events
 {
@@ -69,7 +70,7 @@ namespace com.dxfeed.api.events
     ///     <para>
     ///         Classes that implement this interface may also implement
     ///         <see cref="IDxLastingEvent"/> interface, which makes it possible to
-    ///         use {@link DXFeed#GetLastEventPromise<E> DXFeed.GetLastEventPromise} method to
+    ///         use {@link DXFeed#GetLastEventPromise DXFeed.GetLastEventPromise} method to
     ///         retrieve the last event for the corresponding symbol.
     ///     </para>
     ///     <para>
@@ -180,7 +181,7 @@ namespace com.dxfeed.api.events
     ///     <para>
     ///         Classes that implement this interface may also implement
     ///         <see cref="IDxLastingEvent"/> interface, which makes it possible to
-    ///         use {@link DXFeed#getLastEvent<E> DXFeed.getLastEvent} method to
+    ///         use <see cref="DXFeed.getLastEvent{E}"/> method to
     ///         retrieve the last event for the corresponding symbol.
     ///     </para>
     ///     <para>

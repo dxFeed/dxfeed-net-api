@@ -18,7 +18,6 @@ namespace com.dxfeed.api
     /// <summary>
     ///     Represents the current state of endpoint.
     /// </summary>
-    [Obsolete("DXEndpointState enum is deprecated and will removed in 9.0.0 version. Please use NativeConnection\\NativeSubscription")]
     public enum DXEndpointState
     {
         /// <summary>
@@ -48,13 +47,11 @@ namespace com.dxfeed.api
     /// </summary>
     /// <param name="sender"><see cref="IDXEndpoint"/> instance.</param>
     /// <param name="e">Event arguments.</param>
-    [Obsolete("OnEndpointClosingEventHandler delegate is deprecated and will removed in 9.0.0 version. Please use NativeConnection\\NativeSubscription")]
     public delegate void OnEndpointClosingEventHandler(object sender, EventArgs e);
 
     /// <summary>
     ///     Manages network connections to dxFeed.
     /// </summary>
-    [Obsolete("IDXEndpoint interface is deprecated and will removed in 9.0.0 version. Please use NativeConnection\\NativeSubscription")]
     public interface IDXEndpoint : IDisposable
     {
         /// <summary>

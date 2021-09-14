@@ -19,7 +19,6 @@ namespace com.dxfeed.api
     /// <summary>
     ///     Manages network connections to dxFeed.
     /// </summary>
-    [Obsolete("DXEndpoint class is deprecated and will removed in 9.0.0 version. Please use NativeConnection\\NativeSubscription")]
     public class DXEndpoint : IDXEndpoint
     {
         /// <summary>

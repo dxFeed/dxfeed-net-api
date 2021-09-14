@@ -18,7 +18,6 @@ namespace com.dxfeed.api
     /// <summary>
     ///     Represents class contains data for symbols update events.
     /// </summary>
-    [Obsolete("DXFeedSymbolsUpdateEventArgs class is deprecated and will removed in 9.0.0 version. Please use NativeConnection\\NativeSubscription")]
     public class DXFeedSymbolsUpdateEventArgs : EventArgs
     {
         public DXFeedSymbolsUpdateEventArgs(ISet<object> symbols) : base()

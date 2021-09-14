@@ -233,11 +233,16 @@
              Properties="Configuration=$(Configuration);Platform=$(Platform)">
       <Output ItemName="OutputFiles" TaskParameter="TargetOutputs"/>
     </MSBuild>
+    <Message Text="OutputFiles: @(OutputFiles)" />
     <RemoveDir Directories="$(OutputPath)" />
     <Copy SourceFiles="@(OutputFiles)"
           DestinationFiles="@(OutputFiles->'$(OutputPath)bin\%(RecursiveDir)%(Filename)%(Extension)')"
           Retries="5"
           SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(OutputFiles->'%(RootDir)%(Directory)%(Filename).xml')"
+          DestinationFiles="@(OutputFiles->'$(OutputPath)bin\%(RecursiveDir)%(Filename).xml')"
+          Retries="5"
+          SkipUnchangedFiles="true" Condition="Exists('%(RootDir)%(Directory)%(Filename).xml')"/>
     <Copy SourceFiles="@(Content)"
           DestinationFiles="@(Content->'$(OutputPath)bin\%(RecursiveDir)%(Filename)%(Extension)')"
           Retries="5"

@@ -91,6 +91,11 @@ namespace com.dxfeed.api.candle
                 : MarketEventSymbols.ChangeAttributeStringByKey(symbol, ATTRIBUTE_KEY, stringBuf);
         }
 
+        /// <summary>
+        /// Internal method that initializes attribute in the candle symbol.
+        /// </summary>
+        /// <param name="candleSymbol">The candle symbol.</param>
+        /// <exception cref="InvalidOperationException">if used outside of internal initialization logic</exception>
         public void CheckInAttributeImpl(CandleSymbol candleSymbol)
         {
             if (candleSymbol.priceLevel != null)
@@ -170,7 +175,8 @@ namespace com.dxfeed.api.candle
                 return symbol;
             }
         }
-        
+
+        /// <inheritdoc />
         public override bool Equals(object o)
         {
             if (this == o)
@@ -186,6 +192,7 @@ namespace com.dxfeed.api.candle
             return value.CompareTo(that.GetValue()) == 0;
         }
 
+        /// <inheritdoc />
         public override int GetHashCode()
         {
             return value.GetHashCode();

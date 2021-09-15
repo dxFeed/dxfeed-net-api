@@ -14,6 +14,8 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using com.dxfeed.api.candle;
+using com.dxfeed.api.data;
 
 namespace com.dxfeed.api
 {
@@ -36,7 +38,7 @@ namespace com.dxfeed.api
 
         /// <summary>
         ///     Creates new subscription for multiple event types that is attached to this feed.
-        ///     For a single event type use <see cref="CreateSubscription{E}"/>.
+        ///     For a single event type use <see cref="CreateSubscription{E}()"/>.
         ///     This method creates new <see cref="IDXFeedSubscription{E}"/> and invokes
         ///     <see cref="AttachSubscription{E}(IDXFeedSubscription{E})"/>.
         /// </summary>
@@ -64,7 +66,7 @@ namespace com.dxfeed.api
         /// <summary>
         ///     Creates new time series subscription for multiple event types that is attached to
         ///     this feed.
-        ///     For a single event type use <see cref="CreateTimeSeriesSubscription{E}"/>.
+        ///     For a single event type use <see cref="CreateTimeSeriesSubscription{E}()"/>.
         ///     This method creates new <see cref="IDXFeedTimeSeriesSubscription{E}"/> and invokes
         ///     <see cref="AttachSubscription{E}(IDXFeedSubscription{E})"/>.
         /// </summary>
@@ -112,11 +114,11 @@ namespace com.dxfeed.api
         /// <remarks>
         ///     <para>
         ///         This method is designed for retrieval of a snapshot only.
-        ///         Use <see cref="DXFeedSubscription{E}"/> if you need event updates in real time.
+        ///         Use <see cref="IDXFeedSubscription{E}"/> if you need event updates in real time.
         ///     </para>
         ///     <para>
         ///         The promise is <see cref="TaskStatus.Canceled"/> when the the underlying
-        ///         <see cref="DXEndpoint"/> is <see cref="DXEndpoint.Close()"/>.
+        ///         <see cref="IDXEndpoint"/> is <see cref="IDXEndpoint.Close()"/>.
         ///         If the event is not available for any transient reason (no subscription, no
         ///         connection to uplink, etc), then the resulting promise completes when the issue
         ///         is resolved, which may involve an arbitrarily long wait.
@@ -131,7 +133,7 @@ namespace com.dxfeed.api
         ///         See <see cref="GetLastEventsPromises{E}(ICollection{object}, CancellationToken)"/>.
         ///     </para>
         ///     <para>
-        ///         Note, that this method does not work when <see cref="DXEndpoint"/> was created
+        ///         Note, that this method does not work when <see cref="IDXEndpoint"/> was created
         ///         with DXEndpoint.Role#STREAM_FEED role (promise completes
         ///         exceptionally).
         ///     </para>
@@ -141,6 +143,7 @@ namespace com.dxfeed.api
         ///         promise to receive notification when the promise becomes done.
         ///     </para>
         /// </remarks>
+        /// <remarks><!-- for doxygen --></remarks>
         /// <example>
         ///     Use the following pattern of code to acquire multiple events (either for multiple
         ///     symbols and/or multiple events) and wait with a single timeout for all of them:
@@ -188,7 +191,7 @@ namespace com.dxfeed.api
         ///     </para>
         ///     <para>
         ///         The promise is <see cref="TaskStatus.Canceled"/> when the the underlying
-        ///         <see cref="DXEndpoint"/> is <see cref="DXEndpoint.Close()"/>.
+        ///         <see cref="IDXEndpoint"/> is <see cref="IDXEndpoint.Close()"/>.
         ///         If the event is not available for any transient reason (no subscription, no
         ///         connection to uplink, etc), then the resulting promise completes when the
         ///         issue is resolved, which may involve an arbitrarily long wait.
@@ -198,7 +201,7 @@ namespace com.dxfeed.api
         ///         completes exceptionally with <see cref="AggregateException"/>.
         ///     </para>
         ///     <para>
-        ///         Note, that this method does not work when <see cref="DXEndpoint"/>  was created
+        ///         Note, that this method does not work when <see cref="IDXEndpoint"/>  was created
         ///         with DXEndpoint.Role#STREAM_FEED role (promise completes
         ///         exceptionally).
         ///     </para>
@@ -210,6 +213,7 @@ namespace com.dxfeed.api
         ///         promise to receive notification when the promise becomes done.
         ///     </para>
         /// </remarks>
+        /// <remarks><!-- for doxygen --></remarks>
         /// <example>
         ///     Use the following pattern of code to acquire multiple events (either for multiple
         ///     symbols and/or multiple events) and wait with a single timeout for all of them:
@@ -260,7 +264,7 @@ namespace com.dxfeed.api
         ///     </para>
         ///     <para>
         ///         The promise is <see cref="TaskStatus.Canceled"/> when the the underlying
-        ///         <see cref="DXEndpoint"/> is <see cref="DXEndpoint.Close()"/>.
+        ///         <see cref="IDXEndpoint"/> is <see cref="IDXEndpoint.Close()"/>.
         ///         If the event is not available for any transient reason (no subscription, no
         ///         connection to uplink, etc), then the resulting promise completes when the
         ///         issue is resolved, which may involve an arbitrarily long wait.
@@ -270,7 +274,7 @@ namespace com.dxfeed.api
         ///         completes exceptionally with <see cref="AggregateException"/>.
         ///     </para>
         ///     <para>
-        ///         Note, that this method does not work when <see cref="DXEndpoint"/>  was created
+        ///         Note, that this method does not work when <see cref="IDXEndpoint"/>  was created
         ///         with DXEndpoint.Role#STREAM_FEED role (promise completes
         ///         exceptionally).
         ///     </para>
@@ -338,7 +342,7 @@ namespace com.dxfeed.api
         ///     </para>
         ///     <para>
         ///         The promise is <see cref="TaskStatus.Canceled"/> when the the underlying
-        ///         <see cref="DXEndpoint"/> is <see cref="DXEndpoint.Close()"/>.
+        ///         <see cref="IDXEndpoint"/> is <see cref="IDXEndpoint.Close()"/>.
         ///         If the event is not available for any transient reason (no subscription, no
         ///         connection to uplink, etc), then the resulting promise completes when the
         ///         issue is resolved, which may involve an arbitrarily long wait.
@@ -348,7 +352,7 @@ namespace com.dxfeed.api
         ///         completes exceptionally with <see cref="AggregateException"/>.
         ///     </para>
         ///     <para>
-        ///         Note, that this method does not work when <see cref="DXEndpoint"/>  was created
+        ///         Note, that this method does not work when <see cref="IDXEndpoint"/>  was created
         ///         with DXEndpoint.Role#STREAM_FEED role (promise completes
         ///         exceptionally).
         ///     </para>

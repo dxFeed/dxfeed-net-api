@@ -76,6 +76,7 @@ namespace com.dxfeed.native.events
             Scope = order.Scope;
         }
 
+        /// <inheritdoc />
         public override string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture,
@@ -90,6 +91,7 @@ namespace com.dxfeed.native.events
 
         #region Implementation of ICloneable
 
+        /// <inheritdoc />
         public override object Clone()
         {
             return new NativeOrderBase(this);

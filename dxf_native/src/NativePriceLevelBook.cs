@@ -19,6 +19,9 @@ using DxPriceLevelBook = com.dxfeed.native.api.DxPriceLevelBook;
 
 namespace com.dxfeed.native
 {
+    /// <summary>
+    /// Wrapper for the formation of the price level book 
+    /// </summary>
     public class NativePriceLevelBook : IDxPriceLevelBook
     {
         private static void CheckSources(string[] sources)

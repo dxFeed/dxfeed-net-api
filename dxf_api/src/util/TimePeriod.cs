@@ -55,11 +55,21 @@ namespace com.dxfeed.util
         // value in milliseconds
         private long value;
 
+        /// <summary>
+        /// Creates time period by milliseconds
+        /// </summary>
+        /// <param name="value">The milliseconds amount</param>
         protected TimePeriod(long value)
         {
             this.value = value;
         }
 
+        /// <summary>
+        /// Parses the period string
+        /// </summary>
+        /// <param name="value">The period string representation</param>
+        /// <returns>The amount in milliseconds</returns>
+        /// <exception cref="FormatException">If the period string representation has wrong format</exception>
         protected static long Parse(string value)
         {
             try
@@ -158,6 +168,7 @@ namespace com.dxfeed.util
             }
         }
 
+        /// <inheritdoc />
         public override string ToString()
         {
             long v = value;
@@ -215,6 +226,7 @@ namespace com.dxfeed.util
             return 1000000 * value;
         }
 
+        /// <inheritdoc />
         public override bool Equals(object o)
         {
             if (this == o)
@@ -225,6 +237,7 @@ namespace com.dxfeed.util
             return value == that.value;
         }
 
+        /// <inheritdoc />
         public override int GetHashCode()
         {
             return (int)value;

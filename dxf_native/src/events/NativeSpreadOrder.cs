@@ -35,6 +35,7 @@ namespace com.dxfeed.native.events
             SpreadSymbol = order.SpreadSymbol;
         }
 
+        /// <inheritdoc />
         public override string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture, "SpreadOrder: {{{0} {1}, SpreadSymbol: '{2}'}}",

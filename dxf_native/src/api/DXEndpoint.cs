@@ -262,6 +262,7 @@ namespace com.dxfeed.api
         /// <returns>The feed.</returns>
         public IDXFeed Feed { get; private set; }
 
+        /// <inheritdoc />
         public void Dispose()
         {
             Close();

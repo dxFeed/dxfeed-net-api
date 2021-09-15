@@ -9,10 +9,6 @@ If a copy of the MPL was not distributed with this file, You can obtain one at h
 
 #endregion
 
-/**
- * @file 
- */
-
 using com.dxfeed.api.events.market;
 using System;
 

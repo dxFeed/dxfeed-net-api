@@ -34,6 +34,7 @@ namespace com.dxfeed.ipf.live
     /// also serve as an address for debugging purposes.
     ///
     /// The recommended usage of this class to receive a live stream of instrument profile updates is:
+    /// <remarks><!-- for doxygen --></remarks>
     /// <example>
     /// <code>
     ///     class UpdateListener : InstrumentProfileUpdateListener {

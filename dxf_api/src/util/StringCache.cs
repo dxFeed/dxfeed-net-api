@@ -193,6 +193,7 @@ namespace com.dxfeed.util
             return Finish(new string(c, offset, length), n, bucketSize - 1);
         }
 
+        /// <inheritdoc />
         public override string ToString()
         {
             long rc = requestCount;

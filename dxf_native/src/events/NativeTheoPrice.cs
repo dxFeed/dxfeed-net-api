@@ -52,6 +52,7 @@ namespace com.dxfeed.native.events
             Interest = tp.Interest;
         }
 
+        /// <inheritdoc />
         public override string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture,
@@ -59,7 +60,7 @@ namespace com.dxfeed.native.events
                 "Time: {1:o}, "                      +
                 "Price: {2}, UnderlyingPrice: {3}, " +
                 "Delta: {4}, Gamma: {5}, "           +
-                "Dividend: {6}, nterest: {7}"        +
+                "Dividend: {6}, Interest: {7}"       +
                 "}}",
                 EventSymbol,
                 Time,
@@ -71,6 +72,7 @@ namespace com.dxfeed.native.events
 
         #region Implementation of ICloneable
 
+        /// <inheritdoc />
         public override object Clone()
         {
             return new NativeTheoPrice(this);

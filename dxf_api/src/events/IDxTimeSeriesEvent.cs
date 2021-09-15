@@ -181,7 +181,7 @@ namespace com.dxfeed.api.events
     ///     <para>
     ///         Classes that implement this interface may also implement
     ///         <see cref="IDxLastingEvent"/> interface, which makes it possible to
-    ///         use <see cref="DXFeed.getLastEvent{E}"/> method to
+    ///         use <see cref="IDXFeed.GetLastEventPromise{E}"/> method to
     ///         retrieve the last event for the corresponding symbol.
     ///     </para>
     ///     <para>

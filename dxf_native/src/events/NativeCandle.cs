@@ -72,6 +72,7 @@ namespace com.dxfeed.native.events
             ImpVolatility = candle.ImpVolatility;
         }
 
+        /// <inheritdoc />
         public override string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture,
@@ -95,6 +96,7 @@ namespace com.dxfeed.native.events
 
         #region Implementation of ICloneable
 
+        /// <inheritdoc />
         public object Clone()
         {
             return new NativeCandle(this);

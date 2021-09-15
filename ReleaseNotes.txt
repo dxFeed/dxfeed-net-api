@@ -1,3 +1,7 @@
+Version 8.4.1
+* [DXFC-264] Added assembly and deployment of XML documentation
+  Now dxf_api.xml and dxf_native.xml files come inside zip bundle. You can use them to get API documentation from the IDE.
+
 Version 8.4.0
 * [DXFC-258] Fixed a bug with the impossibility of receiving candledata when changing the order of candle symbol attributes
 * [DXFC-260] Added the ability to retrieve TnS data from CandleWebService

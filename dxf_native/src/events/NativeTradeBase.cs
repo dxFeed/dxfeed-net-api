@@ -79,6 +79,7 @@ namespace com.dxfeed.native.events
             RawFlags = trade.RawFlags;
         }
 
+        /// <inheritdoc />
         public override string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture,

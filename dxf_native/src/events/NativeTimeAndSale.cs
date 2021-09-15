@@ -99,7 +99,7 @@ namespace com.dxfeed.native.events
 
         /// <summary>
         /// Returns a normalized event. Normalization occurs for events in which Scope = Composite, and the symbol ends
-        /// with & and the exchange code (that is, satisfies the regex: "&[A-Z]") 
+        /// with &amp; and the exchange code (that is, satisfies the regex: "&amp;[A-Z]") 
         /// </summary>
         /// <returns>Normalized event or current event if normalization has not been performed.</returns>
         public IDxTimeAndSale Normalized()
@@ -121,6 +121,7 @@ namespace com.dxfeed.native.events
             };
         }
 
+        /// <inheritdoc />
         public override string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture,
@@ -153,6 +154,7 @@ namespace com.dxfeed.native.events
 
         #region Implementation of ICloneable
 
+        /// <inheritdoc />
         public override object Clone()
         {
             return new NativeTimeAndSale(this);
@@ -301,7 +303,7 @@ namespace com.dxfeed.native.events
         public bool IsSpreadLeg { get; private set; }
 
         /// <summary>
-        /// Returns whether time&sale was a composite or regional (other constants are not used here).
+        /// Returns whether time&amp;sale was a composite or regional (other constants are not used here).
         /// </summary>
         public Scope Scope { get; private set; }
 

@@ -35,6 +35,7 @@ namespace com.dxfeed.native.events
             Attachment = c.Attachment;
         }
 
+        /// <inheritdoc />
         public override string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture,
@@ -48,6 +49,7 @@ namespace com.dxfeed.native.events
 
         #region Implementation of ICloneable
 
+        /// <inheritdoc />
         public override object Clone()
         {
             return new NativeConfiguration(this);
@@ -57,9 +59,11 @@ namespace com.dxfeed.native.events
 
         #region Implementation of IDxConfiguration
 
+        /// <summary>
         /// Returns version.
         /// </summary>
         public int Version { get; private set; }
+        
         /// <summary>
         /// Returns attachment.
         /// </summary>

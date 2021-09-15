@@ -13,13 +13,23 @@ using System;
 
 namespace com.dxfeed.api.events
 {
+    /// <summary>
+    /// Attribute used to denote types of events
+    /// </summary>
     public class EventTypeAttribute : Attribute
     {
+        /// <summary>
+        /// Creates an attribute by the event name
+        /// </summary>
+        /// <param name="eventName">The event name</param>
         public EventTypeAttribute(string eventName) : base()
         {
             EventName = eventName;
         }
 
+        /// <summary>
+        /// The event name property
+        /// </summary>
         public string EventName { get; private set; }
 
     }

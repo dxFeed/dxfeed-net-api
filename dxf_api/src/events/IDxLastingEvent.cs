@@ -40,7 +40,6 @@ namespace com.dxfeed.api.events
     ///         TODO: not implemented
     ///     </para>
     /// </summary>
-    /// <typeparam name="T">Type of the event symbol for this event type.</typeparam>
     public interface IDxLastingEvent : IDxEventType
     {
         //Note: no extra fields there

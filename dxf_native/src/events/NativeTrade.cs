@@ -44,6 +44,7 @@ namespace com.dxfeed.native.events
 
         #region Implementation of ICloneable
 
+        /// <inheritdoc />
         public override object Clone()
         {
             return new NativeTrade(this);
@@ -62,6 +63,7 @@ namespace com.dxfeed.native.events
 
         #endregion
 
+        /// <inheritdoc />
         public override string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture, "Trade {{{0}, {1}, Tick: {2}}}",

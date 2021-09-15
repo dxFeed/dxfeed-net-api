@@ -79,10 +79,10 @@ namespace com.dxfeed.ipf
         /// <summary>
         /// Compares two specified types for order. Returns a negative integer, zero, or a positive integer
         /// as this object is less than, equal to, or greater than the specified object.
-        /// <p>
+        /// <p/>
         /// Unlike natual ordering of {@link InstrumentProfileType} enum itself this method supports
         /// unknown types and orders them alphabetically after standard ones.
-        /// <p>
+        /// <p/>
         /// The natural ordering implied by this method is designed for convenient data representation
         /// in a file and shall not be used for business purposes.
         /// </summary>

@@ -17,6 +17,9 @@ using com.dxfeed.native.events;
 
 namespace com.dxfeed.native
 {
+    /// <summary>
+    /// Wrapper for the formation of the regional book (by regional Quotes)
+    /// </summary>
     public class NativeRegionalBook : IDxRegionalBook
     {
         /// <summary>

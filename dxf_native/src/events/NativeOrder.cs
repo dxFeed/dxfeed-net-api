@@ -35,6 +35,7 @@ namespace com.dxfeed.native.events
             MarketMaker = order.MarketMaker;
         }
 
+        /// <inheritdoc />
         public override string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture, "Order: {{{0} {1}, MarketMaker: '{2}'}}",

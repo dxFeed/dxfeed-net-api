@@ -17,7 +17,6 @@ namespace com.dxfeed.ipf.option
     /// <summary>
     /// Set of option series for a single product or underlying symbol.
     /// </summary>
-    /// <typeparam name="T">The type of option instrument instances.</typeparam>
     public sealed class OptionChain : ICloneable
     {
         private readonly SortedDictionary<OptionSeries, OptionSeries> seriesMap = new SortedDictionary<OptionSeries, OptionSeries>();

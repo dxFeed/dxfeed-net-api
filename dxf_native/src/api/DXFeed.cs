@@ -15,6 +15,8 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using com.dxfeed.api.candle;
+using com.dxfeed.api.data;
 
 namespace com.dxfeed.api
 {
@@ -54,7 +56,7 @@ namespace com.dxfeed.api
 
         /// <summary>
         ///     Creates new subscription for multiple event types that is attached to this feed.
-        ///     For a single event type use <see cref="CreateSubscription{E}"/>.
+        ///     For a single event type use <see cref="DXFeed.CreateSubscription{E}()"/>.
         ///     This method creates new <see cref="IDXFeedSubscription{E}"/> and invokes
         ///     <see cref="AttachSubscription{E}(IDXFeedSubscription{E})"/>.
         /// </summary>
@@ -200,6 +202,7 @@ namespace com.dxfeed.api
         ///         promise to receive notification when the promise becomes done.
         ///     </para>
         /// </remarks>
+        /// <remarks><!-- for doxygen --></remarks>
         /// <example>
         ///     Use the following pattern of code to acquire multiple events (either for multiple
         ///     symbols and/or multiple events) and wait with a single timeout for all of them:
@@ -291,6 +294,7 @@ namespace com.dxfeed.api
         ///         promise to receive notification when the promise becomes done.
         ///     </para>
         /// </remarks>
+        /// <remarks><!-- for doxygen --></remarks>
         /// <example>
         ///     Use the following pattern of code to acquire multiple events (either for multiple
         ///     symbols and/or multiple events) and wait with a single timeout for all of them:
@@ -325,7 +329,7 @@ namespace com.dxfeed.api
             where E : class, IDxLastingEvent
         {
             if (symbols == null)
-                throw new ArgumentNullException("symbols");
+                throw new ArgumentNullException(nameof(symbols));
             List<Task<IDxLastingEvent>> result = new List<Task<IDxLastingEvent>>(symbols.Count);
             foreach (object symbol in symbols)
             {

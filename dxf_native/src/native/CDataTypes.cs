@@ -111,7 +111,7 @@ namespace com.dxfeed.native.api
         /// <summary>
         /// Last trade scope
         ///
-        /// Possible values: Scope.Composite (Trade\TradeETH events) , Scope.Regional (Trade&\TradeETH& events)
+        /// Possible values: Scope.Composite (Trade\TradeETH events) , Scope.Regional (Trade&amp;\TradeETH&amp; events)
         /// </summary>
         internal Scope scope;
     }

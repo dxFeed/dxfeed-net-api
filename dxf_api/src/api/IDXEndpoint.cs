@@ -26,7 +26,7 @@ namespace com.dxfeed.api
         NotConnected,
 
         /// <summary>
-        ///     The <see cref="Connect(string)"/>  method was called to establish connection
+        ///     The <see cref="IDXEndpoint.Connect(string)"/>  method was called to establish connection
         ///     to remove endpoint, but connection is not actually established yet or was lost.
         /// </summary>
         Connecting,
@@ -37,7 +37,7 @@ namespace com.dxfeed.api
         Connected,
 
         /// <summary>
-        ///     Endpoint was <see cref="Close()"/>.
+        ///     Endpoint was <see cref="IDXEndpoint.Close()"/>.
         /// </summary>
         Closed
     }
@@ -70,7 +70,7 @@ namespace com.dxfeed.api
         ///     with <see cref="Password(string)"/> to configure service access credentials.
         /// </summary>
         /// <param name="user">User name.</param>
-        /// <returns>This <see cref="DXEndpoint"/>.</returns>
+        /// <returns>This <see cref="IDXEndpoint"/>.</returns>
         /// <exception cref="ArgumentNullException">If <paramref name="user"/> is null.</exception>
         IDXEndpoint User(string user);
 
@@ -80,7 +80,7 @@ namespace com.dxfeed.api
         ///     with <see cref="User(string)"/> to configure service access credentials.
         /// </summary>
         /// <param name="password">Password</param>
-        /// <returns>This <see cref="DXEndpoint"/>.</returns>
+        /// <returns>This <see cref="IDXEndpoint"/>.</returns>
         /// <exception cref="ArgumentNullException">If <paramref name="password"/> is null.</exception>
         IDXEndpoint Password(string password);
 
@@ -122,7 +122,7 @@ namespace com.dxfeed.api
         ///     </para>
         /// </summary>
         /// <param name="address">The data source address.</param>
-        /// <returns>This <see cref="DXEndpoint"/>.</returns>
+        /// <returns>This <see cref="IDXEndpoint"/>.</returns>
         /// <exception cref="ArgumentNullException">If <paramref name="address"/> is null.</exception>
         IDXEndpoint Connect(string address);
 

@@ -87,6 +87,7 @@ namespace com.dxfeed.native {
 
         /// <summary>
         ///   The dictionary os states for each order view in the format:
+        /// <remarks><!-- for doxygen --></remarks>
         ///   <code>
         ///     map[symbol-of-order-view] = state
         ///   </code>

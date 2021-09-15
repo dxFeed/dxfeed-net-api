@@ -135,7 +135,6 @@ namespace com.dxfeed.api.events
     /// </remarks>
     public interface IDxIndexedEvent : IDxEventType
     {
-
         /// <summary>
         ///     Returns source of this event.
         /// </summary>
@@ -278,5 +277,4 @@ namespace com.dxfeed.api.events
     {
         //Note: no extra fields
     }
-
 }

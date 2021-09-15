@@ -23,7 +23,6 @@ namespace com.dxfeed.api
     /// <summary>
     ///     Class provides methods for collecting and storing lasting events.
     /// </summary>
-    [Obsolete("DXFeedLastingEventsCollector class is deprecated and will removed in 9.0.0 version. Please use NativeConnection\\NativeSubscription")]
     internal class DXFeedLastingEventsCollector :
         IDxCandleListener,
         IDxGreeksListener,
@@ -261,7 +260,6 @@ namespace com.dxfeed.api
     ///     expands with universal event listener.
     /// </summary>
     /// <typeparam name="E">The type of event.</typeparam>
-    [Obsolete("LastingEventsCollector class is deprecated and will removed in 9.0.0 version. Please use NativeConnection\\NativeSubscription")]
     internal class LastingEventsCollector<E> : DXFeedLastingEventsCollector, IDXFeedEventListener<E>
         where E : class, IDxEventType
     {

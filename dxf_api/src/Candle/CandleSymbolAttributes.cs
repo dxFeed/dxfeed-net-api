@@ -9,6 +9,8 @@ If a copy of the MPL was not distributed with this file, You can obtain one at h
 
 #endregion
 
+using System;
+
 namespace com.dxfeed.api.candle
 {
     /// <summary>

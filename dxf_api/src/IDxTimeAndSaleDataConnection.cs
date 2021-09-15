@@ -27,9 +27,9 @@ namespace com.dxfeed.api
         /// Asynchronously returns a "snapshot" of TnS data for the specified symbols and period.
         /// </summary>
         /// <param name="symbols">
-        /// The TnS symbols (Example: composite: AAPL, regional: AAPL&A ... AAPL&Z)
-        /// It is possible to subscribe to regional TnS by specifying, for example, the AAPL&Q symbol. 
-        /// In this case, the service will return composite (Scope = Composite !) TnS with the TimeAndSale (not TimeAndSale&Q) record type and the AAPL&Q symbol (like a candle) 
+        /// The TnS symbols (Example: composite: AAPL, regional: AAPL&amp;A ... AAPL&amp;Z)
+        /// It is possible to subscribe to regional TnS by specifying, for example, the AAPL&amp;Q symbol. 
+        /// In this case, the service will return composite (Scope = Composite !) TnS with the TimeAndSale (not TimeAndSale&amp;Q) record type and the AAPL&amp;Q symbol (like a candle) 
         /// </param>
         /// <param name="fromTime">The time, inclusive, to request events from.</param>
         /// <param name="toTime">The time, inclusive, to request events to.</param>

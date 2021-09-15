@@ -14,6 +14,9 @@ using com.dxfeed.api.events;
 
 namespace com.dxfeed.api
 {
+    /// <summary>
+    /// Wrapper interface for the formation of the price level book
+    /// </summary>
     public interface IDxPriceLevelBook : IDisposable
     {
         /// <summary>

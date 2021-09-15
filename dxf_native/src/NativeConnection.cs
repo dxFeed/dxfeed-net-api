@@ -201,7 +201,8 @@ namespace com.dxfeed.native
 
         /// <summary>
         /// Sets a handler that will be called when a server heartbeat arrives and contains non empty payload
-        ///
+        /// <br/>
+        /// <remarks><!-- for doxygen --></remarks>
         /// <example>
         /// <code>
         /// connection.SetOnServerHeartbeatHandler((connection, time, lagMark, rtt) => {

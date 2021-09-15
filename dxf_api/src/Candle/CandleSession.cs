@@ -28,7 +28,7 @@ namespace com.dxfeed.api.candle
     /// {@link com.dxfeed.api.events.market.MarketEventSymbols#RemoveAttributeStringByKey(string, string)
     /// MarketEventSymbols.RemoveAttributeStringByKey} methods.
     ///
-    /// <p> {@link #ANY} session is a default.
+    /// <p/> {@link #ANY} session is a default.
     /// The key to use with these methods is available via
     /// {@link #ATTRIBUTE_KEY} constant.
     /// The value that this key shall be set to is equal to

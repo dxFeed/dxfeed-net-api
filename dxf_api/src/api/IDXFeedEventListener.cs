@@ -18,7 +18,6 @@ namespace com.dxfeed.api
     ///     The listener interface for receiving events of the specified type E.
     /// </summary>
     /// <typeparam name="E">The type of events.</typeparam>
-    [Obsolete("IDXFeedEventListener interface is deprecated and will removed in 9.0.0 version. Please use NativeConnection\\NativeSubscription")]
     public interface IDXFeedEventListener<E>
     {
         /// <summary>

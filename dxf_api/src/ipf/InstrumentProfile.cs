@@ -634,9 +634,9 @@ namespace com.dxfeed.ipf
         /// Returns maturity month-year as provided for corresponding FIX tag (200).
         /// It can use several different formats depending on data source:
         /// <ul>
-        /// <li>YYYYMM – if only year and month are specified
-        /// <li>YYYYMMDD – if full date is specified
-        /// <li>YYYYMMwN – if week number (within a month) is specified
+        /// <li>YYYYMM – if only year and month are specified</li>
+        /// <li>YYYYMMDD – if full date is specified</li>
+        /// <li>YYYYMMwN – if week number (within a month) is specified</li>
         /// </ul>
         /// </summary>
         /// <returns>Maturity month-year as provided for corresponding FIX tag (200).</returns>
@@ -649,9 +649,9 @@ namespace com.dxfeed.ipf
         /// Changes maturity month-year as provided for corresponding FIX tag (200).
         /// It can use several different formats depending on data source:
         /// <ul>
-        /// <li>YYYYMM – if only year and month are specified
-        /// <li>YYYYMMDD – if full date is specified
-        /// <li>YYYYMMwN – if week number (within a month) is specified
+        /// <li>YYYYMM – if only year and month are specified</li>
+        /// <li>YYYYMMDD – if full date is specified</li>
+        /// <li>YYYYMMwN – if week number (within a month) is specified</li>
         /// </ul>
         /// </summary>
         /// <param name="mmy">Maturity month-year as provided for corresponding FIX tag (200).</param>
@@ -724,13 +724,13 @@ namespace com.dxfeed.ipf
         /// Returns type of option.
         /// It shall use one of following values:
         /// <ul>
-        /// <li>STAN = Standard Options
-        /// <li>LEAP = Long-term Equity AnticiPation Securities
-        /// <li>SDO = Special Dated Options
-        /// <li>BINY = Binary Options
-        /// <li>FLEX = FLexible EXchange Options
-        /// <li>VSO = Variable Start Options
-        /// <li>RNGE = Range
+        /// <li>STAN = Standard Options</li>
+        /// <li>LEAP = Long-term Equity AnticiPation Securities</li>
+        /// <li>SDO = Special Dated Options</li>
+        /// <li>BINY = Binary Options</li>
+        /// <li>FLEX = FLexible EXchange Options</li>
+        /// <li>VSO = Variable Start Options</li>
+        /// <li>RNGE = Range</li>
         /// </ul>
         /// </summary>
         /// <returns>Type of option.</returns>
@@ -743,13 +743,13 @@ namespace com.dxfeed.ipf
         /// Changes type of option.
         /// It shall use one of following values:
         /// <ul>
-        /// <li>STAN = Standard Options
-        /// <li>LEAP = Long-term Equity AnticiPation Securities
-        /// <li>SDO = Special Dated Options
-        /// <li>BINY = Binary Options
-        /// <li>FLEX = FLexible EXchange Options
-        /// <li>VSO = Variable Start Options
-        /// <li>RNGE = Range
+        /// <li>STAN = Standard Options</li>
+        /// <li>LEAP = Long-term Equity AnticiPation Securities</li>
+        /// <li>SDO = Special Dated Options</li>
+        /// <li>BINY = Binary Options</li>
+        /// <li>FLEX = FLexible EXchange Options</li>
+        /// <li>VSO = Variable Start Options</li>
+        /// <li>RNGE = Range</li>
         /// </ul>
         /// </summary>
         /// <param name="optionType">Type of option.</param>
@@ -1153,7 +1153,7 @@ namespace com.dxfeed.ipf
         /// <summary>
         /// Compares this profile with the specified profile for order. Returns a negative integer, zero,
         /// or a positive integer as this object is less than, equal to, or greater than the specified object.
-        /// <p>
+        /// <p/>
         /// The natural ordering implied by this method is designed for convenient data representation
         /// in a file and shall not be used for business purposes.
         /// </summary>

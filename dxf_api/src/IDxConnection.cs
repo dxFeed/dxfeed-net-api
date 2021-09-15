@@ -132,6 +132,7 @@ namespace com.dxfeed.api
         /// <br/>
         /// By default, the algorithm is used on the completion of the timeout request. Default Timeout: 5000 ms.
         /// <br/>
+        /// <remarks><!-- for doxygen --></remarks>
         /// <example>
         /// Example #1
         /// <code>
@@ -155,7 +156,7 @@ namespace com.dxfeed.api
         /// </code>
         /// </example>
         /// </summary>
-        /// <param name="eventType">The event type. Now supported all IDxIndexedEvent types except Order & SpreadOrder. TheoPrice and Underlying are not supported yet.</param>
+        /// <param name="eventType">The event type. Now supported all IDxIndexedEvent types except Order &amp; SpreadOrder. TheoPrice and Underlying are not supported yet.</param>
         /// <param name="symbol">The event symbol. Single symbol name.</param>
         /// <param name="fromTime">The time, inclusive, to request events from.</param>
         /// <param name="toTime">The time, inclusive, to request events to.</param>
@@ -167,6 +168,7 @@ namespace com.dxfeed.api
         /// <summary>
         /// Asynchronously returns a "snapshot" of data for the specified period
         /// <br/>
+        /// <remarks><!-- for doxygen --></remarks>
         /// <example>
         /// Example #1
         /// <code>
@@ -192,7 +194,7 @@ namespace com.dxfeed.api
         /// </code>
         /// </example>
         /// </summary>
-        /// <param name="eventType">The event type. Now supported all IDxIndexedEvent types except Order & SpreadOrder. TheoPrice and Underlying are not supported yet.</param>
+        /// <param name="eventType">The event type. Now supported all IDxIndexedEvent types except Order &amp; SpreadOrder. TheoPrice and Underlying are not supported yet.</param>
         /// <param name="symbol">The event symbol. Single symbol name.</param>
         /// <param name="fromTime">The time, inclusive, to request events from.</param>
         /// <param name="toTime">The time, inclusive, to request events to.</param>
@@ -205,6 +207,7 @@ namespace com.dxfeed.api
         /// <summary>
         /// Asynchronously returns a "snapshot" of data for the specified period.
         /// <br/>
+        /// <remarks><!-- for doxygen --></remarks>
         /// <example>
         /// Example #1
         /// <code>
@@ -230,7 +233,7 @@ namespace com.dxfeed.api
         /// </code>
         /// </example>
         /// </summary>
-        /// <param name="eventType">The event type. Now supported all IDxIndexedEvent types except Order & SpreadOrder. TheoPrice and Underlying are not supported yet.</param>
+        /// <param name="eventType">The event type. Now supported all IDxIndexedEvent types except Order &amp; SpreadOrder. TheoPrice and Underlying are not supported yet.</param>
         /// <param name="symbol">The event symbol. Single symbol name.</param>
         /// <param name="fromTime">The time, inclusive, to request events from.</param>
         /// <param name="toTime">The time, inclusive, to request events to.</param>
@@ -243,6 +246,7 @@ namespace com.dxfeed.api
         /// <summary>
         /// Asynchronously returns a "snapshot" of data for the specified period.
         /// <br/>
+        /// <remarks><!-- for doxygen --></remarks>
         /// <example>
         /// Example #1
         /// <code>
@@ -277,7 +281,7 @@ namespace com.dxfeed.api
         /// </code>
         /// </example>
         /// </summary>
-        /// <param name="eventType">The event type. Now supported all IDxIndexedEvent types except Order & SpreadOrder. TheoPrice and Underlying are not supported yet.</param>
+        /// <param name="eventType">The event type. Now supported all IDxIndexedEvent types except Order &amp; SpreadOrder. TheoPrice and Underlying are not supported yet.</param>
         /// <param name="symbol">The event symbol. Single symbol name.</param>
         /// <param name="fromTime">The time, inclusive, to request events from.</param>
         /// <param name="toTime">The time, inclusive, to request events to.</param>
@@ -359,7 +363,7 @@ namespace com.dxfeed.api
         IDictionary<string, string> Properties { get; }
 
         /// <summary>
-        ///   Retrieves string with current connected address in format `<host>:<port>`. If return value is NULL
+        ///   Retrieves string with current connected address in format "&lt;host&gt;:&lt;port&gt;". If return value is NULL
         ///   then connection is not connected (reconnection, no valid addresses, closed connection and others).
         /// </summary>
         string ConnectedAddress { get; }

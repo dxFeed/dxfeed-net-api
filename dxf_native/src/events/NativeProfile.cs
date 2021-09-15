@@ -18,6 +18,11 @@ using System.Globalization;
 
 namespace com.dxfeed.native.events
 {
+    /// <summary>
+    /// Profile information snapshot that contains security instrument description.
+    /// It represents the most recent information that is available about the traded security
+    /// on the market at any given moment of time.
+    /// </summary>
     public class NativeProfile : MarketEventImpl, IDxProfile
     {
         internal unsafe NativeProfile(DxProfile* p, string symbol) : base(symbol)
@@ -66,6 +71,7 @@ namespace com.dxfeed.native.events
             RawFlags = profile.RawFlags;
         }
 
+        /// <inheritdoc />
         public override string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture,
@@ -97,6 +103,7 @@ namespace com.dxfeed.native.events
 
         #region Implementation of ICloneable
 
+        /// <inheritdoc />
         public override object Clone()
         {
             return new NativeProfile(this);

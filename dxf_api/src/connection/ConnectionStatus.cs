@@ -13,10 +13,25 @@ using System;
 
 namespace com.dxfeed.api.connection
 {
+    /// <summary>
+    /// The native connection status
+    /// </summary>
     public enum ConnectionStatus : int {
+        /// <summary>
+        /// No connection
+        /// </summary>
         NotConnected = 0,
+        /// <summary>
+        /// Connected but not authorized
+        /// </summary>
         Connected = 1,
+        /// <summary>
+        /// Connected but login required
+        /// </summary>
         LoginRequired = 2,
+        /// <summary>
+        /// Connected and authorized
+        /// </summary>
         Authorized = 3
     }
 }

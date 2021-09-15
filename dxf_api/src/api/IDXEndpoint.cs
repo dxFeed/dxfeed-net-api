@@ -18,7 +18,6 @@ namespace com.dxfeed.api
     /// <summary>
     ///     Represents the current state of endpoint.
     /// </summary>
-    [Obsolete("DXEndpointState enum is deprecated and will removed in 9.0.0 version. Please use NativeConnection\\NativeSubscription")]
     public enum DXEndpointState
     {
         /// <summary>
@@ -27,7 +26,7 @@ namespace com.dxfeed.api
         NotConnected,
 
         /// <summary>
-        ///     The <see cref="Connect(string)"/>  method was called to establish connection
+        ///     The <see cref="IDXEndpoint.Connect(string)"/>  method was called to establish connection
         ///     to remove endpoint, but connection is not actually established yet or was lost.
         /// </summary>
         Connecting,
@@ -38,7 +37,7 @@ namespace com.dxfeed.api
         Connected,
 
         /// <summary>
-        ///     Endpoint was <see cref="Close()"/>.
+        ///     Endpoint was <see cref="IDXEndpoint.Close()"/>.
         /// </summary>
         Closed
     }
@@ -48,13 +47,11 @@ namespace com.dxfeed.api
     /// </summary>
     /// <param name="sender"><see cref="IDXEndpoint"/> instance.</param>
     /// <param name="e">Event arguments.</param>
-    [Obsolete("OnEndpointClosingEventHandler delegate is deprecated and will removed in 9.0.0 version. Please use NativeConnection\\NativeSubscription")]
     public delegate void OnEndpointClosingEventHandler(object sender, EventArgs e);
 
     /// <summary>
     ///     Manages network connections to dxFeed.
     /// </summary>
-    [Obsolete("IDXEndpoint interface is deprecated and will removed in 9.0.0 version. Please use NativeConnection\\NativeSubscription")]
     public interface IDXEndpoint : IDisposable
     {
         /// <summary>
@@ -73,7 +70,7 @@ namespace com.dxfeed.api
         ///     with <see cref="Password(string)"/> to configure service access credentials.
         /// </summary>
         /// <param name="user">User name.</param>
-        /// <returns>This <see cref="DXEndpoint"/>.</returns>
+        /// <returns>This <see cref="IDXEndpoint"/>.</returns>
         /// <exception cref="ArgumentNullException">If <paramref name="user"/> is null.</exception>
         IDXEndpoint User(string user);
 
@@ -83,7 +80,7 @@ namespace com.dxfeed.api
         ///     with <see cref="User(string)"/> to configure service access credentials.
         /// </summary>
         /// <param name="password">Password</param>
-        /// <returns>This <see cref="DXEndpoint"/>.</returns>
+        /// <returns>This <see cref="IDXEndpoint"/>.</returns>
         /// <exception cref="ArgumentNullException">If <paramref name="password"/> is null.</exception>
         IDXEndpoint Password(string password);
 
@@ -125,7 +122,7 @@ namespace com.dxfeed.api
         ///     </para>
         /// </summary>
         /// <param name="address">The data source address.</param>
-        /// <returns>This <see cref="DXEndpoint"/>.</returns>
+        /// <returns>This <see cref="IDXEndpoint"/>.</returns>
         /// <exception cref="ArgumentNullException">If <paramref name="address"/> is null.</exception>
         IDXEndpoint Connect(string address);
 

@@ -51,6 +51,7 @@ namespace com.dxfeed.native.events
 
         #endregion
 
+        /// <inheritdoc />
         public abstract object Clone();
     }
 }

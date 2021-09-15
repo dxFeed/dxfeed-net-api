@@ -26,6 +26,7 @@ namespace com.dxfeed.io
     /// </p>
     /// This reader provides its own buffering but does not perform decoding.
     /// The correct way to efficiently read CSV file with UTF-8 encoding is as follows:
+    /// <remarks><!-- for doxygen --></remarks>
     /// <example>
     /// <code>
     /// CSVReader reader = new CSVReader(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8));

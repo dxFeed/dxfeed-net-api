@@ -13,6 +13,9 @@ using System;
 
 namespace com.dxfeed.api
 {
+    /// <summary>
+    /// Wrapper interface for the formation of the regional book (by regional Quotes)
+    /// </summary>
     public interface IDxRegionalBook : IDisposable
     {
     }

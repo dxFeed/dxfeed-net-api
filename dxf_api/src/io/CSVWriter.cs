@@ -18,10 +18,10 @@ namespace com.dxfeed.io
     /// <summary>
     /// Writes data to the stream using Comma-Separated Values (CSV) format.
     /// See <a href="http://www.rfc-editor.org/rfc/rfc4180.txt">RFC 4180</a> for CSV format specification.
-    /// <p>
+    /// <p/>
     /// This writer supports records with arbitrary (variable) number of fields, multiline fields,
     /// custom separator and quote characters. It uses <b>CRLF</b> sequence to separate records.
-    /// <p>
+    /// <p/>
     /// This writer does not provide buffering of any sort and does not perform encoding.
     /// The correct way to efficiently write CSV file with UTF-8 encoding is as follows:
     /// <pre>

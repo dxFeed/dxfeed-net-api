@@ -41,6 +41,7 @@ namespace com.dxfeed.native
         /// <br/>
         /// The TOML format specification: https://toml.io/en/v1.0.0-rc.2
         /// <br/>
+        /// <remarks><!-- for doxygen --></remarks>
         /// <example>
         /// Example #1
         /// <code>
@@ -72,7 +73,8 @@ namespace com.dxfeed.native
         ///
         /// The config file sample: [Sample](https://github.com/dxFeed/dxfeed-net-api/dxfeed-api-config.sample.toml)
         /// The TOML format specification: https://toml.io/en/v1.0.0-rc.2
-        ///
+        /// <br/>
+        /// <remarks><!-- for doxygen --></remarks>
         /// <example>
         /// <code>
         /// NativeTools.LoadConfigFromFile("./dxfeed-api-config.toml");

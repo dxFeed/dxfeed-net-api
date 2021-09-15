@@ -14,11 +14,30 @@ using com.dxfeed.api.data;
 
 namespace com.dxfeed.api.events
 {
+    /// <summary>
+    /// The interface that describes the event buffer
+    /// </summary>
+    /// <typeparam name="T">The event class</typeparam>
     public interface IDxEventBuf<out T> : IEnumerable<T>
     {
+        /// <summary>
+        /// The event type
+        /// </summary>
         EventType EventType { get; }
+        
+        /// <summary>
+        /// The event symbol
+        /// </summary>
         string Symbol { get; }
+        
+        /// <summary>
+        /// The buffer size
+        /// </summary>
         int Size { get; }
+        
+        /// <summary>
+        /// The buffer's event params
+        /// </summary>
         EventParams EventParams { get; }
     }
 }

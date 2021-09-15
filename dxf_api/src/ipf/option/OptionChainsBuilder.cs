@@ -189,9 +189,9 @@ namespace com.dxfeed.ipf.option
         ///  Changes maturity month-year as provided for corresponding FIX tag (200).
         /// It can use several different formats depending on data source:
         /// <ul>
-        /// <li>YYYYMM – if only year and month are specified
-        /// <li>YYYYMMDD – if full date is specified
-        /// <li>YYYYMMwN – if week number(within a month) is specified
+        /// <li>YYYYMM – if only year and month are specified</li>
+        /// <li>YYYYMMDD – if full date is specified</li>
+        /// <li>YYYYMMwN – if week number(within a month) is specified</li>
         /// </ul>
         /// </summary>
         /// <param name="mmy">maturity month-year as provided for corresponding FIX tag (200).</param>
@@ -205,19 +205,19 @@ namespace com.dxfeed.ipf.option
         /// Changes type of option.
         /// It shall use one of following values:
         /// <ul>
-        /// <li>STAN = Standard Options
-        /// <li>LEAP = Long-term Equity AnticiPation Securities
-        /// <li>SDO = Special Dated Options
-        /// <li>BINY = Binary Options
-        /// <li>FLEX = FLexible EXchange Options
-        /// <li>VSO = Variable Start Options
-        /// <li>RNGE = Range
+        /// <li>STAN = Standard Options</li>
+        /// <li>LEAP = Long-term Equity Anticipation Securities</li>
+        /// <li>SDO = Special Dated Options</li>
+        /// <li>BINY = Binary Options</li>
+        /// <li>FLEX = FLexible EXchange Options</li>
+        /// <li>VSO = Variable Start Options</li>
+        /// <li>RNGE = Range</li>
         /// </ul>
         /// </summary>
         /// <param name="optionType">type of option.</param>
         public void SetOptionType(string optionType)
         {
-            series.OptionType = optionType == null || optionType.Length == 0 ? "" : optionType;
+            series.OptionType = string.IsNullOrEmpty(optionType) ? "" : optionType;
         }
 
         /// <summary>
@@ -226,7 +226,7 @@ namespace com.dxfeed.ipf.option
         /// <param name="expirationStyle">expiration cycle style.</param>
         public void SetExpirationStyle(string expirationStyle)
         {
-            series.ExpirationStyle = expirationStyle == null || expirationStyle.Length == 0 ? "" : expirationStyle;
+            series.ExpirationStyle = string.IsNullOrEmpty(expirationStyle) ? "" : expirationStyle;
         }
 
         /// <summary>
@@ -235,7 +235,7 @@ namespace com.dxfeed.ipf.option
         /// <param name="settlementStyle">settlement price determination style.</param>
         public void SetSettlementStyle(string settlementStyle)
         {
-            series.SettlementStyle = settlementStyle == null || settlementStyle.Length == 0 ? "" : settlementStyle;
+            series.SettlementStyle = string.IsNullOrEmpty(settlementStyle) ? "" : settlementStyle;
         }
 
         /// <summary>
@@ -245,10 +245,10 @@ namespace com.dxfeed.ipf.option
         /// to all other currently set attributes.This method is safe in the sense that is ignores
         /// illegal state of the builder.It only adds an option when all of the following conditions are met:
         /// <ul>
-        ///  <li>{@link #CFI CFI code} is set and starts with either "OC" for call or "OP" for put.
-        ///  <li>{@link #SetExpiration(int) expiration} is set and is not zero;
-        ///  <li>{@link #Strike strike} is set and is not `Double.NaN` nor `Double.isInfinite()`;
-        ///  <li>{@link #Product product} or {@link #Underlying underlying symbol} are set;
+        ///  <li>{@link #CFI CFI code} is set and starts with either "OC" for call or "OP" for put.</li>
+        ///  <li>{@link #SetExpiration(int) expiration} is set and is not zero;</li>
+        ///  <li>{@link #Strike strike} is set and is not `Double.NaN` nor `Double.isInfinite()`;</li>
+        ///  <li>{@link #Product product} or {@link #Underlying underlying symbol} are set;</li>
         /// </ul>
         /// All the attributes remain set as before after the call to this method, but
         /// {@link #Chains() chains} are updated correspondingly.

@@ -14,6 +14,9 @@ using com.dxfeed.api.events;
 
 namespace com.dxfeed.api.extras
 {
+    /// <summary>
+    /// The simple event printer class
+    /// </summary>
     public class EventPrinter :
         IDxFeedListener,
         IDxTradeETHListener,
@@ -27,6 +30,12 @@ namespace com.dxfeed.api.extras
     {
         #region Implementation of IDxFeedListener
 
+        /// <summary>
+        /// Prints the Quote event buffer
+        /// </summary>
+        /// <param name="buf">The event buffer</param>
+        /// <typeparam name="TB">The event buffer type</typeparam>
+        /// <typeparam name="TE">The event type</typeparam>
         public void OnQuote<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
             where TE : IDxQuote
@@ -35,6 +44,12 @@ namespace com.dxfeed.api.extras
                 Console.WriteLine($"{buf.Symbol} {q}");
         }
 
+        /// <summary>
+        /// Prints the Trade event buffer
+        /// </summary>
+        /// <param name="buf">The event buffer</param>
+        /// <typeparam name="TB">The event buffer type</typeparam>
+        /// <typeparam name="TE">The event type</typeparam>
         public void OnTrade<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
             where TE : IDxTrade
@@ -43,6 +58,12 @@ namespace com.dxfeed.api.extras
                 Console.WriteLine($"{buf.Symbol} {t}");
         }
 
+        /// <summary>
+        /// Prints the Order event buffer
+        /// </summary>
+        /// <param name="buf">The event buffer</param>
+        /// <typeparam name="TB">The event buffer type</typeparam>
+        /// <typeparam name="TE">The event type</typeparam>
         public void OnOrder<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
             where TE : IDxOrder
@@ -51,6 +72,12 @@ namespace com.dxfeed.api.extras
                 Console.WriteLine($"{buf.Symbol} {o}");
         }
 
+        /// <summary>
+        /// Prints the Profile event buffer
+        /// </summary>
+        /// <param name="buf">The event buffer</param>
+        /// <typeparam name="TB">The event buffer type</typeparam>
+        /// <typeparam name="TE">The event type</typeparam>
         public void OnProfile<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
             where TE : IDxProfile
@@ -59,6 +86,12 @@ namespace com.dxfeed.api.extras
                 Console.WriteLine($"{buf.Symbol} {p}");
         }
 
+        /// <summary>
+        /// Prints the Summary event buffer
+        /// </summary>
+        /// <param name="buf">The event buffer</param>
+        /// <typeparam name="TB">The event buffer type</typeparam>
+        /// <typeparam name="TE">The event type</typeparam>
         public void OnSummary<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
             where TE : IDxSummary
@@ -67,6 +100,12 @@ namespace com.dxfeed.api.extras
                 Console.WriteLine($"{buf.Symbol} {f}");
         }
 
+        /// <summary>
+        /// Prints the TimeAndSale event buffer
+        /// </summary>
+        /// <param name="buf">The event buffer</param>
+        /// <typeparam name="TB">The event buffer type</typeparam>
+        /// <typeparam name="TE">The event type</typeparam>
         public void OnTimeAndSale<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
             where TE : IDxTimeAndSale
@@ -79,6 +118,12 @@ namespace com.dxfeed.api.extras
 
         #region Implementation of IDxTradeEthListener
 
+        /// <summary>
+        /// Prints the TradeETH event buffer
+        /// </summary>
+        /// <param name="buf">The event buffer</param>
+        /// <typeparam name="TB">The event buffer type</typeparam>
+        /// <typeparam name="TE">The event type</typeparam>
         public void OnTradeETH<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
             where TE : IDxTradeETH
@@ -91,6 +136,12 @@ namespace com.dxfeed.api.extras
 
         #region Implementation of IDxSpreadOrderListener
 
+        /// <summary>
+        /// Prints the SpreadOrder event buffer
+        /// </summary>
+        /// <param name="buf">The event buffer</param>
+        /// <typeparam name="TB">The event buffer type</typeparam>
+        /// <typeparam name="TE">The event type</typeparam>
         public void OnSpreadOrder<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
             where TE : IDxSpreadOrder
@@ -103,6 +154,12 @@ namespace com.dxfeed.api.extras
 
         #region Implementation of IDxCandleListener
 
+        /// <summary>
+        /// Prints the Candle event buffer
+        /// </summary>
+        /// <param name="buf">The event buffer</param>
+        /// <typeparam name="TB">The event buffer type</typeparam>
+        /// <typeparam name="TE">The event type</typeparam>
         public void OnCandle<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
             where TE : IDxCandle
@@ -115,6 +172,12 @@ namespace com.dxfeed.api.extras
 
         #region Implementation of IDxGreeksListener
 
+        /// <summary>
+        /// Prints the Greeks event buffer
+        /// </summary>
+        /// <param name="buf">The event buffer</param>
+        /// <typeparam name="TB">The event buffer type</typeparam>
+        /// <typeparam name="TE">The event type</typeparam>
         public void OnGreeks<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
             where TE : IDxGreeks
@@ -127,6 +190,12 @@ namespace com.dxfeed.api.extras
 
         #region Implementation of IDxTheoPriceListener
 
+        /// <summary>
+        /// Prints the TheoPrice event buffer
+        /// </summary>
+        /// <param name="buf">The event buffer</param>
+        /// <typeparam name="TB">The event buffer type</typeparam>
+        /// <typeparam name="TE">The event type</typeparam>
         public void OnTheoPrice<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
             where TE : IDxTheoPrice
@@ -139,6 +208,12 @@ namespace com.dxfeed.api.extras
 
         #region Implementation of IDxUnderlyingListener
 
+        /// <summary>
+        /// Prints the Underlying event buffer
+        /// </summary>
+        /// <param name="buf">The event buffer</param>
+        /// <typeparam name="TB">The event buffer type</typeparam>
+        /// <typeparam name="TE">The event type</typeparam>
         public void OnUnderlying<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
             where TE : IDxUnderlying
@@ -151,6 +226,12 @@ namespace com.dxfeed.api.extras
 
         #region Implementation of IDxSeriesListener
 
+        /// <summary>
+        /// Prints the Series event buffer
+        /// </summary>
+        /// <param name="buf">The event buffer</param>
+        /// <typeparam name="TB">The event buffer type</typeparam>
+        /// <typeparam name="TE">The event type</typeparam>
         public void OnSeries<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
             where TE : IDxSeries
@@ -163,6 +244,12 @@ namespace com.dxfeed.api.extras
 
         #region Implementation of IDxConfigurationListener
 
+        /// <summary>
+        /// Prints the Configuration event buffer
+        /// </summary>
+        /// <param name="buf">The event buffer</param>
+        /// <typeparam name="TB">The event buffer type</typeparam>
+        /// <typeparam name="TE">The event type</typeparam>
         public void OnConfiguration<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
             where TE : IDxConfiguration

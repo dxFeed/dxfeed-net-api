@@ -55,6 +55,9 @@ namespace com.dxfeed.api.data
         /// amount of data was reached and while there still might be more data available, it will not be provided
         /// </summary>
         SnapshotSnip  = 0x10,
+        /// <summary>
+        /// 
+        /// </summary>
         RemoveSymbol  = 0x20
     }
 }

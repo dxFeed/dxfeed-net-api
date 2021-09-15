@@ -136,9 +136,9 @@ namespace com.dxfeed.ipf.option
         /// Maturity month-year as provided for corresponding FIX tag (200).
         /// It can use several different formats depending on data source:
         /// <ul>
-        /// <li>YYYYMM – if only year and month are specified
-        /// <li>YYYYMMDD – if full date is specified
-        /// <li>YYYYMMwN – if week number(within a month) is specified
+        /// <li>YYYYMM – if only year and month are specified</li>
+        /// <li>YYYYMMDD – if full date is specified</li>
+        /// <li>YYYYMMwN – if week number(within a month) is specified</li>
         /// </ul>
         /// </summary>
         /// <value>Gets maturity month-year as provided for corresponding FIX tag(200).</value>
@@ -152,13 +152,13 @@ namespace com.dxfeed.ipf.option
         /// Type of option.
         /// It shall use one of following values:
         /// <ul>
-        /// <li>STAN = Standard Options
-        /// <li>LEAP = Long-term Equity AnticiPation Securities
-        /// <li>SDO = Special Dated Options
-        /// <li>BINY = Binary Options
-        /// <li>FLEX = FLexible EXchange Options
-        /// <li>VSO = Variable Start Options
-        /// <li>RNGE = Range
+        /// <li>STAN = Standard Options</li>
+        /// <li>LEAP = Long-term Equity Anticipation Securities</li>
+        /// <li>SDO = Special Dated Options</li>
+        /// <li>BINY = Binary Options</li>
+        /// <li>FLEX = FLexible EXchange Options</li>
+        /// <li>VSO = Variable Start Options</li>
+        /// <li>RNGE = Range</li>
         /// </ul>
         /// </summary>
         /// <value>Gets type of option.</value>
@@ -247,7 +247,7 @@ namespace com.dxfeed.ipf.option
 
         /// <summary>
         /// Returns n strikes that are centered around a specified strike value.
-        /// throws IllegalArgumentException when n < 0.
+        /// throws IllegalArgumentException when n &lt; 0.
         /// </summary>
         /// <param name="n">the maximal number of strikes to return.</param>
         /// <param name="strike">the center strike.</param>

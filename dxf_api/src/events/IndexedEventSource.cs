@@ -11,6 +11,10 @@ If a copy of the MPL was not distributed with this file, You can obtain one at h
 
 namespace com.dxfeed.api.events
 {
+    /// <summary>
+    /// Source identifier for <see cref="IDxIndexedEvent"/>
+    /// See <see cref="IDxIndexedEvent.Source"/>
+    /// </summary>
     public class IndexedEventSource
     {
         /// <summary>
@@ -19,6 +23,11 @@ namespace com.dxfeed.api.events
         /// </summary>
         public static readonly IndexedEventSource DEFAULT = new IndexedEventSource(0, "DEFAULT");
 
+        /// <summary>
+        /// Creates an indexed event source by id and name
+        /// </summary>
+        /// <param name="id">The source ID</param>
+        /// <param name="name">The source name</param>
         public IndexedEventSource(int id, string name)
         {
             Id = id;

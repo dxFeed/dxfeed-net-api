@@ -55,8 +55,14 @@ namespace com.dxfeed.native
         private OnServerHeartbeatHandler onServerHeartbeatHandler;
         private readonly ISet<IDxSubscription> subscriptions = new HashSet<IDxSubscription>();
 
+        /// <summary>
+        /// Delegate describing the subscription creation event handler
+        /// </summary>
         public delegate void OnCreationEventHandler(object sender, EventArgs e);
 
+        /// <summary>
+        /// Subscription creation event handler
+        /// </summary>
         public event OnCreationEventHandler OnCreation;
 
         internal IntPtr Handle => handle;
@@ -246,19 +252,19 @@ namespace com.dxfeed.native
 
         private int OnNativeCreate(IntPtr connection, IntPtr userData)
         {
-            OnCreation?.Invoke(this, new EventArgs());
+            OnCreation?.Invoke(this, EventArgs.Empty);
             return 0;
         }
 
-        internal void RemoveSubscription(IDxSubscription subscription)
+        internal bool RemoveSubscription(IDxSubscription subscription)
         {
-            subscriptions.Remove(subscription);
+            return subscriptions.Remove(subscription);
         }
 
         #region Implementation of IDxConnection
 
         /// <summary>
-        ///     Disconnect from the server
+        ///     Disconnects from the server
         /// </summary>
         /// <remarks>
         ///     Don't call this method inside any listeners and callbacks of NativeSubscription, NativeConnection,
@@ -272,6 +278,7 @@ namespace com.dxfeed.native
 
             C.CheckOk(C.Instance.dxf_close_connection(handle));
             handle = IntPtr.Zero;
+            subscriptions.Clear();
         }
 
         /// <summary>
@@ -584,7 +591,8 @@ namespace com.dxfeed.native
         /// <param name="listener"></param>
         /// <returns>subscription object</returns>
         /// <exception cref="DxException"></exception>
-        [Obsolete("CreateOrderViewSubscription method is deprecated and will removed in 9.0.0 version. Please use NativeConnection\\NativeSubscription")]
+        [Obsolete(
+            "CreateOrderViewSubscription method is deprecated and will removed in 9.0.0 version. Please use NativeConnection\\NativeSubscription")]
         public IDxSubscription CreateOrderViewSubscription(IDxOrderViewListener listener)
         {
             if (handle == IntPtr.Zero)

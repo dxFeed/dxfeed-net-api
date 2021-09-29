@@ -205,17 +205,22 @@ namespace com.dxfeed.native
         /// </remarks>
         public void Dispose()
         {
+            var needToClose = false;
+            
             if (connection != null)
             {
-                connection.RemoveSubscription(this);
+                needToClose = connection.RemoveSubscription(this);
                 connection = null;
             }
 
             if (snapshotPtr == InvalidSnapshot) return;
 
-            C.CheckOk(C.Instance.dxf_close_snapshot(snapshotPtr));
-            snapshotPtr = InvalidSnapshot;
+            if (needToClose)
+            {
+                C.CheckOk(C.Instance.dxf_close_snapshot(snapshotPtr));
+            }
 
+            snapshotPtr = InvalidSnapshot;
             eventType = EventType.None;
         }
 

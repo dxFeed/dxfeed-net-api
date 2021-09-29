@@ -10,10 +10,8 @@ If a copy of the MPL was not distributed with this file, You can obtain one at h
 #endregion
 
 using System;
-using System.Threading;
 using com.dxfeed.api;
 using com.dxfeed.api.data;
-using com.dxfeed.api.events;
 using com.dxfeed.native;
 
 namespace dxf_events_sample {
@@ -21,12 +19,12 @@ namespace dxf_events_sample {
     ///     This sample class demonstrates subscription to events.
     ///     The sample configures via command line, subscribes to events and prints received data.
     /// </summary>
-    internal class Program {
-        private const int HOST_INDEX = 0;
-        private const int EVENT_INDEX = 1;
-        private const int SYMBOL_INDEX = 2;
+    internal static class Program {
+        private const int HostIndex = 0;
+        private const int EventIndex = 1;
+        private const int SymbolIndex = 2;
 
-        private static bool TryParseDateTimeParam(string stringParam, InputParam<DateTime?> param) {
+        private static bool TryParseDateTimeParam(string stringParam, InputParameter<DateTime?> param) {
             DateTime dateTimeValue;
 
             if (!DateTime.TryParse(stringParam, out dateTimeValue)) return false;
@@ -37,7 +35,7 @@ namespace dxf_events_sample {
         }
 
         private static bool TryParseTaggedStringParam(string tag, string paramTagString, string paramString,
-            InputParam<string> param) {
+            InputParameter<string> param) {
             if (!paramTagString.Equals(tag)) return false;
 
             param.Value = paramString;
@@ -54,7 +52,7 @@ namespace dxf_events_sample {
                 Console.WriteLine(
                     "Usage: dxf_events_sample <host:port> <event> <symbol> [<date>] [-T <token>] [-p]\n" +
                     "where\n" +
-                    "    host:port  - The address of dxfeed server (demo.dxfeed.com:7300)\n" +
+                    "    host:port  - The address of dxFeed server (demo.dxfeed.com:7300)\n" +
                     "    event      - Any of the {Profile,Order,Quote,Trade,TimeAndSale,Summary,\n" +
                     "                 TradeETH,SpreadOrder,Greeks,TheoPrice,Underlying,Series,\n" +
                     "                 Configuration}\n" +
@@ -68,20 +66,20 @@ namespace dxf_events_sample {
                 return;
             }
 
-            var address = args[HOST_INDEX];
+            var address = args[HostIndex];
 
             EventType events;
-            if (!Enum.TryParse(args[EVENT_INDEX], true, out events)) {
-                Console.WriteLine($"Unsupported event type: {args[EVENT_INDEX]}");
+            if (!Enum.TryParse(args[EventIndex], true, out events)) {
+                Console.WriteLine($"Unsupported event type: {args[EventIndex]}");
                 return;
             }
 
-            var symbols = args[SYMBOL_INDEX].Split(',');
-            var dateTime = new InputParam<DateTime?>(null);
-            var token = new InputParam<string>(null);
+            var symbols = args[SymbolIndex].Split(',');
+            var dateTime = new InputParameter<DateTime?>(null);
+            var token = new InputParameter<string>(null);
             var logDataTransferFlag = false;
 
-            for (var i = SYMBOL_INDEX + 1; i < args.Length; i++) {
+            for (var i = SymbolIndex + 1; i < args.Length; i++) {
                 if (!dateTime.IsSet && TryParseDateTimeParam(args[i], dateTime)) {
                     continue;
                 }
@@ -117,28 +115,6 @@ namespace dxf_events_sample {
                 Console.WriteLine($"Native exception occurred: {dxException.Message}");
             } catch (Exception exc) {
                 Console.WriteLine($"Exception occurred: {exc.Message}");
-            }
-        }
-
-        private class InputParam<T> {
-            private T value;
-
-            private InputParam() {
-                IsSet = false;
-            }
-
-            public InputParam(T defaultValue) : this() {
-                value = defaultValue;
-            }
-
-            public bool IsSet { get; private set; }
-
-            public T Value {
-                get { return value; }
-                set {
-                    this.value = value;
-                    IsSet = true;
-                }
             }
         }
     }

@@ -24,6 +24,8 @@ namespace com.dxfeed.native
 {
     /// <summary>
     /// Class provides native snapshot subscription
+    ///
+    /// Not thread safe.
     /// </summary>
     public class NativeSnapshotSubscription : IDxSubscription
     {

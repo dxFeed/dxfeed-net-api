@@ -40,6 +40,7 @@ namespace com.dxfeed.native
         private string source = string.Empty;
         private EventType eventType = EventType.None;
         private NativeConnection connection;
+        private bool disposed;
 
         /// <summary>
         /// Invalid snapshot
@@ -196,17 +197,15 @@ namespace com.dxfeed.native
 
         #region Implementation of IDisposable
 
-        /// <summary>
-        /// Disposes the native snapshot subscription
-        /// </summary>
-        /// <remarks>
-        ///     Don't call this method inside any listeners and callbacks of NativeSubscription, NativeConnection,
-        /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
-        /// </remarks>
-        public void Dispose()
+        protected virtual void Dispose(bool disposing)
         {
+            if (disposed) return;
+
+            if (disposing)
+            { }
+
             var needToClose = false;
-            
+
             if (connection != null)
             {
                 needToClose = connection.RemoveSubscription(this);
@@ -222,9 +221,29 @@ namespace com.dxfeed.native
 
             snapshotPtr = InvalidSnapshot;
             eventType = EventType.None;
+
+            disposed = true;
+        }
+
+        /// <summary>
+        /// Disposes the native snapshot subscription
+        /// </summary>
+        /// <remarks>
+        ///     Don't call this method inside any listeners and callbacks of NativeSubscription, NativeConnection,
+        /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
+        /// </remarks>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         #endregion
+
+        ~NativeSnapshotSubscription()
+        {
+            Dispose(false);
+        }
 
         #region Implementation of IDxSubscription
 

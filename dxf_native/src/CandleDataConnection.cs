@@ -126,8 +126,8 @@ namespace com.dxfeed.native
         {
             return "records=Candle&" +
                    $"symbols={string.Join(",", symbols).Replace("&", "[%26]")}&" +
-                   $"start={fromTime.ToUniversalTime():yyyyMMdd-HHmmss}&" +
-                   $"stop={toTime.ToUniversalTime():yyyyMMdd-HHmmss}&" +
+                   $"start={fromTime.ToUniversalTime():yyyyMMdd-HHmmss}Z&" +
+                   $"stop={toTime.ToUniversalTime():yyyyMMdd-HHmmss}Z&" +
                    "format=binary&" +
                    "compression=zip&" +
                    "skipServerTimeCheck";

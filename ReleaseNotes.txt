@@ -1,4 +1,5 @@
 Version 8.5.0
+* [DXFC-271] Fixed a bug with incorrect UTC timezone when requesting data from the CandleWebService
 * [DXFC-266] Improved functioning of CandleDataConnection and TimeAndSaleDataConnection in Blazor\UI applications.
 * [DXFC-268] Fixed a bug with AccessViolationException when the user called Dispose of the subscription after Dispose of the connection. 
 

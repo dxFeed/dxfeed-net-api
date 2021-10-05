@@ -26,6 +26,8 @@ namespace com.dxfeed.native
 {
     /// <summary>
     /// Class provides native event subscription
+    ///
+    /// Not thread safe.
     /// </summary>
     public class NativeSubscription : IDxSubscription
     {
@@ -35,6 +37,7 @@ namespace com.dxfeed.native
         private readonly C.dxf_event_listener_v2_t callback;
         private readonly EventType eventType;
         private NativeConnection connection;
+        private bool disposed;
 
         /// <summary>
         /// Creates the new event subscription.
@@ -322,17 +325,15 @@ namespace com.dxfeed.native
 
         #region Implementation of IDisposable
 
-        /// <summary>
-        /// Disposes the subscription
-        /// </summary>
-        /// <remarks>
-        ///     Don't call this method inside any listeners and callbacks of NativeSubscription, NativeConnection,
-        /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
-        /// </remarks>
-        public void Dispose()
+        protected virtual void Dispose(bool disposing)
         {
+            if (disposed) return;
+
+            if (disposing)
+            { }
+
             var needToClose = false;
-            
+
             if (connection != null)
             {
                 needToClose = connection.RemoveSubscription(this);
@@ -347,6 +348,21 @@ namespace com.dxfeed.native
             }
 
             subscriptionPtr = IntPtr.Zero;
+
+            disposed = true;
+        }
+
+        /// <summary>
+        /// Disposes the subscription
+        /// </summary>
+        /// <remarks>
+        ///     Don't call this method inside any listeners and callbacks of NativeSubscription, NativeConnection,
+        /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
+        /// </remarks>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         #endregion
@@ -697,6 +713,11 @@ namespace com.dxfeed.native
         internal static bool HasCandleSymbol(params string[] symbols)
         {
             return symbols.Any(IsCandleSymbol);
+        }
+
+        ~NativeSubscription()
+        {
+            Dispose(false);
         }
     }
 }

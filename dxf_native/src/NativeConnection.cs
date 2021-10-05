@@ -37,7 +37,9 @@ namespace com.dxfeed.native
 
     /// <inheritdoc />
     /// <summary>
-    ///   Class provides operations with event subscription
+    /// Class provides operations with event subscription.
+    ///
+    /// Not thread safe.
     /// </summary>
     public class NativeConnection : IDxConnection
     {
@@ -66,6 +68,7 @@ namespace com.dxfeed.native
         public event OnCreationEventHandler OnCreation;
 
         internal IntPtr Handle => handle;
+        private bool disposed;
 
         /// <summary>
         /// Creates the new connection
@@ -264,7 +267,7 @@ namespace com.dxfeed.native
         #region Implementation of IDxConnection
 
         /// <summary>
-        ///     Disconnects from the server
+        /// Clears the subscriptions and disconnects from the server
         /// </summary>
         /// <remarks>
         ///     Don't call this method inside any listeners and callbacks of NativeSubscription, NativeConnection,
@@ -273,12 +276,13 @@ namespace com.dxfeed.native
         /// <exception cref="DxException"></exception>
         public void Disconnect()
         {
+            subscriptions.Clear();
+
             if (handle == IntPtr.Zero)
                 return;
 
             C.CheckOk(C.Instance.dxf_close_connection(handle));
             handle = IntPtr.Zero;
-            subscriptions.Clear();
         }
 
         /// <summary>
@@ -901,6 +905,29 @@ namespace com.dxfeed.native
 
         #region Implementation of IDisposable
 
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposed) return;
+
+            if (disposing)
+            {
+                var subscriptionsToClose = new HashSet<IDxSubscription>(subscriptions);
+
+                foreach (var s in subscriptionsToClose)
+                {
+                    //Subscriptions remove themselves from the 'subscriptions' set
+                    s.Dispose();
+                }
+
+                subscriptionsToClose.Clear();
+            }
+
+            if (handle != IntPtr.Zero)
+                Disconnect();
+
+            disposed = true;
+        }
+
         /// <summary>
         /// Disposes the connection object
         ///
@@ -912,11 +939,15 @@ namespace com.dxfeed.native
         /// </remarks>
         public void Dispose()
         {
-            subscriptions.Clear();
-            if (handle != IntPtr.Zero)
-                Disconnect();
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         #endregion
+
+        ~NativeConnection()
+        {
+            Dispose(false);
+        }
     }
 }

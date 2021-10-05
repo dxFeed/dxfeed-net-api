@@ -11,12 +11,11 @@ If a copy of the MPL was not distributed with this file, You can obtain one at h
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Net;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using com.dxfeed.api;
 using com.dxfeed.api.candle;
 using com.dxfeed.api.events;
@@ -25,12 +24,12 @@ using com.dxfeed.io;
 namespace com.dxfeed.native
 {
     /// <summary>
-    /// Class provides operations with candle data retrieving
+    ///     Class provides operations with candle data retrieving
     /// </summary>
     public class CandleDataConnection : DataConnection, IDxCandleDataConnection
     {
         /// <summary>
-        /// Creates the new candle data connection
+        ///     Creates the new candle data connection
         /// </summary>
         /// <param name="address">Candle web service address</param>
         /// <param name="login">The user login</param>
@@ -40,23 +39,12 @@ namespace com.dxfeed.native
         }
 
         /// <summary>
-        /// Creates the new candle data connection
+        ///     Creates the new candle data connection
         /// </summary>
         /// <param name="address">Candle web service address</param>
         /// <param name="token">The connection token (optional)</param>
         public CandleDataConnection(string address, string token = null) : base(address, token)
         {
-        }
-
-        private static string CreateQuery(IEnumerable<CandleSymbol> symbols, DateTime fromTime, DateTime toTime)
-        {
-            return "records=Candle&" +
-                   $"symbols={string.Join(",", symbols).Replace("&", "[%26]")}&" +
-                   $"start={fromTime.ToUniversalTime():yyyyMMdd-HHmmss}&" +
-                   $"stop={toTime.ToUniversalTime():yyyyMMdd-HHmmss}&" +
-                   "format=binary&" +
-                   "compression=zip&" +
-                   "skipServerTimeCheck";
         }
 
         /// <inheritdoc />
@@ -69,16 +57,14 @@ namespace com.dxfeed.native
                 var result = new Dictionary<CandleSymbol, List<IDxCandle>>();
                 var connectionAddress = address;
                 var uri = new Uri(address);
-                
+
                 if (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps)
-                {
                     connectionAddress = $"{address}?{CreateQuery(symbols, fromTime, toTime)}";
-                }
 
                 try
                 {
                     var request = OpenConnection(connectionAddress);
-                    var response = await request.GetResponseAsync();
+                    var response = await request.GetResponseAsync().ConfigureAwait(false);
                     var isFileStream = request.GetType() == typeof(FileWebResponse);
 
                     using (var inputStream = response.GetResponseStream())
@@ -92,12 +78,13 @@ namespace com.dxfeed.native
 
                             using (var streamToWriteTo = File.Open(fileToWriteTo, FileMode.Create))
                             {
-                                await decompressedIn.CopyToAsync(streamToWriteTo);
+                                await decompressedIn.CopyToAsync(streamToWriteTo).ConfigureAwait(false);
                             }
 
                             using (var dataProvider = new SimpleCandleDataProvider())
                             {
-                                result = await dataProvider.Run(fileToWriteTo, symbols, cancellationToken);
+                                result = await dataProvider.Run(fileToWriteTo, symbols, cancellationToken)
+                                    .ConfigureAwait(false);
                             }
 
                             try
@@ -116,16 +103,16 @@ namespace com.dxfeed.native
                     var response = e.Response as HttpWebResponse;
 
                     if (response == null) throw;
-                    
+
                     if (response.StatusCode != HttpStatusCode.BadRequest) throw;
-                        
+
                     using (var stream = response.GetResponseStream())
                     {
                         if (stream == null) throw;
-                                
+
                         using (var reader = new StreamReader(stream, Encoding.ASCII))
                         {
-                            var line = await reader.ReadLineAsync();
+                            var line = await reader.ReadLineAsync().ConfigureAwait(false);
                             throw new WebException(line, e);
                         }
                     }
@@ -133,6 +120,17 @@ namespace com.dxfeed.native
 
                 return result;
             }, cancellationToken);
+        }
+
+        private static string CreateQuery(IEnumerable<CandleSymbol> symbols, DateTime fromTime, DateTime toTime)
+        {
+            return "records=Candle&" +
+                   $"symbols={string.Join(",", symbols).Replace("&", "[%26]")}&" +
+                   $"start={fromTime.ToUniversalTime():yyyyMMdd-HHmmss}Z&" +
+                   $"stop={toTime.ToUniversalTime():yyyyMMdd-HHmmss}Z&" +
+                   "format=binary&" +
+                   "compression=zip&" +
+                   "skipServerTimeCheck";
         }
     }
 }

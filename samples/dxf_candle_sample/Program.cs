@@ -16,16 +16,19 @@ using com.dxfeed.api;
 using com.dxfeed.api.candle;
 using com.dxfeed.native;
 
-namespace dxf_candle_sample {
+namespace dxf_candle_sample
+{
     /// <summary>
     ///     This sample class demonstrates subscription to candle events.
     ///     The sample configures via command line, subscribes to candle events and prints received data.
     /// </summary>
-    internal class Program {
-        private const int HOST_INDEX = 0;
-        private const int SYMBOL_INDEX = 1;
+    internal class Program
+    {
+        private const int HostIndex = 0;
+        private const int SymbolIndex = 1;
 
-        private static bool TryParseDateTimeParam(string stringParam, InputParam<DateTime?> param) {
+        private static bool TryParseDateTimeParam(string stringParam, InputParam<DateTime?> param)
+        {
             DateTime dateTimeValue;
 
             if (!DateTime.TryParse(stringParam, out dateTimeValue)) return false;
@@ -36,7 +39,8 @@ namespace dxf_candle_sample {
         }
 
         private static bool TryParseTaggedStringParam(string tag, string paramTagString, string paramString,
-            InputParam<string> param) {
+            InputParam<string> param)
+        {
             if (!paramTagString.Equals(tag)) return false;
 
             param.Value = paramString;
@@ -44,11 +48,13 @@ namespace dxf_candle_sample {
             return true;
         }
 
-        private static void DisconnectHandler(IDxConnection con) {
+        private static void DisconnectHandler(IDxConnection con)
+        {
             Console.WriteLine("Disconnected");
         }
 
-        private static void WriteHelp() {
+        private static void WriteHelp()
+        {
             Console.WriteLine(
                 "Usage: dxf_candle_sample <host:port>|<path> <base symbol> [<date>] [-T <token>] [-p] [<attributes> ...] \n" +
                 "where\n" +
@@ -86,15 +92,18 @@ namespace dxf_candle_sample {
             );
         }
 
-        private static void Main(string[] args) {
-            if (args.Length < 2) {
+        private static void Main(string[] args)
+        {
+            if (args.Length < 2)
+            {
                 WriteHelp();
                 return;
             }
 
-            try {
-                var address = args[HOST_INDEX];
-                var baseSymbol = args[SYMBOL_INDEX];
+            try
+            {
+                var address = args[HostIndex];
+                var baseSymbol = args[SymbolIndex];
                 var dateTime = new InputParam<DateTime?>(new DateTime(1970, 1, 1, 0, 0, 0, 0));
                 var token = new InputParam<string>(null);
                 var exchange = CandleSymbolAttributes.Exchange.DEFAULT;
@@ -107,18 +116,21 @@ namespace dxf_candle_sample {
                 var logDataTransferFlag = false;
 
                 var attributesAreSet = false;
-                for (var i = SYMBOL_INDEX + 1; i < args.Length; i++) {
+                for (var i = SymbolIndex + 1; i < args.Length; i++)
+                {
                     if (!dateTime.IsSet && TryParseDateTimeParam(args[i], dateTime))
                         continue;
 
                     if (!token.IsSet && i < args.Length - 1 &&
-                        TryParseTaggedStringParam("-T", args[i], args[i + 1], token)) {
+                        TryParseTaggedStringParam("-T", args[i], args[i + 1], token))
+                    {
                         i++;
 
                         continue;
                     }
 
-                    if (logDataTransferFlag == false && args[i].Equals("-p")) {
+                    if (logDataTransferFlag == false && args[i].Equals("-p"))
+                    {
                         logDataTransferFlag = true;
                         i++;
 
@@ -128,41 +140,55 @@ namespace dxf_candle_sample {
                     const string KEY_VALUE_REGEX = @"([a-z]+)(=)([a-z]+|\d+\.?\d*)";
                     var match = Regex.Match(args[i], KEY_VALUE_REGEX, RegexOptions.IgnoreCase);
 
-                    if (match.Groups.Count < 4 || !match.Success) {
+                    if (match.Groups.Count < 4 || !match.Success)
+                    {
                         Console.WriteLine("Invalid Attributes");
                         WriteHelp();
                         return;
                     }
 
-                    if (match.Groups[1].Value.Equals("exchange")) {
+                    if (match.Groups[1].Value.Equals("exchange"))
+                    {
                         if (match.Groups[3].Length == 1 && char.IsLetter(match.Groups[3].Value[0]))
                         {
                             exchange = CandleSymbolAttributes.Exchange.NewExchange(match.Groups[3].Value[0]);
                             attributesAreSet = true;
                         }
-                    } else if (match.Groups[1].Value.Equals("period")) {
+                    }
+                    else if (match.Groups[1].Value.Equals("period"))
+                    {
                         periodValue = double.Parse(match.Groups[3].Value, new CultureInfo("en-US"));
                         attributesAreSet = true;
-                    } else if (match.Groups[1].Value.Equals("type")) {
+                    }
+                    else if (match.Groups[1].Value.Equals("type"))
+                    {
                         period = CandleSymbolAttributes.Period.NewPeriod(periodValue,
                             CandleType.Parse(match.Groups[3].Value));
                         attributesAreSet = true;
-                    } else if (match.Groups[1].Value.Equals("price")) {
+                    }
+                    else if (match.Groups[1].Value.Equals("price"))
+                    {
                         price = CandleSymbolAttributes.Price.Parse(match.Groups[3].Value);
                         attributesAreSet = true;
-                    } else if (match.Groups[1].Value.Equals("session")) {
+                    }
+                    else if (match.Groups[1].Value.Equals("session"))
+                    {
                         session = CandleSymbolAttributes.Session.Parse(match.Groups[3].Value);
                         attributesAreSet = true;
-                    } else if (match.Groups[1].Value.Equals("alignment")) {
+                    }
+                    else if (match.Groups[1].Value.Equals("alignment"))
+                    {
                         alignment = CandleSymbolAttributes.Alignment.Parse(match.Groups[3].Value);
                         attributesAreSet = true;
-                    } else if (match.Groups[1].Value.Equals("priceLevel")) {
+                    }
+                    else if (match.Groups[1].Value.Equals("priceLevel"))
+                    {
                         priceLevel = CandleSymbolAttributes.PriceLevel.Parse(match.Groups[3].Value);
                         attributesAreSet = true;
                     }
                 }
 
-                var symbol = (attributesAreSet)
+                var symbol = attributesAreSet
                     ? CandleSymbol.ValueOf(baseSymbol, exchange, period, price, session, alignment, priceLevel)
                     : CandleSymbol.ValueOf(baseSymbol);
 
@@ -171,37 +197,48 @@ namespace dxf_candle_sample {
                 NativeTools.InitializeLogging("dxf_candle_sample.log", true, true, logDataTransferFlag);
                 using (var con = token.IsSet
                     ? new NativeConnection(address, token.Value, DisconnectHandler)
-                    : new NativeConnection(address, DisconnectHandler)) {
-                    using (var s = con.CreateSubscription(dateTime.Value, new EventListener())) {
+                    : new NativeConnection(address, DisconnectHandler))
+                {
+                    using (var s = con.CreateSubscription(dateTime.Value, new EventListener()))
+                    {
                         s.AddSymbol(symbol);
 
                         Console.WriteLine("Press enter to stop");
                         Console.ReadLine();
                     }
                 }
-            } catch (DxException dxException) {
+            }
+            catch (DxException dxException)
+            {
                 Console.WriteLine($"Native exception occurred: {dxException.Message}");
-            } catch (Exception exc) {
+            }
+            catch (Exception exc)
+            {
                 Console.WriteLine($"Exception occurred: {exc.GetType()}, message: {exc.Message}");
             }
         }
 
-        private class InputParam<T> {
+        private class InputParam<T>
+        {
             private T value;
 
-            private InputParam() {
+            private InputParam()
+            {
                 IsSet = false;
             }
 
-            public InputParam(T defaultValue) : this() {
+            public InputParam(T defaultValue) : this()
+            {
                 value = defaultValue;
             }
 
             public bool IsSet { get; private set; }
 
-            public T Value {
+            public T Value
+            {
                 get { return value; }
-                set {
+                set
+                {
                     this.value = value;
                     IsSet = true;
                 }

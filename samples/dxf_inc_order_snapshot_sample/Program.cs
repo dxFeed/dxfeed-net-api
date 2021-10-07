@@ -14,15 +14,18 @@ using com.dxfeed.api;
 using com.dxfeed.api.events;
 using com.dxfeed.native;
 
-namespace dxf_inc_order_snapshot_sample {
+namespace dxf_inc_order_snapshot_sample
+{
     /// <summary>
     ///     This sample class demonstrates subscription to order snapshot with incremental updates.
-    ///     The sample configures via command line, subscribes to order snapshot and prints received data (snapshot and increments).
+    ///     The sample configures via command line, subscribes to order snapshot and prints received data (snapshot and
+    ///     increments).
     /// </summary>
-    internal class Program {
-        private const int DEFAULT_RECORDS_PRINT_LIMIT = 7;
-        private const int HOST_INDEX = 0;
-        private const int SYMBOL_INDEX = 1;
+    internal class Program
+    {
+        private const int DefaultRecordsPrintLimit = 7;
+        private const int HostIndex = 0;
+        private const int SymbolIndex = 1;
 
         private static void DisconnectHandler(IDxConnection con)
         {
@@ -32,17 +35,11 @@ namespace dxf_inc_order_snapshot_sample {
         private static bool TryParseRecordsPrintLimitParam(string paramTagString, string paramString,
             InputParam<int> param)
         {
-            if (!paramTagString.Equals("-l"))
-            {
-                return false;
-            }
+            if (!paramTagString.Equals("-l")) return false;
 
             int newRecordsPrintLimit;
 
-            if (!int.TryParse(paramString, out newRecordsPrintLimit))
-            {
-                return false;
-            }
+            if (!int.TryParse(paramString, out newRecordsPrintLimit)) return false;
 
             param.Value = newRecordsPrintLimit;
 
@@ -52,10 +49,7 @@ namespace dxf_inc_order_snapshot_sample {
         private static void TryParseStringParam(string paramString,
             InputParam<string> param)
         {
-            if (string.IsNullOrEmpty(paramString))
-            {
-                return;
-            }
+            if (string.IsNullOrEmpty(paramString)) return;
 
             param.Value = paramString;
         }
@@ -63,10 +57,7 @@ namespace dxf_inc_order_snapshot_sample {
         private static bool TryParseTaggedStringParam(string tag, string paramTagString, string paramString,
             InputParam<string> param)
         {
-            if (!paramTagString.Equals(tag))
-            {
-                return false;
-            }
+            if (!paramTagString.Equals(tag)) return false;
 
             param.Value = paramString;
 
@@ -90,7 +81,7 @@ namespace dxf_inc_order_snapshot_sample {
                     "                   or AGGREGATE_BID (default value for Order snapshots)\n" +
                     "                If source is not specified MarketMaker snapshot will be\n" +
                     "                subscribed by default.\n\n" +
-                    $"    -l <records_print_limit> - The number of displayed records (0 - unlimited, default: {DEFAULT_RECORDS_PRINT_LIMIT})\n" +
+                    $"    -l <records_print_limit> - The number of displayed records (0 - unlimited, default: {DefaultRecordsPrintLimit})\n" +
                     "    -T <token>               - The authorization token\n" +
                     "    -p                       - Enables the data transfer logging\n\n" +
                     "order example: dxf_inc_order_snapshot_sample demo.dxfeed.com:7300 AAPL NTV\n" +
@@ -102,15 +93,15 @@ namespace dxf_inc_order_snapshot_sample {
                 return;
             }
 
-            var address = args[HOST_INDEX];
-            var symbol = args[SYMBOL_INDEX];
+            var address = args[HostIndex];
+            var symbol = args[SymbolIndex];
 
             var source = new InputParam<string>(OrderSource.AGGREGATE_BID);
-            var recordsPrintLimit = new InputParam<int>(DEFAULT_RECORDS_PRINT_LIMIT);
+            var recordsPrintLimit = new InputParam<int>(DefaultRecordsPrintLimit);
             var token = new InputParam<string>(null);
             var logDataTransferFlag = false;
 
-            for (var i = SYMBOL_INDEX + 1; i < args.Length; i++)
+            for (var i = SymbolIndex + 1; i < args.Length; i++)
             {
                 if (!recordsPrintLimit.IsSet && i < args.Length - 1 &&
                     TryParseRecordsPrintLimitParam(args[i], args[i + 1], recordsPrintLimit))
@@ -152,7 +143,8 @@ namespace dxf_inc_order_snapshot_sample {
                     ? new NativeConnection(address, token.Value, DisconnectHandler)
                     : new NativeConnection(address, DisconnectHandler))
                 {
-                    using (var s = con.CreateIncOrderSnapshotSubscription(new SnapshotListener(recordsPrintLimit.Value)))
+                    using (var s =
+                        con.CreateIncOrderSnapshotSubscription(new SnapshotListener(recordsPrintLimit.Value)))
                     {
                         s.AddSource(source.Value);
                         s.AddSymbol(symbol);

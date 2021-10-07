@@ -11,7 +11,6 @@ If a copy of the MPL was not distributed with this file, You can obtain one at h
 
 using System;
 using com.dxfeed.api;
-using com.dxfeed.api.candle;
 using com.dxfeed.api.data;
 using com.dxfeed.api.events;
 
@@ -20,9 +19,9 @@ namespace dxf_inc_order_snapshot_sample
     /// <summary>
     ///     Snapshots listener
     /// </summary>
-    public class SnapshotListener : IDxIncOrderSnapshotListener {
+    public class SnapshotListener : IDxIncOrderSnapshotListener
+    {
         private readonly int recordsPrintLimit;
-        private const int RECORDS_PRINT_LIMIT = 7;
 
         public SnapshotListener(int recordsPrintLimit)
         {
@@ -43,7 +42,8 @@ namespace dxf_inc_order_snapshot_sample
             where TE : IDxOrder
         {
             var symbolStr = buf.Symbol;
-            Console.WriteLine("Snapshot {0} {{Symbol: '{1}', RecordsCount: {2}, Type: {3}}}", buf.EventType, symbolStr, buf.Size, newSnapshot ? "full" : "update");
+            Console.WriteLine("Snapshot {0} {{Symbol: '{1}', RecordsCount: {2}, Type: {3}}}", buf.EventType, symbolStr,
+                buf.Size, newSnapshot ? "full" : "update");
             var count = 0;
             foreach (var o in buf)
             {
@@ -56,10 +56,11 @@ namespace dxf_inc_order_snapshot_sample
                 Console.WriteLine("   {{ ... {0} records left ...}}", buf.Size - count);
                 break;
             }
+
             if (buf.Size > 0)
                 Console.WriteLine();
         }
 
-            #endregion //IDxIncOrderSnapshotListener
-        }
+        #endregion //IDxIncOrderSnapshotListener
+    }
 }

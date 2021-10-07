@@ -9,6 +9,7 @@ Version 8.5.0
   - All native events now have public copy constructors and default constructors.
   - If no date\time is specified, then dxf_events_sample is not subscribed to time series.
   - dxf_ipf_connect_sample: added an ability to set bearer token
+  - Added all XML documentation for public\protected entities 
 
 Version 8.4.1
 * [DXFC-264] Added assembly and deployment of XML documentation

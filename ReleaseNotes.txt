@@ -3,7 +3,7 @@ Version 8.5.0
 * [DXFC-267] Fixed a bug with possible call of callbacks/delegates from the native library when the memory of subscriptions/connections objects is cleared by the GC 
 * [DXFC-268] Fixed a bug with AccessViolationException when the user called Dispose of the subscription after Dispose of the connection. 
 * [DXFC-271] Fixed a bug with incorrect UTC timezone when requesting data from the CandleWebService
-* [DXFC-269] API common enhancements
+* [DXFC-269] .NET API common enhancements
   - The dxf_order_view_sample example now uses one symbol and source.
   - All native event fields now have public setters.
   - All native events now have public copy constructors and default constructors.

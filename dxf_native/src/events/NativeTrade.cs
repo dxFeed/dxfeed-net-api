@@ -9,22 +9,22 @@ If a copy of the MPL was not distributed with this file, You can obtain one at h
 
 #endregion
 
+using System.Globalization;
 using com.dxfeed.api.events;
 using com.dxfeed.native.api;
-using System.Globalization;
 
 namespace com.dxfeed.native.events
 {
     /// <summary>
-    /// Trade event is a snapshot of the price and size of the last trade during regular trading hours
-    /// and an overall day volume.
-    /// It represents the most recent information that is available about the regular last trade price on
-    /// the market at any given moment of time.
+    ///     Trade event is a snapshot of the price and size of the last trade during regular trading hours
+    ///     and an overall day volume.
+    ///     It represents the most recent information that is available about the regular last trade price on
+    ///     the market at any given moment of time.
     /// </summary>
     public class NativeTrade : NativeTradeBase, IDxTrade
     {
         /// <summary>
-        /// Creates new trade with the specified event symbol.
+        ///     Creates new trade with the specified event symbol.
         /// </summary>
         /// <param name="trade">Native DxTrade object.</param>
         /// <param name="symbol">The event symbol.</param>
@@ -34,12 +34,19 @@ namespace com.dxfeed.native.events
         }
 
         /// <summary>
-        /// Creates copy of trade object.
+        ///     Creates copy of trade object.
         /// </summary>
         /// <param name="trade">The IDxTrade object.</param>
-        internal NativeTrade(IDxTrade trade) : base(trade)
+        public NativeTrade(IDxTrade trade) : base(trade)
         {
             Tick = trade.Tick;
+        }
+
+        /// <summary>
+        ///     Default constructor
+        /// </summary>
+        public NativeTrade()
+        {
         }
 
         #region Implementation of ICloneable
@@ -55,11 +62,11 @@ namespace com.dxfeed.native.events
         #region Implementation of IDxTrade
 
         /// <summary>
-        /// Returns Trend indicator – in which direction price is moving. The values are: Up (Tick = 1), Down (Tick = 2),
-        /// and Undefined (Tick = 0).
-        /// Should be used if IDxTradeBase.TickDirection is Undefined 
+        ///     Returns Trend indicator – in which direction price is moving. The values are: Up (Tick = 1), Down (Tick = 2),
+        ///     and Undefined (Tick = 0).
+        ///     Should be used if IDxTradeBase.TickDirection is Undefined
         /// </summary>
-        public int Tick { get; private set; }
+        public int Tick { get; set; }
 
         #endregion
 

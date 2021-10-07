@@ -9,28 +9,28 @@ If a copy of the MPL was not distributed with this file, You can obtain one at h
 
 #endregion
 
+using System;
+using System.Globalization;
 using com.dxfeed.api.events;
 using com.dxfeed.api.extras;
 using com.dxfeed.native.api;
-using System;
-using System.Globalization;
 
 namespace com.dxfeed.native.events
 {
     /// <summary>
-    /// Theo price is a snapshot of the theoretical option price computation that
-    /// is periodically performed by dxPrice model-free computation. It represents
-    /// the most recent information that is available about the corresponding values
-    /// at any given moment of time. The values include first and second order
-    /// derivative of the price curve by price, so that the real-time theoretical
-    /// option price can be estimated on real-time changes of the underlying price
-    /// in the vicinity.
+    ///     Theo price is a snapshot of the theoretical option price computation that
+    ///     is periodically performed by dxPrice model-free computation. It represents
+    ///     the most recent information that is available about the corresponding values
+    ///     at any given moment of time. The values include first and second order
+    ///     derivative of the price curve by price, so that the real-time theoretical
+    ///     option price can be estimated on real-time changes of the underlying price
+    ///     in the vicinity.
     /// </summary>
     public class NativeTheoPrice : MarketEventImpl, IDxTheoPrice
     {
         internal unsafe NativeTheoPrice(DxTheoPrice* theoPrice, string symbol) : base(symbol)
         {
-            DxTheoPrice tp = *theoPrice;
+            var tp = *theoPrice;
 
             Time = TimeConverter.ToUtcDateTime(tp.time);
             Price = tp.price;
@@ -41,7 +41,11 @@ namespace com.dxfeed.native.events
             Interest = tp.interest;
         }
 
-        internal NativeTheoPrice(IDxTheoPrice tp) : base(tp.EventSymbol)
+        /// <summary>
+        ///     Copy constructor
+        /// </summary>
+        /// <param name="tp">The original TheoPrice event</param>
+        public NativeTheoPrice(IDxTheoPrice tp) : base(tp.EventSymbol)
         {
             Time = tp.Time;
             Price = tp.Price;
@@ -52,22 +56,11 @@ namespace com.dxfeed.native.events
             Interest = tp.Interest;
         }
 
-        /// <inheritdoc />
-        public override string ToString()
+        /// <summary>
+        ///     Default constructor
+        /// </summary>
+        public NativeTheoPrice()
         {
-            return string.Format(CultureInfo.InvariantCulture,
-                "TheoPrice: {{{0}, "                 +
-                "Time: {1:o}, "                      +
-                "Price: {2}, UnderlyingPrice: {3}, " +
-                "Delta: {4}, Gamma: {5}, "           +
-                "Dividend: {6}, Interest: {7}"       +
-                "}}",
-                EventSymbol,
-                Time,
-                Price, UnderlyingPrice,
-                Delta, Gamma,
-                Dividend, Interest
-            );
         }
 
         #region Implementation of ICloneable
@@ -80,40 +73,64 @@ namespace com.dxfeed.native.events
 
         #endregion
 
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            return string.Format(CultureInfo.InvariantCulture,
+                "TheoPrice: {{{0}, " +
+                "Time: {1:o}, " +
+                "Price: {2}, UnderlyingPrice: {3}, " +
+                "Delta: {4}, Gamma: {5}, " +
+                "Dividend: {6}, Interest: {7}" +
+                "}}",
+                EventSymbol,
+                Time,
+                Price, UnderlyingPrice,
+                Delta, Gamma,
+                Dividend, Interest
+            );
+        }
+
         #region Implementation of IDxTheoPrice
 
         /// <summary>
-        /// Returns date time of the last theo price computation.
+        ///     Returns date time of the last theo price computation.
         /// </summary>
-        public DateTime Time { get; private set; }
+        public DateTime Time { get; set; }
+
         /// <summary>
-        /// Returns theoretical option price.
+        ///     Returns theoretical option price.
         /// </summary>
-        public double Price { get; private set; }
+        public double Price { get; set; }
+
         /// <summary>
-        /// Returns underlying price at the time of theo price computation.
+        ///     Returns underlying price at the time of theo price computation.
         /// </summary>
-        public double UnderlyingPrice { get; private set; }
+        public double UnderlyingPrice { get; set; }
+
         /// <summary>
-        /// Returns delta of the theoretical price.
-        /// Delta is the first derivative of the theoretical price by the underlying price.
+        ///     Returns delta of the theoretical price.
+        ///     Delta is the first derivative of the theoretical price by the underlying price.
         /// </summary>
-        public double Delta { get; private set; }
+        public double Delta { get; set; }
+
         /// <summary>
-        /// Returns gamma of the theoretical price.
-        /// Gamma is the second derivative of the theoretical price by the underlying price.
+        ///     Returns gamma of the theoretical price.
+        ///     Gamma is the second derivative of the theoretical price by the underlying price.
         /// </summary>
-        public double Gamma { get; private set; }
+        public double Gamma { get; set; }
+
         /// <summary>
-        /// Returns implied simple dividend return of the corresponding option series.
-        /// See the model section for an explanation this simple dividend return \(Q(\tau)\).
+        ///     Returns implied simple dividend return of the corresponding option series.
+        ///     See the model section for an explanation this simple dividend return \(Q(\tau)\).
         /// </summary>
-        public double Dividend { get; private set; }
+        public double Dividend { get; set; }
+
         /// <summary>
-        /// Returns implied simple interest return of the corresponding option series.
-        /// See the model section for an explanation this simple interest return \(R(\tau)\).
+        ///     Returns implied simple interest return of the corresponding option series.
+        ///     See the model section for an explanation this simple interest return \(R(\tau)\).
         /// </summary>
-        public double Interest { get; private set; }
+        public double Interest { get; set; }
 
         #endregion
     }

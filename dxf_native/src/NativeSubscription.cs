@@ -293,7 +293,7 @@ namespace com.dxfeed.native
                     (eventListener as IDxCandleListener)?.OnCandle<NativeEventBuffer<NativeCandle>, NativeCandle>(cBuf);
                     break;
                 case EventType.TradeETH:
-                    var teBuf = NativeBufferFactory.CreateTradeETHBuf(symbol, data, dataCount, nativeEventParams);
+                    var teBuf = NativeBufferFactory.CreateTradeEthBuf(symbol, data, dataCount, nativeEventParams);
                     (eventListener as IDxTradeETHListener)?.OnTradeETH<NativeEventBuffer<NativeTradeETH>, NativeTradeETH>(teBuf);
                     break;
                 case EventType.SpreadOrder:
@@ -325,6 +325,10 @@ namespace com.dxfeed.native
 
         #region Implementation of IDisposable
 
+        /// <summary>
+        ///     This code added to correctly implement the disposable pattern.
+        /// </summary>
+        /// <param name="disposing">The disposing flag</param>
         protected virtual void Dispose(bool disposing)
         {
             if (disposed) return;
@@ -715,6 +719,7 @@ namespace com.dxfeed.native
             return symbols.Any(IsCandleSymbol);
         }
 
+        /// <inheritdoc />
         ~NativeSubscription()
         {
             Dispose(false);

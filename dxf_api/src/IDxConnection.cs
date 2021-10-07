@@ -137,7 +137,7 @@ namespace com.dxfeed.api
         /// Example #1
         /// <code>
         /// using (var c = new NativeConnection(address, con => {})) {
-        ///     var result = c.GetDataForPeriod(EventType.Candle, "AAPL&Q{=1m}",
+        ///     var result = c.GetDataForPeriod(EventType.Candle, "AAPL{=1m}",
         ///         DateTime.Now.Subtract(TimeSpan.FromDays(5)),
         ///         DateTime.Now.Subtract(TimeSpan.FromDays(1))).Result;
         /// 
@@ -148,7 +148,7 @@ namespace com.dxfeed.api
         /// Example #2
         /// <code>
         /// using var c = new NativeConnection(address, con => {});
-        /// var result = await c.GetDataForPeriod(EventType.Candle, "AAPL&Q{=1m}",
+        /// var result = await c.GetDataForPeriod(EventType.Candle, "AAPL{=1m}",
         ///         DateTime.Now.Subtract(TimeSpan.FromDays(5)),
         ///         DateTime.Now.Subtract(TimeSpan.FromDays(1)));
         /// 
@@ -173,7 +173,7 @@ namespace com.dxfeed.api
         /// Example #1
         /// <code>
         /// using (var c = new NativeConnection(address, con => {})) {
-        ///     var result = c.GetDataForPeriod(EventType.Candle, "AAPL&Q{=1m}",
+        ///     var result = c.GetDataForPeriod(EventType.Candle, "AAPL{=1m}",
         ///         DateTime.Now.Subtract(TimeSpan.FromDays(5)),
         ///         DateTime.Now.Subtract(TimeSpan.FromDays(1)),
         ///         TimeSpan.FromSeconds(10)).Result;
@@ -185,7 +185,7 @@ namespace com.dxfeed.api
         /// Example #2
         /// <code>
         /// using var c = new NativeConnection(address, con => {});
-        /// var result = await c.GetDataForPeriod(EventType.Candle, "AAPL&Q{=1m}",
+        /// var result = await c.GetDataForPeriod(EventType.Candle, "AAPL{=1m}",
         ///         DateTime.Now.Subtract(TimeSpan.FromDays(5)),
         ///         DateTime.Now.Subtract(TimeSpan.FromDays(1)),
         ///         TimeSpan.FromSeconds(10));
@@ -212,7 +212,7 @@ namespace com.dxfeed.api
         /// Example #1
         /// <code>
         /// using (var c = new NativeConnection(address, con => {})) {
-        ///     var result = c.GetDataForPeriod(EventType.Candle, "AAPL&Q{=1m}",
+        ///     var result = c.GetDataForPeriod(EventType.Candle, "AAPL{=1m}",
         ///         DateTime.Now.Subtract(TimeSpan.FromDays(5)),
         ///         DateTime.Now.Subtract(TimeSpan.FromDays(1)),
         ///         10000).Result;
@@ -224,7 +224,7 @@ namespace com.dxfeed.api
         /// Example #2
         /// <code>
         /// using var c = new NativeConnection(address, con => {});
-        /// var result = await c.GetDataForPeriod(EventType.Candle, "AAPL&Q{=1m}",
+        /// var result = await c.GetDataForPeriod(EventType.Candle, "AAPL{=1m}",
         ///         DateTime.Now.Subtract(TimeSpan.FromDays(5)),
         ///         DateTime.Now.Subtract(TimeSpan.FromDays(1)),
         ///         10000);
@@ -254,7 +254,7 @@ namespace com.dxfeed.api
         /// var cancellationToken = cancellationTokenSource.Token;
         /// 
         /// using (var c = new NativeConnection(address, con => { })) {
-        ///     var result = c.GetDataForPeriod(EventType.Candle, "AAPL&Q{=1m}",
+        ///     var result = c.GetDataForPeriod(EventType.Candle, "AAPL{=1m}",
         ///         DateTime.Now.Subtract(TimeSpan.FromDays(5)),
         ///         DateTime.Now.Subtract(TimeSpan.FromDays(1)),
         ///         cancellationToken);
@@ -272,7 +272,7 @@ namespace com.dxfeed.api
         /// cancellationTokenSource.CancelAfter(TimeSpan.FromSeconds(10));
         /// 
         /// using var c = new NativeConnection(address, con => { });
-        /// var result = await c.GetDataForPeriod(EventType.Candle, "AAPL&Q{=1m}",
+        /// var result = await c.GetDataForPeriod(EventType.Candle, "AAPL{=1m}",
         ///     DateTime.Now.Subtract(TimeSpan.FromDays(5)),
         ///     DateTime.Now.Subtract(TimeSpan.FromDays(1)),
         ///     cancellationToken);
@@ -353,7 +353,7 @@ namespace com.dxfeed.api
         /// </summary>
         /// <param name="rawFileName">file name for raw data</param>
         /// <exception cref="ArgumentException">Invalid argument <c>rawFileName</c></exception>
-        /// <exception cref="NativeDxException"></exception>
+        /// <exception cref="DxException"></exception>
         void WriteRawData(string rawFileName);
 
         /// <summary>

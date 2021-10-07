@@ -13,8 +13,15 @@ using com.dxfeed.api.events;
 
 namespace com.dxfeed.api
 {
+    /// <summary>
+    /// The PLB listener interface
+    /// </summary>
     public interface IDxPriceLevelBookListener
     {
+        /// <summary>
+        /// On "PLB has been changed" event received
+        /// </summary>
+        /// <param name="book">The PLB</param>
         void OnChanged(DxPriceLevelBook book);
     }
 }

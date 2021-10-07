@@ -9,42 +9,39 @@ If a copy of the MPL was not distributed with this file, You can obtain one at h
 
 #endregion
 
-using com.dxfeed.api.events;
-using com.dxfeed.api.data;
-using com.dxfeed.native.api;
-using System;
 using System.Globalization;
+using com.dxfeed.api.events;
+using com.dxfeed.native.api;
 
 namespace com.dxfeed.native.events
 {
     /// <summary>
-    /// Configuration event with application-specific attachment.
+    ///     Configuration event with application-specific attachment.
     /// </summary>
     public class NativeConfiguration : MarketEventImpl, IDxConfiguration
     {
         internal unsafe NativeConfiguration(DxConfiguration* configuration, string symbol) : base(symbol)
         {
-            DxConfiguration c = *configuration;
+            var c = *configuration;
             Version = c.version;
             Attachment = new string((char*)c.string_object.ToPointer());
         }
 
-        internal NativeConfiguration(IDxConfiguration c) : base(c.EventSymbol)
+        /// <summary>
+        ///     Copy constructor
+        /// </summary>
+        /// <param name="c">The original Configuration event</param>
+        public NativeConfiguration(IDxConfiguration c) : base(c.EventSymbol)
         {
             Version = c.Version;
             Attachment = c.Attachment;
         }
 
-        /// <inheritdoc />
-        public override string ToString()
+        /// <summary>
+        ///     Default constructor
+        /// </summary>
+        public NativeConfiguration()
         {
-            return string.Format(CultureInfo.InvariantCulture,
-                "Configuration: {{{0}, "          +
-                "Version: {1}, Attachment: '{2}'" +
-                "}}",
-                EventSymbol,
-                Version, Attachment
-            );
         }
 
         #region Implementation of ICloneable
@@ -57,19 +54,30 @@ namespace com.dxfeed.native.events
 
         #endregion
 
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            return string.Format(CultureInfo.InvariantCulture,
+                "Configuration: {{{0}, " +
+                "Version: {1}, Attachment: '{2}'" +
+                "}}",
+                EventSymbol,
+                Version, Attachment
+            );
+        }
+
         #region Implementation of IDxConfiguration
 
         /// <summary>
-        /// Returns version.
+        ///     Returns version.
         /// </summary>
-        public int Version { get; private set; }
-        
+        public int Version { get; set; }
+
         /// <summary>
-        /// Returns attachment.
+        ///     Returns attachment.
         /// </summary>
-        public string Attachment { get; private set; }
+        public string Attachment { get; set; }
 
         #endregion
-
     }
 }

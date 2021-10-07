@@ -54,11 +54,11 @@ namespace com.dxfeed.native
             return Task.Run(async () =>
             {
                 var result = new Dictionary<string, List<IDxTimeAndSale>>();
-                var connectionAddress = address;
-                var uri = new Uri(address);
+                var connectionAddress = Address;
+                var uri = new Uri(Address);
 
                 if (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps)
-                    connectionAddress = $"{address}?{CreateQuery(symbols, fromTime, toTime)}";
+                    connectionAddress = $"{Address}?{CreateQuery(symbols, fromTime, toTime)}";
 
                 try
                 {
@@ -69,7 +69,7 @@ namespace com.dxfeed.native
                     using (var inputStream = response.GetResponseStream())
                     {
                         var compression = isFileStream
-                            ? StreamCompression.DetectCompressionByExtension(new Uri(address))
+                            ? StreamCompression.DetectCompressionByExtension(new Uri(Address))
                             : StreamCompression.DetectCompressionByMimeType(response.ContentType);
                         using (var decompressedIn = compression.Decompress(inputStream))
                         {

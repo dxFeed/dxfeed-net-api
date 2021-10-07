@@ -42,7 +42,7 @@ namespace com.dxfeed.api
         ///     Add multiply symbols to subscription.
         /// </summary>
         /// <param name="symbols">List of symbols.</param>
-        /// <exception cref="ArgumentException">Invalid <paramref name="symbol"/> parameter.</exception>
+        /// <exception cref="ArgumentException">Invalid <paramref name="symbols"/> parameter.</exception>
         /// <exception cref="InvalidOperationException">You try to add more than one symbol to snapshot subscription.</exception>
         /// <exception cref="DxException">Internal error.</exception>
         void AddSymbols(params string[] symbols);

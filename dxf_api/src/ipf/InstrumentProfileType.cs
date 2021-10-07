@@ -9,82 +9,140 @@ If a copy of the MPL was not distributed with this file, You can obtain one at h
 
 #endregion
 
+using System;
 using System.Collections.Generic;
+using static System.String;
 
 namespace com.dxfeed.ipf
 {
     /// <summary>
-    /// Defines standard types of {@link InstrumentProfile}. Note that other (unknown) types
-    /// can be used without listing in this class - use it for convenience only.
-    /// Please see <b>Instrument Profile Format</b> documentation for complete description.
+    ///     Defines standard types of {@link InstrumentProfile}. Note that other (unknown) types
+    ///     can be used without listing in this class - use it for convenience only.
+    ///     Please see <b>Instrument Profile Format</b> documentation for complete description.
     /// </summary>
     public class InstrumentProfileType
     {
-        private const string T_CURRENCY = "CURRENCY";
-        private const string T_FOREX = "FOREX";
-        private const string T_BOND = "BOND";
-        private const string T_INDEX = "INDEX";
-        private const string T_STOCK = "STOCK";
-        private const string T_ETF = "ETF";
-        private const string T_MUTUAL_FUND = "MUTUAL_FUND";
-        private const string T_MONEY_MARKET_FUND = "MONEY_MARKET_FUND";
-        private const string T_PRODUCT = "PRODUCT";
-        private const string T_FUTURE = "FUTURE";
-        private const string T_OPTION = "OPTION";
-        private const string T_SPREAD = "SPREAD";
-        private const string T_OTHER = "OTHER";
-        private const string T_REMOVED = "REMOVED";
+        private const string Currency = "CURRENCY";
+        private const string Forex = "FOREX";
+        private const string Bond = "BOND";
+        private const string Index = "INDEX";
+        private const string Stock = "STOCK";
+        private const string Etf = "ETF";
+        private const string MutualFund = "MUTUAL_FUND";
+        private const string MoneyMarketFund = "MONEY_MARKET_FUND";
+        private const string Product = "PRODUCT";
+        private const string Future = "FUTURE";
+        private const string Option = "OPTION";
+        private const string Spread = "SPREAD";
+        private const string Other = "OTHER";
+        private const string Removed = "REMOVED";
 
-        private static Dictionary<string, InstrumentProfileType> typesMap = new Dictionary<string, InstrumentProfileType>();
+        private static readonly Dictionary<string, InstrumentProfileType> TypesMap =
+            new Dictionary<string, InstrumentProfileType>();
 
-        public static readonly InstrumentProfileType CURRENCY = new InstrumentProfileType(T_CURRENCY);
-        public static readonly InstrumentProfileType FOREX = new InstrumentProfileType(T_FOREX);
-        public static readonly InstrumentProfileType BOND = new InstrumentProfileType(T_BOND);
-        public static readonly InstrumentProfileType INDEX = new InstrumentProfileType(T_INDEX);
-        public static readonly InstrumentProfileType STOCK = new InstrumentProfileType(T_STOCK);
-        public static readonly InstrumentProfileType ETF = new InstrumentProfileType(T_ETF);
-        public static readonly InstrumentProfileType MUTUAL_FUND = new InstrumentProfileType(T_MUTUAL_FUND);
-        public static readonly InstrumentProfileType MONEY_MARKET_FUND = new InstrumentProfileType(T_MONEY_MARKET_FUND);
-        public static readonly InstrumentProfileType PRODUCT = new InstrumentProfileType(T_PRODUCT);
-        public static readonly InstrumentProfileType FUTURE = new InstrumentProfileType(T_FUTURE);
-        public static readonly InstrumentProfileType OPTION = new InstrumentProfileType(T_OPTION);
-        public static readonly InstrumentProfileType SPREAD = new InstrumentProfileType(T_SPREAD);
-        public static readonly InstrumentProfileType OTHER = new InstrumentProfileType(T_OTHER);
-        public static readonly InstrumentProfileType REMOVED = new InstrumentProfileType(T_REMOVED);
+        /// <summary>
+        ///     The currency type
+        /// </summary>
+        public static readonly InstrumentProfileType CURRENCY = new InstrumentProfileType(Currency);
+
+        /// <summary>
+        ///     The forex type
+        /// </summary>
+        public static readonly InstrumentProfileType FOREX = new InstrumentProfileType(Forex);
+
+        /// <summary>
+        ///     The bond type
+        /// </summary>
+        public static readonly InstrumentProfileType BOND = new InstrumentProfileType(Bond);
+
+        /// <summary>
+        ///     The index type
+        /// </summary>
+        public static readonly InstrumentProfileType INDEX = new InstrumentProfileType(Index);
+
+        /// <summary>
+        ///     The stock type
+        /// </summary>
+        public static readonly InstrumentProfileType STOCK = new InstrumentProfileType(Stock);
+
+        /// <summary>
+        ///     The ETF type
+        /// </summary>
+        public static readonly InstrumentProfileType ETF = new InstrumentProfileType(Etf);
+
+        /// <summary>
+        ///     The mutual fund type
+        /// </summary>
+        public static readonly InstrumentProfileType MUTUAL_FUND = new InstrumentProfileType(MutualFund);
+
+        /// <summary>
+        ///     The money market fund type
+        /// </summary>
+        public static readonly InstrumentProfileType MONEY_MARKET_FUND = new InstrumentProfileType(MoneyMarketFund);
+
+        /// <summary>
+        ///     The product type
+        /// </summary>
+        public static readonly InstrumentProfileType PRODUCT = new InstrumentProfileType(Product);
+
+        /// <summary>
+        ///     The future type
+        /// </summary>
+        public static readonly InstrumentProfileType FUTURE = new InstrumentProfileType(Future);
+
+        /// <summary>
+        ///     The option type
+        /// </summary>
+        public static readonly InstrumentProfileType OPTION = new InstrumentProfileType(Option);
+
+        /// <summary>
+        ///     The spread type
+        /// </summary>
+        public static readonly InstrumentProfileType SPREAD = new InstrumentProfileType(Spread);
+
+        /// <summary>
+        ///     The other type
+        /// </summary>
+        public static readonly InstrumentProfileType OTHER = new InstrumentProfileType(Other);
+
+        /// <summary>
+        ///     Current instrument was removed
+        /// </summary>
+        public static readonly InstrumentProfileType REMOVED = new InstrumentProfileType(Removed);
 
         private InstrumentProfileType(string name)
         {
             Name = name;
-            typesMap[name] = this;
+            TypesMap[name] = this;
         }
 
         /// <summary>
-        /// Get the name of instrument profile type.
+        ///     Get the name of instrument profile type.
         /// </summary>
-        public string Name { get; private set; }
+        public string Name { get; }
 
         /// <summary>
-        /// Returns field for specified name or <b>null</b> if field is not found.
+        ///     Returns field for specified name or <b>null</b> if field is not found.
         /// </summary>
         /// <param name="name">Name of type.</param>
         /// <returns>Field for specified name or <b>null</b> if field is not found.</returns>
         /// <exception cref="System.ArgumentNullException"></exception>
         public static InstrumentProfileType Find(string name)
         {
-            if (typesMap.ContainsKey(name))
-                return typesMap[name];
+            if (TypesMap.ContainsKey(name))
+                return TypesMap[name];
             return null;
         }
 
         /// <summary>
-        /// Compares two specified types for order. Returns a negative integer, zero, or a positive integer
-        /// as this object is less than, equal to, or greater than the specified object.
-        /// <p/>
-        /// Unlike natual ordering of {@link InstrumentProfileType} enum itself this method supports
-        /// unknown types and orders them alphabetically after standard ones.
-        /// <p/>
-        /// The natural ordering implied by this method is designed for convenient data representation
-        /// in a file and shall not be used for business purposes.
+        ///     Compares two specified types for order. Returns a negative integer, zero, or a positive integer
+        ///     as this object is less than, equal to, or greater than the specified object.
+        ///     <p />
+        ///     Unlike natual ordering of {@link InstrumentProfileType} enum itself this method supports
+        ///     unknown types and orders them alphabetically after standard ones.
+        ///     <p />
+        ///     The natural ordering implied by this method is designed for convenient data representation
+        ///     in a file and shall not be used for business purposes.
         /// </summary>
         /// <param name="type1">First type to compare.</param>
         /// <param name="type2">Second type to compare.</param>
@@ -92,23 +150,25 @@ namespace com.dxfeed.ipf
         /// <exception cref="System.ArgumentNullException"></exception>
         public static int CompareTypes(string type1, string type2)
         {
-            InstrumentProfileType t1 = Find(type1);
-            InstrumentProfileType t2 = Find(type2);
+            var t1 = Find(type1);
+            var t2 = Find(type2);
+
             if (t1 == null)
-                return t2 == null ? type1.CompareTo(type2) : +1;
+                return t2 == null ? Compare(type1, type2, StringComparison.InvariantCulture) : +1;
             if (t2 == null)
                 return -1;
+
             return t1.CompareTo(t2);
         }
 
         /// <summary>
-        /// Compare this type with other.
+        ///     Compare this type with other.
         /// </summary>
         /// <param name="other">Other type to compare.</param>
         /// <returns></returns>
         public int CompareTo(InstrumentProfileType other)
         {
-            return Name.CompareTo(other.Name);
+            return Compare(Name, other.Name, StringComparison.InvariantCulture);
         }
     }
 }

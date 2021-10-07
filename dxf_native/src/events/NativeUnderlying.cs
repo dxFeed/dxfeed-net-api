@@ -25,7 +25,7 @@ namespace com.dxfeed.native.events
     {
         internal unsafe NativeUnderlying(DxUnderlying* underlying, string symbol) : base(symbol)
         {
-            DxUnderlying u = *underlying;
+            var u = *underlying;
 
             Volatility = u.volatility;
             FrontVolatility = u.front_volatility;
@@ -36,7 +36,11 @@ namespace com.dxfeed.native.events
             PutCallRatio = u.put_call_ratio;
         }
 
-        internal NativeUnderlying(IDxUnderlying u) : base(u.EventSymbol)
+        /// <summary>
+        /// Copy constructor
+        /// </summary>
+        /// <param name="u">The original Underlying event</param>
+        public NativeUnderlying(IDxUnderlying u) : base(u.EventSymbol)
         {
             Volatility = u.Volatility;
             FrontVolatility = u.FrontVolatility;
@@ -45,6 +49,14 @@ namespace com.dxfeed.native.events
             PutVolume = u.PutVolume;
             OptionVolume = u.OptionVolume;
             PutCallRatio = u.PutCallRatio;
+        }
+
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        public NativeUnderlying()
+        {
+            
         }
 
         /// <inheritdoc />
@@ -73,31 +85,31 @@ namespace com.dxfeed.native.events
         /// <summary>
         /// Returns 30-day implied volatility for this underlying based on VIX methodology.
         /// </summary>
-        public double Volatility { get; private set; }
+        public double Volatility { get; set; }
         /// <summary>
         /// Returns front month implied volatility for this underlying based on VIX methodology.
         /// </summary>
-        public double FrontVolatility { get; private set; }
+        public double FrontVolatility { get; set; }
         /// <summary>
         /// Returns back month implied volatility for this underlying based on VIX methodology.
         /// </summary>
-        public double BackVolatility { get; private set; }
+        public double BackVolatility { get; set; }
         /// <summary>
         /// Returns call options traded volume for a day
         /// </summary>
-        public double CallVolume { get; private set; }
+        public double CallVolume { get; set; }
         /// <summary>
         /// Returns put options traded volume for a day
         /// </summary>
-        public double PutVolume { get; private set; }
+        public double PutVolume { get; set; }
         /// <summary>
         /// Returns options traded volume for a day
         /// </summary>
-        public double OptionVolume { get; private set; }
+        public double OptionVolume { get; set; }
         /// <summary>
         /// Returns ratio of put traded volume to call traded volume for a day.
         /// </summary>
-        public double PutCallRatio { get; private set; }
+        public double PutCallRatio { get; set; }
 
         #endregion
     }

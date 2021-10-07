@@ -9,24 +9,24 @@ If a copy of the MPL was not distributed with this file, You can obtain one at h
 
 #endregion
 
+using System.Globalization;
 using com.dxfeed.api.events;
 using com.dxfeed.native.api;
-using System.Globalization;
 
 namespace com.dxfeed.native.events
 {
     /// <summary>
-    /// TradeETH event is a snapshot of the price and size of the last trade during extended
-    /// trading hours and the extended hours day volume.
-    /// This event is defined only for symbols (typically stocks and ETFs) with a designated
-    /// extended trading hours (ETH, pre market and post market trading sessions).
-    /// It represents the most recent information that is available about ETH last trade on
-    /// the market at any given moment of time.
+    ///     TradeETH event is a snapshot of the price and size of the last trade during extended
+    ///     trading hours and the extended hours day volume.
+    ///     This event is defined only for symbols (typically stocks and ETFs) with a designated
+    ///     extended trading hours (ETH, pre market and post market trading sessions).
+    ///     It represents the most recent information that is available about ETH last trade on
+    ///     the market at any given moment of time.
     /// </summary>
     public class NativeTradeETH : NativeTradeBase, IDxTradeETH
     {
         /// <summary>
-        /// Creates new trade with the specified event symbol.
+        ///     Creates new trade with the specified event symbol.
         /// </summary>
         /// <param name="trade">Native DxTrade object.</param>
         /// <param name="symbol">The event symbol.</param>
@@ -35,10 +35,17 @@ namespace com.dxfeed.native.events
         }
 
         /// <summary>
-        /// Creates copy of trade object.
+        ///     Creates copy of trade object.
         /// </summary>
         /// <param name="trade">The IDxTrade object.</param>
-        internal NativeTradeETH(IDxTradeETH trade) : base(trade)
+        public NativeTradeETH(IDxTradeETH trade) : base(trade)
+        {
+        }
+
+        /// <summary>
+        ///     Default constructor
+        /// </summary>
+        public NativeTradeETH()
         {
         }
 
@@ -52,15 +59,15 @@ namespace com.dxfeed.native.events
 
         #endregion
 
-        #region Implementation of IDxTradeETH
-
-        #endregion
-
         /// <inheritdoc />
         public override string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture, "TradeETH {{{0}, {1}}}",
                 EventSymbol, base.ToString());
         }
+
+        #region Implementation of IDxTradeETH
+
+        #endregion
     }
 }

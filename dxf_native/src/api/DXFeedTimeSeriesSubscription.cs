@@ -66,10 +66,10 @@ namespace com.dxfeed.api
             endpointInstance = endpoint;
             endpoint.OnClosing += Endpoint_OnClosing;
 
-            subscriptionInstance = endpoint.Connection.CreateSubscription(
+            SubscriptionInstance = endpoint.Connection.CreateSubscription(
                 EventTypeUtil.GetEventsType(typeof(E)),
                 FromTimeStamp,
-                new DXFeedEventHandler<E>(eventListeners, eventListenerLocker));
+                new DXFeedEventHandler<E>(EventListeners, EventListenerLocker));
         }
 
         /// <summary>
@@ -97,10 +97,10 @@ namespace com.dxfeed.api
             endpointInstance = endpoint;
             endpoint.OnClosing += Endpoint_OnClosing;
 
-            subscriptionInstance = endpoint.Connection.CreateSubscription(
+            SubscriptionInstance = endpoint.Connection.CreateSubscription(
                 EventTypeUtil.GetEventsType(eventTypes),
                 FromTimeStamp,
-                new DXFeedEventHandler<E>(eventListeners, eventListenerLocker));
+                new DXFeedEventHandler<E>(EventListeners, EventListenerLocker));
         }
 
         /// <summary>
@@ -127,11 +127,11 @@ namespace com.dxfeed.api
 
                     ISet<object> symbols = GetSymbols();
 
-                    subscriptionInstance.Dispose();
-                    subscriptionInstance = endpointInstance.Connection.CreateSubscription(
+                    SubscriptionInstance.Dispose();
+                    SubscriptionInstance = endpointInstance.Connection.CreateSubscription(
                         EventTypeUtil.GetEventsType(EventTypes.ToArray()),
                         fromTime,
-                        new DXFeedEventHandler<E>(eventListeners, eventListenerLocker));
+                        new DXFeedEventHandler<E>(EventListeners, EventListenerLocker));
                     AddSymbols(false, symbols.ToArray());
                 }
             }

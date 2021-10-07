@@ -9,19 +9,19 @@ If a copy of the MPL was not distributed with this file, You can obtain one at h
 
 #endregion
 
+using System;
+using System.Globalization;
 using com.dxfeed.api.data;
 using com.dxfeed.api.events;
 using com.dxfeed.api.extras;
 using com.dxfeed.native.api;
-using System;
-using System.Globalization;
 
 namespace com.dxfeed.native.events
 {
     /// <summary>
-    /// Profile information snapshot that contains security instrument description.
-    /// It represents the most recent information that is available about the traded security
-    /// on the market at any given moment of time.
+    ///     Profile information snapshot that contains security instrument description.
+    ///     It represents the most recent information that is available about the traded security
+    ///     on the market at any given moment of time.
     /// </summary>
     public class NativeProfile : MarketEventImpl, IDxProfile
     {
@@ -42,14 +42,18 @@ namespace com.dxfeed.native.events
             LowLimitPrice = profile.low_limit_price;
             HaltStartTime = TimeConverter.ToUtcDateTime(profile.halt_start_time);
             HaltEndTime = TimeConverter.ToUtcDateTime(profile.halt_end_time);
-            Description = new string((char*) profile.description.ToPointer());
-            StatusReason = new string((char*) profile.status_reason.ToPointer());
+            Description = new string((char*)profile.description.ToPointer());
+            StatusReason = new string((char*)profile.status_reason.ToPointer());
             TradingStatus = profile.trading_status;
             ShortSaleRestriction = profile.ssr;
             RawFlags = profile.raw_flags;
         }
 
-        internal NativeProfile(IDxProfile profile) : base(profile.EventSymbol)
+        /// <summary>
+        ///     Copy constructor
+        /// </summary>
+        /// <param name="profile">The original Profile event</param>
+        public NativeProfile(IDxProfile profile) : base(profile.EventSymbol)
         {
             Beta = profile.Beta;
             EPS = profile.EPS;
@@ -70,6 +74,23 @@ namespace com.dxfeed.native.events
             ShortSaleRestriction = profile.ShortSaleRestriction;
             RawFlags = profile.RawFlags;
         }
+
+        /// <summary>
+        ///     Default constructor
+        /// </summary>
+        public NativeProfile()
+        {
+        }
+
+        #region Implementation of ICloneable
+
+        /// <inheritdoc />
+        public override object Clone()
+        {
+            return new NativeProfile(this);
+        }
+
+        #endregion
 
         /// <inheritdoc />
         public override string ToString()
@@ -101,107 +122,97 @@ namespace com.dxfeed.native.events
             );
         }
 
-        #region Implementation of ICloneable
-
-        /// <inheritdoc />
-        public override object Clone()
-        {
-            return new NativeProfile(this);
-        }
-
-        #endregion
-
         #region Implementation of IDxProfile
 
         /// <summary>
-        /// Returns Beta of the security instrument.
+        ///     Returns Beta of the security instrument.
         /// </summary>
-        public double Beta { get; private set; }
+        public double Beta { get; set; }
 
         /// <summary>
-        /// Returns Earnings per Share of the security instrument.
+        ///     Returns Earnings per Share of the security instrument.
         /// </summary>
-        public double EPS { get; private set; }
+        public double EPS { get; set; }
 
         /// <summary>
-        /// Returns Dividend Payment Frequency of the security instrument.
+        ///     Returns Dividend Payment Frequency of the security instrument.
         /// </summary>
-        public double DivFreq { get; private set; }
+        public double DivFreq { get; set; }
 
         /// <summary>
-        /// Returns Latest paid dividends for the security instrument.
+        ///     Returns Latest paid dividends for the security instrument.
         /// </summary>
-        public double ExdDivAmount { get; private set; }
+        public double ExdDivAmount { get; set; }
 
         /// <summary>
-        /// Returns Latest paid dividends day (day id) for the security instrument.
+        ///     Returns Latest paid dividends day (day id) for the security instrument.
         /// </summary>
-        public int ExdDivDate { get; private set; }
+        public int ExdDivDate { get; set; }
 
         /// <summary>
-        /// Returns 52 Weeks high price of the security instrument.
+        ///     Returns 52 Weeks high price of the security instrument.
         /// </summary>
-        public double High52WeekPrice { get; private set; }
+        public double High52WeekPrice { get; set; }
 
         /// <summary>
-        /// Returns 52 Weeks low price of the security instrument.
+        ///     Returns 52 Weeks low price of the security instrument.
         /// </summary>
-        public double Low52WeekPrice { get; private set; }
+        public double Low52WeekPrice { get; set; }
 
         /// <summary>
-        /// Returns shares availiable of the security instrument.
+        ///     Returns shares available of the security instrument.
         /// </summary>
-        public double Shares { get; private set; }
+        public double Shares { get; set; }
 
         /// <summary>
-        /// Returns free float of the security instrument.
+        ///     Returns free float of the security instrument.
         /// </summary>
-        public double FreeFloat { get; private set; }
+        public double FreeFloat { get; set; }
 
         /// <summary>
-        /// Returns description of the security instrument.
+        ///     Returns description of the security instrument.
         /// </summary>
-        public string Description { get; private set; }
+        public string Description { get; set; }
 
         /// <summary>
-        /// Returns short sale restriction of the security instrument.
+        ///     Returns short sale restriction of the security instrument.
         /// </summary>
-        public ShortSaleRestriction ShortSaleRestriction { get; private set; }
+        public ShortSaleRestriction ShortSaleRestriction { get; set; }
 
         /// <summary>
-        /// Returns trading status of the security instrument.
+        ///     Returns trading status of the security instrument.
         /// </summary>
-        public TradingStatus TradingStatus { get; private set; }
+        public TradingStatus TradingStatus { get; set; }
 
         /// <summary>
-        /// Returns description of the reason that trading was halted.
+        ///     Returns description of the reason that trading was halted.
         /// </summary>
-        public string StatusReason { get; private set; }
+        public string StatusReason { get; set; }
 
         /// <summary>
-        /// Returns starting time of the trading halt interval.
+        ///     Returns starting time of the trading halt interval.
         /// </summary>
-        public DateTime HaltStartTime { get; private set; }
+        public DateTime HaltStartTime { get; set; }
 
         /// <summary>
-        /// Returns ending time of the trading halt interval.
+        ///     Returns ending time of the trading halt interval.
         /// </summary>
-        public DateTime HaltEndTime { get; private set; }
+        public DateTime HaltEndTime { get; set; }
 
         /// <summary>
-        /// Returns the maximal (high) allowed price.
+        ///     Returns the maximal (high) allowed price.
         /// </summary>
-        public double HighLimitPrice { get; private set; }
+        public double HighLimitPrice { get; set; }
 
         /// <summary>
-        /// Returns the minimal (low) allowed price.
+        ///     Returns the minimal (low) allowed price.
         /// </summary>
-        public double LowLimitPrice { get; private set; }
+        public double LowLimitPrice { get; set; }
 
         /// <summary>
-        /// Returns implementation-specific raw bit flags value
+        ///     Returns implementation-specific raw bit flags value
         /// </summary>
-        public long RawFlags { get; private set; }
+        public long RawFlags { get; set; }
 
         #endregion
     }

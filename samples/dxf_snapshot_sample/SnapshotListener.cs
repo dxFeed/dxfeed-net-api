@@ -15,7 +15,8 @@ using com.dxfeed.api.candle;
 using com.dxfeed.api.data;
 using com.dxfeed.api.events;
 
-namespace dxf_snapshot_sample {
+namespace dxf_snapshot_sample
+{
     /// <summary>
     ///     Snapshots listener
     /// </summary>
@@ -25,14 +26,15 @@ namespace dxf_snapshot_sample {
         IDxTimeAndSaleSnapshotListener,
         IDxSpreadOrderSnapshotListener,
         IDxGreeksSnapshotListener,
-        IDxSeriesSnapshotListener {
+        IDxSeriesSnapshotListener
+    {
         private readonly int recordsPrintLimit;
-        private const int RECORDS_PRINT_LIMIT = 7;
 
-        public SnapshotListener(int recordsPrintLimit) {
+        public SnapshotListener(int recordsPrintLimit)
+        {
             this.recordsPrintLimit = recordsPrintLimit;
         }
-        
+
         #region Implementation of IDxCandleSnapshotListener
 
         /// <summary>
@@ -43,7 +45,8 @@ namespace dxf_snapshot_sample {
         /// <param name="buf">Event buffer object.</param>
         public void OnCandleSnapshot<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
-            where TE : IDxCandle {
+            where TE : IDxCandle
+        {
             PrintSnapshot(buf);
         }
 
@@ -59,7 +62,8 @@ namespace dxf_snapshot_sample {
         /// <param name="buf">Event buffer object.</param>
         public void OnGreeksSnapshot<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
-            where TE : IDxGreeks {
+            where TE : IDxGreeks
+        {
             PrintSnapshot(buf);
         }
 
@@ -75,7 +79,8 @@ namespace dxf_snapshot_sample {
         /// <param name="buf">Event buffer object.</param>
         public void OnOrderSnapshot<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
-            where TE : IDxOrder {
+            where TE : IDxOrder
+        {
             PrintSnapshot(buf);
         }
 
@@ -91,7 +96,8 @@ namespace dxf_snapshot_sample {
         /// <param name="buf">Event buffer object.</param>
         public void OnSeriesSnapshot<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
-            where TE : IDxSeries {
+            where TE : IDxSeries
+        {
             PrintSnapshot(buf);
         }
 
@@ -107,7 +113,8 @@ namespace dxf_snapshot_sample {
         /// <param name="buf">Event buffer object.</param>
         public void OnSpreadOrderSnapshot<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
-            where TE : IDxSpreadOrder {
+            where TE : IDxSpreadOrder
+        {
             PrintSnapshot(buf);
         }
 
@@ -123,15 +130,18 @@ namespace dxf_snapshot_sample {
         /// <param name="buf">Event buffer object.</param>
         public void OnTimeAndSaleSnapshot<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
-            where TE : IDxTimeAndSale {
+            where TE : IDxTimeAndSale
+        {
             PrintSnapshot(buf);
         }
 
         #endregion //IDxTimeAndSaleSnapshotListener
 
-        private void PrintSnapshot<TE>(IDxEventBuf<TE> buf) {
+        private void PrintSnapshot<TE>(IDxEventBuf<TE> buf)
+        {
             var symbolStr = buf.Symbol;
-            if (buf.EventType == EventType.Candle) {
+            if (buf.EventType == EventType.Candle)
+            {
                 var candleSymbol = CandleSymbol.ValueOf(symbolStr);
                 if (candleSymbol.IsDefault())
                     symbolStr = candleSymbol.ToFullString();
@@ -139,12 +149,13 @@ namespace dxf_snapshot_sample {
 
             Console.WriteLine("Snapshot {0} {{Symbol: '{1}', RecordsCount: {2}}}", buf.EventType, symbolStr, buf.Size);
             var count = 0;
-            foreach (var o in buf) {
+            foreach (var o in buf)
+            {
                 Console.WriteLine("   {{ {0} }}", o);
                 if (++count < recordsPrintLimit || recordsPrintLimit == 0) continue;
-                
+
                 Console.WriteLine("   {{ ... {0} records left ...}}", buf.Size - count);
-                
+
                 break;
             }
         }

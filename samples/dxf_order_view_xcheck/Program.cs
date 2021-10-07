@@ -14,16 +14,20 @@ using System.Collections.Generic;
 using com.dxfeed.api;
 using com.dxfeed.native;
 
-namespace dxf_order_view_xcheck {
-    internal class Program {
-        private const int HOST_INDEX = 0;
+namespace dxf_order_view_xcheck
+{
+    internal class Program
+    {
+        private const int HostIndex = 0;
 
-        private static void DisconnectHandler(IDxConnection con) {
+        private static void DisconnectHandler(IDxConnection con)
+        {
             Console.WriteLine("Disconnected");
         }
 
         private static bool TryParseTaggedStringParam(string tag, string paramTagString, string paramString,
-            InputParam<string> param) {
+            InputParam<string> param)
+        {
             if (!paramTagString.Equals(tag)) return false;
 
             param.Value = paramString;
@@ -31,8 +35,10 @@ namespace dxf_order_view_xcheck {
             return true;
         }
 
-        private static void Main(string[] args) {
-            if (args.Length < 1 || args.Length > 4) {
+        private static void Main(string[] args)
+        {
+            if (args.Length < 1 || args.Length > 4)
+            {
                 Console.WriteLine(
                     "Usage: dxf_order_view_xcheck <host:port> [-T <token>] [-p]\n" +
                     "where\n" +
@@ -45,11 +51,12 @@ namespace dxf_order_view_xcheck {
                 return;
             }
 
-            var address = args[HOST_INDEX];
+            var address = args[HostIndex];
             var token = new InputParam<string>(null);
             var logDataTransferFlag = false;
 
-            for (var i = HOST_INDEX + 1; i < args.Length; i++) {
+            for (var i = HostIndex + 1; i < args.Length; i++)
+            {
                 if (!token.IsSet && i < args.Length - 1 &&
                     TryParseTaggedStringParam("-T", args[i], args[i + 1], token))
                 {
@@ -57,7 +64,8 @@ namespace dxf_order_view_xcheck {
                     continue;
                 }
 
-                if (logDataTransferFlag == false && args[i].Equals("-p")) {
+                if (logDataTransferFlag == false && args[i].Equals("-p"))
+                {
                     logDataTransferFlag = true;
                     i++;
                 }
@@ -65,11 +73,13 @@ namespace dxf_order_view_xcheck {
 
             Console.WriteLine("Connecting to {0} for Order View", address);
 
-            try {
+            try
+            {
                 NativeTools.InitializeLogging("dxf_order_view_xcheck.log", true, true, logDataTransferFlag);
                 using (var con = token.IsSet
                     ? new NativeConnection(address, token.Value, DisconnectHandler)
-                    : new NativeConnection(address, DisconnectHandler)) {
+                    : new NativeConnection(address, DisconnectHandler))
+                {
                     var l = new OrderViewEventListener();
                     var subs = new List<IDxSubscription>();
                     /*
@@ -81,10 +91,11 @@ namespace dxf_order_view_xcheck {
                      * in the mixed view, it is normal. Atomicity is only guaranteed
                      * for order book from one source!
                      */
-                    foreach (var src in new[] {"NTV" /*, "DEX", "BZX" */}) {
+                    foreach (var src in new[] { "NTV" /*, "DEX", "BZX" */ })
+                    {
                         var s = con.CreateOrderViewSubscription(l);
                         s.SetSource(src);
-                        s.SetSymbols( /*"AAPL",*/ "FB" /*, "SPY"*/);
+                        s.SetSymbols("AAPL");
                         subs.Add(s);
                     }
 
@@ -93,29 +104,38 @@ namespace dxf_order_view_xcheck {
                     foreach (var sub in subs)
                         sub.Dispose();
                 }
-            } catch (DxException dxException) {
+            }
+            catch (DxException dxException)
+            {
                 Console.WriteLine($"Native exception occurred: {dxException.Message}");
-            } catch (Exception exc) {
+            }
+            catch (Exception exc)
+            {
                 Console.WriteLine($"Exception occurred: {exc.Message}");
             }
         }
 
-        private class InputParam<T> {
+        private class InputParam<T>
+        {
             private T value;
 
-            private InputParam() {
+            private InputParam()
+            {
                 IsSet = false;
             }
 
-            public InputParam(T defaultValue) : this() {
+            public InputParam(T defaultValue) : this()
+            {
                 value = defaultValue;
             }
 
             public bool IsSet { get; private set; }
 
-            public T Value {
+            public T Value
+            {
                 get { return value; }
-                set {
+                set
+                {
                     this.value = value;
                     IsSet = true;
                 }

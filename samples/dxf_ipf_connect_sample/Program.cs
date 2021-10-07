@@ -21,10 +21,15 @@ using com.dxfeed.api.extras;
 using com.dxfeed.ipf;
 using com.dxfeed.native;
 
-namespace dxf_ipf_connect_sample {
-    internal class Program {
-        private static void ConnectionStatusChangeHandler(IDxConnection connection, ConnectionStatus oldStatus, ConnectionStatus newStatus) {
-            switch (newStatus) {
+namespace dxf_ipf_connect_sample
+{
+    internal class Program
+    {
+        private static void ConnectionStatusChangeHandler(IDxConnection connection, ConnectionStatus oldStatus,
+            ConnectionStatus newStatus)
+        {
+            switch (newStatus)
+            {
                 case ConnectionStatus.Connected:
                     Console.WriteLine("Connected!");
                     break;
@@ -40,35 +45,52 @@ namespace dxf_ipf_connect_sample {
             }
         }
 
-        private static void DisconnectHandler(IDxConnection con) {
+        private static void DisconnectHandler(IDxConnection con)
+        {
             Console.WriteLine("Disconnected");
         }
 
-        private static bool IsFilePath(string path) {
-            try {
+        private static bool IsFilePath(string path)
+        {
+            try
+            {
                 return new Uri(path).IsFile;
-            } catch (UriFormatException) {
+            }
+            catch (UriFormatException)
+            {
                 return true;
             }
         }
 
-        private static void Main(string[] args) {
-            if (args.Length == 0) {
+        private static void Main(string[] args)
+        {
+            if (args.Length == 0)
+            {
                 Console.WriteLine(
-                    "Usage: dxf_ipf_connect_sample <ipf_host> <user> <password> <host:port> <events>\n" +
-                    "or:    dxf_ipf_connect_sample <file> <host:port> <event>\n" +
-                    "where\n" +
-                    "    ipf_host  - The valid ipf host to download instruments (https://tools.dxfeed.com/ipf)\n" +
-                    "    user      - The user name to host access\n" +
-                    "    password  - The user password to host access\n" +
-                    "    host:port - The address of dxfeed server (demo.dxfeed.com:7300)\n" +
-                    "    events    - Any of the {Profile,Quote,Trade,TimeAndSale,Summary,\n" +
-                    "                TradeETH,Candle,Greeks,TheoPrice,Underlying,Series,\n" +
-                    "                Configuration}\n" +
-                    "    file      - The name of file or archive (.gz or .zip) contains instrument profiles\n\n" +
-                    "example: dxf_ipf_connect_sample https://tools.dxfeed.com/ipf?TYPE=STOCK demo demo demo.dxfeed.com:7300 Quote,Trade\n" +
-                    "or:      dxf_ipf_connect_sample https://demo:demo@tools.dxfeed.com/ipf?TYPE=STOCK demo.dxfeed.com:7300 Quote,Trade\n" +
-                    "or:      dxf_ipf_connect_sample profiles.zip demo.dxfeed.com:7300 Quote,Trade\n"
+                    "Usage: \n" +
+                    "dxf_ipf_connect_sample <ipf_host> <ipf_user> <ipf_password> [<token>] <host:port> <events>\n" +
+                    "or:    \n" +
+                    "dxf_ipf_connect_sample <ipf_host|ipf_file> [<token>] <host:port> <events>\n" +
+                    "where:\n" +
+                    "    ipf_host     - The valid ipf host (with optional base credentials) to \n" +
+                    "                   download instruments (https://tools.dxfeed.com/ipf or \n" +
+                    "                   https://demo:demo@tools.dxfeed.com/ipf)\n" +
+                    "    ipf_user     - The user name to ipf host access\n" +
+                    "    ipf_password - The user password to ipf host access\n" +
+                    "    host:port    - The address of dxFeed server (demo.dxfeed.com:7300)\n" +
+                    "    token        - The authorization token (also could be used by IPF host)\n" +
+                    "    events       - Any of the {Profile,Quote,Trade,TimeAndSale,Summary,\n" +
+                    "                   TradeETH,Candle,Greeks,TheoPrice,Underlying,Series,\n" +
+                    "                   Configuration}\n" +
+                    "    ipf_file  - The name of file or archive (.gz or .zip) contains instrument profiles\n\n" +
+                    "examples:\n" +
+                    "dxf_ipf_connect_sample https://tools.dxfeed.com/ipf?TYPE=STOCK demo demo demo.dxfeed.com:7300 Quote,Trade\n" +
+                    "dxf_ipf_connect_sample https://tools.dxfeed.com/ipf?TYPE=STOCK demo demo Z2V0LmR4ZmVlZCxhbW... demo.dxfeed.com:7300 Quote,Trade\n" +
+                    "dxf_ipf_connect_sample https://tools.dxfeed.com/ipf?TYPE=STOCK Z2V0LmR4ZmVlZCxhbW... demo.dxfeed.com:7300 Quote,Trade\n" +
+                    "dxf_ipf_connect_sample https://demo:demo@tools.dxfeed.com/ipf?TYPE=STOCK demo.dxfeed.com:7300 Quote,Trade\n" +
+                    "dxf_ipf_connect_sample https://demo:demo@tools.dxfeed.com/ipf?TYPE=STOCK Z2V0LmR4ZmVlZCxhbW... demo.dxfeed.com:7300 Quote,Trade\n" +
+                    "dxf_ipf_connect_sample profiles.zip demo.dxfeed.com:7300 Quote,Trade\n" +
+                    "dxf_ipf_connect_sample profiles.zip Z2V0LmR4ZmVlZCxhbW... demo.dxfeed.com:7300 Quote,Trade\n"
                 );
                 return;
             }
@@ -76,41 +98,68 @@ namespace dxf_ipf_connect_sample {
             var path = args[0];
             var user = string.Empty;
             var password = string.Empty;
+            var token = string.Empty;
             string dxFeedAddress;
             EventType events;
             List<string> symbols;
 
-            try {
+            try
+            {
                 var reader = new InstrumentProfileReader();
                 IList<InstrumentProfile> profiles;
                 var dxFeedAddressParamIndex = 1;
 
-                if (IsFilePath(path)) {
+                if (IsFilePath(path))
+                {
                     //Read profiles from local file system
-                    using (var inputStream = new FileStream(path, FileMode.Open)) {
+                    using (var inputStream = new FileStream(path, FileMode.Open))
+                    {
                         profiles = reader.Read(inputStream, path);
                     }
-                } else {
-                    if (args.Length == 5) {
+                }
+                else
+                {
+                    if (args.Length >= 5)
+                    {
                         user = args[1];
                         password = args[2];
                         dxFeedAddressParamIndex += 2;
+
+                        if (args.Length == 6)
+                        {
+                            token = args[dxFeedAddressParamIndex];
+                            dxFeedAddressParamIndex++;
+                        }
+                    }
+                    else if (args.Length == 4)
+                    {
+                        token = args[dxFeedAddressParamIndex];
+                        dxFeedAddressParamIndex++;
                     }
 
+                    var urlContainsLoginAndPassword = path.Contains("@");
+
                     //Read profiles from server
-                    profiles = reader.ReadFromFile(path, user, password);
+
+                    if (urlContainsLoginAndPassword)
+                        profiles = reader.ReadFromFile(path);
+                    else
+                        profiles = string.IsNullOrEmpty(token)
+                            ? reader.ReadFromFile(path, user, password)
+                            : reader.ReadFromFile(path, token);
                 }
 
                 dxFeedAddress = args[dxFeedAddressParamIndex];
                 var eventsString = args[dxFeedAddressParamIndex + 1];
 
-                if (!Enum.TryParse(eventsString, true, out events)) {
+                if (!Enum.TryParse(eventsString, true, out events))
+                {
                     Console.WriteLine($"Unsupported event type: {eventsString}");
                     return;
                 }
 
-
-                if (profiles.Count == 0) {
+                if (profiles.Count == 0)
+                {
                     Console.WriteLine("There are no profiles");
 
                     return;
@@ -120,35 +169,47 @@ namespace dxf_ipf_connect_sample {
 
                 symbols = profiles.Select(profile => profile.GetSymbol()).ToList();
 
-                Console.WriteLine(value: $"Symbols: {string.Join(", ", symbols.Take(42).ToArray())}...");
-            } catch (Exception exc) {
+                Console.WriteLine($"Symbols: {string.Join(", ", symbols.Take(42).ToArray())}...");
+            }
+            catch (Exception exc)
+            {
                 Console.WriteLine($"Exception occurred: {exc}");
 
                 return;
             }
 
-            Console.WriteLine($"Connecting to {dxFeedAddress} for [{events} on [{string.Join(", ", symbols.Take(42).ToArray())}...] ...");
+            Console.WriteLine(
+                $"Connecting to {dxFeedAddress} for [{events} on [{string.Join(", ", symbols.Take(42).ToArray())}...] ...");
 
             NativeTools.InitializeLogging("dxf_ipf_connect_sample.log", true, true);
 
-            using (var connection = new NativeConnection(dxFeedAddress, DisconnectHandler, ConnectionStatusChangeHandler)) {
+            using (var connection = string.IsNullOrEmpty(token)
+                ? new NativeConnection(dxFeedAddress, DisconnectHandler, ConnectionStatusChangeHandler)
+                : new NativeConnection(dxFeedAddress, token, DisconnectHandler, ConnectionStatusChangeHandler))
+            {
                 IDxSubscription subscription = null;
-                try {
+                try
+                {
                     subscription = connection.CreateSubscription(events, new EventPrinter());
 
-                    if (events == EventType.Candle) {
+                    if (events == EventType.Candle)
                         subscription.AddSymbols(symbols.ConvertAll(CandleSymbol.ValueOf).ToArray());
-                    } else {
+                    else
                         subscription.AddSymbols(symbols.ToArray());
-                    }
 
                     Console.WriteLine("Press enter to stop");
                     Console.ReadLine();
-                } catch (DxException dxException) {
+                }
+                catch (DxException dxException)
+                {
                     Console.WriteLine($"Native exception occurred: {dxException.Message}");
-                } catch (Exception exc) {
+                }
+                catch (Exception exc)
+                {
                     Console.WriteLine($"Exception occurred: {exc.Message}");
-                } finally {
+                }
+                finally
+                {
                     subscription?.Dispose();
                 }
             }

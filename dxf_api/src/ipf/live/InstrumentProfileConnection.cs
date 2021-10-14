@@ -64,8 +64,14 @@ namespace com.dxfeed.ipf.live
     /// </summary>
     public class InstrumentProfileConnection
     {
+        /// <summary>
+        /// A delegate that describes receiving the Error event
+        /// </summary>
         public delegate void OnErrorEventHandler(object sender, ErrorEventArgs e);
 
+        /// <summary>
+        /// On Error event handler
+        /// </summary>
         public event OnErrorEventHandler OnError;
 
         /// <summary>

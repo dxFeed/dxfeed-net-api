@@ -16,18 +16,24 @@ using System.Threading.Tasks;
 using com.dxfeed.api;
 using com.dxfeed.api.events;
 
-namespace dxf_promises_sample {
-    internal class PromisesSample {
-        private static void GetLastEventPromisesSample() {
-            string[] symbols = {"C", "IBM", "MSFT"};
+namespace dxf_promises_sample
+{
+    internal class PromisesSample
+    {
+        private static void GetLastEventPromisesSample()
+        {
+            string[] symbols = { "C", "IBM", "MSFT" };
             var feed = DXFeed.GetInstance();
             var promises = feed.GetLastEventsPromises<IDxTrade>(
                 symbols,
                 new CancellationTokenSource(TimeSpan.FromSeconds(5)).Token);
             // combine the list of promises into one with Task utility method and wait
-            try {
+            try
+            {
                 Task.WaitAll(promises.Cast<Task>().ToArray());
-            } catch (AggregateException ae) {
+            }
+            catch (AggregateException ae)
+            {
                 foreach (var exc in ae.InnerExceptions)
                     if (!(exc is OperationCanceledException))
                         Console.WriteLine(exc);
@@ -44,15 +50,19 @@ namespace dxf_promises_sample {
                     Console.WriteLine("not found");
         }
 
-        private static void GetIndexedEventsPromise() {
+        private static void GetIndexedEventsPromise()
+        {
             var feed = DXFeed.GetInstance();
             var tsPromise = feed.GetIndexedEventsPromise<IDxTimeAndSale>("IBM", IndexedEventSource.DEFAULT,
                 new CancellationTokenSource(TimeSpan.FromSeconds(2)).Token);
             Console.WriteLine("TimeAndSale events:");
-            try {
+            try
+            {
                 foreach (var result in tsPromise.Result)
                     Console.WriteLine(result);
-            } catch (AggregateException ae) {
+            }
+            catch (AggregateException ae)
+            {
                 foreach (var exc in ae.InnerExceptions)
                     if (exc is OperationCanceledException)
                         Console.WriteLine("not found");
@@ -63,10 +73,13 @@ namespace dxf_promises_sample {
             var orderPromise = feed.GetIndexedEventsPromise<IDxOrder>("IBM", OrderSource.NTV,
                 new CancellationTokenSource(TimeSpan.FromSeconds(2)).Token);
             Console.WriteLine("Order#NTV events:");
-            try {
+            try
+            {
                 foreach (var result in orderPromise.Result)
                     Console.WriteLine(result);
-            } catch (AggregateException ae) {
+            }
+            catch (AggregateException ae)
+            {
                 foreach (var exc in ae.InnerExceptions)
                     if (exc is OperationCanceledException)
                         Console.WriteLine("not found");
@@ -75,7 +88,8 @@ namespace dxf_promises_sample {
             }
         }
 
-        private static void Main() {
+        private static void Main()
+        {
             GetLastEventPromisesSample();
             GetIndexedEventsPromise();
         }

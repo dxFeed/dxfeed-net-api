@@ -77,6 +77,7 @@ namespace com.dxfeed.native {
 
         #region Implementation of IEnumerable
 
+        /// <inheritdoc />
         public IEnumerator<IDxOrder> GetEnumerator() {
             return new SortedDictionary<long, IDxOrder>(events).Values.GetEnumerator();
         }
@@ -89,12 +90,16 @@ namespace com.dxfeed.native {
 
         #region Implementation of IDxEventBuf<out T>
 
+        /// <inheritdoc />
         public EventType EventType { get; }
 
+        /// <inheritdoc />
         public string Symbol { get; }
 
+        /// <inheritdoc />
         public int Size => events.Count;
 
+        /// <inheritdoc />
         public EventParams EventParams { get; internal set; }
 
         #endregion

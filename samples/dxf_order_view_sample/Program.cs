@@ -15,8 +15,8 @@ using com.dxfeed.native;
 
 namespace dxf_order_view_sample {
     internal class Program {
-        private const int DEFAULT_RECORDS_PRINT_LIMIT = 7;
-        private const int HOST_INDEX = 0;
+        private const int DefaultRecordsPrintLimit = 7;
+        private const int HostIndex = 0;
 
         private static void DisconnectHandler(IDxConnection con) {
             Console.WriteLine("Disconnected");
@@ -49,7 +49,7 @@ namespace dxf_order_view_sample {
                 "Usage: dxf_order_view_sample <host:port> [-l <records_print_limit>] [-T <token>] [-p]\n" +
                 "where\n" +
                 "    host:port           - The address of dxfeed server (demo.dxfeed.com:7300)\n" +
-                $"    records_print_limit - The number of displayed records (0 - unlimited, default: {DEFAULT_RECORDS_PRINT_LIMIT})\n" +
+                $"    records_print_limit - The number of displayed records (0 - unlimited, default: {DefaultRecordsPrintLimit})\n" +
                 "    -T <token>          - The authorization token\n" +
                 "    -p                  - Enables the data transfer logging\n\n" +
                 "examples: dxf_order_view_sample demo.dxfeed.com:7300\n" +
@@ -64,12 +64,12 @@ namespace dxf_order_view_sample {
                 return;
             }
 
-            var address = args[HOST_INDEX];
-            var recordsPrintLimit = new InputParam<int>(DEFAULT_RECORDS_PRINT_LIMIT);
+            var address = args[HostIndex];
+            var recordsPrintLimit = new InputParam<int>(DefaultRecordsPrintLimit);
             var token = new InputParam<string>(null);
             var logDataTransferFlag = false;
 
-            for (var i = HOST_INDEX + 1; i < args.Length; i++) {
+            for (var i = HostIndex + 1; i < args.Length; i++) {
                 if (!recordsPrintLimit.IsSet && i < args.Length - 1 &&
                     TryParseRecordsPrintLimitParam(args[i], args[i + 1], recordsPrintLimit)) {
                     i++;
@@ -99,8 +99,8 @@ namespace dxf_order_view_sample {
                     : new NativeConnection(address, DisconnectHandler)) {
                     using (var sub =
                         con.CreateOrderViewSubscription(new OrderViewEventListener(recordsPrintLimit.Value))) {
-                        sub.SetSource("NTV", "DEA", "DEX");
-                        sub.SetSymbols("AAPL", "GOOG", "IBM", "F");
+                        sub.SetSource("NTV");
+                        sub.SetSymbols("AAPL");
 
                         Console.WriteLine("Press enter to stop");
                         Console.ReadLine();

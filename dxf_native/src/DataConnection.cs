@@ -15,9 +15,15 @@ using com.dxfeed.io;
 
 namespace com.dxfeed.native
 {
+    /// <summary>
+    /// Class that describes common connection methods which used to retrieve data from CandleWebService
+    /// </summary>
     public class DataConnection
     {
-        protected readonly string address;
+        /// <summary>
+        /// The connection address
+        /// </summary>
+        protected readonly string Address;
         private readonly string login;
         private readonly string password;
         private readonly string token;
@@ -29,7 +35,7 @@ namespace com.dxfeed.native
                 throw new ArgumentNullException(nameof(address));
             }
 
-            this.address = address;
+            this.Address = address;
             this.login = login;
             this.password = password;
             this.token = token;
@@ -55,6 +61,11 @@ namespace com.dxfeed.native
         {
         }
         
+        /// <summary>
+        /// Creates the web connection by address 
+        /// </summary>
+        /// <param name="connectionAddress">The connection address</param>
+        /// <returns>The new web request</returns>
         protected WebRequest OpenConnection(string connectionAddress)
         {
             if (!string.IsNullOrEmpty(token)) return URLInputStream.OpenConnection(connectionAddress, token);

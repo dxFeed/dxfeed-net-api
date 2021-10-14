@@ -13,12 +13,15 @@ using com.dxfeed.native.api;
 
 namespace com.dxfeed.native
 {
+    /// <summary>
+    /// The native API utility functions
+    /// </summary>
     public static class NativeTools
     {
         /// <summary>
         /// Initializes the internal logger.
         ///
-        /// Various actions and events, including the errors, are being logged throughout the fremework. They may be
+        /// Various actions and events, including the errors, are being logged throughout the framework. They may be
         /// stored into the file.
         /// </summary>
         /// <param name="fileName">A full path to the file where the log is to be stored</param>

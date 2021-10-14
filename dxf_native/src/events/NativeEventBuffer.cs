@@ -17,27 +17,31 @@ using com.dxfeed.api.events;
 
 namespace com.dxfeed.native.events
 {
+    /// <summary>
+    ///     The class that describes a native event buffer
+    /// </summary>
+    /// <typeparam name="T">The event type</typeparam>
     public struct NativeEventBuffer<T> : IDxEventBuf<T>
     {
-        private readonly EventType type;
         private readonly IntPtr head;
-        private readonly int size;
         private readonly Func<IntPtr, int, string, T> readEvent;
-        private readonly string symbol;
-        private readonly EventParams eventParams;
 
-        internal unsafe NativeEventBuffer(EventType type, IntPtr symbol, IntPtr head, int size, EventParams eventParams, Func<IntPtr, int, string, T> readEvent)
+        internal unsafe NativeEventBuffer(EventType type, IntPtr symbol, IntPtr head, int size, EventParams eventParams,
+            Func<IntPtr, int, string, T> readEvent)
         {
-            this.type = type;
+            EventType = type;
             this.head = head;
-            this.size = size;
+            Size = size;
             this.readEvent = readEvent;
-            this.symbol = new string((char*)symbol.ToPointer());
-            this.eventParams = eventParams;
+            Symbol = new string((char*)symbol.ToPointer());
+            EventParams = eventParams;
         }
 
         #region Implementation of IEnumerable
 
+        /// <summary>
+        ///     The native event buffer's enumerator
+        /// </summary>
         public struct Enumerator : IEnumerator<T>
         {
             private readonly IntPtr head;
@@ -45,12 +49,12 @@ namespace com.dxfeed.native.events
             private readonly Func<IntPtr, int, string, T> readEvent;
             private T current;
             private int nextRead;
-            private string symbol;
+            private readonly string symbol;
 
             internal Enumerator(NativeEventBuffer<T> buf)
             {
                 head = buf.head;
-                size = buf.size;
+                size = buf.Size;
                 readEvent = buf.readEvent;
                 nextRead = 0;
                 current = default(T);
@@ -59,6 +63,7 @@ namespace com.dxfeed.native.events
 
             #region Implementation of IDisposable
 
+            /// <inheritdoc />
             public void Dispose()
             {
             }
@@ -67,6 +72,7 @@ namespace com.dxfeed.native.events
 
             #region Implementation of IEnumerator
 
+            /// <inheritdoc />
             public bool MoveNext()
             {
                 if (nextRead == size)
@@ -74,17 +80,20 @@ namespace com.dxfeed.native.events
                     current = default(T);
                     return false;
                 }
+
                 current = readEvent(head, nextRead, symbol);
                 nextRead++;
                 return true;
             }
 
+            /// <inheritdoc />
             public void Reset()
             {
                 nextRead = 0;
                 current = default(T);
             }
 
+            /// <inheritdoc />
             public T Current
             {
                 get
@@ -95,14 +104,15 @@ namespace com.dxfeed.native.events
                 }
             }
 
-            object IEnumerator.Current
-            {
-                get { return Current; }
-            }
+            object IEnumerator.Current => Current;
 
             #endregion
         }
 
+        /// <summary>
+        ///     Returns current buffer's enumerator
+        /// </summary>
+        /// <returns>The new enumerator of the buffer</returns>
         public Enumerator GetEnumerator()
         {
             return new Enumerator(this);
@@ -122,115 +132,255 @@ namespace com.dxfeed.native.events
 
         #region Implementation of IDxEventBuf<out T>
 
-        public EventType EventType
-        {
-            get { return type; }
-        }
+        /// <inheritdoc />
+        public EventType EventType { get; }
 
-        public string Symbol
-        {
-            get { return symbol; }
-        }
+        /// <inheritdoc />
+        public string Symbol { get; }
 
-        public int Size
-        {
-            get { return size; }
-        }
+        /// <inheritdoc />
+        public int Size { get; }
 
-        public EventParams EventParams
-        {
-            get { return eventParams; }
-        }
+        /// <inheritdoc />
+        public EventParams EventParams { get; }
 
         #endregion
     }
 
+    /// <summary>
+    ///     The factory that used for native buffer creation
+    /// </summary>
     public class NativeBufferFactory
     {
-        private static readonly Func<IntPtr, int, string, NativeQuote> QUOTE_READER = DxMarshal.ReadQuote;
-        private static readonly Func<IntPtr, int, string, NativeTrade> TRADE_READER = DxMarshal.ReadTrade;
-        private static readonly Func<IntPtr, int, string, NativeOrder> ORDER_READER = DxMarshal.ReadOrder;
-        private static readonly Func<IntPtr, int, string, NativeProfile> PROFILE_READER = DxMarshal.ReadProfile;
-        private static readonly Func<IntPtr, int, string, NativeTimeAndSale> TS_READER = DxMarshal.ReadTimeAndSale;
-        private static readonly Func<IntPtr, int, string, NativeSummary> SUMMARY_READER = DxMarshal.ReadSummary;
-        private static readonly Func<IntPtr, int, string, NativeCandle> CANDLE_READER = DxMarshal.ReadCandle;
-        private static readonly Func<IntPtr, int, string, NativeTradeETH> TRADE_ETH_READER = DxMarshal.ReadTradeETH;
-        private static readonly Func<IntPtr, int, string, NativeSpreadOrder> SPREAD_ORDER_READER = DxMarshal.ReadSpreadOrder;
-        private static readonly Func<IntPtr, int, string, NativeGreeks> GREEKS_READER = DxMarshal.ReadGreeks;
-        private static readonly Func<IntPtr, int, string, NativeTheoPrice> THEO_PRICE_READER = DxMarshal.ReadTheoPrice;
-        private static readonly Func<IntPtr, int, string, NativeUnderlying> UNDERLYING_READER = DxMarshal.ReadUnderlying;
-        private static readonly Func<IntPtr, int, string, NativeSeries> SERIES_READER = DxMarshal.ReadSeries;
-        private static readonly Func<IntPtr, int, string, NativeConfiguration> CONFIGURATION_READER = DxMarshal.ReadConfiguration;
+        private static readonly Func<IntPtr, int, string, NativeQuote> QuoteReader = DxMarshal.ReadQuote;
+        private static readonly Func<IntPtr, int, string, NativeTrade> TradeReader = DxMarshal.ReadTrade;
+        private static readonly Func<IntPtr, int, string, NativeOrder> OrderReader = DxMarshal.ReadOrder;
+        private static readonly Func<IntPtr, int, string, NativeProfile> ProfileReader = DxMarshal.ReadProfile;
+        private static readonly Func<IntPtr, int, string, NativeTimeAndSale> TsReader = DxMarshal.ReadTimeAndSale;
+        private static readonly Func<IntPtr, int, string, NativeSummary> SummaryReader = DxMarshal.ReadSummary;
+        private static readonly Func<IntPtr, int, string, NativeCandle> CandleReader = DxMarshal.ReadCandle;
+        private static readonly Func<IntPtr, int, string, NativeTradeETH> TradeEthReader = DxMarshal.ReadTradeEth;
+
+        private static readonly Func<IntPtr, int, string, NativeSpreadOrder> SpreadOrderReader =
+            DxMarshal.ReadSpreadOrder;
+
+        private static readonly Func<IntPtr, int, string, NativeGreeks> GreeksReader = DxMarshal.ReadGreeks;
+        private static readonly Func<IntPtr, int, string, NativeTheoPrice> TheoPriceReader = DxMarshal.ReadTheoPrice;
+
+        private static readonly Func<IntPtr, int, string, NativeUnderlying>
+            UnderlyingReader = DxMarshal.ReadUnderlying;
+
+        private static readonly Func<IntPtr, int, string, NativeSeries> SeriesReader = DxMarshal.ReadSeries;
+
+        private static readonly Func<IntPtr, int, string, NativeConfiguration> ConfigurationReader =
+            DxMarshal.ReadConfiguration;
 
 
-        public static NativeEventBuffer<NativeQuote> CreateQuoteBuf(IntPtr symbol, IntPtr head, int size, EventParams eventParams)
+        /// <summary>
+        ///     Creates the NativeQuote buffer
+        /// </summary>
+        /// <param name="symbol">The address of an event symbol</param>
+        /// <param name="head">The start address of events</param>
+        /// <param name="size">The buffer size</param>
+        /// <param name="eventParams">The event params</param>
+        /// <returns>The new NativeQuote buffer</returns>
+        public static NativeEventBuffer<NativeQuote> CreateQuoteBuf(IntPtr symbol, IntPtr head, int size,
+            EventParams eventParams)
         {
-            return new NativeEventBuffer<NativeQuote>(EventType.Quote, symbol, head, size, eventParams, QUOTE_READER);
+            return new NativeEventBuffer<NativeQuote>(EventType.Quote, symbol, head, size, eventParams, QuoteReader);
         }
 
-        public static NativeEventBuffer<NativeTrade> CreateTradeBuf(IntPtr symbol, IntPtr head, int size, EventParams eventParams)
+        /// <summary>
+        ///     Creates the NativeTrade buffer
+        /// </summary>
+        /// <param name="symbol">The address of an event symbol</param>
+        /// <param name="head">The start address of events</param>
+        /// <param name="size">The buffer size</param>
+        /// <param name="eventParams">The event params</param>
+        /// <returns>The new NativeTrade buffer</returns>
+        public static NativeEventBuffer<NativeTrade> CreateTradeBuf(IntPtr symbol, IntPtr head, int size,
+            EventParams eventParams)
         {
-            return new NativeEventBuffer<NativeTrade>(EventType.Trade, symbol, head, size, eventParams, TRADE_READER);
+            return new NativeEventBuffer<NativeTrade>(EventType.Trade, symbol, head, size, eventParams, TradeReader);
         }
 
-        public static NativeEventBuffer<NativeOrder> CreateOrderBuf(IntPtr symbol, IntPtr head, int size, EventParams eventParams)
+        /// <summary>
+        ///     Creates the NativeOrder buffer
+        /// </summary>
+        /// <param name="symbol">The address of an event symbol</param>
+        /// <param name="head">The start address of events</param>
+        /// <param name="size">The buffer size</param>
+        /// <param name="eventParams">The event params</param>
+        /// <returns>The new NativeOrder buffer</returns>
+        public static NativeEventBuffer<NativeOrder> CreateOrderBuf(IntPtr symbol, IntPtr head, int size,
+            EventParams eventParams)
         {
-            return new NativeEventBuffer<NativeOrder>(EventType.Order, symbol, head, size, eventParams, ORDER_READER);
+            return new NativeEventBuffer<NativeOrder>(EventType.Order, symbol, head, size, eventParams, OrderReader);
         }
 
-        public static NativeEventBuffer<NativeProfile> CreateProfileBuf(IntPtr symbol, IntPtr head, int size, EventParams eventParams)
+        /// <summary>
+        ///     Creates the NativeProfile buffer
+        /// </summary>
+        /// <param name="symbol">The address of an event symbol</param>
+        /// <param name="head">The start address of events</param>
+        /// <param name="size">The buffer size</param>
+        /// <param name="eventParams">The event params</param>
+        /// <returns>The new NativeProfile buffer</returns>
+        public static NativeEventBuffer<NativeProfile> CreateProfileBuf(IntPtr symbol, IntPtr head, int size,
+            EventParams eventParams)
         {
-            return new NativeEventBuffer<NativeProfile>(EventType.Profile, symbol, head, size, eventParams, PROFILE_READER);
+            return new NativeEventBuffer<NativeProfile>(EventType.Profile, symbol, head, size, eventParams,
+                ProfileReader);
         }
 
-        public static NativeEventBuffer<NativeTimeAndSale> CreateTimeAndSaleBuf(IntPtr symbol, IntPtr head, int size, EventParams eventParams)
+        /// <summary>
+        ///     Creates the NativeTimeAndSale buffer
+        /// </summary>
+        /// <param name="symbol">The address of an event symbol</param>
+        /// <param name="head">The start address of events</param>
+        /// <param name="size">The buffer size</param>
+        /// <param name="eventParams">The event params</param>
+        /// <returns>The new NativeTimeAndSale buffer</returns>
+        public static NativeEventBuffer<NativeTimeAndSale> CreateTimeAndSaleBuf(IntPtr symbol, IntPtr head, int size,
+            EventParams eventParams)
         {
-            return new NativeEventBuffer<NativeTimeAndSale>(EventType.TimeAndSale, symbol, head, size, eventParams, TS_READER);
+            return new NativeEventBuffer<NativeTimeAndSale>(EventType.TimeAndSale, symbol, head, size, eventParams,
+                TsReader);
         }
 
-        public static NativeEventBuffer<NativeSummary> CreateSummaryBuf(IntPtr symbol, IntPtr head, int size, EventParams eventParams)
+        /// <summary>
+        ///     Creates the NativeSummary buffer
+        /// </summary>
+        /// <param name="symbol">The address of an event symbol</param>
+        /// <param name="head">The start address of events</param>
+        /// <param name="size">The buffer size</param>
+        /// <param name="eventParams">The event params</param>
+        /// <returns>The new NativeSummary buffer</returns>
+        public static NativeEventBuffer<NativeSummary> CreateSummaryBuf(IntPtr symbol, IntPtr head, int size,
+            EventParams eventParams)
         {
-            return new NativeEventBuffer<NativeSummary>(EventType.Summary, symbol, head, size, eventParams, SUMMARY_READER);
+            return new NativeEventBuffer<NativeSummary>(EventType.Summary, symbol, head, size, eventParams,
+                SummaryReader);
         }
 
-        public static NativeEventBuffer<NativeCandle> CreateCandleBuf(IntPtr symbol, IntPtr head, int size, EventParams eventParams)
+        /// <summary>
+        ///     Creates the NativeCandle buffer
+        /// </summary>
+        /// <param name="symbol">The address of an event symbol</param>
+        /// <param name="head">The start address of events</param>
+        /// <param name="size">The buffer size</param>
+        /// <param name="eventParams">The event params</param>
+        /// <returns>The new NativeCandle buffer</returns>
+        public static NativeEventBuffer<NativeCandle> CreateCandleBuf(IntPtr symbol, IntPtr head, int size,
+            EventParams eventParams)
         {
-            return new NativeEventBuffer<NativeCandle>(EventType.Candle, symbol, head, size, eventParams, CANDLE_READER);
+            return new NativeEventBuffer<NativeCandle>(EventType.Candle, symbol, head, size, eventParams,
+                CandleReader);
         }
 
-        public static NativeEventBuffer<NativeTradeETH> CreateTradeETHBuf(IntPtr symbol, IntPtr head, int size, EventParams eventParams)
+        /// <summary>
+        ///     Creates the NativeTradeETH buffer
+        /// </summary>
+        /// <param name="symbol">The address of an event symbol</param>
+        /// <param name="head">The start address of events</param>
+        /// <param name="size">The buffer size</param>
+        /// <param name="eventParams">The event params</param>
+        /// <returns>The new NativeTradeETH buffer</returns>
+        public static NativeEventBuffer<NativeTradeETH> CreateTradeEthBuf(IntPtr symbol, IntPtr head, int size,
+            EventParams eventParams)
         {
-            return new NativeEventBuffer<NativeTradeETH>(EventType.TradeETH, symbol, head, size, eventParams, TRADE_ETH_READER);
+            return new NativeEventBuffer<NativeTradeETH>(EventType.TradeETH, symbol, head, size, eventParams,
+                TradeEthReader);
         }
 
-        public static NativeEventBuffer<NativeSpreadOrder> CreateSpreadOrderBuf(IntPtr symbol, IntPtr head, int size, EventParams eventParams)
+        /// <summary>
+        ///     Creates the NativeSpreadOrder buffer
+        /// </summary>
+        /// <param name="symbol">The address of an event symbol</param>
+        /// <param name="head">The start address of events</param>
+        /// <param name="size">The buffer size</param>
+        /// <param name="eventParams">The event params</param>
+        /// <returns>The new NativeSpreadOrder buffer</returns>
+        public static NativeEventBuffer<NativeSpreadOrder> CreateSpreadOrderBuf(IntPtr symbol, IntPtr head, int size,
+            EventParams eventParams)
         {
-            return new NativeEventBuffer<NativeSpreadOrder>(EventType.SpreadOrder, symbol, head, size, eventParams, SPREAD_ORDER_READER);
+            return new NativeEventBuffer<NativeSpreadOrder>(EventType.SpreadOrder, symbol, head, size, eventParams,
+                SpreadOrderReader);
         }
 
-        public static NativeEventBuffer<NativeGreeks> CreateGreeksBuf(IntPtr symbol, IntPtr head, int size, EventParams eventParams)
+        /// <summary>
+        ///     Creates the NativeGreeks buffer
+        /// </summary>
+        /// <param name="symbol">The address of an event symbol</param>
+        /// <param name="head">The start address of events</param>
+        /// <param name="size">The buffer size</param>
+        /// <param name="eventParams">The event params</param>
+        /// <returns>The new NativeGreeks buffer</returns>
+        public static NativeEventBuffer<NativeGreeks> CreateGreeksBuf(IntPtr symbol, IntPtr head, int size,
+            EventParams eventParams)
         {
-            return new NativeEventBuffer<NativeGreeks>(EventType.Greeks, symbol, head, size, eventParams, GREEKS_READER);
+            return new NativeEventBuffer<NativeGreeks>(EventType.Greeks, symbol, head, size, eventParams,
+                GreeksReader);
         }
 
-        public static NativeEventBuffer<NativeTheoPrice> CreateTheoPriceBuf(IntPtr symbol, IntPtr head, int size, EventParams eventParams)
+        /// <summary>
+        ///     Creates the NativeTheoPrice buffer
+        /// </summary>
+        /// <param name="symbol">The address of an event symbol</param>
+        /// <param name="head">The start address of events</param>
+        /// <param name="size">The buffer size</param>
+        /// <param name="eventParams">The event params</param>
+        /// <returns>The new NativeTheoPrice buffer</returns>
+        public static NativeEventBuffer<NativeTheoPrice> CreateTheoPriceBuf(IntPtr symbol, IntPtr head, int size,
+            EventParams eventParams)
         {
-            return new NativeEventBuffer<NativeTheoPrice>(EventType.TheoPrice, symbol, head, size, eventParams, THEO_PRICE_READER);
+            return new NativeEventBuffer<NativeTheoPrice>(EventType.TheoPrice, symbol, head, size, eventParams,
+                TheoPriceReader);
         }
 
-        public static NativeEventBuffer<NativeUnderlying> CreateUnderlyingBuf(IntPtr symbol, IntPtr head, int size, EventParams eventParams)
+        /// <summary>
+        ///     Creates the NativeUnderlying buffer
+        /// </summary>
+        /// <param name="symbol">The address of an event symbol</param>
+        /// <param name="head">The start address of events</param>
+        /// <param name="size">The buffer size</param>
+        /// <param name="eventParams">The event params</param>
+        /// <returns>The new NativeUnderlying buffer</returns>
+        public static NativeEventBuffer<NativeUnderlying> CreateUnderlyingBuf(IntPtr symbol, IntPtr head, int size,
+            EventParams eventParams)
         {
-            return new NativeEventBuffer<NativeUnderlying>(EventType.Underlying, symbol, head, size, eventParams, UNDERLYING_READER);
+            return new NativeEventBuffer<NativeUnderlying>(EventType.Underlying, symbol, head, size, eventParams,
+                UnderlyingReader);
         }
 
-        public static NativeEventBuffer<NativeSeries> CreateSeriesBuf(IntPtr symbol, IntPtr head, int size, EventParams eventParams)
+        /// <summary>
+        ///     Creates the NativeSeries buffer
+        /// </summary>
+        /// <param name="symbol">The address of an event symbol</param>
+        /// <param name="head">The start address of events</param>
+        /// <param name="size">The buffer size</param>
+        /// <param name="eventParams">The event params</param>
+        /// <returns>The new NativeSeries buffer</returns>
+        public static NativeEventBuffer<NativeSeries> CreateSeriesBuf(IntPtr symbol, IntPtr head, int size,
+            EventParams eventParams)
         {
-            return new NativeEventBuffer<NativeSeries>(EventType.Series, symbol, head, size, eventParams, SERIES_READER);
+            return new NativeEventBuffer<NativeSeries>(EventType.Series, symbol, head, size, eventParams,
+                SeriesReader);
         }
 
-        public static NativeEventBuffer<NativeConfiguration> CreateConfigurationBuf(IntPtr symbol, IntPtr head, int size, EventParams eventParams)
+        /// <summary>
+        ///     Creates the NativeConfiguration buffer
+        /// </summary>
+        /// <param name="symbol">The address of an event symbol</param>
+        /// <param name="head">The start address of events</param>
+        /// <param name="size">The buffer size</param>
+        /// <param name="eventParams">The event params</param>
+        /// <returns>The new NativeConfiguration buffer</returns>
+        public static NativeEventBuffer<NativeConfiguration> CreateConfigurationBuf(IntPtr symbol, IntPtr head,
+            int size, EventParams eventParams)
         {
-            return new NativeEventBuffer<NativeConfiguration>(EventType.Configuration, symbol, head, size, eventParams, CONFIGURATION_READER);
+            return new NativeEventBuffer<NativeConfiguration>(EventType.Configuration, symbol, head, size, eventParams,
+                ConfigurationReader);
         }
     }
 }

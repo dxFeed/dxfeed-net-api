@@ -9,37 +9,35 @@ If a copy of the MPL was not distributed with this file, You can obtain one at h
 
 #endregion
 
+using System;
+using System.Globalization;
 using com.dxfeed.api.data;
 using com.dxfeed.api.events;
 using com.dxfeed.api.extras;
 using com.dxfeed.native.api;
-using System;
-using System.Globalization;
 
 namespace com.dxfeed.native.events
 {
     /// <summary>
-    /// Base class for common fields of IDxTrade and IDxTradeETH events. Trade events represent
-    /// the most recent information that is available about the last trade on the market at any
-    /// given moment of time.
-    ///
-    /// IDxTrade event represents last trade information for regular trading hours(RTH) with an
-    /// official volume for the whole trading day.
-    ///
-    /// IDxTradeETH event is defined only for symbols (typically stocks and ETFs) with a designated
-    /// extended trading hours (ETH, pre market and post market trading sessions). It represents
-    /// last trade price during ETH and accumulated volume during ETH.
+    ///     Base class for common fields of IDxTrade and IDxTradeETH events. Trade events represent
+    ///     the most recent information that is available about the last trade on the market at any
+    ///     given moment of time.
+    ///     IDxTrade event represents last trade information for regular trading hours(RTH) with an
+    ///     official volume for the whole trading day.
+    ///     IDxTradeETH event is defined only for symbols (typically stocks and ETFs) with a designated
+    ///     extended trading hours (ETH, pre market and post market trading sessions). It represents
+    ///     last trade price during ETH and accumulated volume during ETH.
     /// </summary>
     public abstract class NativeTradeBase : MarketEventImpl, IDxTradeBase
     {
         /// <summary>
-        /// Creates new trade with the specified event symbol.
+        ///     Creates new trade with the specified event symbol.
         /// </summary>
         /// <param name="tradeNative">Native DxTrade object.</param>
         /// <param name="symbol">The event symbol.</param>
         internal unsafe NativeTradeBase(DxTrade* tradeNative, string symbol) : base(symbol)
         {
-            DxTrade trade = *tradeNative;
+            var trade = *tradeNative;
 
             Time = TimeConverter.ToUtcDateTime(trade.time);
             Sequence = trade.sequence;
@@ -58,10 +56,10 @@ namespace com.dxfeed.native.events
         }
 
         /// <summary>
-        /// Creates copy of trade object.
+        ///     Creates copy of trade object.
         /// </summary>
         /// <param name="trade">The IDxTrade object.</param>
-        internal NativeTradeBase(IDxTradeBase trade) : base(trade.EventSymbol)
+        public NativeTradeBase(IDxTradeBase trade) : base(trade.EventSymbol)
         {
             Time = trade.Time;
             Sequence = trade.Sequence;
@@ -77,6 +75,13 @@ namespace com.dxfeed.native.events
             IsExtendedTradingHours = trade.IsExtendedTradingHours;
             Scope = trade.Scope;
             RawFlags = trade.RawFlags;
+        }
+
+        /// <summary>
+        ///     Default constructor
+        /// </summary>
+        public NativeTradeBase()
+        {
         }
 
         /// <inheritdoc />
@@ -99,78 +104,78 @@ namespace com.dxfeed.native.events
         #region Implementation of IDxTradeBase
 
         /// <summary>
-        /// Returns time of the last trade. This time has precision up to milliseconds.
+        ///     Returns time of the last trade. This time has precision up to milliseconds.
         /// </summary>
-        public DateTime Time { get; internal set; }
+        public DateTime Time { get; set; }
 
         /// <summary>
-        /// Returns sequence number of the last trade to distinguish trades that have the same
-        /// time. This sequence number does not have to be unique and
-        /// does not need to be sequential.
+        ///     Returns sequence number of the last trade to distinguish trades that have the same
+        ///     time. This sequence number does not have to be unique and
+        ///     does not need to be sequential.
         /// </summary>
-        public int Sequence { get; internal set; }
+        public int Sequence { get; set; }
 
         /// <summary>
-        /// Returns microseconds and nanoseconds time part of the last trade.
+        ///     Returns microseconds and nanoseconds time part of the last trade.
         /// </summary>
-        public int TimeNanoPart { get; internal set; }
+        public int TimeNanoPart { get; set; }
 
         /// <summary>
-        /// Returns exchange code of the last trade.
+        ///     Returns exchange code of the last trade.
         /// </summary>
-        public char ExchangeCode { get; internal set; }
+        public char ExchangeCode { get; set; }
 
         /// <summary>
-        /// Returns price of the last trade.
+        ///     Returns price of the last trade.
         /// </summary>
-        public double Price { get; internal set; }
+        public double Price { get; set; }
 
         /// <summary>
-        /// Returns size of the last trade.
+        ///     Returns size of the last trade.
         /// </summary>
-        public double Size { get; internal set; }
+        public double Size { get; set; }
 
         /// <summary>
-        /// Returns price change of the last trade, if available.
+        ///     Returns price change of the last trade, if available.
         /// </summary>
-        public double Change { get; internal set; }
+        public double Change { get; set; }
 
         /// <summary>
-        /// Returns identifier of the day that this event represents.
-        /// Identifier of the day is the number of days passed since January 1, 1970.
+        ///     Returns identifier of the day that this event represents.
+        ///     Identifier of the day is the number of days passed since January 1, 1970.
         /// </summary>
-        public int DayId { get; internal set; }
+        public int DayId { get; set; }
 
         /// <summary>
-        /// Returns total volume traded for a day.
+        ///     Returns total volume traded for a day.
         /// </summary>
-        public double DayVolume { get; internal set; }
+        public double DayVolume { get; set; }
 
         /// <summary>
-        /// Returns total turnover traded for a day.
-        /// Day VWAP can be computed with DayTurnover / DayVolume.
+        ///     Returns total turnover traded for a day.
+        ///     Day VWAP can be computed with DayTurnover / DayVolume.
         /// </summary>
-        public double DayTurnover { get; internal set; }
+        public double DayTurnover { get; set; }
 
         /// <summary>
-        /// Returns tick direction of the last trade.
+        ///     Returns tick direction of the last trade.
         /// </summary>
-        public Direction TickDirection { get; internal set; }
+        public Direction TickDirection { get; set; }
 
         /// <summary>
-        /// Returns whether last trade was in extended trading hours.
+        ///     Returns whether last trade was in extended trading hours.
         /// </summary>
-        public bool IsExtendedTradingHours { get; internal set; }
+        public bool IsExtendedTradingHours { get; set; }
 
         /// <summary>
-        /// Returns whether last trade was a composite or regional (other constants are not used here).
+        ///     Returns whether last trade was a composite or regional (other constants are not used here).
         /// </summary>
-        public Scope Scope { get; internal set; }
+        public Scope Scope { get; set; }
 
         /// <summary>
-        /// Returns implementation-specific raw bit flags value
+        ///     Returns implementation-specific raw bit flags value
         /// </summary>
-        public int RawFlags { get; internal set; }
+        public int RawFlags { get; set; }
 
         #endregion
     }

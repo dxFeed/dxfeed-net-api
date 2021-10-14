@@ -17,9 +17,12 @@ using com.dxfeed.api;
 
 namespace com.dxfeed.io
 {
+    /// <summary>
+    /// Convenient class that opens specified URL for reading.
+    /// </summary>
     public class URLInputStream
     {
-        private static readonly int READ_TIMEOUT = 60000;
+        private const int ReadTimeout = 60000;
 
         static URLInputStream() {
             Tools.AddTls11PlusSupport();
@@ -95,7 +98,7 @@ namespace com.dxfeed.io
         public static WebRequest OpenConnection(Uri url, string user, string password)
         {
             var webRequest = WebRequest.Create(url);
-            webRequest.Timeout = READ_TIMEOUT;
+            webRequest.Timeout = ReadTimeout;
             string auth;
             if (user != null && !string.IsNullOrEmpty(user) && password != null && !string.IsNullOrEmpty(password))
                 auth = user + ":" + password;
@@ -135,7 +138,7 @@ namespace com.dxfeed.io
         public static WebRequest OpenConnection(Uri url, string token)
         {
             var webRequest = WebRequest.Create(url);
-            webRequest.Timeout = READ_TIMEOUT;
+            webRequest.Timeout = ReadTimeout;
 
             if (token == null)
             {

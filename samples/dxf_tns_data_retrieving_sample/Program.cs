@@ -10,7 +10,6 @@ If a copy of the MPL was not distributed with this file, You can obtain one at h
 #endregion
 
 using System;
-using System.Data.SqlTypes;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
@@ -122,14 +121,10 @@ namespace dxf_tns_data_retrieving_sample
                 // symbols of the form AAPL&Q for example.
                 foreach (var timeAndSale in timeAndSales.Value.Take(Math.Min(LIMIT, timeAndSales.Value.Count))
                     .Select(tns => tns.Normalized()))
-                {
                     Console.WriteLine($"  {timeAndSale}");
-                }
 
                 if (timeAndSales.Value.Count > LIMIT)
-                {
                     Console.WriteLine($"... {timeAndSales.Value.Count - LIMIT} events were not displayed");
-                }
             }
         }
     }

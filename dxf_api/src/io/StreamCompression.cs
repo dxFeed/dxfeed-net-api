@@ -26,7 +26,21 @@ namespace com.dxfeed.io
         /// <summary>
         /// Supported compression types.
         /// </summary>
-        public enum CompressionType { None, Gzip, Zip };
+        public enum CompressionType
+        {
+            /// <summary>
+            /// No compression
+            /// </summary>
+            None, 
+            /// <summary>
+            /// GZIP compression
+            /// </summary>
+            Gzip, 
+            /// <summary>
+            /// ZIP compression
+            /// </summary>
+            Zip
+        };
 
         /// <summary>
         /// No compression.

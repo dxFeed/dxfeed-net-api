@@ -52,17 +52,17 @@ namespace com.dxfeed.api.events
         /// </summary>
         int RawFlags { get; }
         /// <summary>
-        ///   MMID of buyer (availible not for all markets).
+        ///   MMID of buyer (available not for all markets).
         /// </summary>
         string Buyer { get; }
         /// <summary>
-        ///   MMID of seller (availible not for all markets).
+        ///   MMID of seller (available not for all markets).
         /// </summary>
         string Seller { get; }
         /// <summary>
         ///   Returns aggressor side of this time and sale event.
         /// </summary>
-        Side AgressorSide { get; }
+        Side AggressorSide { get; }
         /// <summary>
         ///   Returns type of this time and sale event.
         /// </summary>

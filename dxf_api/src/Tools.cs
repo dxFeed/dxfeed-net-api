@@ -17,7 +17,7 @@ namespace com.dxfeed.api
     /// <summary>
     /// Class provides some helpers.
     /// </summary>
-    public class Tools
+    public static class Tools
     {
         /// <summary>
         /// Convert date time value to unix time (the number of milliseconds from 1.1.1970).

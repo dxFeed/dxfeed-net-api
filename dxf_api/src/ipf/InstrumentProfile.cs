@@ -1133,7 +1133,7 @@ namespace com.dxfeed.ipf
             return hash;
         }
 
-        public bool CustomEquals<TKey, TValue>(Dictionary<TKey, TValue> dict1, Dictionary<TKey, TValue> dict2)
+        private static bool CustomEquals<TKey, TValue>(Dictionary<TKey, TValue> dict1, Dictionary<TKey, TValue> dict2)
         {
             if (dict1 == dict2) return true;
             if ((dict1 == null) || (dict2 == null)) return false;

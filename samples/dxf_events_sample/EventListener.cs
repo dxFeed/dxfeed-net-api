@@ -13,7 +13,8 @@ using System;
 using com.dxfeed.api;
 using com.dxfeed.api.events;
 
-namespace dxf_events_sample {
+namespace dxf_events_sample
+{
     /// <summary>
     ///     Events listener
     /// </summary>
@@ -25,12 +26,14 @@ namespace dxf_events_sample {
         IDxTheoPriceListener,
         IDxUnderlyingListener,
         IDxSeriesListener,
-        IDxConfigurationListener {
+        IDxConfigurationListener
+    {
         #region Implementation of IDxConfigurationListener
 
         public void OnConfiguration<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
-            where TE : IDxConfiguration {
+            where TE : IDxConfiguration
+        {
             foreach (var s in buf)
                 Console.WriteLine("{0} {1}", buf.Symbol, s);
         }
@@ -47,7 +50,8 @@ namespace dxf_events_sample {
         /// <param name="buf">Event buffer object.</param>
         public void OnGreeks<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
-            where TE : IDxGreeks {
+            where TE : IDxGreeks
+        {
             foreach (var g in buf)
                 Console.WriteLine("{0} {1}", buf.Symbol, g);
         }
@@ -64,7 +68,8 @@ namespace dxf_events_sample {
         /// <param name="buf">Event buffer object.</param>
         public void OnSeries<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
-            where TE : IDxSeries {
+            where TE : IDxSeries
+        {
             foreach (var s in buf)
                 Console.WriteLine("{0} {1}", buf.Symbol, s);
         }
@@ -81,7 +86,8 @@ namespace dxf_events_sample {
         /// <param name="buf">Event buffer object.</param>
         public void OnSpreadOrder<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
-            where TE : IDxSpreadOrder {
+            where TE : IDxSpreadOrder
+        {
             foreach (var so in buf)
                 Console.WriteLine("{0} {1}", buf.Symbol, so);
         }
@@ -98,7 +104,8 @@ namespace dxf_events_sample {
         /// <param name="buf">Event buffer object.</param>
         public void OnTheoPrice<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
-            where TE : IDxTheoPrice {
+            where TE : IDxTheoPrice
+        {
             foreach (var tp in buf)
                 Console.WriteLine("{0} {1}", buf.Symbol, tp);
         }
@@ -115,7 +122,8 @@ namespace dxf_events_sample {
         /// <param name="buf">Event buffer object.</param>
         public void OnTradeETH<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
-            where TE : IDxTradeETH {
+            where TE : IDxTradeETH
+        {
             foreach (var te in buf)
                 Console.WriteLine($"{buf.Symbol} {te}");
         }
@@ -132,7 +140,8 @@ namespace dxf_events_sample {
         /// <param name="buf">Event buffer object.</param>
         public void OnUnderlying<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
-            where TE : IDxUnderlying {
+            where TE : IDxUnderlying
+        {
             foreach (var u in buf)
                 Console.WriteLine("{0} {1}", buf.Symbol, u);
         }
@@ -149,7 +158,8 @@ namespace dxf_events_sample {
         /// <param name="buf">Event buffer object.</param>
         public void OnQuote<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
-            where TE : IDxQuote {
+            where TE : IDxQuote
+        {
             foreach (var q in buf)
                 Console.WriteLine($"{buf.Symbol} {q}");
         }
@@ -162,7 +172,8 @@ namespace dxf_events_sample {
         /// <param name="buf">Event buffer object.</param>
         public void OnTrade<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
-            where TE : IDxTrade {
+            where TE : IDxTrade
+        {
             foreach (var t in buf)
                 Console.WriteLine($"{buf.Symbol} {t}");
         }
@@ -175,7 +186,8 @@ namespace dxf_events_sample {
         /// <param name="buf">Event buffer object.</param>
         public void OnOrder<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
-            where TE : IDxOrder {
+            where TE : IDxOrder
+        {
             foreach (var o in buf)
                 Console.WriteLine($"{buf.Symbol} {o}");
         }
@@ -188,7 +200,8 @@ namespace dxf_events_sample {
         /// <param name="buf">Event buffer object.</param>
         public void OnProfile<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
-            where TE : IDxProfile {
+            where TE : IDxProfile
+        {
             foreach (var p in buf)
                 Console.WriteLine($"{buf.Symbol} {p}");
         }
@@ -201,7 +214,8 @@ namespace dxf_events_sample {
         /// <param name="buf">Event buffer object.</param>
         public void OnSummary<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
-            where TE : IDxSummary {
+            where TE : IDxSummary
+        {
             foreach (var f in buf)
                 Console.WriteLine($"{buf.Symbol} {f}");
         }
@@ -214,7 +228,8 @@ namespace dxf_events_sample {
         /// <param name="buf">Event buffer object.</param>
         public void OnTimeAndSale<TB, TE>(TB buf)
             where TB : IDxEventBuf<TE>
-            where TE : IDxTimeAndSale {
+            where TE : IDxTimeAndSale
+        {
             foreach (var ts in buf)
                 Console.WriteLine($"{buf.Symbol} {ts}");
         }

@@ -16,33 +16,33 @@ using com.dxfeed.api.data;
 using com.dxfeed.api.events;
 using com.dxfeed.native;
 
-namespace dxf_snapshot_sample {
+namespace dxf_snapshot_sample
+{
     /// <summary>
     ///     This sample class demonstrates subscription to snapshots.
     ///     The sample configures via command line, subscribes to snapshot and prints received data.
     /// </summary>
-    internal class Program {
-        private const int DEFAULT_RECORDS_PRINT_LIMIT = 7;
-        private const int HOST_INDEX = 0;
-        private const int EVENT_INDEX = 1;
-        private const int SYMBOL_INDEX = 2;
-        private const int DEFAULT_TIME = 0;
-        
-        private static void DisconnectHandler(IDxConnection con) {
+    internal class Program
+    {
+        private const int DefaultRecordsPrintLimit = 7;
+        private const int HostIndex = 0;
+        private const int EventIndex = 1;
+        private const int SymbolIndex = 2;
+        private const int DefaultTime = 0;
+
+        private static void DisconnectHandler(IDxConnection con)
+        {
             Console.WriteLine("Disconnected");
         }
 
         private static bool TryParseRecordsPrintLimitParam(string paramTagString, string paramString,
-            InputParam<int> param) {
-            if (!paramTagString.Equals("-l")) {
-                return false;
-            }
+            InputParam<int> param)
+        {
+            if (!paramTagString.Equals("-l")) return false;
 
             int newRecordsPrintLimit;
 
-            if (!int.TryParse(paramString, out newRecordsPrintLimit)) {
-                return false;
-            }
+            if (!int.TryParse(paramString, out newRecordsPrintLimit)) return false;
 
             param.Value = newRecordsPrintLimit;
 
@@ -50,27 +50,27 @@ namespace dxf_snapshot_sample {
         }
 
         private static void TryParseStringParam(string paramString,
-            InputParam<string> param) {
-            if (string.IsNullOrEmpty(paramString)) {
-                return;
-            }
+            InputParam<string> param)
+        {
+            if (string.IsNullOrEmpty(paramString)) return;
 
             param.Value = paramString;
         }
 
         private static bool TryParseTaggedStringParam(string tag, string paramTagString, string paramString,
-            InputParam<string> param) {
-            if (!paramTagString.Equals(tag)) {
-                return false;
-            }
+            InputParam<string> param)
+        {
+            if (!paramTagString.Equals(tag)) return false;
 
             param.Value = paramString;
 
             return true;
         }
 
-        private static void Main(string[] args) {
-            if (args.Length < 3 || args.Length > 9) {
+        private static void Main(string[] args)
+        {
+            if (args.Length < 3 || args.Length > 9)
+            {
                 Console.WriteLine(
                     "Usage: dxf_snapshot_sample <host:port> <event> <symbol> [<source>] [-l <records_print_limit>] [-T <token>] [-p]\n" +
                     "where\n" +
@@ -89,7 +89,7 @@ namespace dxf_snapshot_sample {
                     "                   or AGGREGATE_BID (default value for Order snapshots)\n" +
                     "                If source is not specified MarketMaker snapshot will be\n" +
                     "                subscribed by default.\n\n" +
-                    $"    -l <records_print_limit> - The number of displayed records (0 - unlimited, default: {DEFAULT_RECORDS_PRINT_LIMIT})\n" +
+                    $"    -l <records_print_limit> - The number of displayed records (0 - unlimited, default: {DefaultRecordsPrintLimit})\n" +
                     "    -T <token>               - The authorization token\n" +
                     "    -p                       - Enables the data transfer logging\n\n" +
                     "order example: dxf_snapshot_sample demo.dxfeed.com:7300 Order AAPL NTV\n" +
@@ -102,39 +102,44 @@ namespace dxf_snapshot_sample {
                 return;
             }
 
-            var address = args[HOST_INDEX];
-            var symbol = args[SYMBOL_INDEX];
+            var address = args[HostIndex];
+            var symbol = args[SymbolIndex];
 
             EventType eventType;
-            if (!Enum.TryParse(args[EVENT_INDEX], true, out eventType) ||
+            if (!Enum.TryParse(args[EventIndex], true, out eventType) ||
                 eventType != EventType.Order && eventType != EventType.Candle &&
                 eventType != EventType.TimeAndSale && eventType != EventType.SpreadOrder &&
-                eventType != EventType.Greeks && eventType != EventType.Series) {
-                Console.WriteLine($"Unsupported event type: {args[EVENT_INDEX]}");
+                eventType != EventType.Greeks && eventType != EventType.Series)
+            {
+                Console.WriteLine($"Unsupported event type: {args[EventIndex]}");
                 return;
             }
 
             var source = new InputParam<string>(OrderSource.AGGREGATE_BID);
-            var recordsPrintLimit = new InputParam<int>(DEFAULT_RECORDS_PRINT_LIMIT);
+            var recordsPrintLimit = new InputParam<int>(DefaultRecordsPrintLimit);
             var token = new InputParam<string>(null);
             var logDataTransferFlag = false;
 
-            for (var i = SYMBOL_INDEX + 1; i < args.Length; i++) {
+            for (var i = SymbolIndex + 1; i < args.Length; i++)
+            {
                 if (!recordsPrintLimit.IsSet && i < args.Length - 1 &&
-                    TryParseRecordsPrintLimitParam(args[i], args[i + 1], recordsPrintLimit)) {
+                    TryParseRecordsPrintLimitParam(args[i], args[i + 1], recordsPrintLimit))
+                {
                     i++;
 
                     continue;
                 }
 
                 if (!token.IsSet && i < args.Length - 1 &&
-                    TryParseTaggedStringParam("-T", args[i], args[i + 1], token)) {
+                    TryParseTaggedStringParam("-T", args[i], args[i + 1], token))
+                {
                     i++;
 
                     continue;
                 }
 
-                if (logDataTransferFlag == false && args[i].Equals("-p")) {
+                if (logDataTransferFlag == false && args[i].Equals("-p"))
+                {
                     logDataTransferFlag = true;
                     i++;
 
@@ -144,23 +149,29 @@ namespace dxf_snapshot_sample {
                 if (!source.IsSet) TryParseStringParam(args[i], source);
             }
 
-            if (eventType == EventType.Order) {
+            if (eventType == EventType.Order)
+            {
                 if (source.Value.Equals(OrderSource.AGGREGATE_BID) || source.Value.Equals(OrderSource.AGGREGATE_ASK))
                     Console.WriteLine("Connecting to {0} for MarketMaker snapshot on {1}...", address, symbol);
                 else
                     Console.WriteLine("Connecting to {0} for Order#{1} snapshot on {2}...", address, source.Value,
                         symbol);
-            } else {
+            }
+            else
+            {
                 Console.WriteLine("Connecting to {0} for {1} snapshot on {2}...", address, eventType, symbol);
             }
 
-            try {
+            try
+            {
                 NativeTools.InitializeLogging("dxf_snapshot_sample.log", true, true, logDataTransferFlag);
                 using (var con = token.IsSet
                     ? new NativeConnection(address, token.Value, DisconnectHandler)
-                    : new NativeConnection(address, DisconnectHandler)) {
-                    using (var s = con.CreateSnapshotSubscription(eventType, DEFAULT_TIME, 
-                        new SnapshotListener(recordsPrintLimit.Value))) {
+                    : new NativeConnection(address, DisconnectHandler))
+                {
+                    using (var s = con.CreateSnapshotSubscription(eventType, DefaultTime,
+                        new SnapshotListener(recordsPrintLimit.Value)))
+                    {
                         switch (eventType)
                         {
                             case EventType.Order:
@@ -179,29 +190,38 @@ namespace dxf_snapshot_sample {
                         Console.ReadLine();
                     }
                 }
-            } catch (DxException dxException) {
+            }
+            catch (DxException dxException)
+            {
                 Console.WriteLine($"Native exception occurred: {dxException.Message}");
-            } catch (Exception exc) {
+            }
+            catch (Exception exc)
+            {
                 Console.WriteLine($"Exception occurred: {exc.Message}");
             }
         }
 
-        private class InputParam<T> {
+        private class InputParam<T>
+        {
             private T value;
 
-            private InputParam() {
+            private InputParam()
+            {
                 IsSet = false;
             }
 
-            public InputParam(T defaultValue) : this() {
+            public InputParam(T defaultValue) : this()
+            {
                 value = defaultValue;
             }
 
             public bool IsSet { get; private set; }
 
-            public T Value {
+            public T Value
+            {
                 get { return value; }
-                set {
+                set
+                {
                     this.value = value;
                     IsSet = true;
                 }

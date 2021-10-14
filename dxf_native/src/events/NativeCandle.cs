@@ -9,28 +9,28 @@ If a copy of the MPL was not distributed with this file, You can obtain one at h
 
 #endregion
 
-using com.dxfeed.api.candle;
-using com.dxfeed.api.events;
-using com.dxfeed.api.data;
-using com.dxfeed.api.extras;
-using com.dxfeed.native.api;
 using System;
 using System.Globalization;
+using com.dxfeed.api.candle;
+using com.dxfeed.api.data;
+using com.dxfeed.api.events;
+using com.dxfeed.api.extras;
+using com.dxfeed.native.api;
 
 namespace com.dxfeed.native.events
 {
     /// <summary>
-    /// Candle event with open, high, low, close prices and other information
-    /// for a specific period.Candles are build with a specified CandlePeriod using
-    /// a specified CandlePrice type with a data taken from the specified CandleExchange
-    /// from the specified CandleSession with further details of aggregation provided by
-    /// CandleAlignment.
+    ///     Candle event with open, high, low, close prices and other information
+    ///     for a specific period.Candles are build with a specified CandlePeriod using
+    ///     a specified CandlePrice type with a data taken from the specified CandleExchange
+    ///     from the specified CandleSession with further details of aggregation provided by
+    ///     CandleAlignment.
     /// </summary>
     public class NativeCandle : IDxCandle
     {
         internal unsafe NativeCandle(DxCandle* c, string symbol)
         {
-            DxCandle candle = *c;
+            var candle = *c;
 
             EventSymbol = CandleSymbol.ValueOf(symbol);
 
@@ -51,13 +51,16 @@ namespace com.dxfeed.native.events
             ImpVolatility = candle.imp_volatility;
         }
 
-        internal NativeCandle(IDxCandle candle)
+        /// <summary>
+        ///     Copy constructor
+        /// </summary>
+        /// <param name="candle">The original Candle event</param>
+        public NativeCandle(IDxCandle candle)
         {
             EventSymbol = CandleSymbol.ValueOf(candle.EventSymbol.ToString());
-
             EventFlags = candle.EventFlags;
             Index = candle.Index;
-            Time = TimeConverter.ToUtcDateTime(TimeStamp);
+            Time = candle.Time;
             Sequence = candle.Sequence;
             Count = candle.Count;
             Open = candle.Open;
@@ -71,6 +74,23 @@ namespace com.dxfeed.native.events
             OpenInterest = candle.OpenInterest;
             ImpVolatility = candle.ImpVolatility;
         }
+
+        /// <summary>
+        ///     Default constructor
+        /// </summary>
+        public NativeCandle()
+        {
+        }
+
+        #region Implementation of ICloneable
+
+        /// <inheritdoc />
+        public object Clone()
+        {
+            return new NativeCandle(this);
+        }
+
+        #endregion
 
         /// <inheritdoc />
         public override string ToString()
@@ -94,123 +114,104 @@ namespace com.dxfeed.native.events
             );
         }
 
-        #region Implementation of ICloneable
-
-        /// <inheritdoc />
-        public object Clone()
-        {
-            return new NativeCandle(this);
-        }
-
-        #endregion
-
         #region Implementation of IDxCandle
 
         /// <summary>
         ///     Returns event symbol that identifies this event type.
         /// </summary>
-        public CandleSymbol EventSymbol { get; private set; }
+        public CandleSymbol EventSymbol { get; set; }
 
         /// <summary>
         ///     Returns source of this event.
         /// </summary>
         /// <returns>Source of this event.</returns>
-        public IndexedEventSource Source
-        {
-            get { return IndexedEventSource.DEFAULT; }
-        }
+        public IndexedEventSource Source => IndexedEventSource.DEFAULT;
 
         /// <summary>
-        ///    Gets or sets transactional event flags.
-        ///    See "Event Flags" section from <see cref="IDxIndexedEvent"/>.
+        ///     Gets or sets transactional event flags.
+        ///     See "Event Flags" section from <see cref="IDxIndexedEvent" />.
         /// </summary>
         public EventFlag EventFlags { get; set; }
 
         /// <summary>
         ///     Gets unique per-symbol index of this event.
         /// </summary>
-        public long Index { get; private set; }
+        public long Index { get; set; }
 
         /// <summary>
-        /// Returns timestamp of this event.
-        /// The timestamp is in milliseconds from midnight, January 1, 1970 UTC.
+        ///     Returns timestamp of this event.
+        ///     The timestamp is in milliseconds from midnight, January 1, 1970 UTC.
         /// </summary>
-        public long TimeStamp
-        {
-            get { return TimeConverter.ToUnixTime(Time); }
-        }
+        public long TimeStamp => TimeConverter.ToUnixTime(Time);
 
         /// <summary>
-        /// Returns UTC date and time of this event.
+        ///     Returns UTC date and time of this event.
         /// </summary>
-        public DateTime Time { get; private set; }
+        public DateTime Time { get; set; }
 
         /// <summary>
-        /// Returns sequence number of this event to distinguish events that have the same
-        /// Time. This sequence number does not have to be unique and does not need to be
-        /// sequential.
+        ///     Returns sequence number of this event to distinguish events that have the same
+        ///     Time. This sequence number does not have to be unique and does not need to be
+        ///     sequential.
         /// </summary>
-        public int Sequence { get; private set; }
+        public int Sequence { get; set; }
 
         /// <summary>
-        /// Returns total number of original trade (or quote) events in this candle.
+        ///     Returns total number of original trade (or quote) events in this candle.
         /// </summary>
-        public double Count { get; private set; }
+        public double Count { get; set; }
 
         /// <summary>
-        /// Returns the first (open) price of this candle.
+        ///     Returns the first (open) price of this candle.
         /// </summary>
-        public double Open { get; private set; }
+        public double Open { get; set; }
 
         /// <summary>
-        /// Returns the maximal (high) price of this candle.
+        ///     Returns the maximal (high) price of this candle.
         /// </summary>
-        public double High { get; private set; }
+        public double High { get; set; }
 
         /// <summary>
-        /// Returns the minimal (low) price of this candle.
+        ///     Returns the minimal (low) price of this candle.
         /// </summary>
-        public double Low { get; private set; }
+        public double Low { get; set; }
 
         /// <summary>
-        /// Returns the last (close) price of this candle.
+        ///     Returns the last (close) price of this candle.
         /// </summary>
-        public double Close { get; private set; }
+        public double Close { get; set; }
 
         /// <summary>
-        /// Returns total volume in this candle.
+        ///     Returns total volume in this candle.
         /// </summary>
-        public double Volume { get; private set; }
+        public double Volume { get; set; }
 
         /// <summary>
-        /// Returns volume-weighted average price (VWAP) in this candle.
+        ///     Returns volume-weighted average price (VWAP) in this candle.
         /// </summary>
-        public double VWAP { get; private set; }
+        public double VWAP { get; set; }
 
         /// <summary>
-        /// Returns bid volume in this candle.
+        ///     Returns bid volume in this candle.
         /// </summary>
-        public double BidVolume { get; private set; }
+        public double BidVolume { get; set; }
 
         /// <summary>
-        /// Returns ask volume in this candle.
+        ///     Returns ask volume in this candle.
         /// </summary>
-        public double AskVolume { get; private set; }
+        public double AskVolume { get; set; }
 
         /// <summary>
-        /// Returns open interest.
+        ///     Returns open interest.
         /// </summary>
-        public double OpenInterest { get; private set; }
+        public double OpenInterest { get; set; }
 
         /// <summary>
-        /// Returns implied volatility.
+        ///     Returns implied volatility.
         /// </summary>
-        public double ImpVolatility { get; private set; }
+        public double ImpVolatility { get; set; }
 
-        object IDxEventType.EventSymbol
-        {
-            get { return EventSymbol; }
-        }
+        object IDxEventType.EventSymbol => EventSymbol;
 
         #endregion
     }

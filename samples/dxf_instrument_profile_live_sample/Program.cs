@@ -61,10 +61,7 @@ namespace dxf_instrument_profile_live_sample
             var path = args[0];
             string token = null;
 
-            if (args.Length > 1)
-            {
-                token = args[1];
-            }
+            if (args.Length > 1) token = args[1];
 
             try
             {

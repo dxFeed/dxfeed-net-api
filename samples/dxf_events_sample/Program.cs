@@ -14,17 +14,20 @@ using com.dxfeed.api;
 using com.dxfeed.api.data;
 using com.dxfeed.native;
 
-namespace dxf_events_sample {
+namespace dxf_events_sample
+{
     /// <summary>
     ///     This sample class demonstrates subscription to events.
     ///     The sample configures via command line, subscribes to events and prints received data.
     /// </summary>
-    internal static class Program {
+    internal static class Program
+    {
         private const int HostIndex = 0;
         private const int EventIndex = 1;
         private const int SymbolIndex = 2;
 
-        private static bool TryParseDateTimeParam(string stringParam, InputParameter<DateTime?> param) {
+        private static bool TryParseDateTimeParam(string stringParam, InputParameter<DateTime?> param)
+        {
             DateTime dateTimeValue;
 
             if (!DateTime.TryParse(stringParam, out dateTimeValue)) return false;
@@ -35,7 +38,8 @@ namespace dxf_events_sample {
         }
 
         private static bool TryParseTaggedStringParam(string tag, string paramTagString, string paramString,
-            InputParameter<string> param) {
+            InputParameter<string> param)
+        {
             if (!paramTagString.Equals(tag)) return false;
 
             param.Value = paramString;
@@ -43,12 +47,15 @@ namespace dxf_events_sample {
             return true;
         }
 
-        private static void DisconnectHandler(IDxConnection con) {
+        private static void DisconnectHandler(IDxConnection con)
+        {
             Console.WriteLine("Disconnected");
         }
 
-        private static void Main(string[] args) {
-            if (args.Length < 3 || args.Length > 7) {
+        private static void Main(string[] args)
+        {
+            if (args.Length < 3 || args.Length > 7)
+            {
                 Console.WriteLine(
                     "Usage: dxf_events_sample <host:port> <event> <symbol> [<date>] [-T <token>] [-p]\n" +
                     "where\n" +
@@ -69,7 +76,8 @@ namespace dxf_events_sample {
             var address = args[HostIndex];
 
             EventType events;
-            if (!Enum.TryParse(args[EventIndex], true, out events)) {
+            if (!Enum.TryParse(args[EventIndex], true, out events))
+            {
                 Console.WriteLine($"Unsupported event type: {args[EventIndex]}");
                 return;
             }
@@ -79,10 +87,9 @@ namespace dxf_events_sample {
             var token = new InputParameter<string>(null);
             var logDataTransferFlag = false;
 
-            for (var i = SymbolIndex + 1; i < args.Length; i++) {
-                if (!dateTime.IsSet && TryParseDateTimeParam(args[i], dateTime)) {
-                    continue;
-                }
+            for (var i = SymbolIndex + 1; i < args.Length; i++)
+            {
+                if (!dateTime.IsSet && TryParseDateTimeParam(args[i], dateTime)) continue;
 
                 if (!token.IsSet && i < args.Length - 1 &&
                     TryParseTaggedStringParam("-T", args[i], args[i + 1], token))
@@ -91,7 +98,8 @@ namespace dxf_events_sample {
                     continue;
                 }
 
-                if (logDataTransferFlag == false && args[i].Equals("-p")) {
+                if (logDataTransferFlag == false && args[i].Equals("-p"))
+                {
                     logDataTransferFlag = true;
                     i++;
                 }
@@ -99,21 +107,30 @@ namespace dxf_events_sample {
 
             Console.WriteLine($"Connecting to {address} for [{events}] on [{string.Join(", ", symbols)}] ...");
 
-            try {
+            try
+            {
                 NativeTools.InitializeLogging("dxf_events_sample.log", true, true, logDataTransferFlag);
                 using (var con = token.IsSet
                     ? new NativeConnection(address, token.Value, DisconnectHandler)
-                    : new NativeConnection(address, DisconnectHandler)) {
-                    using (var s = con.CreateSubscription(events, dateTime.Value, new EventListener())) {
+                    : new NativeConnection(address, DisconnectHandler))
+                {
+                    using (var s = dateTime.IsSet
+                        ? con.CreateSubscription(events, dateTime.Value, new EventListener())
+                        : con.CreateSubscription(events, new EventListener()))
+                    {
                         s.AddSymbols(symbols);
 
                         Console.WriteLine("Press enter to stop");
                         Console.ReadLine();
                     }
                 }
-            } catch (DxException dxException) {
+            }
+            catch (DxException dxException)
+            {
                 Console.WriteLine($"Native exception occurred: {dxException.Message}");
-            } catch (Exception exc) {
+            }
+            catch (Exception exc)
+            {
                 Console.WriteLine($"Exception occurred: {exc.Message}");
             }
         }

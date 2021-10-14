@@ -30,6 +30,13 @@ namespace com.dxfeed.native.events
         {
             EventSymbol = string.Copy(symbol);
         }
+        
+        /// <summary>
+        /// Protected constructor for concrete implementation classes.
+        /// </summary>
+        protected MarketEventImpl()
+        {
+        }
 
         #region Implementation of IDxMarketEvent
 
@@ -38,16 +45,10 @@ namespace com.dxfeed.native.events
         /// </summary>
         public string EventSymbol
         {
-            get; private set;
+            get; set;
         }
 
-        object IDxEventType.EventSymbol
-        {
-            get
-            {
-                return EventSymbol;
-            }
-        }
+        object IDxEventType.EventSymbol => EventSymbol;
 
         #endregion
 

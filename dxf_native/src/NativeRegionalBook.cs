@@ -66,6 +66,10 @@ namespace com.dxfeed.native
             }
         }
         
+        /// <summary>
+        ///     This code added to correctly implement the disposable pattern.
+        /// </summary>
+        /// <param name="disposing">The disposing flag</param>
         protected virtual void Dispose(bool disposing)
         {
             if (disposedValue) return;
@@ -74,6 +78,7 @@ namespace com.dxfeed.native
             disposedValue = true;
         }
 
+        /// <inheritdoc />
         ~NativeRegionalBook() {
            Dispose(false);
         }

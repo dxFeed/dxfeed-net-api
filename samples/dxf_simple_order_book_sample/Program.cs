@@ -51,7 +51,8 @@ namespace dxf_simple_order_book_sample
                 .ToList();
 
             Console.Write("Bids:\n");
-            var bids = book.Where(o => o.Side == Side.Buy).OrderByDescending(o => o.Price).Take(recordsPrintLimit == 0 ? int.MaxValue : recordsPrintLimit);
+            var bids = book.Where(o => o.Side == Side.Buy).OrderByDescending(o => o.Price)
+                .Take(recordsPrintLimit == 0 ? int.MaxValue : recordsPrintLimit);
 
             foreach (var o in bids)
                 Console.WriteLine($"{o.Price} {o.Size}");
@@ -59,7 +60,8 @@ namespace dxf_simple_order_book_sample
             Console.WriteLine();
 
             Console.Write("Asks:\n");
-            var asks = book.Where(o => o.Side == Side.Sell).OrderBy(o => o.Price).Take(recordsPrintLimit == 0 ? int.MaxValue : recordsPrintLimit);
+            var asks = book.Where(o => o.Side == Side.Sell).OrderBy(o => o.Price)
+                .Take(recordsPrintLimit == 0 ? int.MaxValue : recordsPrintLimit);
             foreach (var o in asks)
                 Console.WriteLine($"{o.Price} {o.Size}");
         }
@@ -114,10 +116,7 @@ namespace dxf_simple_order_book_sample
         {
             DateTime dateTimeValue;
 
-            if (!DateTime.TryParse(stringParam, out dateTimeValue))
-            {
-                return false;
-            }
+            if (!DateTime.TryParse(stringParam, out dateTimeValue)) return false;
 
             param.Value = dateTimeValue;
 
@@ -127,17 +126,11 @@ namespace dxf_simple_order_book_sample
         private static bool TryParseRecordsPrintLimitParam(string paramTagString, string paramString,
             InputParam<int> param)
         {
-            if (!paramTagString.Equals("-l"))
-            {
-                return false;
-            }
+            if (!paramTagString.Equals("-l")) return false;
 
             int newRecordsPrintLimit;
 
-            if (!int.TryParse(paramString, out newRecordsPrintLimit))
-            {
-                return false;
-            }
+            if (!int.TryParse(paramString, out newRecordsPrintLimit)) return false;
 
             param.Value = newRecordsPrintLimit;
 
@@ -147,10 +140,7 @@ namespace dxf_simple_order_book_sample
         private static bool TryParseTaggedStringParam(string tag, string paramTagString, string paramString,
             InputParam<string> param)
         {
-            if (!paramTagString.Equals(tag))
-            {
-                return false;
-            }
+            if (!paramTagString.Equals(tag)) return false;
 
             param.Value = paramString;
 
@@ -161,13 +151,8 @@ namespace dxf_simple_order_book_sample
             ConnectionStatus newStatus)
         {
             if (newStatus == ConnectionStatus.Connected)
-            {
                 Console.WriteLine("Connected to {0}", connection.ConnectedAddress);
-            }
-            else if (newStatus == ConnectionStatus.Authorized)
-            {
-                Console.WriteLine("Authorized");
-            }
+            else if (newStatus == ConnectionStatus.Authorized) Console.WriteLine("Authorized");
         }
 
         private static void DisconnectHandler(IDxConnection con)
@@ -213,10 +198,9 @@ namespace dxf_simple_order_book_sample
             var token = new InputParam<string>(null);
             var logDataTransferFlag = false;
 
-            for (var i = SymbolIndex + 1; i < args.Length; i++)  {
-                if (!dateTime.IsSet && TryParseDateTimeParam(args[i], dateTime)) {
-                    continue;
-                }
+            for (var i = SymbolIndex + 1; i < args.Length; i++)
+            {
+                if (!dateTime.IsSet && TryParseDateTimeParam(args[i], dateTime)) continue;
 
                 if (!recordsPrintLimit.IsSet && i < args.Length - 1 &&
                     TryParseRecordsPrintLimitParam(args[i], args[i + 1], recordsPrintLimit))
@@ -227,22 +211,22 @@ namespace dxf_simple_order_book_sample
                 }
 
                 if (!token.IsSet && i < args.Length - 1 &&
-                    TryParseTaggedStringParam("-T", args[i], args[i + 1], token)) {
+                    TryParseTaggedStringParam("-T", args[i], args[i + 1], token))
+                {
                     i++;
 
                     continue;
                 }
 
-                if (logDataTransferFlag == false && args[i].Equals("-p")) {
+                if (logDataTransferFlag == false && args[i].Equals("-p"))
+                {
                     logDataTransferFlag = true;
                     i++;
 
                     continue;
                 }
 
-                if (!source.IsSet) {
-                    source.Value = args[i];
-                }
+                if (!source.IsSet) source.Value = args[i];
             }
 
             Console.WriteLine(
@@ -256,7 +240,8 @@ namespace dxf_simple_order_book_sample
                 try
                 {
                     NativeTools.InitializeLogging("dxf_simple_order_book_sample.log", true, true, logDataTransferFlag);
-                    s = con.CreateSnapshotSubscription(EventType.Order, dateTime.Value, new OrderListener(recordsPrintLimit.Value));
+                    s = con.CreateSnapshotSubscription(EventType.Order, dateTime.Value,
+                        new OrderListener(recordsPrintLimit.Value));
                     s.SetSource(source.Value);
                     s.AddSymbols(symbol);
 

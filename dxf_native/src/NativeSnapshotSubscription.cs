@@ -199,6 +199,10 @@ namespace com.dxfeed.native
 
         #region Implementation of IDisposable
 
+        /// <summary>
+        ///     This code added to correctly implement the disposable pattern.
+        /// </summary>
+        /// <param name="disposing">The disposing flag</param>
         protected virtual void Dispose(bool disposing)
         {
             if (disposed) return;
@@ -242,6 +246,7 @@ namespace com.dxfeed.native
 
         #endregion
 
+        /// <inheritdoc />
         ~NativeSnapshotSubscription()
         {
             Dispose(false);

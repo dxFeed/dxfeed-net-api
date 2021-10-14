@@ -16,16 +16,12 @@ using com.dxfeed.api.candle;
 namespace com.dxfeed.api.util
 {
     /// <summary>
-    /// A collection of static utility methods for string manipulation
+    ///     A collection of static utility methods for string manipulation
     /// </summary>
-    public class StringUtil
+    public static class StringUtil
     {
-        private StringUtil()
-        {
-        }
-
         /// <summary>
-        /// Parses the comma list of candle symbols
+        ///     Parses the comma list of candle symbols
         /// </summary>
         /// <param name="symbols">The comma separated list of candle symbols</param>
         /// <returns>The list of candle symbols</returns>
@@ -33,15 +29,11 @@ namespace com.dxfeed.api.util
         {
             var result = new List<CandleSymbol>();
 
-            if (string.IsNullOrEmpty(symbols))
-            {
-                return result;
-            }
+            if (string.IsNullOrEmpty(symbols)) return result;
 
             var symbolParams = false;
             var sb = new StringBuilder();
             foreach (var t in symbols)
-            {
                 switch (t)
                 {
                     case '{':
@@ -68,12 +60,8 @@ namespace com.dxfeed.api.util
                         sb.Append(t);
                         break;
                 }
-            }
 
-            if (sb.Length > 0)
-            {
-                result.Add(CandleSymbol.ValueOf(sb.ToString()));
-            }
+            if (sb.Length > 0) result.Add(CandleSymbol.ValueOf(sb.ToString()));
 
             return result;
         }

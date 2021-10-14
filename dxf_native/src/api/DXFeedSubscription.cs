@@ -22,9 +22,10 @@ namespace com.dxfeed.api
     /// <summary>
     ///     Subscription for a set of symbols and event types.
     /// </summary>
-    /// <typeparam name="E">The type of events.</typeparam>
-    public class DXFeedSubscription<E> : IDXFeedSubscription<E>
-        where E : IDxEventType
+    /// <typeparam name="TE">The type of events.</typeparam>
+    // ReSharper disable once InconsistentNaming
+    public class DXFeedSubscription<TE> : IDXFeedSubscription<TE>
+        where TE : IDxEventType
     {
         /// <summary>
         ///     Creates detached subscription for a single event type.
@@ -36,13 +37,13 @@ namespace com.dxfeed.api
         public DXFeedSubscription(DXEndpoint endpoint) : this()
         {
             if (endpoint == null)
-                throw new ArgumentNullException("endpoint");
+                throw new ArgumentNullException(nameof(endpoint));
 
             endpoint.OnClosing += Endpoint_OnClosing;
 
-            subscriptionInstance = endpoint.Connection.CreateSubscription(
-                EventTypeUtil.GetEventsType(typeof(E)),
-                new DXFeedEventHandler<E>(eventListeners, eventListenerLocker));
+            SubscriptionInstance = endpoint.Connection.CreateSubscription(
+                EventTypeUtil.GetEventsType(typeof(TE)),
+                new DXFeedEventHandler<TE>(EventListeners, EventListenerLocker));
         }
 
         /// <summary>
@@ -61,17 +62,17 @@ namespace com.dxfeed.api
         public DXFeedSubscription(DXEndpoint endpoint, params Type[] eventTypes) : this(eventTypes)
         {
             if (endpoint == null)
-                throw new ArgumentNullException("endpoint");
+                throw new ArgumentNullException(nameof(endpoint));
 
             foreach (Type t in eventTypes)
-                if (!typeof(E).IsAssignableFrom(t))
-                    throw new ArgumentException(string.Format("The type {0} is not {1}", t, typeof(E)));
+                if (!typeof(TE).IsAssignableFrom(t))
+                    throw new ArgumentException($"The type {t} is not {typeof(TE)}");
 
             endpoint.OnClosing += Endpoint_OnClosing;
 
-            subscriptionInstance = endpoint.Connection.CreateSubscription(
+            SubscriptionInstance = endpoint.Connection.CreateSubscription(
                 EventTypeUtil.GetEventsType(eventTypes),
-                new DXFeedEventHandler<E>(eventListeners, eventListenerLocker));
+                new DXFeedEventHandler<TE>(EventListeners, EventListenerLocker));
         }
 
         /// <summary>
@@ -86,16 +87,16 @@ namespace com.dxfeed.api
         internal DXFeedSubscription(DXEndpoint endpoint, long time, IndexedEventSource source) : this()
         {
             if (endpoint == null)
-                throw new ArgumentNullException("endpoint");
+                throw new ArgumentNullException(nameof(endpoint));
 
             endpoint.OnClosing += Endpoint_OnClosing;
 
-            subscriptionInstance = endpoint.Connection.CreateSnapshotSubscription(
-                EventTypeUtil.GetEventsType(typeof(E)),
+            SubscriptionInstance = endpoint.Connection.CreateSnapshotSubscription(
+                EventTypeUtil.GetEventsType(typeof(TE)),
                 time,
-                new DXFeedEventHandler<E>(eventListeners, eventListenerLocker));
-            if (source != IndexedEventSource.DEFAULT)
-                subscriptionInstance.SetSource(source.Name);
+                new DXFeedEventHandler<TE>(EventListeners, EventListenerLocker));
+            if (!Equals(source, IndexedEventSource.DEFAULT))
+                SubscriptionInstance.SetSource(source.Name);
         }
 
         /// <summary>
@@ -133,6 +134,7 @@ namespace com.dxfeed.api
                 {
                     value = isClosedNotSync;
                 }
+
                 return value;
             }
         }
@@ -162,8 +164,8 @@ namespace com.dxfeed.api
             lock (isClosedLocker)
             {
                 isClosedNotSync = true;
-                eventListeners.Clear();
-                subscriptionInstance.Dispose();
+                EventListeners.Clear();
+                SubscriptionInstance.Dispose();
             }
 
             OnSubscriptionClosed?.Invoke(this, EventArgs.Empty);
@@ -174,10 +176,7 @@ namespace com.dxfeed.api
         /// </summary>
         public ISet<Type> EventTypes
         {
-            get
-            {
-                return new HashSet<Type>(eventTypesSet);
-            }
+            get { return new HashSet<Type>(eventTypesSet); }
         }
 
         /// <summary>
@@ -209,7 +208,7 @@ namespace com.dxfeed.api
             lock (symbolsLocker)
             {
                 OnSymbolsRemoved?.Invoke(this, new DXFeedSymbolsUpdateEventArgs(GetSymbols()));
-                subscriptionInstance.Clear();
+                SubscriptionInstance.Clear();
             }
         }
 
@@ -228,6 +227,7 @@ namespace com.dxfeed.api
             {
                 symbolsSet = GetSymbolsUnsafe();
             }
+
             return symbolsSet;
         }
 
@@ -258,7 +258,7 @@ namespace com.dxfeed.api
             lock (symbolsLocker)
             {
                 OnSymbolsRemoved?.Invoke(this, new DXFeedSymbolsUpdateEventArgs(GetSymbolsUnsafe()));
-                subscriptionInstance.SetSymbols(SymbolsToStringList(symbols).ToArray());
+                SubscriptionInstance.SetSymbols(SymbolsToStringList(symbols).ToArray());
                 OnSymbolsAdded?.Invoke(this, new DXFeedSymbolsUpdateEventArgs(symbols));
             }
         }
@@ -291,7 +291,7 @@ namespace com.dxfeed.api
             lock (symbolsLocker)
             {
                 OnSymbolsRemoved?.Invoke(this, new DXFeedSymbolsUpdateEventArgs(GetSymbolsUnsafe()));
-                subscriptionInstance.SetSymbols(SymbolsToStringList(symbols).ToArray());
+                SubscriptionInstance.SetSymbols(SymbolsToStringList(symbols).ToArray());
                 OnSymbolsAdded?.Invoke(this, new DXFeedSymbolsUpdateEventArgs(symbols));
             }
         }
@@ -370,7 +370,7 @@ namespace com.dxfeed.api
                 return;
             lock (symbolsLocker)
             {
-                subscriptionInstance.AddSymbol(SymbolToString(symbol));
+                SubscriptionInstance.AddSymbol(SymbolToString(symbol));
                 OnSymbolsAdded?.Invoke(this, new DXFeedSymbolsUpdateEventArgs(symbol));
             }
         }
@@ -398,7 +398,7 @@ namespace com.dxfeed.api
                 return;
             lock (symbolsLocker)
             {
-                subscriptionInstance.RemoveSymbols(SymbolsToStringList(symbols).ToArray());
+                SubscriptionInstance.RemoveSymbols(SymbolsToStringList(symbols).ToArray());
                 OnSymbolsRemoved?.Invoke(this, new DXFeedSymbolsUpdateEventArgs(symbols));
             }
         }
@@ -427,7 +427,7 @@ namespace com.dxfeed.api
                 return;
             lock (symbolsLocker)
             {
-                subscriptionInstance.RemoveSymbols(SymbolsToStringList(symbols).ToArray());
+                SubscriptionInstance.RemoveSymbols(SymbolsToStringList(symbols).ToArray());
                 OnSymbolsRemoved?.Invoke(this, new DXFeedSymbolsUpdateEventArgs(symbols));
             }
         }
@@ -439,16 +439,16 @@ namespace com.dxfeed.api
         /// </summary>
         /// <param name="listener">The event listener.</param>
         /// <exception cref="ArgumentNullException">If <paramref name="listener"/> is null.</exception>
-        public void AddEventListener(IDXFeedEventListener<E> listener)
+        public void AddEventListener(IDXFeedEventListener<TE> listener)
         {
             if (listener == null)
                 throw new ArgumentNullException();
             if (IsClosed)
                 return;
-            lock (eventListenerLocker)
+            lock (EventListenerLocker)
             {
-                if (!eventListeners.Contains(listener))
-                    eventListeners.Add(listener);
+                if (!EventListeners.Contains(listener))
+                    EventListeners.Add(listener);
             }
         }
 
@@ -457,13 +457,13 @@ namespace com.dxfeed.api
         /// </summary>
         /// <param name="listener">Listener the event listener.</param>
         /// <exception cref="ArgumentNullException">If <paramref name="listener"/> is null.</exception>
-        public void RemoveEventListener(IDXFeedEventListener<E> listener)
+        public void RemoveEventListener(IDXFeedEventListener<TE> listener)
         {
             if (listener == null)
                 throw new ArgumentNullException();
-            lock (eventListenerLocker)
+            lock (EventListenerLocker)
             {
-                eventListeners.Remove(listener);
+                EventListeners.Remove(listener);
             }
         }
 
@@ -484,18 +484,39 @@ namespace com.dxfeed.api
 
         #region protected fields and methods
 
-        protected IDxSubscription subscriptionInstance = null;
-        protected List<IDXFeedEventListener<E>> eventListeners = new List<IDXFeedEventListener<E>>();
-        protected object eventListenerLocker = new object();
+        /// <summary>
+        /// The current native subscription
+        /// </summary>
+        protected IDxSubscription SubscriptionInstance;
 
+        /// <summary>
+        /// The collection of event listeners
+        /// </summary>
+        protected readonly List<IDXFeedEventListener<TE>> EventListeners = new List<IDXFeedEventListener<TE>>();
+
+        /// <summary>
+        /// The lock object for the event listeners
+        /// </summary>
+        protected readonly object EventListenerLocker = new object();
+
+        /// <summary>
+        /// Default constructor
+        /// </summary>
         protected DXFeedSubscription()
         {
-            eventTypesSet.Add(typeof(E));
+            eventTypesSet.Add(typeof(TE));
         }
 
+        /// <summary>
+        /// Create subscription by event types
+        /// </summary>
+        /// <param name="eventTypes">The event types</param>
         protected DXFeedSubscription(params Type[] eventTypes)
         {
-            eventTypes.All(t => eventTypesSet.Add(t));
+            foreach (var eventType in eventTypes)
+            {
+                eventTypesSet.Add(eventType);
+            }
         }
 
         /// <summary>
@@ -529,12 +550,17 @@ namespace com.dxfeed.api
                 return;
             lock (symbolsLocker)
             {
-                subscriptionInstance.AddSymbols(SymbolsToStringList(symbols).ToArray());
+                SubscriptionInstance.AddSymbols(SymbolsToStringList(symbols).ToArray());
                 if (callUpdateEvent)
                     OnSymbolsAdded?.Invoke(this, new DXFeedSymbolsUpdateEventArgs(symbols));
             }
         }
 
+        /// <summary>
+        /// The OnClosing event handler
+        /// </summary>
+        /// <param name="sender">The sender object</param>
+        /// <param name="e">The event arguments</param>
         protected void Endpoint_OnClosing(object sender, EventArgs e)
         {
             ((IDXEndpoint)sender).OnClosing -= Endpoint_OnClosing;
@@ -545,11 +571,11 @@ namespace com.dxfeed.api
 
         #region private fields and methods
 
-        private bool isClosedNotSync = false;
-        private object isClosedLocker = new object();
-        private object symbolsLocker = new object();
-        private IDXFeed attachedFeed = null;
-        private HashSet<Type> eventTypesSet = new HashSet<Type>();
+        private bool isClosedNotSync;
+        private readonly object isClosedLocker = new object();
+        private readonly object symbolsLocker = new object();
+        private IDXFeed attachedFeed;
+        private readonly HashSet<Type> eventTypesSet = new HashSet<Type>();
 
         private ICollection<string> SymbolsToStringList(ICollection<object> symbols)
         {
@@ -559,17 +585,24 @@ namespace com.dxfeed.api
             return stringList;
         }
 
-        private string SymbolToString(object obj)
+        private static string SymbolToString(object obj)
         {
             MarketEventSymbols.ValidateSymbol(obj);
-            return obj is CandleSymbol ? (obj as CandleSymbol).ToString() : obj as string;
+            var symbol = obj as CandleSymbol;
+            return symbol != null ? symbol.ToString() : obj as string;
         }
 
         private ISet<object> GetSymbolsUnsafe()
         {
-            HashSet<object> symbolsSet = new HashSet<object>();
-            if (!IsClosed)
-                subscriptionInstance.GetSymbols().All(s => symbolsSet.Add(s));
+            var symbolsSet = new HashSet<object>();
+            
+            if (IsClosed) return symbolsSet;
+            
+            foreach (var symbol in SubscriptionInstance.GetSymbols())
+            {
+                symbolsSet.Add(symbol);
+            }
+
             return symbolsSet;
         }
 

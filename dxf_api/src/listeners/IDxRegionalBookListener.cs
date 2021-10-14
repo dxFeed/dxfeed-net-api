@@ -14,8 +14,15 @@ using com.dxfeed.api.events;
 
 namespace com.dxfeed.api
 {
+    /// <summary>
+    /// The Regional Book listener interface
+    /// </summary>
     public interface IDxRegionalBookListener
     {
+        /// <summary>
+        /// On "Book has been changed" event received 
+        /// </summary>
+        /// <param name="book">The book</param>
         void OnChanged(DxPriceLevelBook book);
     }
 }

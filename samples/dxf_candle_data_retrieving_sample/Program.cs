@@ -38,13 +38,13 @@ namespace dxf_candle_data_retrieving_sample
                 "Example: dxf_candle_data_retrieving_sample https://tools.dxfeed.com/candledata-preview demo demo \"IBM{=d},IBM{=m}\" 20210819-030000 20210823-100000\n\n"
             );
         }
-        
+
         private static void Main(string[] args)
         {
             if (args.Length < 4 || args.Length > 6)
             {
                 ShowUsage();
-                
+
                 return;
             }
 
@@ -72,18 +72,18 @@ namespace dxf_candle_data_retrieving_sample
             {
                 Console.Error.WriteLine("The symbols list is empty\n");
                 ShowUsage();
-                
+
                 return;
             }
 
             DateTime fromDateTime;
-            
+
             if (!DateTime.TryParseExact(args[symbolsIndex + 1], "yyyyMMdd-HHmmss",
                 CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out fromDateTime))
             {
                 Console.Error.WriteLine("Can't parse the <from-date-time>\n");
                 ShowUsage();
-                
+
                 return;
             }
 
@@ -94,7 +94,7 @@ namespace dxf_candle_data_retrieving_sample
             {
                 Console.Error.WriteLine("Can't parse the <to-date-time>\n");
                 ShowUsage();
-                
+
                 return;
             }
 
@@ -108,7 +108,7 @@ namespace dxf_candle_data_retrieving_sample
             var cancellationToken = cancellationTokenSource.Token;
             var getCandleDataResultTask = con.GetCandleData(symbols,
                 fromDateTime, toDateTime, cancellationToken);
-            
+
             cancellationTokenSource.CancelAfter(TimeSpan.FromSeconds(20));
 
             var candlesResult = getCandleDataResultTask.Result;
@@ -118,14 +118,10 @@ namespace dxf_candle_data_retrieving_sample
             {
                 Console.WriteLine($"{candles.Key}, {candles.Value.Count} events:");
                 foreach (var candle in candles.Value.Take(Math.Min(LIMIT, candles.Value.Count)))
-                {
                     Console.WriteLine($"  {candle}");
-                }
-                
+
                 if (candles.Value.Count > LIMIT)
-                {
                     Console.WriteLine($"... {candles.Value.Count - LIMIT} events were not displayed");
-                }
             }
         }
     }

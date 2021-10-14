@@ -10,41 +10,49 @@ If a copy of the MPL was not distributed with this file, You can obtain one at h
 #endregion
 
 using System;
-using System.Threading;
 using com.dxfeed.api;
 using com.dxfeed.api.events;
 using com.dxfeed.native;
 
-namespace dxf_price_level_book_sample {
-    internal class PriceLevelBookListener : IDxPriceLevelBookListener {
-        public void OnChanged(DxPriceLevelBook book) {
+namespace dxf_price_level_book_sample
+{
+    internal class PriceLevelBookListener : IDxPriceLevelBookListener
+    {
+        public void OnChanged(DxPriceLevelBook book)
+        {
             Console.WriteLine($"\nNew Price Level Book for {book.Symbol}:");
             Console.WriteLine($"{"Ask",-10} {"Size",-10} {"Time",-15} | {"Bid",-10} {"Size",-10} {"Time",-15}");
-            for (var i = 0; i < Math.Max(book.Asks.Length, book.Bids.Length); ++i) {
+            for (var i = 0; i < Math.Max(book.Asks.Length, book.Bids.Length); ++i)
+            {
                 if (i < book.Asks.Length)
-                    Console.Write("{0,-10:n4} {1,-10:n4} {2,-15:yyyyMMdd-HHmmss}", book.Asks[i].Price, book.Asks[i].Size,
+                    Console.Write("{0,-10:n4} {1,-10:n4} {2,-15:yyyyMMdd-HHmmss}", book.Asks[i].Price,
+                        book.Asks[i].Size,
                         book.Asks[i].Time);
                 else
                     Console.Write("{0,-10} {1,-10} {2,-15}", "", "", "");
                 Console.Write(" | ");
                 if (i < book.Bids.Length)
-                    Console.Write("{0,-10:n4} {1,-10:n4} {2,-15:yyyyMMdd-HHmmss}", book.Bids[i].Price, book.Bids[i].Size,
+                    Console.Write("{0,-10:n4} {1,-10:n4} {2,-15:yyyyMMdd-HHmmss}", book.Bids[i].Price,
+                        book.Bids[i].Size,
                         book.Bids[i].Time);
                 Console.WriteLine();
             }
         }
     }
 
-    internal class Program {
+    internal class Program
+    {
         private const int HostIndex = 0;
         private const int SymbolIndex = 1;
 
-        private static void DisconnectHandler(IDxConnection con) {
+        private static void DisconnectHandler(IDxConnection con)
+        {
             Console.WriteLine("Disconnected");
         }
 
         private static bool TryParseTaggedStringParam(string tag, string paramTagString, string paramString,
-            InputParam<string> param) {
+            InputParam<string> param)
+        {
             if (!paramTagString.Equals(tag)) return false;
 
             param.Value = paramString;
@@ -74,8 +82,10 @@ namespace dxf_price_level_book_sample {
             );
         }
 
-        private static void Main(string[] args) {
-            if (args.Length < 2 || args.Length > 6) {
+        private static void Main(string[] args)
+        {
+            if (args.Length < 2 || args.Length > 6)
+            {
                 ShowHelp();
 
                 return;
@@ -87,7 +97,8 @@ namespace dxf_price_level_book_sample {
             var token = new InputParam<string>(null);
             var logDataTransferFlag = false;
 
-            for (var i = SymbolIndex + 1; i < args.Length; i++) {
+            for (var i = SymbolIndex + 1; i < args.Length; i++)
+            {
                 if (!token.IsSet && i < args.Length - 1 &&
                     TryParseTaggedStringParam("-T", args[i], args[i + 1], token))
                 {
@@ -95,7 +106,8 @@ namespace dxf_price_level_book_sample {
                     continue;
                 }
 
-                if (logDataTransferFlag == false && args[i].Equals("-p")) {
+                if (logDataTransferFlag == false && args[i].Equals("-p"))
+                {
                     logDataTransferFlag = true;
                     i++;
                     continue;
@@ -109,7 +121,8 @@ namespace dxf_price_level_book_sample {
 
             Console.WriteLine($"Connecting to {address} on {symbol}, sources - {sourcesString} ...");
 
-            try {
+            try
+            {
                 NativeTools.InitializeLogging("dxf_price_level_book_sample.log", true, true, logDataTransferFlag);
                 using (var con = token.IsSet
                     ? new NativeConnection(address, token.Value, DisconnectHandler)
@@ -121,29 +134,38 @@ namespace dxf_price_level_book_sample {
                         Console.ReadLine();
                     }
                 }
-            } catch (DxException dxException) {
+            }
+            catch (DxException dxException)
+            {
                 Console.WriteLine("Native exception occurred: " + dxException.Message);
-            } catch (Exception exc) {
+            }
+            catch (Exception exc)
+            {
                 Console.WriteLine("Exception occurred: " + exc.Message);
             }
         }
 
-        private class InputParam<T> {
+        private class InputParam<T>
+        {
             private T value;
 
-            private InputParam() {
+            private InputParam()
+            {
                 IsSet = false;
             }
 
-            public InputParam(T defaultValue) : this() {
+            public InputParam(T defaultValue) : this()
+            {
                 value = defaultValue;
             }
 
             public bool IsSet { get; private set; }
 
-            public T Value {
+            public T Value
+            {
                 get { return value; }
-                set {
+                set
+                {
                     this.value = value;
                     IsSet = true;
                 }

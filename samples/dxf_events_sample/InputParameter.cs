@@ -12,25 +12,30 @@ If a copy of the MPL was not distributed with this file, You can obtain one at h
 namespace dxf_events_sample
 {
     /// <summary>
-    /// Simple class describing input parameters
+    ///     Simple class describing input parameters
     /// </summary>
     /// <typeparam name="T">Input parameter type</typeparam>
-    public class InputParameter<T> {
+    public class InputParameter<T>
+    {
         private T value;
 
-        private InputParameter() {
+        private InputParameter()
+        {
             IsSet = false;
         }
 
-        public InputParameter(T defaultValue) : this() {
+        public InputParameter(T defaultValue) : this()
+        {
             value = defaultValue;
         }
 
         public bool IsSet { get; private set; }
 
-        public T Value {
+        public T Value
+        {
             get { return value; }
-            set {
+            set
+            {
                 this.value = value;
                 IsSet = true;
             }

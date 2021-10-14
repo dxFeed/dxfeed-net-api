@@ -9,30 +9,30 @@ If a copy of the MPL was not distributed with this file, You can obtain one at h
 
 #endregion
 
-using com.dxfeed.api.events;
-using com.dxfeed.api.data;
 using System;
+using com.dxfeed.api.data;
+using com.dxfeed.api.events;
 
 namespace com.dxfeed.api.util
 {
     /// <summary>
-    /// Class provides operations with EventType.
+    ///     Class provides operations with EventType.
     /// </summary>
-    public class EventTypeUtil
+    public static class EventTypeUtil
     {
         /// <summary>
-        /// Convert event type to event id, accepting by C API.
-        /// Warning: eventType must contain only one event flag, otherwise exception will be raised.
+        ///     Convert event type to event id, accepting by C API.
+        ///     Warning: eventType must contain only one event flag, otherwise exception will be raised.
         /// </summary>
         /// <param name="eventType">Type of event to convert.</param>
         /// <exception cref="InvalidOperationException">Event type is empty or contains several flags.</exception>
         /// <returns>Event id, accepting by C API.</returns>
         public static int GetEventId(EventType eventType)
         {
-            uint eventTypeValue = (uint)eventType;
+            var eventTypeValue = (uint)eventType;
             if (eventType == 0)
                 throw new InvalidOperationException("Empty event type.");
-            int id = 0;
+            var id = 0;
             while ((eventTypeValue & 0x1) == 0)
             {
                 id++;
@@ -46,7 +46,7 @@ namespace com.dxfeed.api.util
         }
 
         /// <summary>
-        /// Gets enum values of events type by generic class.
+        ///     Gets enum values of events type by generic class.
         /// </summary>
         /// <param name="types">The list of generic class represents events.</param>
         /// <returns>Enum values of events type by generic class.</returns>
@@ -55,9 +55,8 @@ namespace com.dxfeed.api.util
         {
             if (types == null)
                 throw new ArgumentNullException("types");
-            EventType events = EventType.None;
-            foreach (Type t in types)
-            {
+            var events = EventType.None;
+            foreach (var t in types)
                 if (typeof(IDxTrade).IsAssignableFrom(t))
                     events |= EventType.Trade;
                 else if (typeof(IDxQuote).IsAssignableFrom(t))
@@ -87,7 +86,6 @@ namespace com.dxfeed.api.util
                 else if (typeof(IDxConfiguration).IsAssignableFrom(t))
                     events |= EventType.Configuration;
                 else throw new ArgumentException("Unknown event type: " + t);
-            }
             return events;
         }
     }

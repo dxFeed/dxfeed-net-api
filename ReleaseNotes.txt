@@ -11,6 +11,10 @@ Version 8.5.0
   - dxf_ipf_connect_sample: added an ability to set bearer token
   - Added XML documentation for all public\protected API entities (interfaces, methods, classes etc.)
   - The DayUtil class is now public
+* [Attention] Some architectural issues have been discovered that impose restrictions on the use of connection objects.
+  It is not recommended to use multiple connections in parallel in the same process. This applies to objects created with
+  the `NativeConnection` constructor and the `DXEndpoint.Connect`, `TimeAndSaleDataConnection.GetTimeAndSaleData`, `CandleDataConnection.GetCandleData` methods.
+  This limitation will be lifted after API design changes.  
 
 Version 8.4.1
 * [DXFC-264] Added assembly and deployment of XML documentation

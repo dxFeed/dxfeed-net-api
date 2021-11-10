@@ -1,3 +1,6 @@
+Version 8.5.1
+* [DXFC-276] Fixed a bug with broken wildcard subscription
+
 Version 8.5.0
 * [DXFC-266] Improved functioning of CandleDataConnection and TimeAndSaleDataConnection in Blazor\UI applications.
 * [DXFC-267] Fixed a bug with possible call of callbacks/delegates from the native library when the memory of subscriptions/connections objects is cleared by the GC 

@@ -32,7 +32,9 @@ namespace com.dxfeed.native
     public class NativeSubscription : IDxSubscription
     {
         private IntPtr subscriptionPtr;
+
         private readonly IDxEventListener eventListener;
+
         //to prevent callback from being garbage collected
         private readonly C.dxf_event_listener_v2_t callback;
         private readonly EventType eventType;
@@ -51,20 +53,23 @@ namespace com.dxfeed.native
         /// <param name="eventSubscriptionFlags">event subscription flags</param>
         /// <param name="listener">event listener</param>
         /// <exception cref="ArgumentException">One of passed parameters is not valid.</exception>
-        /// <exception cref="DxException"></exception>
-        public NativeSubscription(NativeConnection connection, EventType eventType, EventSubscriptionFlag eventSubscriptionFlags, IDxEventListener listener)
+        /// <exception cref="DxException">Connection or listener is invalid.</exception>
+        public NativeSubscription(NativeConnection connection, EventType eventType,
+            EventSubscriptionFlag eventSubscriptionFlags, IDxEventListener listener)
         {
-            var connectionPtr = connection.Handle;
-            this.eventType = eventType;
-            
-            if (listener != null)
-                eventListener = listener;
-            else
+            if (connection == null)
+                throw new ArgumentNullException(nameof(connection));
+
+            if (listener == null)
                 throw new ArgumentNullException(nameof(listener));
 
+            this.connection = connection;
+            this.eventType = eventType;
+            eventListener = listener;
+
             C.CheckOk(eventSubscriptionFlags == EventSubscriptionFlag.Default
-                ? C.Instance.dxf_create_subscription(connectionPtr, eventType, out subscriptionPtr)
-                : C.Instance.dxf_create_subscription_with_flags(connectionPtr, eventType, eventSubscriptionFlags,
+                ? C.Instance.dxf_create_subscription(connection.Handle, eventType, out subscriptionPtr)
+                : C.Instance.dxf_create_subscription_with_flags(connection.Handle, eventType, eventSubscriptionFlags,
                     out subscriptionPtr));
 
             try
@@ -76,7 +81,6 @@ namespace com.dxfeed.native
                 C.Instance.dxf_close_subscription(subscriptionPtr);
                 throw;
             }
-            this.connection = connection;
         }
 
         /// <summary>
@@ -90,7 +94,7 @@ namespace com.dxfeed.native
         /// <param name="eventType">type of event to create</param>
         /// <param name="listener">event listener</param>
         /// <exception cref="ArgumentException">One of passed parameters is not valid.</exception>
-        /// <exception cref="DxException"></exception>
+        /// <exception cref="DxException">Connection or listener is invalid.</exception>
         public NativeSubscription(NativeConnection connection, EventType eventType, IDxEventListener listener) :
             this(connection, eventType, EventSubscriptionFlag.Default, listener)
         {
@@ -109,24 +113,28 @@ namespace com.dxfeed.native
         /// <param name="eventSubscriptionFlags">event subscription flags</param>
         /// <param name="listener">Event listener.</param>
         /// <exception cref="ArgumentException">One of passed parameters is not valid.</exception>
-        /// <exception cref="DxException"></exception>
-        public NativeSubscription(NativeConnection connection, EventType eventType, long time, EventSubscriptionFlag eventSubscriptionFlags, IDxEventListener listener)
+        /// <exception cref="DxException">Connection or listener is invalid.</exception>
+        public NativeSubscription(NativeConnection connection, EventType eventType, long time,
+            EventSubscriptionFlag eventSubscriptionFlags, IDxEventListener listener)
         {
-            var connectionPtr = connection.Handle;
-            this.eventType = eventType;
+            if (connection == null)
+                throw new ArgumentNullException(nameof(connection));
 
             if (listener == null)
                 throw new ArgumentNullException(nameof(listener));
-            
+
+            this.connection = connection;
+            this.eventType = eventType;
             eventListener = listener;
 
             if (eventSubscriptionFlags == EventSubscriptionFlag.Default)
             {
-                C.CheckOk(C.Instance.dxf_create_subscription_timed(connectionPtr, eventType, time,
+                C.CheckOk(C.Instance.dxf_create_subscription_timed(connection.Handle, eventType, time,
                     out subscriptionPtr));
-            } else
+            }
+            else
             {
-                C.CheckOk(C.Instance.dxf_create_subscription_timed_with_flags(connectionPtr, eventType, time,
+                C.CheckOk(C.Instance.dxf_create_subscription_timed_with_flags(connection.Handle, eventType, time,
                     eventSubscriptionFlags,
                     out subscriptionPtr));
             }
@@ -154,8 +162,9 @@ namespace com.dxfeed.native
         /// <param name="time">Unix time stamp (the number of milliseconds from 1.1.1970)</param>
         /// <param name="listener">Event listener.</param>
         /// <exception cref="ArgumentException">One of passed parameters is not valid.</exception>
-        /// <exception cref="DxException"></exception>
-        public NativeSubscription(NativeConnection connection, EventType eventType, long time, IDxEventListener listener) :
+        /// <exception cref="DxException">Connection or listener is invalid.</exception>
+        public NativeSubscription(NativeConnection connection, EventType eventType, long time,
+            IDxEventListener listener) :
             this(connection, eventType, time, EventSubscriptionFlag.Default, listener)
         {
         }
@@ -173,11 +182,12 @@ namespace com.dxfeed.native
         /// <param name="eventSubscriptionFlags">event subscription flags</param>
         /// <param name="listener">Event listener.</param>
         /// <exception cref="ArgumentException">One of passed parameters is not valid.</exception>
-        /// <exception cref="DxException"></exception>
-        public NativeSubscription(NativeConnection connection, EventType eventType, DateTime time, 
+        /// <exception cref="DxException">Connection or listener is invalid.</exception>
+        public NativeSubscription(NativeConnection connection, EventType eventType, DateTime time,
             EventSubscriptionFlag eventSubscriptionFlags, IDxEventListener listener) :
             this(connection, eventType, Tools.DateToUnixTime(time), eventSubscriptionFlags, listener)
-        {}
+        {
+        }
 
         /// <summary>
         /// Creates the new time event subscription.
@@ -191,10 +201,12 @@ namespace com.dxfeed.native
         /// <param name="time">Time to getting events from.</param>
         /// <param name="listener">Event listener.</param>
         /// <exception cref="ArgumentException">One of passed parameters is not valid.</exception>
-        /// <exception cref="DxException"></exception>
-        public NativeSubscription(NativeConnection connection, EventType eventType, DateTime time, IDxEventListener listener) :
+        /// <exception cref="DxException">Connection or listener is invalid.</exception>
+        public NativeSubscription(NativeConnection connection, EventType eventType, DateTime time,
+            IDxEventListener listener) :
             this(connection, eventType, Tools.DateToUnixTime(time), listener)
-        {}
+        {
+        }
 
         /// <summary>
         /// Creates the new Candle event subscription.
@@ -209,22 +221,25 @@ namespace com.dxfeed.native
         /// <param name="eventSubscriptionFlags">event subscription flags</param>
         /// <param name="listener">Candle event listener.</param>
         /// <exception cref="ArgumentException">One of passed parameters is not valid.</exception>
-        /// <exception cref="DxException"></exception>
-        public NativeSubscription(NativeConnection connection, DateTime? time, EventSubscriptionFlag eventSubscriptionFlags, IDxCandleListener listener)
+        /// <exception cref="DxException">Connection or listener is invalid.</exception>
+        public NativeSubscription(NativeConnection connection, DateTime? time,
+            EventSubscriptionFlag eventSubscriptionFlags, IDxCandleListener listener)
         {
-            var connectionPtr = connection.Handle;
-            eventType = EventType.Candle;
+            if (connection == null)
+                throw new ArgumentNullException(nameof(connection));
 
             if (listener == null)
                 throw new ArgumentNullException(nameof(listener));
-            
-            eventListener = listener;
 
+            this.connection = connection;
+            eventType = EventType.Candle;
+            eventListener = listener;
+            
             var unixTimestamp = time == null ? 0 : Tools.DateToUnixTime((DateTime)time);
 
             C.CheckOk(eventSubscriptionFlags == EventSubscriptionFlag.Default
-                ? C.Instance.dxf_create_subscription_timed(connectionPtr, eventType, unixTimestamp, out subscriptionPtr)
-                : C.Instance.dxf_create_subscription_timed_with_flags(connectionPtr, eventType, unixTimestamp,
+                ? C.Instance.dxf_create_subscription_timed(connection.Handle, eventType, unixTimestamp, out subscriptionPtr)
+                : C.Instance.dxf_create_subscription_timed_with_flags(connection.Handle, eventType, unixTimestamp,
                     eventSubscriptionFlags, out subscriptionPtr));
 
             try
@@ -250,18 +265,20 @@ namespace com.dxfeed.native
         /// <param name="time">Date time in the past.</param>
         /// <param name="listener">Candle event listener.</param>
         /// <exception cref="ArgumentException">One of passed parameters is not valid.</exception>
-        /// <exception cref="DxException"></exception>
+        /// <exception cref="DxException">Connection or listener is invalid.</exception>
         public NativeSubscription(NativeConnection connection, DateTime? time, IDxCandleListener listener) :
             this(connection, time, EventSubscriptionFlag.Default, listener)
         {
         }
 
-        private void OnEvent(EventType onEventEventType, IntPtr symbol, IntPtr data, int dataCount, IntPtr eventParamsPtr, IntPtr userData)
+        private void OnEvent(EventType onEventEventType, IntPtr symbol, IntPtr data, int dataCount,
+            IntPtr eventParamsPtr, IntPtr userData)
         {
             var obj = Marshal.PtrToStructure(eventParamsPtr, typeof(DxEventParams));
             var eventParams = (DxEventParams)obj;
-            var nativeEventParams = new EventParams(eventParams.flags, eventParams.time_int_field, eventParams.snapshot_key);
-            
+            var nativeEventParams =
+                new EventParams(eventParams.flags, eventParams.time_int_field, eventParams.snapshot_key);
+
             switch (onEventEventType)
             {
                 case EventType.Order:
@@ -270,7 +287,8 @@ namespace com.dxfeed.native
                     break;
                 case EventType.Profile:
                     var profileBuf = NativeBufferFactory.CreateProfileBuf(symbol, data, dataCount, nativeEventParams);
-                    (eventListener as IDxProfileListener)?.OnProfile<NativeEventBuffer<NativeProfile>, NativeProfile>(profileBuf);
+                    (eventListener as IDxProfileListener)?.OnProfile<NativeEventBuffer<NativeProfile>, NativeProfile>(
+                        profileBuf);
                     break;
                 case EventType.Quote:
                     var quoteBuf = NativeBufferFactory.CreateQuoteBuf(symbol, data, dataCount, nativeEventParams);
@@ -278,7 +296,8 @@ namespace com.dxfeed.native
                     break;
                 case EventType.TimeAndSale:
                     var tsBuf = NativeBufferFactory.CreateTimeAndSaleBuf(symbol, data, dataCount, nativeEventParams);
-                    (eventListener as IDxTimeAndSaleListener)?.OnTimeAndSale<NativeEventBuffer<NativeTimeAndSale>, NativeTimeAndSale>(tsBuf);
+                    (eventListener as IDxTimeAndSaleListener)
+                        ?.OnTimeAndSale<NativeEventBuffer<NativeTimeAndSale>, NativeTimeAndSale>(tsBuf);
                     break;
                 case EventType.Trade:
                     var tBuf = NativeBufferFactory.CreateTradeBuf(symbol, data, dataCount, nativeEventParams);
@@ -286,7 +305,8 @@ namespace com.dxfeed.native
                     break;
                 case EventType.Summary:
                     var sBuf = NativeBufferFactory.CreateSummaryBuf(symbol, data, dataCount, nativeEventParams);
-                    (eventListener as IDxSummaryListener)?.OnSummary<NativeEventBuffer<NativeSummary>, NativeSummary>(sBuf);
+                    (eventListener as IDxSummaryListener)
+                        ?.OnSummary<NativeEventBuffer<NativeSummary>, NativeSummary>(sBuf);
                     break;
                 case EventType.Candle:
                     var cBuf = NativeBufferFactory.CreateCandleBuf(symbol, data, dataCount, nativeEventParams);
@@ -294,31 +314,43 @@ namespace com.dxfeed.native
                     break;
                 case EventType.TradeETH:
                     var teBuf = NativeBufferFactory.CreateTradeEthBuf(symbol, data, dataCount, nativeEventParams);
-                    (eventListener as IDxTradeETHListener)?.OnTradeETH<NativeEventBuffer<NativeTradeETH>, NativeTradeETH>(teBuf);
+                    (eventListener as IDxTradeETHListener)
+                        ?.OnTradeETH<NativeEventBuffer<NativeTradeETH>, NativeTradeETH>(teBuf);
                     break;
                 case EventType.SpreadOrder:
-                    var spreadOrderBuf = NativeBufferFactory.CreateSpreadOrderBuf(symbol, data, dataCount, nativeEventParams);
-                    (eventListener as IDxSpreadOrderListener)?.OnSpreadOrder<NativeEventBuffer<NativeSpreadOrder>, NativeSpreadOrder>(spreadOrderBuf);
+                    var spreadOrderBuf =
+                        NativeBufferFactory.CreateSpreadOrderBuf(symbol, data, dataCount, nativeEventParams);
+                    (eventListener as IDxSpreadOrderListener)
+                        ?.OnSpreadOrder<NativeEventBuffer<NativeSpreadOrder>, NativeSpreadOrder>(spreadOrderBuf);
                     break;
                 case EventType.Greeks:
                     var greeksBuf = NativeBufferFactory.CreateGreeksBuf(symbol, data, dataCount, nativeEventParams);
-                    (eventListener as IDxGreeksListener)?.OnGreeks<NativeEventBuffer<NativeGreeks>, NativeGreeks>(greeksBuf);
+                    (eventListener as IDxGreeksListener)?.OnGreeks<NativeEventBuffer<NativeGreeks>, NativeGreeks>(
+                        greeksBuf);
                     break;
                 case EventType.TheoPrice:
-                    var theoPriceBuf = NativeBufferFactory.CreateTheoPriceBuf(symbol, data, dataCount, nativeEventParams);
-                    (eventListener as IDxTheoPriceListener)?.OnTheoPrice<NativeEventBuffer<NativeTheoPrice>, NativeTheoPrice>(theoPriceBuf);
+                    var theoPriceBuf =
+                        NativeBufferFactory.CreateTheoPriceBuf(symbol, data, dataCount, nativeEventParams);
+                    (eventListener as IDxTheoPriceListener)
+                        ?.OnTheoPrice<NativeEventBuffer<NativeTheoPrice>, NativeTheoPrice>(theoPriceBuf);
                     break;
                 case EventType.Underlying:
-                    var underlyingBuf = NativeBufferFactory.CreateUnderlyingBuf(symbol, data, dataCount, nativeEventParams);
-                    (eventListener as IDxUnderlyingListener)?.OnUnderlying<NativeEventBuffer<NativeUnderlying>, NativeUnderlying>(underlyingBuf);
+                    var underlyingBuf =
+                        NativeBufferFactory.CreateUnderlyingBuf(symbol, data, dataCount, nativeEventParams);
+                    (eventListener as IDxUnderlyingListener)
+                        ?.OnUnderlying<NativeEventBuffer<NativeUnderlying>, NativeUnderlying>(underlyingBuf);
                     break;
                 case EventType.Series:
                     var seriesBuf = NativeBufferFactory.CreateSeriesBuf(symbol, data, dataCount, nativeEventParams);
-                    (eventListener as IDxSeriesListener)?.OnSeries<NativeEventBuffer<NativeSeries>, NativeSeries>(seriesBuf);
+                    (eventListener as IDxSeriesListener)?.OnSeries<NativeEventBuffer<NativeSeries>, NativeSeries>(
+                        seriesBuf);
                     break;
                 case EventType.Configuration:
-                    var configurationBuf = NativeBufferFactory.CreateConfigurationBuf(symbol, data, dataCount, nativeEventParams);
-                    (eventListener as IDxConfigurationListener)?.OnConfiguration<NativeEventBuffer<NativeConfiguration>, NativeConfiguration>(configurationBuf);
+                    var configurationBuf =
+                        NativeBufferFactory.CreateConfigurationBuf(symbol, data, dataCount, nativeEventParams);
+                    (eventListener as IDxConfigurationListener)
+                        ?.OnConfiguration<NativeEventBuffer<NativeConfiguration>,
+                            NativeConfiguration>(configurationBuf);
                     break;
             }
         }
@@ -334,7 +366,8 @@ namespace com.dxfeed.native
             if (disposed) return;
 
             if (disposing)
-            { }
+            {
+            }
 
             var needToClose = false;
 
@@ -399,6 +432,7 @@ namespace com.dxfeed.native
             {
                 AddSymbol(CandleSymbol.ValueOf(symbol));
             }
+
             C.CheckOk(C.Instance.dxf_add_symbol(subscriptionPtr, symbol));
         }
 
@@ -417,7 +451,7 @@ namespace com.dxfeed.native
         {
             if (symbol == null)
                 throw new ArgumentException("Invalid symbol parameter.");
-            
+
             C.CheckOk(C.Instance.dxf_add_symbol(subscriptionPtr, symbol.ToString()));
         }
 
@@ -539,11 +573,11 @@ namespace com.dxfeed.native
         {
             if (symbols == null || symbols.Length == 0)
                 throw new ArgumentException("Invalid symbol parameter");
-            
+
             foreach (var symbol in symbols)
             {
                 IntPtr candleAttributesPtr;
-                
+
                 C.CheckOk(C.Instance.dxf_create_candle_symbol_attributes(symbol.BaseSymbol,
                     symbol.ExchangeCode, symbol.PeriodValue, symbol.PeriodId, symbol.PriceId,
                     symbol.SessionId, symbol.AlignmentId, symbol.PriceLevel, out candleAttributesPtr));
@@ -605,7 +639,7 @@ namespace com.dxfeed.native
         {
             if (symbols == null || symbols.Length == 0)
                 throw new ArgumentException("Invalid symbol parameter");
-            
+
             Clear();
             AddSymbols(symbols);
         }
@@ -641,7 +675,7 @@ namespace com.dxfeed.native
         {
             IntPtr head;
             int len;
-            
+
             C.CheckOk(C.Instance.dxf_get_symbols(subscriptionPtr, out head, out len));
 
             var result = new string[len];
@@ -671,7 +705,7 @@ namespace com.dxfeed.native
                 throw new ArgumentException("Invalid sources parameter");
 
             var ascii = Encoding.ASCII;
-            
+
             foreach (var source in sources)
             {
                 var sourceBytes = ascii.GetBytes(source);
@@ -697,9 +731,9 @@ namespace com.dxfeed.native
 
             var ascii = Encoding.ASCII;
             var source = ascii.GetBytes(sources[0]);
-            
+
             C.CheckOk(C.Instance.dxf_set_order_source(subscriptionPtr, source));
-            
+
             for (var i = 1; i < sources.Length; i++)
             {
                 source = ascii.GetBytes(sources[i]);

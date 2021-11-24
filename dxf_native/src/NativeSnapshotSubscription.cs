@@ -59,9 +59,12 @@ namespace com.dxfeed.native
         /// <param name="connection">Native connection pointer.</param>
         /// <param name="time">Milliseconds time in the past.</param>
         /// <param name="listener">Snapshot events listener.</param>
-        /// <exception cref="ArgumentNullException">Listener is invalid.</exception>
+        /// <exception cref="ArgumentNullException">Connection or listener is invalid.</exception>
         public NativeSnapshotSubscription(NativeConnection connection, long time, IDxSnapshotListener listener)
         {
+            if (connection == null)
+                throw new ArgumentNullException(nameof(connection));
+
             if (listener == null)
                 throw new ArgumentNullException(nameof(listener));
 
@@ -80,9 +83,12 @@ namespace com.dxfeed.native
         /// </remarks>
         /// <param name="connection">Native connection pointer.</param>
         /// <param name="listener">Snapshot or update events listener.</param>
-        /// <exception cref="ArgumentNullException">Listener is invalid.</exception>
+        /// <exception cref="ArgumentNullException">Connection or listener is invalid.</exception>
         public NativeSnapshotSubscription(NativeConnection connection, IDxIncOrderSnapshotListener listener)
         {
+            if (connection == null)
+                throw new ArgumentNullException(nameof(connection));
+
             if (listener == null)
                 throw new ArgumentNullException(nameof(listener));
 
@@ -103,10 +109,13 @@ namespace com.dxfeed.native
         /// <param name="eventType">Single event type.</param>
         /// <param name="time">Milliseconds time in the past.</param>
         /// <param name="listener">Snapshot events listener.</param>
-        /// <exception cref="ArgumentNullException">Listener is invalid.</exception>
+        /// <exception cref="ArgumentNullException">Connection or listener is invalid.</exception>
         public NativeSnapshotSubscription(NativeConnection connection, EventType eventType, long time,
             IDxSnapshotListener listener)
         {
+            if (connection == null)
+                throw new ArgumentNullException(nameof(connection));
+
             if (listener == null)
                 throw new ArgumentNullException(nameof(listener));
 
@@ -208,7 +217,8 @@ namespace com.dxfeed.native
             if (disposed) return;
 
             if (disposing)
-            { }
+            {
+            }
 
             var needToClose = false;
 
@@ -413,7 +423,7 @@ namespace com.dxfeed.native
         {
             if (symbols == null || symbols.Length == 0)
                 throw new ArgumentException("Invalid symbol parameter");
-            List<string> symbolList = new List<string>(symbols);
+            var symbolList = new List<string>(symbols);
             if (symbolList.Contains(Symbol))
                 Dispose();
         }

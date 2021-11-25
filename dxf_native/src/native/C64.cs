@@ -393,6 +393,13 @@ namespace com.dxfeed.native.api
         {
             return __dxf_detach_snapshot_listener(snapshot, snapshotListener);
         }
+        
+        [DllImport(DXFEED_DLL, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl, EntryPoint = "dxf_detach_snapshot_inc_listener")]
+        private static extern int __dxf_detach_snapshot_inc_listener(IntPtr snapshot, dxf_snapshot_inc_listener_t snapshotListener);
+        internal override int dxf_detach_snapshot_inc_listener(IntPtr snapshot, dxf_snapshot_inc_listener_t snapshotListener)
+        {
+            return __dxf_detach_snapshot_inc_listener(snapshot, snapshotListener);
+        }
 
         [DllImport(DXFEED_DLL, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl, EntryPoint = "dxf_get_snapshot_symbol")]
         private static extern int __dxf_get_snapshot_symbol(IntPtr snapshot, out IntPtr symbol);

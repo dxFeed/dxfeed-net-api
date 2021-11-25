@@ -698,14 +698,23 @@ namespace com.dxfeed.native.api
         internal abstract int dxf_attach_snapshot_inc_listener(IntPtr snapshot, dxf_snapshot_inc_listener_t snapshotListener,
                                                                IntPtr userData);
 
-        /*
-         *  Detaches a listener from the snapshot.
-         *  No error occurs if it's attempted to detach a listener which wasn't previously attached.
-         *
-         *  snapshot - a handle of the snapshot to which a listener is to be detached
-         *  snapshot_listener - a listener callback function pointer
-         */
+        /// <summary>
+        /// Detaches a listener from the snapshot.
+        /// </summary>
+        /// <param name="snapshot">A handle of a snapshot from which the listener should be detached.</param>
+        /// <param name="snapshotListener">A listener callback function pointer</param>
+        /// <returns>DX_OK (1) on successful detaching or DX_ERR (0) on error;
+        /// dxf_get_last_error can be used to retrieve the error code and description in case of failure</returns>
         internal abstract int dxf_detach_snapshot_listener(IntPtr snapshot, dxf_snapshot_listener_t snapshotListener);
+        
+        /// <summary>
+        /// Detaches an incremental listener from the snapshot.
+        /// </summary>
+        /// <param name="snapshot">A handle of a snapshot from which the listener should be detached.</param>
+        /// <param name="snapshotListener">A listener callback function pointer</param>
+        /// <returns>DX_OK (1) on successful detaching or DX_ERR (0) on error;
+        /// dxf_get_last_error can be used to retrieve the error code and description in case of failure</returns>
+        internal abstract int dxf_detach_snapshot_inc_listener(IntPtr snapshot, dxf_snapshot_inc_listener_t snapshotListener);
 
         /*
          *  Retrieves the symbol currently added to the snapshot subscription.

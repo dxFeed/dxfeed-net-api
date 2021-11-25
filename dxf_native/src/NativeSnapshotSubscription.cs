@@ -232,6 +232,16 @@ namespace com.dxfeed.native
 
             if (needToClose)
             {
+                if (callback != null)
+                {
+                    C.CheckOk(C.Instance.dxf_detach_snapshot_listener(snapshotPtr, callback));
+                }
+                
+                if (incCallback != null)
+                {
+                    C.CheckOk(C.Instance.dxf_detach_snapshot_inc_listener(snapshotPtr, incCallback));
+                }
+
                 C.CheckOk(C.Instance.dxf_close_snapshot(snapshotPtr));
             }
 

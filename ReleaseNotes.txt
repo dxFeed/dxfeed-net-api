@@ -1,3 +1,7 @@
+Version 8.5.2
+* [DXFC-277] Fixed a bug when the subscription with the Time parameter could not close when calling Dispose
+* [DXFC-278] Fixed a bug when event listeners can be used (by native API) after the subscription objects have been destroyed. 
+
 Version 8.5.1
 * [DXFC-276] Fixed a bug with broken wildcard subscription
 

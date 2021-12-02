@@ -381,6 +381,11 @@ namespace com.dxfeed.native
 
             if (needToClose)
             {
+                if (callback != null)
+                {
+                    C.CheckOk(C.Instance.dxf_detach_event_listener_v2(subscriptionPtr, callback));                    
+                }
+                
                 C.CheckOk(C.Instance.dxf_close_subscription(subscriptionPtr));
             }
 

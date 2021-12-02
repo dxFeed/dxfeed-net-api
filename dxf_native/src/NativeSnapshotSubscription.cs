@@ -9,52 +9,51 @@ If a copy of the MPL was not distributed with this file, You can obtain one at h
 
 #endregion
 
+using System;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
+using System.Text;
 using com.dxfeed.api;
 using com.dxfeed.api.candle;
 using com.dxfeed.api.data;
 using com.dxfeed.api.util;
 using com.dxfeed.native.api;
 using com.dxfeed.native.events;
-using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using System.Text;
 
 namespace com.dxfeed.native
 {
     /// <summary>
-    /// Class provides native snapshot subscription
-    ///
-    /// Not thread safe.
+    ///     Class provides native snapshot subscription
+    ///     Not thread safe.
     /// </summary>
     public class NativeSnapshotSubscription : IDxSubscription
     {
+        /// <summary>
+        ///     Invalid snapshot
+        /// </summary>
+        public static IntPtr InvalidSnapshot = IntPtr.Zero;
+
         private readonly IntPtr connectionPtr;
-        private IntPtr snapshotPtr = InvalidSnapshot;
 
         private readonly IDxSnapshotListener listener;
+        private readonly long time;
 
         //to prevent callback from being garbage collected
         // ReSharper disable once NotAccessedField.Local
         private C.dxf_snapshot_listener_t callback;
-        private C.dxf_snapshot_inc_listener_t incCallback;
-        private readonly long time;
-        private string source = string.Empty;
-        private EventType eventType = EventType.None;
         private NativeConnection connection;
         private bool disposed;
+        private EventType eventType = EventType.None;
+        private C.dxf_snapshot_inc_listener_t incCallback;
+        private IntPtr snapshotPtr = InvalidSnapshot;
+        private string source = string.Empty;
 
         /// <summary>
-        /// Invalid snapshot
-        /// </summary>
-        public static IntPtr InvalidSnapshot = IntPtr.Zero;
-
-        /// <summary>
-        /// Creates the new native order or candle subscription on snapshot.
+        ///     Creates the new native order or candle subscription on snapshot.
         /// </summary>
         /// <remarks>
         ///     Don't call this constructor inside any listeners and callbacks of NativeSubscription, NativeConnection,
-        /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
+        ///     NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
         /// <param name="connection">Native connection pointer.</param>
         /// <param name="time">Milliseconds time in the past.</param>
@@ -75,11 +74,11 @@ namespace com.dxfeed.native
         }
 
         /// <summary>
-        /// Creates the new native order subscription on snapshot with incremental updates.
+        ///     Creates the new native order subscription on snapshot with incremental updates.
         /// </summary>
         /// <remarks>
         ///     Don't call this constructor inside any listeners and callbacks of NativeSubscription, NativeConnection,
-        /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
+        ///     NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
         /// <param name="connection">Native connection pointer.</param>
         /// <param name="listener">Snapshot or update events listener.</param>
@@ -94,16 +93,16 @@ namespace com.dxfeed.native
 
             connectionPtr = connection.Handle;
             this.listener = listener;
-            this.time = 0;
+            time = 0;
             this.connection = connection;
         }
 
         /// <summary>
-        /// Creates the new native snapshot subscription with specified event type.
+        ///     Creates the new native snapshot subscription with specified event type.
         /// </summary>
         /// <remarks>
         ///     Don't call this constructor inside any listeners and callbacks of NativeSubscription, NativeConnection,
-        /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
+        ///     NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
         /// <param name="connection">Native connection pointer.</param>
         /// <param name="eventType">Single event type.</param>
@@ -126,6 +125,18 @@ namespace com.dxfeed.native
             this.eventType = eventType;
             this.listener = listener;
             this.time = time;
+        }
+
+        /// <summary>
+        ///     Get symbol of snapshot
+        /// </summary>
+        public string Symbol
+        {
+            get
+            {
+                var symbols = GetSymbols();
+                return symbols.Count > 0 ? symbols[0] : string.Empty;
+            }
         }
 
         private void OnEvent(IntPtr snapshotDataPtr, IntPtr userData)
@@ -194,16 +205,10 @@ namespace com.dxfeed.native
             }
         }
 
-        /// <summary>
-        /// Get symbol of snapshot
-        /// </summary>
-        public string Symbol
+        /// <inheritdoc />
+        ~NativeSnapshotSubscription()
         {
-            get
-            {
-                var symbols = GetSymbols();
-                return symbols.Count > 0 ? symbols[0] : string.Empty;
-            }
+            Dispose(false);
         }
 
         #region Implementation of IDisposable
@@ -230,23 +235,18 @@ namespace com.dxfeed.native
 
             if (snapshotPtr == InvalidSnapshot) return;
 
-            if (needToClose)
-            {
-                C.CheckOk(C.Instance.dxf_close_snapshot(snapshotPtr));
-            }
+            if (needToClose) Close();
 
-            snapshotPtr = InvalidSnapshot;
             eventType = EventType.None;
-
             disposed = true;
         }
 
         /// <summary>
-        /// Disposes the native snapshot subscription
+        ///     Disposes the native snapshot subscription
         /// </summary>
         /// <remarks>
         ///     Don't call this method inside any listeners and callbacks of NativeSubscription, NativeConnection,
-        /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
+        ///     NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
         public void Dispose()
         {
@@ -256,12 +256,6 @@ namespace com.dxfeed.native
 
         #endregion
 
-        /// <inheritdoc />
-        ~NativeSnapshotSubscription()
-        {
-            Dispose(false);
-        }
-
         #region Implementation of IDxSubscription
 
         /// <summary>
@@ -269,10 +263,10 @@ namespace com.dxfeed.native
         /// </summary>
         /// <remarks>
         ///     Don't call this method inside any listeners and callbacks of NativeSubscription, NativeConnection,
-        /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
+        ///     NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
         /// <param name="symbol">Symbol.</param>
-        /// <exception cref="ArgumentException">Invalid <paramref name="symbol"/> parameter.</exception>
+        /// <exception cref="ArgumentException">Invalid <paramref name="symbol" /> parameter.</exception>
         /// <exception cref="InvalidOperationException">You try to add more than one symbol to snapshot subscription.</exception>
         /// <exception cref="DxException">Internal error.</exception>
         public void AddSymbol(string symbol)
@@ -282,8 +276,8 @@ namespace com.dxfeed.native
             if (snapshotPtr != InvalidSnapshot)
                 throw new InvalidOperationException("It is allowed to add only one symbol to snapshot subscription");
 
-            if ((eventType == EventType.Candle) ||
-                (eventType == EventType.None) && NativeSubscription.IsCandleSymbol(symbol))
+            if (eventType == EventType.Candle ||
+                eventType == EventType.None && NativeSubscription.IsCandleSymbol(symbol))
             {
                 AddSymbol(CandleSymbol.ValueOf(symbol));
                 return;
@@ -329,10 +323,10 @@ namespace com.dxfeed.native
         /// </summary>
         /// <remarks>
         ///     Don't call this method inside any listeners and callbacks of NativeSubscription, NativeConnection,
-        /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
+        ///     NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
-        /// <param name="symbol"><see cref="CandleSymbol"/>.</param>
-        /// <exception cref="ArgumentException">Invalid <paramref name="symbol"/> parameter.</exception>
+        /// <param name="symbol"><see cref="CandleSymbol" />.</param>
+        /// <exception cref="ArgumentException">Invalid <paramref name="symbol" /> parameter.</exception>
         /// <exception cref="InvalidOperationException">You try to add more than one symbol to snapshot subscription.</exception>
         /// <exception cref="DxException">Internal error.</exception>
         public void AddSymbol(CandleSymbol symbol)
@@ -342,10 +336,7 @@ namespace com.dxfeed.native
             if (symbol == null)
                 throw new ArgumentException("Invalid symbol parameter");
 
-            if (eventType == EventType.None)
-            {
-                eventType = EventType.Candle;
-            }
+            if (eventType == EventType.None) eventType = EventType.Candle;
 
             if (eventType != EventType.Candle)
                 throw new InvalidOperationException("It is allowed only for Candle subscription");
@@ -369,10 +360,10 @@ namespace com.dxfeed.native
         /// </summary>
         /// <remarks>
         ///     Don't call this method inside any listeners and callbacks of NativeSubscription, NativeConnection,
-        /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
+        ///     NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
         /// <param name="symbols">List of symbols.</param>
-        /// <exception cref="ArgumentException">Invalid <paramref name="symbols"/> parameter.</exception>
+        /// <exception cref="ArgumentException">Invalid <paramref name="symbols" /> parameter.</exception>
         /// <exception cref="InvalidOperationException">You try to add more than one symbol to snapshot subscription.</exception>
         /// <exception cref="DxException">Internal error.</exception>
         public void AddSymbols(params string[] symbols)
@@ -389,10 +380,10 @@ namespace com.dxfeed.native
         /// </summary>
         /// <remarks>
         ///     Don't call this method inside any listeners and callbacks of NativeSubscription, NativeConnection,
-        /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
+        ///     NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
-        /// <param name="symbols">List of <see cref="CandleSymbol"/>.</param>
-        /// <exception cref="ArgumentException">Invalid <paramref name="symbols"/> parameter.</exception>
+        /// <param name="symbols">List of <see cref="CandleSymbol" />.</param>
+        /// <exception cref="ArgumentException">Invalid <paramref name="symbols" /> parameter.</exception>
         /// <exception cref="InvalidOperationException">You try to add more than one symbol to snapshot subscription.</exception>
         /// <exception cref="DxException">Internal error.</exception>
         public void AddSymbols(params CandleSymbol[] symbols)
@@ -409,23 +400,25 @@ namespace com.dxfeed.native
         ///         Removes symbols from the subscription.
         ///     </para>
         ///     <para>
-        ///         Snapshot will be disposed if symbols contains snapshot symbol (for Snapshots only).
+        ///         Snapshot will be cleared (closed) if symbols contains snapshot symbol (for Snapshots only).
         ///     </para>
         /// </summary>
         /// <remarks>
         ///     Don't call this method inside any listeners and callbacks of NativeSubscription, NativeConnection,
-        /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
+        ///     NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
         /// <param name="symbols">List of symbols.</param>
-        /// <exception cref="ArgumentException">Invalid <paramref name="symbols"/> parameter.</exception>
+        /// <exception cref="ArgumentException">Invalid <paramref name="symbols" /> parameter.</exception>
         /// <exception cref="DxException">Internal error.</exception>
         public void RemoveSymbols(params string[] symbols)
         {
             if (symbols == null || symbols.Length == 0)
                 throw new ArgumentException("Invalid symbol parameter");
+
             var symbolList = new List<string>(symbols);
+
             if (symbolList.Contains(Symbol))
-                Dispose();
+                Clear();
         }
 
         /// <summary>
@@ -433,26 +426,26 @@ namespace com.dxfeed.native
         ///         Removes symbols from the subscription.
         ///     </para>
         ///     <para>
-        ///         Snapshot will be disposed if symbols contains snapshot symbol (for Snapshots only).
+        ///         Snapshot will be cleared (closed) if symbols contains snapshot symbol (for Snapshots only).
         ///     </para>
         /// </summary>
         /// <remarks>
         ///     Don't call this method inside any listeners and callbacks of NativeSubscription, NativeConnection,
-        /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
+        ///     NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
-        /// <param name="symbols">List of <see cref="CandleSymbol"/>.</param>
-        /// <exception cref="ArgumentException">Invalid <paramref name="symbols"/> parameter.</exception>
+        /// <param name="symbols">List of <see cref="CandleSymbol" />.</param>
+        /// <exception cref="ArgumentException">Invalid <paramref name="symbols" /> parameter.</exception>
         /// <exception cref="DxException">Internal error.</exception>
         public void RemoveSymbols(params CandleSymbol[] symbols)
         {
             if (symbols == null)
                 throw new ArgumentException("Invalid symbol parameter");
-            foreach (CandleSymbol symbol in symbols)
+            foreach (var symbol in symbols)
             {
                 if (symbol == null)
                     continue;
                 if (Symbol.Equals(symbol.ToString()))
-                    Dispose();
+                    Clear();
             }
         }
 
@@ -462,9 +455,9 @@ namespace com.dxfeed.native
         /// <param name="symbols">List of symbols.</param>
         /// <remarks>
         ///     Don't call this method inside any listeners and callbacks of NativeSubscription, NativeConnection,
-        /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
+        ///     NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
-        /// <exception cref="ArgumentException">Invalid <paramref name="symbols"/> parameter.</exception>
+        /// <exception cref="ArgumentException">Invalid <paramref name="symbols" /> parameter.</exception>
         /// <exception cref="InvalidOperationException">You try to add more than one symbol to snapshot subscription.</exception>
         /// <exception cref="DxException">Internal error.</exception>
         public void SetSymbols(params string[] symbols)
@@ -485,10 +478,10 @@ namespace com.dxfeed.native
         /// </summary>
         /// <remarks>
         ///     Don't call this method inside any listeners and callbacks of NativeSubscription, NativeConnection,
-        /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
+        ///     NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
-        /// <param name="symbols">List of <see cref="CandleSymbol"/>.</param>
-        /// <exception cref="ArgumentException">Invalid <paramref name="symbols"/> parameter.</exception>
+        /// <param name="symbols">List of <see cref="CandleSymbol" />.</param>
+        /// <exception cref="ArgumentException">Invalid <paramref name="symbols" /> parameter.</exception>
         /// <exception cref="InvalidOperationException">You try to add more than one symbol to snapshot subscription.</exception>
         /// <exception cref="DxException">Internal error.</exception>
         public void SetSymbols(params CandleSymbol[] symbols)
@@ -509,19 +502,29 @@ namespace com.dxfeed.native
         /// <summary>
         ///     <para>
         ///         Clear all symbols from the subscription.
-        ///     </para>
-        ///     <para>
-        ///         Snapshot will be <see cref="IDisposable.Dispose()"/>.
+        ///         Snapshot will be closed. All callbacks will be detached.
         ///     </para>
         /// </summary>
         /// <remarks>
         ///     Don't call this method inside any listeners and callbacks of NativeSubscription, NativeConnection,
-        /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
+        ///     NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
         /// <exception cref="DxException">Internal error.</exception>
         public void Clear()
         {
-            Dispose();
+            Close();
+        }
+
+        private void Close()
+        {
+            if (snapshotPtr == InvalidSnapshot) return;
+
+            if (callback != null) C.CheckOk(C.Instance.dxf_detach_snapshot_listener(snapshotPtr, callback));
+
+            if (incCallback != null) C.CheckOk(C.Instance.dxf_detach_snapshot_inc_listener(snapshotPtr, incCallback));
+
+            C.CheckOk(C.Instance.dxf_close_snapshot(snapshotPtr));
+            snapshotPtr = InvalidSnapshot;
         }
 
         /// <summary>
@@ -529,7 +532,7 @@ namespace com.dxfeed.native
         /// </summary>
         /// <remarks>
         ///     Don't call this method inside any listeners and callbacks of NativeSubscription, NativeConnection,
-        /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
+        ///     NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
         /// <returns>List of subscribed symbols.</returns>
         /// <exception cref="DxException">Internal error.</exception>
@@ -548,14 +551,14 @@ namespace com.dxfeed.native
         }
 
         /// <summary>
-        ///     Adds <see cref="com.dxfeed.api.events.OrderSource"/> to subscription.
+        ///     Adds <see cref="com.dxfeed.api.events.OrderSource" /> to subscription.
         /// </summary>
         /// <remarks>
         ///     Don't call this method inside any listeners and callbacks of NativeSubscription, NativeConnection,
-        /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
+        ///     NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
-        /// <param name="sources">List of <see cref="com.dxfeed.api.events.OrderSource"/> names.</param>
-        /// <exception cref="ArgumentException">Invalid <paramref name="sources"/> parameter.</exception>
+        /// <param name="sources">List of <see cref="com.dxfeed.api.events.OrderSource" /> names.</param>
+        /// <exception cref="ArgumentException">Invalid <paramref name="sources" /> parameter.</exception>
         /// <exception cref="InvalidOperationException">You try to add more than one source to subscription.</exception>
         /// <exception cref="DxException">Internal error.</exception>
         public void AddSource(params string[] sources)
@@ -570,14 +573,14 @@ namespace com.dxfeed.native
         }
 
         /// <summary>
-        ///     Removes existing <see cref="com.dxfeed.api.events.OrderSource"/> from subscription and set new.
+        ///     Removes existing <see cref="com.dxfeed.api.events.OrderSource" /> from subscription and set new.
         /// </summary>
         /// <remarks>
         ///     Don't call this method inside any listeners and callbacks of NativeSubscription, NativeConnection,
-        /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
+        ///     NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
-        /// <param name="sources">List of <see cref="com.dxfeed.api.events.OrderSource"/> names.</param>
-        /// <exception cref="ArgumentException">Invalid <paramref name="sources"/> parameter.</exception>
+        /// <param name="sources">List of <see cref="com.dxfeed.api.events.OrderSource" /> names.</param>
+        /// <exception cref="ArgumentException">Invalid <paramref name="sources" /> parameter.</exception>
         /// <exception cref="InvalidOperationException">You try to add more than one source to subscription.</exception>
         /// <exception cref="DxException">Internal error.</exception>
         public void SetSource(params string[] sources)
@@ -598,7 +601,8 @@ namespace com.dxfeed.native
             if (snapshotPtr == InvalidSnapshot) return;
 
             var symbol = Symbol;
-            Dispose();
+            
+            Clear();
             AddSymbol(symbol);
         }
 

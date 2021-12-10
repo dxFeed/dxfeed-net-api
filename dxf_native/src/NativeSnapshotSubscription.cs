@@ -125,6 +125,7 @@ namespace com.dxfeed.native
             this.eventType = eventType;
             this.listener = listener;
             this.time = time;
+            this.connection = connection;
         }
 
         /// <summary>

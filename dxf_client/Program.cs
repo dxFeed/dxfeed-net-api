@@ -391,6 +391,11 @@ namespace dxf_client
                 IDxSubscription s = null;
                 try
                 {
+                    if (dateTime.IsSet && (events & (EventType.Order | EventType.SpreadOrder)) != 0)
+                    {
+                        Console.Error.WriteLine("Date and event type Order or SpreadOrder cannot be used for subscription");
+                    }
+                    
                     if (isSnapshot.Value)
                         s = con.CreateSnapshotSubscription(events, dateTime.Value,
                             new SnapshotPrinter(recordsPrintLimit.Value));

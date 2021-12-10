@@ -111,18 +111,7 @@ namespace dxf_simple_order_book_sample
         private const int DefaultRecordsPrintLimit = 10;
         private const int HostIndex = 0;
         private const int SymbolIndex = 1;
-
-        private static bool TryParseDateTimeParam(string stringParam, InputParam<DateTime?> param)
-        {
-            DateTime dateTimeValue;
-
-            if (!DateTime.TryParse(stringParam, out dateTimeValue)) return false;
-
-            param.Value = dateTimeValue;
-
-            return true;
-        }
-
+        
         private static bool TryParseRecordsPrintLimitParam(string paramTagString, string paramString,
             InputParam<int> param)
         {
@@ -163,11 +152,10 @@ namespace dxf_simple_order_book_sample
         private static void ShowUsage()
         {
             Console.WriteLine(
-                "Usage: dxf_simple_order_book_sample <host:port> <symbol> [<date>] <source> [-l <records_print_limit>] [-T <token>] [-p]\n" +
+                "Usage: dxf_simple_order_book_sample <host:port> <symbol> <source> [-l <records_print_limit>] [-T <token>] [-p]\n" +
                 "where\n" +
                 "    host:port - The address of dxfeed server (demo.dxfeed.com:7300)\n" +
                 "    symbol    - IBM, MSFT, AAPL, ...\n" +
-                "    date      - The date of time series event in the format YYYY-MM-DD\n" +
                 "    source    - Source for order events (default: NTV):\n" +
                 "                NTV,ntv,NFX,ESPD,XNFI,ICE,ISE,DEA,DEX,BYX,BZX,BATE,CHIX,CEUX,BXTR,\n" +
                 "                IST,BI20,ABE,FAIR,GLBX,glbx,ERIS,XEUR,xeur,CFE,C2OX,SMFE,smfe,iex,MEMX,memx\n" +
@@ -177,13 +165,12 @@ namespace dxf_simple_order_book_sample
                 "    -p                       - Enables the data transfer logging\n\n" +
                 "examples:\n" +
                 "  dxf_simple_order_book_sample demo.dxfeed.com:7300 IBM NTV\n" +
-                "  dxf_simple_order_book_sample demo.dxfeed.com:7300 IBM 2020-03-31 NTV\n" +
-                "  dxf_simple_order_book_sample demo.dxfeed.com:7300 IBM 2020-03-31 NTV -l 0\n");
+                "  dxf_simple_order_book_sample demo.dxfeed.com:7300 IBM NTV -l 0\n");
         }
 
         private static void Main(string[] args)
         {
-            if (args.Length < 3 || args.Length > 9)
+            if (args.Length < 3 || args.Length > 8)
             {
                 ShowUsage();
 
@@ -193,15 +180,12 @@ namespace dxf_simple_order_book_sample
             var address = args[HostIndex];
             var symbol = args[SymbolIndex];
             var source = new InputParam<string>(OrderSource.NTV.Name);
-            var dateTime = new InputParam<DateTime?>(null);
             var recordsPrintLimit = new InputParam<int>(DefaultRecordsPrintLimit);
             var token = new InputParam<string>(null);
             var logDataTransferFlag = false;
 
             for (var i = SymbolIndex + 1; i < args.Length; i++)
             {
-                if (!dateTime.IsSet && TryParseDateTimeParam(args[i], dateTime)) continue;
-
                 if (!recordsPrintLimit.IsSet && i < args.Length - 1 &&
                     TryParseRecordsPrintLimitParam(args[i], args[i + 1], recordsPrintLimit))
                 {
@@ -240,7 +224,7 @@ namespace dxf_simple_order_book_sample
                 try
                 {
                     NativeTools.InitializeLogging("dxf_simple_order_book_sample.log", true, true, logDataTransferFlag);
-                    s = con.CreateSnapshotSubscription(EventType.Order, dateTime.Value,
+                    s = con.CreateSnapshotSubscription(EventType.Order, 0,
                         new OrderListener(recordsPrintLimit.Value));
                     s.SetSource(source.Value);
                     s.AddSymbols(symbol);

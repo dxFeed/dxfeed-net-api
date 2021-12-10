@@ -55,7 +55,7 @@ namespace com.dxfeed.native
         ///     Don't call this constructor inside any listeners and callbacks of NativeSubscription, NativeConnection,
         ///     NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
-        /// <param name="connection">Native connection pointer.</param>
+        /// <param name="connection">Native connection wrapper.</param>
         /// <param name="time">Milliseconds time in the past.</param>
         /// <param name="listener">Snapshot events listener.</param>
         /// <exception cref="ArgumentNullException">Connection or listener is invalid.</exception>
@@ -80,7 +80,7 @@ namespace com.dxfeed.native
         ///     Don't call this constructor inside any listeners and callbacks of NativeSubscription, NativeConnection,
         ///     NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
-        /// <param name="connection">Native connection pointer.</param>
+        /// <param name="connection">Native connection wrapper.</param>
         /// <param name="listener">Snapshot or update events listener.</param>
         /// <exception cref="ArgumentNullException">Connection or listener is invalid.</exception>
         public NativeSnapshotSubscription(NativeConnection connection, IDxIncOrderSnapshotListener listener)
@@ -104,7 +104,7 @@ namespace com.dxfeed.native
         ///     Don't call this constructor inside any listeners and callbacks of NativeSubscription, NativeConnection,
         ///     NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
-        /// <param name="connection">Native connection pointer.</param>
+        /// <param name="connection">Native connection wrapper.</param>
         /// <param name="eventType">Single event type.</param>
         /// <param name="time">Milliseconds time in the past.</param>
         /// <param name="listener">Snapshot events listener.</param>

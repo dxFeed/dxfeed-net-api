@@ -1,3 +1,6 @@
+Version 8.5.3
+* [DXFC-279] Fixed a bug when a snapshot created by the `CreateSnapshotSubscription` method with the specified event type and time is not closed by `Dispose`
+
 Version 8.5.2
 * [DXFC-277] Fixed a bug when the subscription with the Time parameter could not close when calling Dispose
 * [DXFC-278] Fixed a bug when event listeners can be used (by native API) after the subscription objects have been destroyed. 

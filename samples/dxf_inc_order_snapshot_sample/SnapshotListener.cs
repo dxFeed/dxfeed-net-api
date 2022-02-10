@@ -47,7 +47,7 @@ namespace dxf_inc_order_snapshot_sample
             var count = 0;
             foreach (var o in buf)
             {
-                if (!o.EventFlags.HasFlag(EventFlag.RemoveEvent) && o.Size > 0)
+                if (!o.EventFlags.HasFlag(EventFlag.RemoveEvent) && o.HasSize())
                     Console.WriteLine("   {{ {0} }}", o);
                 else
                     Console.WriteLine("   REMOVAL {{ {0} }}", o.Index);

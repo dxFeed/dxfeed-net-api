@@ -136,7 +136,7 @@ namespace com.dxfeed.native.events
                 CultureInfo.InvariantCulture,
                 "Summary: {{{0}, " +
                 "DayId: {1}, DayOpenPrice: {2}, DayHighPrice: {3}, DayLowPrice: {4}, DayClosePrice: {5}, DayClosePriceType: {6}, " +
-                "PrevDayId: {7}, PrevDayClosePrice: {8}, PrevDayValoume: {9}, PrevDayClosePriceType {10}, " +
+                "PrevDayId: {7}, PrevDayClosePrice: {8}, PrevDayVolume: {9}, PrevDayClosePriceType {10}, " +
                 "OpenInterest: {11}, ExchangeCode: {12}, " +
                 "RawFlags: {13:x8}, " +
                 "Scope: {14}" +

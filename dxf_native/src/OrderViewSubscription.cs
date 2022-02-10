@@ -567,7 +567,7 @@ namespace com.dxfeed.native
 
         private static bool IsZeroOrder(IDxOrder order)
         {
-            return TimeConverter.ToUnixTime(order.Time) == 0 && double.IsNaN(order.Price) && order.Size == 0;
+            return TimeConverter.ToUnixTime(order.Time) == 0 && double.IsNaN(order.Price) && !order.HasSize();
         }
 
         private void SnapshotEndFlagReceived<TB, TE>(TB buf)

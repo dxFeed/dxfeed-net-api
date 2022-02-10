@@ -184,6 +184,15 @@ namespace com.dxfeed.native.events
         public double Size { get; set; }
 
         /// <summary>
+        /// Returns <c>true</c> if this order has some size (neither 0 nor NaN)
+        /// </summary>
+        /// <returns><c>true</c> if this order has some size (neither 0 nor NaN)</returns>
+        public bool HasSize()
+        {
+            return Size != 0 && !double.IsNaN(Size);
+        }
+
+        /// <summary>
         ///     Returns executed size of this order.
         ///     This field is a part of the FOB ("Full Order Book") support.
         /// </summary>

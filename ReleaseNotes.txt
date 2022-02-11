@@ -1,3 +1,7 @@
+Version 8.6.0
+* [DXFC-297] Improved the handling of transaction flags and signs of transaction flags.
+  Added a `HasSize` method to the Order SpreadOrder classes 
+
 Version 8.5.3
 * [DXFC-279] Fixed a bug when a snapshot created by the `CreateSnapshotSubscription` method with the specified event type and time is not closed by `Dispose`
 * [DXFC-137] Fixed a bug where it was not possible to create a snapshot due to a collision of snapshot keys

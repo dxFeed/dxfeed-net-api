@@ -91,7 +91,7 @@ namespace dxf_order_view_xcheck {
                 var s = state[sym];
 
                 foreach (var o in buf) {
-                    if (o.Size == 0) {
+                    if (!o.HasSize()) {
                         if (s.ContainsKey(o.Index)) {
                             Console.WriteLine($"\"{sym}\" removal of {o.Index}");
                             s.Remove(o.Index);

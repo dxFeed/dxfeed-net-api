@@ -86,6 +86,12 @@ namespace com.dxfeed.api.events
         double Size { get; }
 
         /// <summary>
+        /// Returns <c>true</c> if this order has some size (neither 0 nor NaN)
+        /// </summary>
+        /// <returns><c>true</c> if this order has some size (neither 0 nor NaN)</returns>
+        bool HasSize();
+
+        /// <summary>
         ///   Returns executed size of this order.
         ///
         /// This field is a part of the FOB ("Full Order Book") support.

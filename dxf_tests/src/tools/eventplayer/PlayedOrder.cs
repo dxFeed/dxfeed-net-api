@@ -121,6 +121,11 @@ namespace com.dxfeed.tests.tools.eventplayer
 
         public Side Side { get; }
 
+        public bool HasSize()
+        {
+            return Size != 0 && !double.IsNaN(Size);
+        }
+
         public double ExecutedSize { get; private set; }
 
         public double Size { get; }

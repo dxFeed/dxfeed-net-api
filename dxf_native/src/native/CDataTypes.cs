@@ -16,6 +16,12 @@ using com.dxfeed.api.events;
 
 namespace com.dxfeed.native.api
 {
+    public static class Constants
+    {
+        /// The length of record suffix including the terminating null character
+        public const int RecordSuffixSize = 17; // 16 + 1
+    } 
+    
     /// <summary>
     /// Trade event is a snapshot of the price and size of the last trade during regular trading hours and an overall day
     /// volume and day turnover. It represents the most recent information that is available about the regular last trade on
@@ -181,7 +187,7 @@ namespace com.dxfeed.native.api
         /// <summary>
         /// Source of this order
         /// </summary>
-        internal fixed char source[5];
+        internal fixed char source[Constants.RecordSuffixSize];
         
         /// <summary>
         /// Transactional event flags.

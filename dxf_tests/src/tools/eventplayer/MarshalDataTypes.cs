@@ -13,6 +13,7 @@ using com.dxfeed.api.data;
 using com.dxfeed.api.events;
 using System;
 using System.Runtime.InteropServices;
+using com.dxfeed.native.api;
 
 namespace com.dxfeed.tests.tools.eventplayer
 {
@@ -39,7 +40,7 @@ namespace com.dxfeed.tests.tools.eventplayer
         /// <summary>
         /// Source of this order
         /// </summary>
-        internal fixed char source[5];
+        internal fixed char source[Constants.RecordSuffixSize];
 
         /// <summary>
         /// Transactional event flags.

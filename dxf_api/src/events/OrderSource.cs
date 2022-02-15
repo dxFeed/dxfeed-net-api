@@ -83,6 +83,25 @@ namespace com.dxfeed.api.events
         ///     Empty order source.
         /// </summary>
         public static readonly OrderSource EMPTY = new OrderSource(7, string.Empty);
+        
+        /// <summary>
+        /// Bid and ask sides of a composite Quote. It is a synthetic source. The subscription on composite Quote event
+        /// is observed when this source is subscribed to.
+        /// </summary>
+        public static readonly OrderSource COMPOSITE = new OrderSource(8, "COMPOSITE");
+        
+        /// <summary>
+        /// Bid and ask sides of a regional Quote. It is a synthetic source. The subscription on regional Quote event
+        /// is observed when this source is subscribed to.
+        /// </summary>
+        public static readonly OrderSource REGIONAL = new OrderSource(9, "REGIONAL");
+        
+        /// <summary>
+        /// Bid side of an aggregate order book (futures depth and NASDAQ Level II). It is a synthetic source. This
+        /// source cannot be directly published via dxFeed API, but otherwise it is fully operational.
+        /// </summary>
+        public static readonly OrderSource AGGREGATE = new OrderSource(10, "AGGREGATE");
+
 
         /// <summary>
         /// NASDAQ Total View.

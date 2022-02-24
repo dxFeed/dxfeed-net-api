@@ -141,6 +141,10 @@ namespace com.dxfeed.native.api
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate void dxf_price_level_book_listener_t(IntPtr price_level_book, IntPtr user_data);
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        internal delegate void dxf_price_level_book_inc_listener_t(IntPtr removals, IntPtr additions, IntPtr updates, IntPtr user_data);
+         
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate void dxf_regional_quote_listener_t(IntPtr symbol, IntPtr quote, int count, IntPtr user_data);
 
@@ -770,6 +774,41 @@ namespace com.dxfeed.native.api
         /// dxf_get_last_error can be used to retrieve the error code and description in case of failure</returns>
         internal abstract int DetachPriceLevelBookListener(IntPtr book, dxf_price_level_book_listener_t bookListener);
 
+        /// <summary>
+        /// Creates Price Level book (v2) with the specified parameters.
+        /// </summary>
+        /// <param name="connection">A handle of a previously created connection which the subscription will be using</param>
+        /// <param name="symbol">The symbol to use</param>
+        /// <param name="source">Order source for Order (AAPL, NTV etc) or MarketMaker (AGGREGATE_ASK or AGGREGATE_BID)</param>
+        /// <param name="levelsNumber">The PLB levels number (0 - all levels)</param>
+        /// <param name="book">A handle of the created price level book</param>
+        /// <returns>DX_OK (1) if price level book has been successfully created or DX_ERR (0) on error;
+        /// dxf_get_last_error can be used to retrieve the error code and description in case of failure</returns>
+        internal abstract int CreatePriceLevelBook2(IntPtr connection, string symbol, string source, int levelsNumber, out IntPtr book);
+        
+        /// <summary>
+        /// Closes a price level book (v2).
+        /// </summary>
+        /// <param name="book">A handle of the price level book to close</param>
+        /// <returns>DX_OK (1) if price level book has been successfully closed or DX_ERR (0) on error;
+        /// dxf_get_last_error can be used to retrieve the error code and description in case of failure</returns>
+        internal abstract int ClosePriceLevelBook2(IntPtr book);
+
+        /// <summary>
+        /// Sets the listener callbacks to the PLB.
+        /// </summary>
+        /// <param name="book">The handle of the PLB</param>
+        /// <param name="onNewBookListener">The listener that will be called when a new book is created (for example, when trading starts)</param>
+        /// <param name="onBookUpdateListener">The listener that will be called when the book is updated.
+        /// In this case, all price levels will be passed (taking into account the maximum number of price levels)</param>
+        /// <param name="onIncrementalChangeListener">The listener that will be called on incremental updates. All deletions, additions, and level updates will be passed. </param>
+        /// <param name="userData">User data to be passed to listeners.</param>
+        /// <returns>DX_OK (1) if callbacks have been successfully set or DX_ERR (0) on error;
+        /// dxf_get_last_error can be used to retrieve the error code and description in case of failure</returns>
+        internal abstract int SetPriceLevelBookListeners(IntPtr book,
+         dxf_price_level_book_listener_t onNewBookListener, dxf_price_level_book_listener_t onBookUpdateListener,
+         dxf_price_level_book_inc_listener_t onIncrementalChangeListener, IntPtr userData);
+        
         /*
          *  Add dumping of incoming traffic into specific file
          *

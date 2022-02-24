@@ -10,32 +10,67 @@ If a copy of the MPL was not distributed with this file, You can obtain one at h
 #endregion
 
 using System;
+using System.Threading;
 using com.dxfeed.api;
 using com.dxfeed.api.events;
+using com.dxfeed.api.plb;
 using com.dxfeed.native;
 
 namespace dxf_price_level_book_sample
 {
-    internal class PriceLevelBookListener : IDxPriceLevelBookListener
+    internal class PriceLevelBookHandler : IDxOnNewPriceLevelBookHandler, IDxOnPriceLevelBookUpdateHandler, IDxOnPriceLevelBookIncChangeHandler
     {
-        public void OnChanged(DxPriceLevelBook book)
+        private static void DumpBook(DxPriceLevelBook book)
         {
-            Console.WriteLine($"\nNew Price Level Book for {book.Symbol}:");
-            Console.WriteLine($"{"Ask",-10} {"Size",-10} {"Time",-15} | {"Bid",-10} {"Size",-10} {"Time",-15}");
+            Console.WriteLine($"{"Ask",-15} {"Size",-8} {"Time",-15} | {"Bid",-15} {"Size",-8} {"Time",-15}");
             for (var i = 0; i < Math.Max(book.Asks.Length, book.Bids.Length); ++i)
             {
                 if (i < book.Asks.Length)
-                    Console.Write("{0,-10:n4} {1,-10:n4} {2,-15:yyyyMMdd-HHmmss}", book.Asks[i].Price,
+                    Console.Write("{0,-15:n6} {1,-8:n2} {2,-15:yyyyMMdd-HHmmss}", book.Asks[i].Price,
                         book.Asks[i].Size,
                         book.Asks[i].Time);
                 else
-                    Console.Write("{0,-10} {1,-10} {2,-15}", "", "", "");
+                    Console.Write("{0,-15} {1,-8} {2,-15}", "", "", "");
                 Console.Write(" | ");
                 if (i < book.Bids.Length)
-                    Console.Write("{0,-10:n4} {1,-10:n4} {2,-15:yyyyMMdd-HHmmss}", book.Bids[i].Price,
+                    Console.Write("{0,-15:n6} {1,-8:n2} {2,-15:yyyyMMdd-HHmmss}", book.Bids[i].Price,
                         book.Bids[i].Size,
                         book.Bids[i].Time);
                 Console.WriteLine();
+            }
+        }
+        public void OnNewBook(DxPriceLevelBook book)
+        {
+            Console.WriteLine($"\nNew Price Level Book for {book.Symbol}:");
+            DumpBook(book);
+        }
+
+        public void OnBookUpdate(DxPriceLevelBook book)
+        {
+            Console.WriteLine($"\nThe Update of The Price Level Book for {book.Symbol}:");
+            DumpBook(book);
+        }
+
+        public void OnBookIncrementalChange(DxPriceLevelBook removals, DxPriceLevelBook additions, DxPriceLevelBook updates)
+        {
+            Console.WriteLine($"\nThe Incremental Update of The Price Level Book for {removals.Symbol}:");
+            
+            if (removals.Asks.Length > 0 || removals.Bids.Length > 0)
+            {
+                Console.WriteLine("\nREMOVALS:");
+                DumpBook(removals);
+            }
+            
+            if (additions.Asks.Length > 0 || additions.Bids.Length > 0)
+            {
+                Console.WriteLine("\nADDITIONS:");
+                DumpBook(additions);
+            }
+            
+            if (updates.Asks.Length > 0 || updates.Bids.Length > 0)
+            {
+                Console.WriteLine("\nUPDATES:");
+                DumpBook(updates);
             }
         }
     }
@@ -44,6 +79,8 @@ namespace dxf_price_level_book_sample
     {
         private const int HostIndex = 0;
         private const int SymbolIndex = 1;
+        private const int SourceIndex = 2;
+        private const int LevelsNumberIndex = 3;
 
         private static void DisconnectHandler(IDxConnection con)
         {
@@ -60,31 +97,27 @@ namespace dxf_price_level_book_sample
             return true;
         }
 
-        private static void TryParseSourcesParam(string stringParam, InputParam<string[]> param)
-        {
-            param.Value = stringParam.Split(',');
-        }
-
         private static void ShowHelp()
         {
             Console.WriteLine(
-                "Usage: dxf_price_level_book_sample <host:port> <symbol> [sources] [-T <token>] [-p]\n" +
+                "Usage: dxf_price_level_book_sample <host:port> <symbol> <source> <levels number> [-T <token>] [-p]\n" +
                 "where\n" +
-                "    host:port  - The address of dxfeed server (demo.dxfeed.com:7300)\n" +
-                "    symbol     - The price level book symbol (IBM, AAPL etc)\n" +
-                "    sources    - The comma separated list of order sources (empty list = all order sources)\n" +
-                "    -T <token> - The authorization token\n" +
+                "    host:port       - The address of dxfeed server (demo.dxfeed.com:7300)\n" +
+                "    symbol          - The price level book symbol (IBM, AAPL etc)\n" +
+                "    source          - One order source, e.g. one of the: NTV, BYX, BZX, DEA etc. or AGGREGATE_ASK|BID\n" +
+                "    <levels number> - The The number of PLB price levels (0 -- all)\n" +
+                "    -T <token>      - The authorization token\n" +
                 "    -p         - Enables the data transfer logging\n\n" +
                 "examples: \n" +
-                "dxf_price_level_book_sample demo.dxfeed.com:7300 MSFT\n" +
-                "dxf_price_level_book_sample demo.dxfeed.com:7300 MSFT NTV,DEX\n" +
+                "dxf_price_level_book_sample demo.dxfeed.com:7300 MSFT 5\n" +
+                "dxf_price_level_book_sample demo.dxfeed.com:7300 MSFT 0\n" +
                 "\n"
             );
         }
 
         private static void Main(string[] args)
         {
-            if (args.Length < 2 || args.Length > 6)
+            if (args.Length < 4 || args.Length > 6)
             {
                 ShowHelp();
 
@@ -93,7 +126,17 @@ namespace dxf_price_level_book_sample
 
             var address = args[HostIndex];
             var symbol = args[SymbolIndex];
-            var sources = new InputParam<string[]>(new string[] { });
+            var source = args[SourceIndex];
+            var levelsNumberString = args[LevelsNumberIndex];
+            int levelsNumber;
+            
+            if (!int.TryParse(levelsNumberString, out levelsNumber))
+            {
+                Console.Error.WriteLine($"Can't parse the <levels number> = '{levelsNumberString}'");
+                
+                return;
+            }
+            
             var token = new InputParam<string>(null);
             var logDataTransferFlag = false;
 
@@ -110,16 +153,10 @@ namespace dxf_price_level_book_sample
                 {
                     logDataTransferFlag = true;
                     i++;
-                    continue;
                 }
-
-                if (!sources.IsSet)
-                    TryParseSourcesParam(args[i], sources);
             }
 
-            var sourcesString = sources.Value.Length == 0 ? "all" : string.Join(", ", sources.Value);
-
-            Console.WriteLine($"Connecting to {address} on {symbol}, sources - {sourcesString} ...");
+            Console.WriteLine($"Connecting to {address} on {symbol}, sources - {source} ...");
 
             try
             {
@@ -128,8 +165,11 @@ namespace dxf_price_level_book_sample
                     ? new NativeConnection(address, token.Value, DisconnectHandler)
                     : new NativeConnection(address, DisconnectHandler))
                 {
-                    using (con.CreatePriceLevelBook(symbol, sources.Value, new PriceLevelBookListener()))
+                    using (var plb = con.CreatePriceLevelBook(symbol, source, levelsNumber))
                     {
+                        var handler = new PriceLevelBookHandler();
+                        plb.SetHandlers(handler, handler, handler);
+                        
                         Console.WriteLine("Press enter to stop");
                         Console.ReadLine();
                     }

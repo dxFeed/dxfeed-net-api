@@ -789,6 +789,14 @@ namespace com.dxfeed.native
         {
             return new NativePriceLevelBook(this, symbol, listener);
         }
+        
+        public IPriceLevelBook CreatePriceLevelBook(string symbol, string source, int levelsNumber)
+        {
+            if (handle == IntPtr.Zero)
+                throw new NativeDxException("not connected");
+
+            return new PriceLevelBook(this, symbol, source, levelsNumber);
+        }
 
         /// <summary>
         ///     Enables the dumping raw data of incoming traffic of connection into specific file

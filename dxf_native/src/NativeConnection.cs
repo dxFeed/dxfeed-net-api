@@ -789,6 +789,22 @@ namespace com.dxfeed.native
         {
             return new NativePriceLevelBook(this, symbol, listener);
         }
+        
+        /// <summary>
+        /// Creates the Price Level Book
+        /// </summary>
+        /// <param name="symbol">The PLB symbol</param>
+        /// <param name="source">The PLB source (NTV, DEX, etc. and AGGREGATE_ASK|BID)</param>
+        /// <param name="levelsNumber">The PLB levels number (0 -- all)</param>
+        /// <returns>The new PLB object</returns>
+        /// <exception cref="NativeDxException"></exception>
+        public IPriceLevelBook CreatePriceLevelBook(string symbol, string source, int levelsNumber)
+        {
+            if (handle == IntPtr.Zero)
+                throw new NativeDxException("not connected");
+
+            return new PriceLevelBook(this, symbol, source, levelsNumber);
+        }
 
         /// <summary>
         ///     Enables the dumping raw data of incoming traffic of connection into specific file

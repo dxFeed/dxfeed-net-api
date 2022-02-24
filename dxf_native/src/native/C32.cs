@@ -450,6 +450,44 @@ namespace com.dxfeed.native.api
             return __DetachPriceLevelBookListener(book, bookListener);
         }
 
+        [DllImport(DXFEED_DLL, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl,
+            EntryPoint = "dxf_create_price_level_book_v3")]
+        private static extern int __CreatePriceLevelBook2(IntPtr connection, string symbol,
+            [In] [MarshalAs(UnmanagedType.LPStr)] string source, int levelsNumber,
+            out IntPtr book);
+
+        /// <inheritdoc />
+        internal override int CreatePriceLevelBook2(IntPtr connection, string symbol, string source, int levelsNumber,
+            out IntPtr book)
+        {
+            return __CreatePriceLevelBook2(connection, symbol, source, levelsNumber, out book);
+        }
+
+        [DllImport(DXFEED_DLL, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl,
+            EntryPoint = "dxf_close_price_level_book_v2")]
+        private static extern int __ClosePriceLevelBook2(IntPtr book);
+
+        /// <inheritdoc />
+        internal override int ClosePriceLevelBook2(IntPtr book)
+        {
+            return __ClosePriceLevelBook2(book);
+        }
+
+        [DllImport(DXFEED_DLL, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl,
+            EntryPoint = "dxf_set_price_level_book_listeners_v2")]
+        private static extern int __SetPriceLevelBookListeners(IntPtr book,
+            dxf_price_level_book_listener_t onNewBookListener, dxf_price_level_book_listener_t onBookUpdateListener,
+            dxf_price_level_book_inc_listener_t onIncrementalChangeListener, IntPtr userData);
+
+        /// <inheritdoc />
+        internal override int SetPriceLevelBookListeners(IntPtr book,
+            dxf_price_level_book_listener_t onNewBookListener, dxf_price_level_book_listener_t onBookUpdateListener,
+            dxf_price_level_book_inc_listener_t onIncrementalChangeListener, IntPtr userData)
+        {
+            return __SetPriceLevelBookListeners(book, onNewBookListener, onBookUpdateListener,
+                onIncrementalChangeListener, userData);
+        }
+
         [DllImport(DXFEED_DLL, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl, EntryPoint = "dxf_write_raw_data")]
         private static extern int __dxf_write_raw_data(IntPtr connection, byte[] raw_file_name);
         internal override int dxf_write_raw_data(IntPtr connection, byte[] raw_file_name)

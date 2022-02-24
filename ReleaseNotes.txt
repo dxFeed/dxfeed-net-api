@@ -2,6 +2,13 @@ Version 8.6.0
 * [DXFC-297] Improved the handling of transaction flags and signs of transaction flags.
   Added a `HasSize` method to the Order SpreadOrder classes 
 * [DXFC-295] Fixed a bug with incorrect filtering of orders based on MM and Quotes.
+* [DXFC-298] Added the new PLB (Price Level Book) building mechanism. Added the ability to specify the number of the price levels.
+  Added the ability to subscribe to incremental price level updates.
+  API changes:
+    - Added the new class for PLB - dxf_price_level_book_v2_t
+    - Added the new handlers interfaces: IDxOnNewPriceLevelBookHandler, IDxOnPriceLevelBookIncChangeHandler, IDxOnPriceLevelBookUpdateHandler
+    - A new method has been added to the NativeConnection class to construct a PLB : `IPriceLevelBook CreatePriceLevelBook(string symbol, string source, int levelsNumber)`
+  See dxf_price_level_book_sample and documentation.
 
 Version 8.5.3
 * [DXFC-279] Fixed a bug when a snapshot created by the `CreateSnapshotSubscription` method with the specified event type and time is not closed by `Dispose`

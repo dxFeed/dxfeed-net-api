@@ -57,6 +57,7 @@
     <Compile Include="src\api\DXFeedTimeSeriesSubscription.cs" />
     <Compile Include="src\CandleDataConnection.cs" />
     <Compile Include="src\DataConnection.cs" />
+    <Compile Include="src\PriceLevelBook.cs" />
     <Compile Include="src\SimpleCandleDataProvider.cs" />
     <Compile Include="src\SimpleTimeAndSaleDataProvider.cs" />
     <Compile Include="src\SnapshotDataProvider.cs" />

@@ -8,11 +8,7 @@ on:
 name: Build & Release
 
 env:
-  WIN_BUILDER_IMAGE: dxfeedcapi/builder:1809-4.5.2-2015
   DOCS_ARTIFACT_TEMPLATE: dxfeed-net-api-%VERSION%-docs
-  WINDOWS_ARTIFACT_TEMPLATE: dxfeed-net-api-#VERSION#-windows
-  WINDOWS_BUILD_TEMPLATE: dxfeed-net-api-#VERSION#
-  WIN_SRC_DIR: "C:\\dxfeed-net-api"
   RELEASE_PREFIX: "dxFeed .Net API "
   C_API_REPO: "https://github.com/dxfeed/dxfeed-c-api.git"
   C_API_RELEASE_TEMPLATE: "https://github.com/dxFeed/dxfeed-c-api/releases/download/#VERSION#/dxfeed-c-api-#VERSION#-windows.zip"
@@ -44,72 +40,10 @@ jobs:
           name: ${{ env.ARTIFACT }}.zip
           path: artifact/${{ env.ARTIFACT }}.zip
 
-
-# --------------------------- BUILD WINDOWS LIBRARY [ VS2015 ]
-  build_windows:
-    runs-on: windows-latest
-    name: build windows
-    steps:
-
-      - uses: actions/checkout@master
-
-      - name: Set env
-        run: |
-          echo RELEASE_VERSION=$("$Env:GITHUB_REF".Substring(10)) | Add-Content -Path $env:GITHUB_ENV -Encoding utf8
-          echo RELEASE_VERSION_TRUNCATED=$("$Env:GITHUB_REF".Substring(10) -replace '[a-zA-Z-]', '') | Add-Content -Path $env:GITHUB_ENV -Encoding utf8
-          echo ARTIFACT=$(echo $Env:WINDOWS_ARTIFACT_TEMPLATE | %{$_ -replace '#VERSION#', $("$Env:GITHUB_REF".Substring(10)) }) | Add-Content -Path $env:GITHUB_ENV -Encoding utf8
-          echo WB_ARTIFACT=$(echo $Env:WINDOWS_BUILD_TEMPLATE | %{$_ -replace '#VERSION#', $("$Env:GITHUB_REF".Substring(10) -replace '[a-zA-Z-]', '') }) | Add-Content -Path $env:GITHUB_ENV -Encoding utf8
-          echo C_API_REPO=$(echo $Env:C_API_REPO) | Add-Content -Path $env:GITHUB_ENV -Encoding utf8
-          echo C_API_RELEASE=$(echo $Env:C_API_RELEASE_TEMPLATE | %{$_ -replace '#VERSION#', $("$Env:GITHUB_REF".Substring(10)) }) | Add-Content -Path $env:GITHUB_ENV -Encoding utf8
-
-      - name: Check env
-        run: |
-          echo "RELEASE           : ${{ env.RELEASE_VERSION }}"
-          echo "RELEASE_TRUNCATED : ${{ env.RELEASE_VERSION_TRUNCATED }}"
-          echo "ARTIFACT          : ${{ env.ARTIFACT }}"
-          echo "WB_ARTIFACT       : ${{ env.WB_ARTIFACT }}"
-          echo "C_API_REPO        : ${{ env.C_API_REPO }}"
-          echo "C_API_RELEASE     : ${{ env.C_API_RELEASE }}"
-
-      - name: Download C-API artifacts
-        run: |
-          (New-Object System.Net.WebClient).DownloadFile("${{ env.C_API_RELEASE }}", '' + (Get-Location) + '/c-api.zip')
-          Expand-Archive -Path ./c-api.zip -DestinationPath .
-      - name: Make artifacts directory
-        run: |
-          mkdir artifact
-      - name: List working directory
-        run: |
-          ls
-      - name: Free disk space for build image
-        run: |
-          docker rm $(docker ps -aq)
-          docker image rm $(docker image ls -q)
-      - name: Pull build image
-        run: |
-          docker pull ${{ env.WIN_BUILDER_IMAGE }}
-      - name: Build windows (TLS)
-        run: |
-          echo "building windows dxfeed-net-api library"
-          docker run -v "${pwd}:${{ env.WIN_SRC_DIR }}" -e SRCDIR="${{ env.WIN_SRC_DIR }}" -e FLAGS=".\dxfeed-c-api-${{ env.RELEASE_VERSION }} no-test no-c-build" -e RELEASE=${{ env.RELEASE_VERSION_TRUNCATED }} ${{ env.WIN_BUILDER_IMAGE }}
-      - name: List files
-        run: |
-          ls -recurse
-      - name: Copy build artifact (TLS)
-        run: |
-          cp dxf_master\bin\${{ env.WB_ARTIFACT }}.zip artifact\${{ env.ARTIFACT }}.zip
-          ls artifact\
-
-      - name: Upload build artifact (TLS)
-        uses: actions/upload-artifact@v1
-        with:
-          name: ${{ env.ARTIFACT }}.zip
-          path: artifact/${{ env.ARTIFACT }}.zip
-
   publish_release:
     runs-on: ubuntu-latest
     name: publish release
-    needs: [build_docs, build_windows]
+    needs: [build_docs]
     steps:
 
       - uses: actions/checkout@master
@@ -118,24 +52,16 @@ jobs:
         run: |
           echo RELEASE_VERSION=$(echo ${GITHUB_REF:10}) >> $GITHUB_ENV
           echo DOC_ARTIFACT=$(echo ${DOCS_ARTIFACT_TEMPLATE} | sed "s/%VERSION%/$(echo ${GITHUB_REF:10})/g").zip >> $GITHUB_ENV
-          echo WINDOWS_ARTIFACT=$(echo ${WINDOWS_ARTIFACT_TEMPLATE} | sed "s/#VERSION#/$(echo ${GITHUB_REF:10})/g").zip >> $GITHUB_ENV
 
       - name: Check env
         run: |
           echo "Release : ${{ env.RELEASE_VERSION }}"
           echo "Documentation Artifact: ${DOC_ARTIFACT}"
-          echo "Windows Artifact: ${{ env.WINDOWS_ARTIFACT }}"
 
       - name: Download documentation artifact
         uses: actions/download-artifact@v1
         with:
           name: ${{ env.DOC_ARTIFACT }}
-          path: downloads/
-
-      - name: Download windows artifact
-        uses: actions/download-artifact@v1
-        with:
-          name: ${{ env.WINDOWS_ARTIFACT }}
           path: downloads/
 
       - name: Get release notes

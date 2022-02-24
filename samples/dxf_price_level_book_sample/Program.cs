@@ -109,8 +109,8 @@ namespace dxf_price_level_book_sample
                 "    -T <token>      - The authorization token\n" +
                 "    -p         - Enables the data transfer logging\n\n" +
                 "examples: \n" +
-                "dxf_price_level_book_sample demo.dxfeed.com:7300 MSFT 5\n" +
-                "dxf_price_level_book_sample demo.dxfeed.com:7300 MSFT 0\n" +
+                "dxf_price_level_book_sample demo.dxfeed.com:7300 MSFT NTV 5\n" +
+                "dxf_price_level_book_sample demo.dxfeed.com:7300 AAPL AGGREGATE_ASK 0\n" +
                 "\n"
             );
         }

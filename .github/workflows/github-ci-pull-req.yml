@@ -5,11 +5,7 @@ on:
 name: Build
 
 env:
-  WIN_BUILDER_IMAGE: dxfeedcapi/builder:1809-4.5.2-2015
   DOCS_ARTIFACT_TEMPLATE: dxfeed-net-api-%VERSION%-docs
-  WINDOWS_ARTIFACT_TEMPLATE: dxfeed-net-api-#VERSION#-windows
-  WINDOWS_BUILD_TEMPLATE: dxfeed-net-api-#VERSION#
-  WIN_SRC_DIR: "C:\\dxfeed-net-api"
   RELEASE_PREFIX: "dxFeed .Net API "
   C_API_REPO: "https://github.com/dxfeed/dxfeed-c-api.git"
   BUILD_VERSION: 0.0.0-pr
@@ -36,57 +32,3 @@ jobs:
         with:
           artifact: ${{ env.ARTIFACT }}
           release: ${{ env.RELEASE_VERSION }}
-
-
-# --------------------------- BUILD WINDOWS LIBRARY [ VS2015 ]
-  build_windows:
-    runs-on: windows-latest
-    name: build windows
-    steps:
-
-      - uses: actions/checkout@master
-
-      - name: Set env
-        run: |
-          echo RELEASE_VERSION=$("$Env:BUILD_VERSION") | Add-Content -Path $env:GITHUB_ENV -Encoding utf8
-          echo RELEASE_VERSION_TRUNCATED=$("$Env:BUILD_VERSION" -replace '[a-zA-Z-]', '') | Add-Content -Path $env:GITHUB_ENV -Encoding utf8
-          echo ARTIFACT=$(echo $Env:WINDOWS_ARTIFACT_TEMPLATE | %{$_ -replace '#VERSION#', $("$Env:BUILD_VERSION") }) | Add-Content -Path $env:GITHUB_ENV -Encoding utf8
-          echo WB_ARTIFACT=$(echo $Env:WINDOWS_BUILD_TEMPLATE | %{$_ -replace '#VERSION#', $("$Env:BUILD_VERSION" -replace '[a-zA-Z-]', '') }) | Add-Content -Path $env:GITHUB_ENV -Encoding utf8
-          echo C_API_REPO=$("$Env:C_API_REPO") | Add-Content -Path $env:GITHUB_ENV -Encoding utf8
-
-      - name: Check env
-        run: |
-          echo "RELEASE           : ${{ env.RELEASE_VERSION }}"
-          echo "RELEASE_TRUNCATED : ${{ env.RELEASE_VERSION_TRUNCATED }}"
-          echo "ARTIFACT          : ${{ env.ARTIFACT }}"
-          echo "WB_ARTIFACT       : ${{ env.WB_ARTIFACT }}"
-          echo "C_API_REPO        : ${{ env.C_API_REPO }}"
-
-      - name: Get dxfeed-c-api source code
-        run: |
-          git clone ${{ env.C_API_REPO }}
-      - name: Checkout dxfeed-c-api current release tag
-        run: |
-          cd dxfeed-c-api
-          git checkout master
-#         git checkout tags/${{ env.RELEASE_VERSION }} -b ${{ env.RELEASE_VERSION }}
-      - name: Make artifacts directory
-        run: |
-          mkdir artifact
-      - name: List working directory
-        run: |
-          ls
-      - name: Free disk space for build image
-        run: |
-          docker rm $(docker ps -aq)
-          docker image rm $(docker image ls -q)
-      - name: Pull build image
-        run: |
-          docker pull ${{ env.WIN_BUILDER_IMAGE }}
-      - name: Build windows (TLS)
-        run: |
-          echo "building windows dxfeed-net-api ( + dxfeed-c-api ) library"
-          docker run -v "${pwd}:${{ env.WIN_SRC_DIR }}" -e SRCDIR="${{ env.WIN_SRC_DIR }}" -e FLAGS=".\dxfeed-c-api no-test" -e RELEASE=${{ env.RELEASE_VERSION_TRUNCATED }} ${{ env.WIN_BUILDER_IMAGE }}
-      - name: List files
-        run: |
-          ls -recurse

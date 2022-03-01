@@ -1,3 +1,7 @@
+Version 8.6.1
+* Fixed possible symbol corruption
+* Fixed a bug where price level updates could be treated as volume increases.
+
 Version 8.6.0
 * [DXFC-297] Improved the handling of transaction flags and signs of transaction flags.
   Added a `HasSize` method to the Order SpreadOrder classes 

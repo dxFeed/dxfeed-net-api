@@ -433,9 +433,12 @@ namespace com.dxfeed.native
         {
             if (string.IsNullOrWhiteSpace(symbol))
                 throw new ArgumentException("Invalid symbol parameter.");
+            
             if (eventType.HasFlag(EventType.Candle) && IsCandleSymbol(symbol))
             {
                 AddSymbol(CandleSymbol.ValueOf(symbol));
+
+                return;
             }
 
             C.CheckOk(C.Instance.dxf_add_symbol(subscriptionPtr, symbol));
@@ -581,19 +584,7 @@ namespace com.dxfeed.native
 
             foreach (var symbol in symbols)
             {
-                IntPtr candleAttributesPtr;
-
-                C.CheckOk(C.Instance.dxf_create_candle_symbol_attributes(symbol.BaseSymbol,
-                    symbol.ExchangeCode, symbol.PeriodValue, symbol.PeriodId, symbol.PriceId,
-                    symbol.SessionId, symbol.AlignmentId, symbol.PriceLevel, out candleAttributesPtr));
-                try
-                {
-                    C.CheckOk(C.Instance.dxf_remove_candle_symbol(subscriptionPtr, candleAttributesPtr));
-                }
-                finally
-                {
-                    C.CheckOk(C.Instance.dxf_delete_candle_symbol_attributes(candleAttributesPtr));
-                }
+                C.CheckOk(C.Instance.dxf_remove_symbol(subscriptionPtr, symbol.ToString()));
             }
         }
 

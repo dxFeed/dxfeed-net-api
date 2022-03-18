@@ -1,3 +1,6 @@
+Version 8.7.0
+* [DXFC-335] Fixed a bug when candle symbols are not removed from the subscription
+
 Version 8.6.3
 * [DXFC-331] Fixed a bug when deleting a PriceLevelBook object caused crashes.
 

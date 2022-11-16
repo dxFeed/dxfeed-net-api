@@ -97,7 +97,12 @@ namespace com.dxfeed.native
         ///     Don't call this constructor inside any listeners and callbacks of NativeSubscription, NativeConnection,
         /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
-        /// <param name="address">The server address to connect</param>
+        /// <param name="address">Connection string<br/>
+        /// - the single address: "host:port" or just "host"<br/>
+        /// - address with credentials: "host:port[username=xxx,password=yyy]"<br/>
+        /// - multiple addresses: "(host1:port1)(host2)(host3:port3[username=xxx,password=yyy])"<br/>
+        /// - the data from file: "/path/to/file" on *nix and "drive:\path\to\file" on Windows<br/>
+        /// </param>
         /// <param name="disconnectListener">The listener that will be called when the connection is interrupted</param>
         /// <param name="connectionStatusListener">The listener that will be called when the connection status is changed</param>
         /// <exception cref="DxException"></exception>
@@ -120,7 +125,12 @@ namespace com.dxfeed.native
         ///     Don't call this constructor inside any listeners and callbacks of NativeSubscription, NativeConnection,
         /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
-        /// <param name="address">The server address to connect.</param>
+        /// <param name="address">Connection string<br/>
+        /// - the single address: "host:port" or just "host"<br/>
+        /// - address with credentials: "host:port[username=xxx,password=yyy]"<br/>
+        /// - multiple addresses: "(host1:port1)(host2)(host3:port3[username=xxx,password=yyy])"<br/>
+        /// - the data from file: "/path/to/file" on *nix and "drive:\path\to\file" on Windows<br/>
+        /// </param>
         /// <param name="credential">The user name and password to server access.</param>
         /// <param name="disconnectListener">The listener that will be called when the connection is interrupted.</param>
         /// <param name="connectionStatusListener">The listener that will be called when the connection status is changed</param>
@@ -144,7 +154,12 @@ namespace com.dxfeed.native
         ///     Don't call this constructor inside any listeners and callbacks of NativeSubscription, NativeConnection,
         /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
-        /// <param name="address">The Server address to connect.</param>
+        /// <param name="address">Connection string<br/>
+        /// - the single address: "host:port" or just "host"<br/>
+        /// - address with credentials: "host:port[username=xxx,password=yyy]"<br/>
+        /// - multiple addresses: "(host1:port1)(host2)(host3:port3[username=xxx,password=yyy])"<br/>
+        /// - the data from file: "/path/to/file" on *nix and "drive:\path\to\file" on Windows<br/>
+        /// </param>
         /// <param name="token">Bearer scheme token to server access.</param>
         /// <param name="disconnectListener">The listener that will be called when the connection is interrupted.</param>
         /// <exception cref="DxException">The connection creation was failed.</exception>
@@ -165,7 +180,12 @@ namespace com.dxfeed.native
         ///     Don't call this constructor inside any listeners and callbacks of NativeSubscription, NativeConnection,
         /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
-        /// <param name="address">Server address to connect.</param>
+        /// <param name="address">Connection string<br/>
+        /// - the single address: "host:port" or just "host"<br/>
+        /// - address with credentials: "host:port[username=xxx,password=yyy]"<br/>
+        /// - multiple addresses: "(host1:port1)(host2)(host3:port3[username=xxx,password=yyy])"<br/>
+        /// - the data from file: "/path/to/file" on *nix and "drive:\path\to\file" on Windows<br/>
+        /// </param>
         /// <param name="token">Bearer scheme token to server access.</param>
         /// <param name="disconnectListener">The listener that will be called when the connection is interrupted.</param>
         /// <param name="connectionStatusListener">The listener that will be called when the connection status is changed</param>
@@ -189,7 +209,12 @@ namespace com.dxfeed.native
         ///     Don't call this constructor inside any listeners and callbacks of NativeSubscription, NativeConnection,
         /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
-        /// <param name="address">The server address to connect.</param>
+        /// <param name="address">Connection string<br/>
+        /// - the single address: "host:port" or just "host"<br/>
+        /// - address with credentials: "host:port[username=xxx,password=yyy]"<br/>
+        /// - multiple addresses: "(host1:port1)(host2)(host3:port3[username=xxx,password=yyy])"<br/>
+        /// - the data from file: "/path/to/file" on *nix and "drive:\path\to\file" on Windows<br/>
+        /// </param>
         /// <param name="authScheme">The authorization scheme.</param>
         /// <param name="authData">The authorization data.</param>
         /// <param name="disconnectListener">The listener that will be called when the connection is interrupted.</param>
@@ -789,7 +814,7 @@ namespace com.dxfeed.native
         {
             return new NativePriceLevelBook(this, symbol, listener);
         }
-        
+
         /// <summary>
         /// Creates the Price Level Book
         /// </summary>

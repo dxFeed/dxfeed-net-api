@@ -1,7 +1,7 @@
 ﻿#region License
 
 /*
-Copyright (c) 2010-2021 Devexperts LLC
+Copyright (c) 2010-2022 Devexperts LLC
 
 This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
 If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -72,12 +72,40 @@ namespace com.dxfeed.native
 
         /// <summary>
         /// Creates the new connection
+        ///
+        /// The connection's address string may have <b><c>connectOrder</c></b> property with possible values: <b><c>shuffle</c></b>, <b><c>random</c></b>, <b><c>ordered</c></b>, <b><c>priority</c></b>
+        /// <list type="bullet">
+        /// <item><term/><description>The <b><c>shuffle</c></b> strategy: Example: <b><c>host1:port1,host2:port2,host3:port3[connectOrder=shuffle]</c></b> It will shuffle the
+        /// resolved IP addresses, and it will go through them to the end, and then it will resolve and shuffle and so on.</description></item>
+        /// <item><term/><description>The <b><c>random</c></b> strategy: Example: <b><c>host1:port1,host2:port2,host3:port3[connectOrder=random]</c></b> It will shuffle IP
+        /// addresses, if the connection is successful, it will reset the state and will shuffle on the next connection, and so on.</description></item>
+        /// <item><term/><description>The <b><c>ordered</c></b> strategy: Example: <b><c>host1:port1,host2:port2,host3:port3[connectOrder=ordered]</c></b> It will NOT shuffle the
+        /// resolved IP addresses, and it will go through them to the end, and then it will resolve and NOT shuffle and so on.</description></item>
+        /// <item><term/><description>The <b><c>priority</c></b> strategy: Example: <b><c>host1:port1,host2:port2,host3:port3[connectOrder=priority]</c></b> It will NOT shuffle IP
+        /// addresses, if the connection is successful, it will reset the state and will NOT shuffle on the next connection, and so on.</description></item>
+        /// <item><term/><description>The default strategy is <b><c>shuffle</c></b></description></item>
+        /// <item><term/><description>If several strategies are specified in the address line, the last one will be selected.</description></item>
+        /// <item><term/><description>Example #1: <b><c>host1:port1,host2:port2,host3:port3[connectOrder=priority,connectOrder=ordered]</c></b> will be equivalent
+        /// to <b><c>host1:port1,host2:port2,host3:port3[connectOrder=ordered]</c></b></description></item>
+        /// <item><term/><description>Example #2: <b><c>(host1:port1,host2:port2[connectOrder=random])(host3:port3[connectOrder=priority,connectOrder=ordered])</c></b>
+        /// will be equivalent to <b><c>host1:port1,host2:port2,host3:port3[connectOrder=ordered]</c></b></description></item>
+        /// </list>
         /// </summary>
         /// <remarks>
         ///     Don't call this constructor inside any listeners and callbacks of NativeSubscription, NativeConnection,
         /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
-        /// <param name="address">The server address to connect</param>
+        /// <param name="address">
+        /// Connection string:
+        /// <list type="bullet">
+        /// <item><term/><description>the single address: <b><c>host:port</c></b></description></item>
+        /// <item><term/><description>address with credentials: <b><c>host:port[username=xxx,password=yyy]</c></b></description></item>
+        /// <item><term/><description>multiple addresses: <b><c>host1:port1,host2,host3:port3[username=xxx,password=yyy]</c></b> or
+        /// <b><c>(host1:port1,host2:port2)(host3:port3[username=xxx,password=yyy])</c></b></description></item>
+        /// <item><term/><description>addresses with connect order: <b><c>host1:port1,host2,host3:port3[connectOrder=ordered]</c></b></description></item>
+        /// <item><term/><description>the data from file: <b><c>/path/to/file</c></b> on *nix and <b><c>drive:\path\to\file</c></b> on Windows</description></item>
+        /// </list>
+        /// </param>
         /// <param name="disconnectListener">The listener that will be called when the connection is interrupted</param>
         /// <exception cref="DxException"></exception>
         public NativeConnection(string address, Action<IDxConnection> disconnectListener)
@@ -92,16 +120,39 @@ namespace com.dxfeed.native
 
         /// <summary>
         /// Creates the new connection
+        ///
+        /// The connection's address string may have <b><c>connectOrder</c></b> property with possible values: <b><c>shuffle</c></b>, <b><c>random</c></b>, <b><c>ordered</c></b>, <b><c>priority</c></b>
+        /// <list type="bullet">
+        /// <item><term/><description>The <b><c>shuffle</c></b> strategy: Example: <b><c>host1:port1,host2:port2,host3:port3[connectOrder=shuffle]</c></b> It will shuffle the
+        /// resolved IP addresses, and it will go through them to the end, and then it will resolve and shuffle and so on.</description></item>
+        /// <item><term/><description>The <b><c>random</c></b> strategy: Example: <b><c>host1:port1,host2:port2,host3:port3[connectOrder=random]</c></b> It will shuffle IP
+        /// addresses, if the connection is successful, it will reset the state and will shuffle on the next connection, and so on.</description></item>
+        /// <item><term/><description>The <b><c>ordered</c></b> strategy: Example: <b><c>host1:port1,host2:port2,host3:port3[connectOrder=ordered]</c></b> It will NOT shuffle the
+        /// resolved IP addresses, and it will go through them to the end, and then it will resolve and NOT shuffle and so on.</description></item>
+        /// <item><term/><description>The <b><c>priority</c></b> strategy: Example: <b><c>host1:port1,host2:port2,host3:port3[connectOrder=priority]</c></b> It will NOT shuffle IP
+        /// addresses, if the connection is successful, it will reset the state and will NOT shuffle on the next connection, and so on.</description></item>
+        /// <item><term/><description>The default strategy is <b><c>shuffle</c></b></description></item>
+        /// <item><term/><description>If several strategies are specified in the address line, the last one will be selected.</description></item>
+        /// <item><term/><description>Example #1: <b><c>host1:port1,host2:port2,host3:port3[connectOrder=priority,connectOrder=ordered]</c></b> will be equivalent
+        /// to <b><c>host1:port1,host2:port2,host3:port3[connectOrder=ordered]</c></b></description></item>
+        /// <item><term/><description>Example #2: <b><c>(host1:port1,host2:port2[connectOrder=random])(host3:port3[connectOrder=priority,connectOrder=ordered])</c></b>
+        /// will be equivalent to <b><c>host1:port1,host2:port2,host3:port3[connectOrder=ordered]</c></b></description></item>
+        /// </list>
         /// </summary>
         /// <remarks>
         ///     Don't call this constructor inside any listeners and callbacks of NativeSubscription, NativeConnection,
         /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
-        /// <param name="address">Connection string<br/>
-        /// - the single address: "host:port" or just "host"<br/>
-        /// - address with credentials: "host:port[username=xxx,password=yyy]"<br/>
-        /// - multiple addresses: "(host1:port1)(host2)(host3:port3[username=xxx,password=yyy])"<br/>
-        /// - the data from file: "/path/to/file" on *nix and "drive:\path\to\file" on Windows<br/>
+        /// <param name="address">
+        /// Connection string:
+        /// <list type="bullet">
+        /// <item><term/><description>the single address: <b><c>host:port</c></b></description></item>
+        /// <item><term/><description>address with credentials: <b><c>host:port[username=xxx,password=yyy]</c></b></description></item>
+        /// <item><term/><description>multiple addresses: <b><c>host1:port1,host2,host3:port3[username=xxx,password=yyy]</c></b> or
+        /// <b><c>(host1:port1,host2:port2)(host3:port3[username=xxx,password=yyy])</c></b></description></item>
+        /// <item><term/><description>addresses with connect order: <b><c>host1:port1,host2,host3:port3[connectOrder=ordered]</c></b></description></item>
+        /// <item><term/><description>the data from file: <b><c>/path/to/file</c></b> on *nix and <b><c>drive:\path\to\file</c></b> on Windows</description></item>
+        /// </list>
         /// </param>
         /// <param name="disconnectListener">The listener that will be called when the connection is interrupted</param>
         /// <param name="connectionStatusListener">The listener that will be called when the connection status is changed</param>
@@ -120,16 +171,39 @@ namespace com.dxfeed.native
 
         /// <summary>
         /// Creates the new connection.
+        ///
+        /// The connection's address string may have <b><c>connectOrder</c></b> property with possible values: <b><c>shuffle</c></b>, <b><c>random</c></b>, <b><c>ordered</c></b>, <b><c>priority</c></b>
+        /// <list type="bullet">
+        /// <item><term/><description>The <b><c>shuffle</c></b> strategy: Example: <b><c>host1:port1,host2:port2,host3:port3[connectOrder=shuffle]</c></b> It will shuffle the
+        /// resolved IP addresses, and it will go through them to the end, and then it will resolve and shuffle and so on.</description></item>
+        /// <item><term/><description>The <b><c>random</c></b> strategy: Example: <b><c>host1:port1,host2:port2,host3:port3[connectOrder=random]</c></b> It will shuffle IP
+        /// addresses, if the connection is successful, it will reset the state and will shuffle on the next connection, and so on.</description></item>
+        /// <item><term/><description>The <b><c>ordered</c></b> strategy: Example: <b><c>host1:port1,host2:port2,host3:port3[connectOrder=ordered]</c></b> It will NOT shuffle the
+        /// resolved IP addresses, and it will go through them to the end, and then it will resolve and NOT shuffle and so on.</description></item>
+        /// <item><term/><description>The <b><c>priority</c></b> strategy: Example: <b><c>host1:port1,host2:port2,host3:port3[connectOrder=priority]</c></b> It will NOT shuffle IP
+        /// addresses, if the connection is successful, it will reset the state and will NOT shuffle on the next connection, and so on.</description></item>
+        /// <item><term/><description>The default strategy is <b><c>shuffle</c></b></description></item>
+        /// <item><term/><description>If several strategies are specified in the address line, the last one will be selected.</description></item>
+        /// <item><term/><description>Example #1: <b><c>host1:port1,host2:port2,host3:port3[connectOrder=priority,connectOrder=ordered]</c></b> will be equivalent
+        /// to <b><c>host1:port1,host2:port2,host3:port3[connectOrder=ordered]</c></b></description></item>
+        /// <item><term/><description>Example #2: <b><c>(host1:port1,host2:port2[connectOrder=random])(host3:port3[connectOrder=priority,connectOrder=ordered])</c></b>
+        /// will be equivalent to <b><c>host1:port1,host2:port2,host3:port3[connectOrder=ordered]</c></b></description></item>
+        /// </list>
         /// </summary>
         /// <remarks>
         ///     Don't call this constructor inside any listeners and callbacks of NativeSubscription, NativeConnection,
         /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
-        /// <param name="address">Connection string<br/>
-        /// - the single address: "host:port" or just "host"<br/>
-        /// - address with credentials: "host:port[username=xxx,password=yyy]"<br/>
-        /// - multiple addresses: "(host1:port1)(host2)(host3:port3[username=xxx,password=yyy])"<br/>
-        /// - the data from file: "/path/to/file" on *nix and "drive:\path\to\file" on Windows<br/>
+        /// <param name="address">
+        /// Connection string:
+        /// <list type="bullet">
+        /// <item><term/><description>the single address: <b><c>host:port</c></b></description></item>
+        /// <item><term/><description>address with credentials: <b><c>host:port[username=xxx,password=yyy]</c></b></description></item>
+        /// <item><term/><description>multiple addresses: <b><c>host1:port1,host2,host3:port3[username=xxx,password=yyy]</c></b> or
+        /// <b><c>(host1:port1,host2:port2)(host3:port3[username=xxx,password=yyy])</c></b></description></item>
+        /// <item><term/><description>addresses with connect order: <b><c>host1:port1,host2,host3:port3[connectOrder=ordered]</c></b></description></item>
+        /// <item><term/><description>the data from file: <b><c>/path/to/file</c></b> on *nix and <b><c>drive:\path\to\file</c></b> on Windows</description></item>
+        /// </list>
         /// </param>
         /// <param name="credential">The user name and password to server access.</param>
         /// <param name="disconnectListener">The listener that will be called when the connection is interrupted.</param>
@@ -149,16 +223,39 @@ namespace com.dxfeed.native
 
         /// <summary>
         /// Creates the new connection.
+        ///
+        /// The connection's address string may have <b><c>connectOrder</c></b> property with possible values: <b><c>shuffle</c></b>, <b><c>random</c></b>, <b><c>ordered</c></b>, <b><c>priority</c></b>
+        /// <list type="bullet">
+        /// <item><term/><description>The <b><c>shuffle</c></b> strategy: Example: <b><c>host1:port1,host2:port2,host3:port3[connectOrder=shuffle]</c></b> It will shuffle the
+        /// resolved IP addresses, and it will go through them to the end, and then it will resolve and shuffle and so on.</description></item>
+        /// <item><term/><description>The <b><c>random</c></b> strategy: Example: <b><c>host1:port1,host2:port2,host3:port3[connectOrder=random]</c></b> It will shuffle IP
+        /// addresses, if the connection is successful, it will reset the state and will shuffle on the next connection, and so on.</description></item>
+        /// <item><term/><description>The <b><c>ordered</c></b> strategy: Example: <b><c>host1:port1,host2:port2,host3:port3[connectOrder=ordered]</c></b> It will NOT shuffle the
+        /// resolved IP addresses, and it will go through them to the end, and then it will resolve and NOT shuffle and so on.</description></item>
+        /// <item><term/><description>The <b><c>priority</c></b> strategy: Example: <b><c>host1:port1,host2:port2,host3:port3[connectOrder=priority]</c></b> It will NOT shuffle IP
+        /// addresses, if the connection is successful, it will reset the state and will NOT shuffle on the next connection, and so on.</description></item>
+        /// <item><term/><description>The default strategy is <b><c>shuffle</c></b></description></item>
+        /// <item><term/><description>If several strategies are specified in the address line, the last one will be selected.</description></item>
+        /// <item><term/><description>Example #1: <b><c>host1:port1,host2:port2,host3:port3[connectOrder=priority,connectOrder=ordered]</c></b> will be equivalent
+        /// to <b><c>host1:port1,host2:port2,host3:port3[connectOrder=ordered]</c></b></description></item>
+        /// <item><term/><description>Example #2: <b><c>(host1:port1,host2:port2[connectOrder=random])(host3:port3[connectOrder=priority,connectOrder=ordered])</c></b>
+        /// will be equivalent to <b><c>host1:port1,host2:port2,host3:port3[connectOrder=ordered]</c></b></description></item>
+        /// </list>
         /// </summary>
         /// <remarks>
         ///     Don't call this constructor inside any listeners and callbacks of NativeSubscription, NativeConnection,
         /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
-        /// <param name="address">Connection string<br/>
-        /// - the single address: "host:port" or just "host"<br/>
-        /// - address with credentials: "host:port[username=xxx,password=yyy]"<br/>
-        /// - multiple addresses: "(host1:port1)(host2)(host3:port3[username=xxx,password=yyy])"<br/>
-        /// - the data from file: "/path/to/file" on *nix and "drive:\path\to\file" on Windows<br/>
+        /// <param name="address">
+        /// Connection string:
+        /// <list type="bullet">
+        /// <item><term/><description>the single address: <b><c>host:port</c></b></description></item>
+        /// <item><term/><description>address with credentials: <b><c>host:port[username=xxx,password=yyy]</c></b></description></item>
+        /// <item><term/><description>multiple addresses: <b><c>host1:port1,host2,host3:port3[username=xxx,password=yyy]</c></b> or
+        /// <b><c>(host1:port1,host2:port2)(host3:port3[username=xxx,password=yyy])</c></b></description></item>
+        /// <item><term/><description>addresses with connect order: <b><c>host1:port1,host2,host3:port3[connectOrder=ordered]</c></b></description></item>
+        /// <item><term/><description>the data from file: <b><c>/path/to/file</c></b> on *nix and <b><c>drive:\path\to\file</c></b> on Windows</description></item>
+        /// </list>
         /// </param>
         /// <param name="token">Bearer scheme token to server access.</param>
         /// <param name="disconnectListener">The listener that will be called when the connection is interrupted.</param>
@@ -175,16 +272,39 @@ namespace com.dxfeed.native
 
         /// <summary>
         /// Creates the new connection.
+        ///
+        /// The connection's address string may have <b><c>connectOrder</c></b> property with possible values: <b><c>shuffle</c></b>, <b><c>random</c></b>, <b><c>ordered</c></b>, <b><c>priority</c></b>
+        /// <list type="bullet">
+        /// <item><term/><description>The <b><c>shuffle</c></b> strategy: Example: <b><c>host1:port1,host2:port2,host3:port3[connectOrder=shuffle]</c></b> It will shuffle the
+        /// resolved IP addresses, and it will go through them to the end, and then it will resolve and shuffle and so on.</description></item>
+        /// <item><term/><description>The <b><c>random</c></b> strategy: Example: <b><c>host1:port1,host2:port2,host3:port3[connectOrder=random]</c></b> It will shuffle IP
+        /// addresses, if the connection is successful, it will reset the state and will shuffle on the next connection, and so on.</description></item>
+        /// <item><term/><description>The <b><c>ordered</c></b> strategy: Example: <b><c>host1:port1,host2:port2,host3:port3[connectOrder=ordered]</c></b> It will NOT shuffle the
+        /// resolved IP addresses, and it will go through them to the end, and then it will resolve and NOT shuffle and so on.</description></item>
+        /// <item><term/><description>The <b><c>priority</c></b> strategy: Example: <b><c>host1:port1,host2:port2,host3:port3[connectOrder=priority]</c></b> It will NOT shuffle IP
+        /// addresses, if the connection is successful, it will reset the state and will NOT shuffle on the next connection, and so on.</description></item>
+        /// <item><term/><description>The default strategy is <b><c>shuffle</c></b></description></item>
+        /// <item><term/><description>If several strategies are specified in the address line, the last one will be selected.</description></item>
+        /// <item><term/><description>Example #1: <b><c>host1:port1,host2:port2,host3:port3[connectOrder=priority,connectOrder=ordered]</c></b> will be equivalent
+        /// to <b><c>host1:port1,host2:port2,host3:port3[connectOrder=ordered]</c></b></description></item>
+        /// <item><term/><description>Example #2: <b><c>(host1:port1,host2:port2[connectOrder=random])(host3:port3[connectOrder=priority,connectOrder=ordered])</c></b>
+        /// will be equivalent to <b><c>host1:port1,host2:port2,host3:port3[connectOrder=ordered]</c></b></description></item>
+        /// </list>
         /// </summary>
         /// <remarks>
         ///     Don't call this constructor inside any listeners and callbacks of NativeSubscription, NativeConnection,
         /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
-        /// <param name="address">Connection string<br/>
-        /// - the single address: "host:port" or just "host"<br/>
-        /// - address with credentials: "host:port[username=xxx,password=yyy]"<br/>
-        /// - multiple addresses: "(host1:port1)(host2)(host3:port3[username=xxx,password=yyy])"<br/>
-        /// - the data from file: "/path/to/file" on *nix and "drive:\path\to\file" on Windows<br/>
+        /// <param name="address">
+        /// Connection string:
+        /// <list type="bullet">
+        /// <item><term/><description>the single address: <b><c>host:port</c></b></description></item>
+        /// <item><term/><description>address with credentials: <b><c>host:port[username=xxx,password=yyy]</c></b></description></item>
+        /// <item><term/><description>multiple addresses: <b><c>host1:port1,host2,host3:port3[username=xxx,password=yyy]</c></b> or
+        /// <b><c>(host1:port1,host2:port2)(host3:port3[username=xxx,password=yyy])</c></b></description></item>
+        /// <item><term/><description>addresses with connect order: <b><c>host1:port1,host2,host3:port3[connectOrder=ordered]</c></b></description></item>
+        /// <item><term/><description>the data from file: <b><c>/path/to/file</c></b> on *nix and <b><c>drive:\path\to\file</c></b> on Windows</description></item>
+        /// </list>
         /// </param>
         /// <param name="token">Bearer scheme token to server access.</param>
         /// <param name="disconnectListener">The listener that will be called when the connection is interrupted.</param>
@@ -204,16 +324,39 @@ namespace com.dxfeed.native
 
         /// <summary>
         /// Creates the new connection.
+        ///
+        /// The connection's address string may have <b><c>connectOrder</c></b> property with possible values: <b><c>shuffle</c></b>, <b><c>random</c></b>, <b><c>ordered</c></b>, <b><c>priority</c></b>
+        /// <list type="bullet">
+        /// <item><term/><description>The <b><c>shuffle</c></b> strategy: Example: <b><c>host1:port1,host2:port2,host3:port3[connectOrder=shuffle]</c></b> It will shuffle the
+        /// resolved IP addresses, and it will go through them to the end, and then it will resolve and shuffle and so on.</description></item>
+        /// <item><term/><description>The <b><c>random</c></b> strategy: Example: <b><c>host1:port1,host2:port2,host3:port3[connectOrder=random]</c></b> It will shuffle IP
+        /// addresses, if the connection is successful, it will reset the state and will shuffle on the next connection, and so on.</description></item>
+        /// <item><term/><description>The <b><c>ordered</c></b> strategy: Example: <b><c>host1:port1,host2:port2,host3:port3[connectOrder=ordered]</c></b> It will NOT shuffle the
+        /// resolved IP addresses, and it will go through them to the end, and then it will resolve and NOT shuffle and so on.</description></item>
+        /// <item><term/><description>The <b><c>priority</c></b> strategy: Example: <b><c>host1:port1,host2:port2,host3:port3[connectOrder=priority]</c></b> It will NOT shuffle IP
+        /// addresses, if the connection is successful, it will reset the state and will NOT shuffle on the next connection, and so on.</description></item>
+        /// <item><term/><description>The default strategy is <b><c>shuffle</c></b></description></item>
+        /// <item><term/><description>If several strategies are specified in the address line, the last one will be selected.</description></item>
+        /// <item><term/><description>Example #1: <b><c>host1:port1,host2:port2,host3:port3[connectOrder=priority,connectOrder=ordered]</c></b> will be equivalent
+        /// to <b><c>host1:port1,host2:port2,host3:port3[connectOrder=ordered]</c></b></description></item>
+        /// <item><term/><description>Example #2: <b><c>(host1:port1,host2:port2[connectOrder=random])(host3:port3[connectOrder=priority,connectOrder=ordered])</c></b>
+        /// will be equivalent to <b><c>host1:port1,host2:port2,host3:port3[connectOrder=ordered]</c></b></description></item>
+        /// </list>
         /// </summary>
         /// <remarks>
         ///     Don't call this constructor inside any listeners and callbacks of NativeSubscription, NativeConnection,
         /// NativeRegionalBook, NativePriceLevelBook, NativeSnapshotSubscription classes
         /// </remarks>
-        /// <param name="address">Connection string<br/>
-        /// - the single address: "host:port" or just "host"<br/>
-        /// - address with credentials: "host:port[username=xxx,password=yyy]"<br/>
-        /// - multiple addresses: "(host1:port1)(host2)(host3:port3[username=xxx,password=yyy])"<br/>
-        /// - the data from file: "/path/to/file" on *nix and "drive:\path\to\file" on Windows<br/>
+        /// <param name="address">
+        /// Connection string:
+        /// <list type="bullet">
+        /// <item><term/><description>the single address: <b><c>host:port</c></b></description></item>
+        /// <item><term/><description>address with credentials: <b><c>host:port[username=xxx,password=yyy]</c></b></description></item>
+        /// <item><term/><description>multiple addresses: <b><c>host1:port1,host2,host3:port3[username=xxx,password=yyy]</c></b> or
+        /// <b><c>(host1:port1,host2:port2)(host3:port3[username=xxx,password=yyy])</c></b></description></item>
+        /// <item><term/><description>addresses with connect order: <b><c>host1:port1,host2,host3:port3[connectOrder=ordered]</c></b></description></item>
+        /// <item><term/><description>the data from file: <b><c>/path/to/file</c></b> on *nix and <b><c>drive:\path\to\file</c></b> on Windows</description></item>
+        /// </list>
         /// </param>
         /// <param name="authScheme">The authorization scheme.</param>
         /// <param name="authData">The authorization data.</param>
@@ -470,7 +613,7 @@ namespace com.dxfeed.native
 
             IDxSubscription result = (time == null)
                 ? new NativeSubscription(this, type, 0L, eventSubscriptionFlags, listener)
-                : new NativeSubscription(this, type, (DateTime)time, eventSubscriptionFlags, listener);
+                : new NativeSubscription(this, type, (DateTime) time, eventSubscriptionFlags, listener);
             subscriptions.Add(result);
             return result;
         }
@@ -495,7 +638,7 @@ namespace com.dxfeed.native
 
             IDxSubscription result = (time == null)
                 ? new NativeSubscription(this, type, 0L, listener)
-                : new NativeSubscription(this, type, (DateTime)time, listener);
+                : new NativeSubscription(this, type, (DateTime) time, listener);
             subscriptions.Add(result);
             return result;
         }
@@ -537,7 +680,7 @@ namespace com.dxfeed.native
             if (handle == IntPtr.Zero)
                 throw new NativeDxException("not connected");
 
-            var unixTime = time == null ? 0 : Tools.DateToUnixTime((DateTime)time);
+            var unixTime = time == null ? 0 : Tools.DateToUnixTime((DateTime) time);
             IDxSubscription result = new NativeSnapshotSubscription(this, unixTime, listener);
             subscriptions.Add(result);
             return result;
@@ -604,7 +747,7 @@ namespace com.dxfeed.native
             if (handle == IntPtr.Zero)
                 throw new NativeDxException("not connected");
 
-            var unixTime = time == null ? 0 : Tools.DateToUnixTime((DateTime)time);
+            var unixTime = time == null ? 0 : Tools.DateToUnixTime((DateTime) time);
             IDxSubscription result = new NativeSnapshotSubscription(this, eventType, unixTime, listener);
             subscriptions.Add(result);
             return result;
@@ -875,8 +1018,8 @@ namespace com.dxfeed.native
                         var elem = properties + i * 2 * IntPtr.Size;
                         unsafe
                         {
-                            var key = new IntPtr(*(char**)elem.ToPointer());
-                            var value = new IntPtr(*(char**)(elem + IntPtr.Size).ToPointer());
+                            var key = new IntPtr(*(char**) elem.ToPointer());
+                            var value = new IntPtr(*(char**) (elem + IntPtr.Size).ToPointer());
                             var keyString = Marshal.PtrToStringUni(key);
 
                             if (keyString != null)

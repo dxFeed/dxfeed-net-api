@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Devexperts")]
 [assembly: AssemblyProduct("dxf_inc_order_snapshot_sample")]
-[assembly: AssemblyCopyright("Copyright (c) 2010-2021 Devexperts LLC")]
+[assembly: AssemblyCopyright("Copyright (c) 2010-2022 Devexperts LLC")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

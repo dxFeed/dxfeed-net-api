@@ -1,7 +1,7 @@
 ﻿#region License
 
 /*
-Copyright (c) 2010-2021 Devexperts LLC
+Copyright (c) 2010-2022 Devexperts LLC
 
 This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
 If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -34,7 +34,7 @@ namespace dxf_tns_data_retrieving_sample
                 "    symbols   - The tns symbols, comma separated list (composite: AAPL, regional: AAPL&A..AAPL&Z). Example: 'IBM,AAPL&Q,AAPL'\n" +
                 "    from-date-time - The UTC date\\time, inclusive, to request events from. (format: yyyyMMdd-HHmmss)\n" +
                 "    to-date-time   - The UTC date\\time, inclusive, to request events to. (format: yyyyMMdd-HHmmss)\n" +
-                "Example: dxf_candle_data_retrieving_sample https://tools.dxfeed.com/candledata-preview demo demo \"IBM,AAPL&Q\" 20210819-030000 20210823-100000\n\n"
+                "Example: dxf_candle_data_retrieving_sample https://tools.dxfeed.com/candledata-preview demo demo \"IBM,AAPL&Q\" 20220819-030000 20220823-100000\n\n"
             );
         }
 

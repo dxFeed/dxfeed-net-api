@@ -202,6 +202,11 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Label>ToLib</Label>
     </Content>
+    <Content Include="..\lib\vcruntime140.dll">
+      <Link>vcruntime140.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Label>ToLib</Label>
+    </Content>
   </ItemGroup>
   <ItemGroup Condition="'$(C_API_NO_TLS)'!='yes'">
     <Content Include="..\COPYING.libressl">

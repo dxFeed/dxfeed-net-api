@@ -164,6 +164,8 @@ xcopy /Y /I %C_API_PATH%\%C_API_BIN_DIR_NAME%\x64\%C_API_DEBUG_DIR_NAME%libssl*.
 if %ERRORLEVEL% GEQ 1 goto exit_error
 xcopy /Y /I %C_API_PATH%\%C_API_BIN_DIR_NAME%\x64\%C_API_DEBUG_DIR_NAME%libtls*.dll %~dp0\lib\
 if %ERRORLEVEL% GEQ 1 goto exit_error
+xcopy /Y /I %C_API_PATH%\%C_API_BIN_DIR_NAME%\x64\%C_API_DEBUG_DIR_NAME%vcruntime140.dll %~dp0\lib\
+if %ERRORLEVEL% GEQ 1 goto exit_error
 
 rem === BUILD PROJECTS ===
 msbuild %~dp0\dxf_master\dxf_master.csproj /m /t:Clean;UpdateVersion;Build;%TARGET_TEST%CopySources;GenerateSolution;CreatePackage /p:Configuration=Release;Platform=AnyCPU;AssemblyVersion=%VERSION%

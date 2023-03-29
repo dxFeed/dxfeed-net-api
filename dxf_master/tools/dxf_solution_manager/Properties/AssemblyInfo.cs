@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Devexperts")]
 [assembly: AssemblyProduct("dxf_solution_manager")]
-[assembly: AssemblyCopyright("Copyright (c) 2010-2021 Devexperts LLC")]
+[assembly: AssemblyCopyright("Copyright (c) 2010-2023 Devexperts LLC")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

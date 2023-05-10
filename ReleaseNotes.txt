@@ -1,3 +1,9 @@
+Version 8.8.2
+* [DXFC-400] Fixed a bug with passing a UNICODE path to a file as a parameter of the logging initialization and settings loading function.
+ - For the changes to work reliably, you need to set the default encoding to UTF-8, for example, as indicated by the link: 
+ https://www.delftstack.com/howto/powershell/powershell-utf-8-encoding-chcp-65001/#change-system-locale-to-use-utf-8-encoding-in-windows-powershell
+ or https://learn.microsoft.com/en-us/answers/questions/587680/where-can-i-find-beta-use-unicode-utf-8-for-worldw
+
 Version 8.8.1
 * [DXFC-398] Fixed a defect with incorrect serialization of negative numbers (for example, "prices" of indices)
   transmitted via the QD protocol.

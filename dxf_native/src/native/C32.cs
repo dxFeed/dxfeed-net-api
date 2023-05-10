@@ -24,14 +24,14 @@ namespace com.dxfeed.native.api
 #else
         private const string DXFEED_DLL = "DXFeed.dll";
 #endif
-        [DllImport(DXFEED_DLL, CallingConvention = CallingConvention.Cdecl, EntryPoint = "dxf_initialize_logger")]
+        [DllImport(DXFEED_DLL, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl, EntryPoint = "dxf_initialize_logger")]
         private static extern int __dxf_initialize_logger(string file_name, bool rewrite_file, bool show_time_zone_info, bool verbose);
         internal override int dxf_initialize_logger(string file_name, bool rewrite_file, bool show_time_zone_info, bool verbose)
         {
             return __dxf_initialize_logger(file_name, rewrite_file, show_time_zone_info, verbose);
         }
 
-        [DllImport(DXFEED_DLL, CallingConvention = CallingConvention.Cdecl, EntryPoint = "dxf_initialize_logger_v2")]
+        [DllImport(DXFEED_DLL, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl, EntryPoint = "dxf_initialize_logger_v2")]
         private static extern int __dxf_initialize_logger_v2(string file_name, bool rewrite_file, bool show_time_zone_info, bool verbose, bool log_data_transfer);
         internal override int dxf_initialize_logger_v2(string file_name, bool rewrite_file, bool show_time_zone_info, bool verbose, bool log_data_transfer)
         {
@@ -573,7 +573,7 @@ namespace com.dxfeed.native.api
             return __dxf_detach_regional_book_listener_v2(book, listener);
         }
         
-        [DllImport(DXFEED_DLL, CallingConvention = CallingConvention.Cdecl, EntryPoint = "dxf_load_config_from_file")]
+        [DllImport(DXFEED_DLL, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl, EntryPoint = "dxf_load_config_from_file")]
         private static extern int __dxf_load_config_from_file(string fileName);
         internal override int dxf_load_config_from_file(string fileName)
         {

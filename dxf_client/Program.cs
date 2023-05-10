@@ -11,7 +11,6 @@ If a copy of the MPL was not distributed with this file, You can obtain one at h
 
 using System;
 using System.Globalization;
-using System.IO;
 using com.dxfeed.api;
 using com.dxfeed.api.candle;
 using com.dxfeed.api.connection;

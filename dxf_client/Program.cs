@@ -21,131 +21,6 @@ using com.dxfeed.native;
 
 namespace dxf_client
 {
-    public class SnapshotPrinter :
-        IDxOrderSnapshotListener,
-        IDxCandleSnapshotListener,
-        IDxTimeAndSaleSnapshotListener,
-        IDxSpreadOrderSnapshotListener,
-        IDxGreeksSnapshotListener,
-        IDxSeriesSnapshotListener
-    {
-        private readonly int recordsPrintLimit;
-
-        public SnapshotPrinter(int recordsPrintLimit)
-        {
-            this.recordsPrintLimit = recordsPrintLimit;
-        }
-
-        #region Implementation of IDxCandleSnapshotListener
-
-        /// <summary>
-        ///     On Candle snapshot event received.
-        /// </summary>
-        /// <typeparam name="TB">Event buffer type.</typeparam>
-        /// <typeparam name="TE">Event type.</typeparam>
-        /// <param name="buf">Event buffer object.</param>
-        public void OnCandleSnapshot<TB, TE>(TB buf)
-            where TB : IDxEventBuf<TE>
-            where TE : IDxCandle
-        {
-            PrintSnapshot(buf);
-        }
-
-        #endregion //IDxCandleSnapshotListener
-
-        #region Implementation of IDxGreeksSnapshotListener
-
-        public void OnGreeksSnapshot<TB, TE>(TB buf)
-            where TB : IDxEventBuf<TE>
-            where TE : IDxGreeks
-        {
-            PrintSnapshot(buf);
-        }
-
-        #endregion
-
-        #region Implementation of IDxOrderSnapshotListener
-
-        /// <summary>
-        ///     On Order snapshot event received.
-        /// </summary>
-        /// <typeparam name="TB">Event buffer type.</typeparam>
-        /// <typeparam name="TE">Event type.</typeparam>
-        /// <param name="buf">Event buffer object.</param>
-        public void OnOrderSnapshot<TB, TE>(TB buf)
-            where TB : IDxEventBuf<TE>
-            where TE : IDxOrder
-        {
-            PrintSnapshot(buf);
-        }
-
-        #endregion //IDxOrderSnapshotListener
-
-        #region Implementation of IDxSeriesSnapshotListener
-
-        public void OnSeriesSnapshot<TB, TE>(TB buf)
-            where TB : IDxEventBuf<TE>
-            where TE : IDxSeries
-        {
-            PrintSnapshot(buf);
-        }
-
-        #endregion
-
-        #region Implementation of IDxSpreadOrderSnapshotListener
-
-        /// <summary>
-        ///     On SpreadOrder snapshot event received.
-        /// </summary>
-        /// <typeparam name="TB">Event buffer type.</typeparam>
-        /// <typeparam name="TE">Event type.</typeparam>
-        /// <param name="buf">Event buffer object.</param>
-        public void OnSpreadOrderSnapshot<TB, TE>(TB buf)
-            where TB : IDxEventBuf<TE>
-            where TE : IDxSpreadOrder
-        {
-            PrintSnapshot(buf);
-        }
-
-        #endregion
-
-        #region Implementation of IDxTimeAndSaleSnapshotListener
-
-        /// <summary>
-        ///     On TimeAndSale snapshot event received.
-        /// </summary>
-        /// <typeparam name="TB">Event buffer type.</typeparam>
-        /// <typeparam name="TE">Event type.</typeparam>
-        /// <param name="buf">Event buffer object.</param>
-        public void OnTimeAndSaleSnapshot<TB, TE>(TB buf)
-            where TB : IDxEventBuf<TE>
-            where TE : IDxTimeAndSale
-        {
-            PrintSnapshot(buf);
-        }
-
-        #endregion //IDxTimeAndSaleSnapshotListener
-
-        private void PrintSnapshot<TE>(IDxEventBuf<TE> buf)
-        {
-            Console.WriteLine(string.Format(CultureInfo.InvariantCulture,
-                "Snapshot {0} {{Symbol: '{1}', RecordsCount: {2}}}",
-                buf.EventType, buf.Symbol, buf.Size));
-
-            var count = 0;
-            foreach (var o in buf)
-            {
-                Console.WriteLine($"   {{ {o} }}");
-
-                if (++count < recordsPrintLimit || recordsPrintLimit == 0) continue;
-
-                Console.WriteLine($"   {{ ... {buf.Size - count} records left ...}}");
-
-                break;
-            }
-        }
-    }
-
     internal class InputParam<T>
     {
         private T value;
@@ -248,10 +123,10 @@ namespace dxf_client
 
         private static void Main(string[] args)
         {
-            if (args.Length < 3 || args.Length > 13)
+            if (args.Length < 3 || (args.Length > 0 && args[0].Equals("-h")))
             {
                 Console.WriteLine(
-                    "Usage: dxf_client <host:port>|<path> <event> <symbol> [<date>] [<source>] [snapshot] [-l <records_print_limit>] [-T <token>] [-s <subscr_data>] [-p] [-b]\n" +
+                    "Usage: dxf_client <host:port>|<path> <event> <symbol> [<date>] [<source>] [snapshot] [-l <records_print_limit>] [-T <token>] [-s <subscr_data>] [-p] [-b] [-q]\n" +
                     "where\n" +
                     "    host:port - The address of dxfeed server (demo.dxfeed.com:7300)\n" +
                     "    path      - The path to file with candle data (non zipped Candle Web Service output) or `tape` file\n" +
@@ -279,7 +154,8 @@ namespace dxf_client
                     "    -T <token>               - The authorization token\n\n" +
                     "    -s <subscr_data>         - The subscription data: ticker|TICKER, stream|STREAM, history|HISTORY\n" +
                     "    -p                       - Enables the data transfer logging\n" +
-                    "    -b                       - Enables the server's heartbeat logging to console\n\n" +
+                    "    -b                       - Enables the server's heartbeat logging to console\n" +
+                    "    -q                       - Quiet mode (do not print events and snapshots)\n\n" +
                     "examples:\n" +
                     "  events: dxf_client demo.dxfeed.com:7300 Quote,Trade MSFT.TEST,IBM.TEST\n" +
                     "  events: dxf_client demo.dxfeed.com:7300 Quote,Trade MSFT.TEST,IBM.TEST -s stream\n" +
@@ -318,6 +194,7 @@ namespace dxf_client
             var subscriptionData = new InputParam<EventSubscriptionFlag>(EventSubscriptionFlag.Default);
             var logDataTransferFlag = false;
             var logServerHeartbeatsFlag = false;
+            var quiteMode = false;
 
             for (var i = SymbolIndex + 1; i < args.Length; i++)
             {
@@ -363,6 +240,13 @@ namespace dxf_client
                     continue;
                 }
 
+                if (quiteMode == false && args[i].Equals("-q"))
+                {
+                    quiteMode = true;
+
+                    continue;
+                }
+
                 if (!sources.IsSet)
                     TryParseSourcesParam(args[i], sources);
             }
@@ -377,37 +261,45 @@ namespace dxf_client
             NativeTools.LoadConfigFromString("logger.level = \"debug\"\n");
             NativeTools.InitializeLogging("dxf_client.log", true, true, logDataTransferFlag);
 
-            var listener = new EventPrinter();
+            var eventPrinter = quiteMode ? (IEventPrinter) new DummyEventPrinter() : new EventPrinter();
+
             using (var con = token.IsSet
-                ? new NativeConnection(address, token.Value, DisconnectHandler, ConnectionStatusChangeHandler)
-                : new NativeConnection(address, DisconnectHandler, ConnectionStatusChangeHandler))
+                       ? new NativeConnection(address, token.Value, DisconnectHandler, ConnectionStatusChangeHandler)
+                       : new NativeConnection(address, DisconnectHandler, ConnectionStatusChangeHandler))
             {
                 if (logServerHeartbeatsFlag)
+                {
                     con.SetOnServerHeartbeatHandler((connection, time, lagMark, rtt) =>
                     {
                         Console.Error.WriteLine(
                             $"##### Server time (UTC) = {time}, Server lag = {lagMark} us, RTT = {rtt} us #####");
                     });
+                }
 
                 IDxSubscription s = null;
                 try
                 {
                     if (dateTime.IsSet && (events & (EventType.Order | EventType.SpreadOrder)) != 0)
                     {
-                        Console.Error.WriteLine("Date and event type Order or SpreadOrder cannot be used for subscription");
+                        Console.Error.WriteLine(
+                            "Date and event type Order or SpreadOrder cannot be used for subscription");
                     }
-                    
+
                     if (isSnapshot.Value)
+                    {
                         s = con.CreateSnapshotSubscription(events, dateTime.Value,
-                            new SnapshotPrinter(recordsPrintLimit.Value));
+                            quiteMode
+                                ? (ISnapshotPrinter) new DummySnapshotPrinter()
+                                : new SnapshotPrinter(recordsPrintLimit.Value));
+                    }
                     else if (dateTime.IsSet)
                         s = subscriptionData.IsSet
-                            ? con.CreateSubscription(events, dateTime.Value, subscriptionData.Value, listener)
-                            : con.CreateSubscription(events, dateTime.Value, listener);
+                            ? con.CreateSubscription(events, dateTime.Value, subscriptionData.Value, eventPrinter)
+                            : con.CreateSubscription(events, dateTime.Value, eventPrinter);
                     else
                         s = subscriptionData.IsSet
-                            ? con.CreateSubscription(events, subscriptionData.Value, listener)
-                            : con.CreateSubscription(events, listener);
+                            ? con.CreateSubscription(events, subscriptionData.Value, eventPrinter)
+                            : con.CreateSubscription(events, eventPrinter);
 
                     if (events.HasFlag(EventType.Order) && sources.Value.Length > 0)
                         s.SetSource(sources.Value);

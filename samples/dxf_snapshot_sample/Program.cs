@@ -14,6 +14,7 @@ using com.dxfeed.api;
 using com.dxfeed.api.candle;
 using com.dxfeed.api.data;
 using com.dxfeed.api.events;
+using com.dxfeed.api.extras;
 using com.dxfeed.native;
 
 namespace dxf_snapshot_sample
@@ -69,10 +70,10 @@ namespace dxf_snapshot_sample
 
         private static void Main(string[] args)
         {
-            if (args.Length < 3 || args.Length > 9)
+            if (args.Length < 3 || (args.Length > 0 && args[0].Equals("-h")))
             {
                 Console.WriteLine(
-                    "Usage: dxf_snapshot_sample <host:port> <event> <symbol> [<source>] [-l <records_print_limit>] [-T <token>] [-p]\n" +
+                    "Usage: dxf_snapshot_sample <host:port> <event> <symbol> [<source>] [-l <records_print_limit>] [-T <token>] [-p] [-b] [-q]\n" +
                     "where\n" +
                     "    host:port - address of dxfeed server (demo.dxfeed.com:7300)\n" +
                     "    event     - snapshot event Order, Candle, TimeAndSale, SpreadOrder,\n" +
@@ -90,8 +91,10 @@ namespace dxf_snapshot_sample
                     "                If source is not specified MarketMaker snapshot will be\n" +
                     "                subscribed by default.\n\n" +
                     $"    -l <records_print_limit> - The number of displayed records (0 - unlimited, default: {DefaultRecordsPrintLimit})\n" +
-                    "    -T <token>               - The authorization token\n" +
-                    "    -p                       - Enables the data transfer logging\n\n" +
+                    "    -T <token>  - The authorization token\n" +
+                    "    -p          - Enables the data transfer logging\n" +
+                    "    -b          - Enables the server's heartbeat logging to console\n" +
+                    "    -q          - Quiet mode (do not print snapshots)\n\n" +
                     "order example: dxf_snapshot_sample demo.dxfeed.com:7300 Order AAPL NTV\n" +
                     "market maker example:\n" +
                     "    dxf_snapshot_sample demo.dxfeed.com:7300 Order AAPL AGGREGATE_BID\n" +
@@ -119,6 +122,8 @@ namespace dxf_snapshot_sample
             var recordsPrintLimit = new InputParam<int>(DefaultRecordsPrintLimit);
             var token = new InputParam<string>(null);
             var logDataTransferFlag = false;
+            var logServerHeartbeatsFlag = false;
+            var quiteMode = false;
 
             for (var i = SymbolIndex + 1; i < args.Length; i++)
             {
@@ -141,7 +146,20 @@ namespace dxf_snapshot_sample
                 if (logDataTransferFlag == false && args[i].Equals("-p"))
                 {
                     logDataTransferFlag = true;
-                    i++;
+
+                    continue;
+                }
+
+                if (logServerHeartbeatsFlag == false && args[i].Equals("-b"))
+                {
+                    logServerHeartbeatsFlag = true;
+
+                    continue;
+                }
+
+                if (quiteMode == false && args[i].Equals("-q"))
+                {
+                    quiteMode = true;
 
                     continue;
                 }
@@ -166,11 +184,22 @@ namespace dxf_snapshot_sample
             {
                 NativeTools.InitializeLogging("dxf_snapshot_sample.log", true, true, logDataTransferFlag);
                 using (var con = token.IsSet
-                    ? new NativeConnection(address, token.Value, DisconnectHandler)
-                    : new NativeConnection(address, DisconnectHandler))
+                           ? new NativeConnection(address, token.Value, DisconnectHandler)
+                           : new NativeConnection(address, DisconnectHandler))
                 {
+                    if (logServerHeartbeatsFlag)
+                    {
+                        con.SetOnServerHeartbeatHandler((connection, time, lagMark, rtt) =>
+                        {
+                            Console.Error.WriteLine(
+                                $"##### Server time (UTC) = {time}, Server lag = {lagMark} us, RTT = {rtt} us #####");
+                        });
+                    }
+
                     using (var s = con.CreateSnapshotSubscription(eventType, DefaultTime,
-                        new SnapshotListener(recordsPrintLimit.Value)))
+                               quiteMode
+                                   ? (ISnapshotPrinter) new DummySnapshotPrinter()
+                                   : new SnapshotPrinter(recordsPrintLimit.Value)))
                     {
                         switch (eventType)
                         {

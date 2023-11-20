@@ -13,68 +13,12 @@ using System;
 using System.Threading;
 using com.dxfeed.api;
 using com.dxfeed.api.events;
+using com.dxfeed.api.extras;
 using com.dxfeed.api.plb;
 using com.dxfeed.native;
 
 namespace dxf_price_level_book_sample
 {
-    internal class PriceLevelBookHandler : IDxOnNewPriceLevelBookHandler, IDxOnPriceLevelBookUpdateHandler, IDxOnPriceLevelBookIncChangeHandler
-    {
-        private static void DumpBook(DxPriceLevelBook book)
-        {
-            Console.WriteLine($"{"Ask",-15} {"Size",-8} {"Time",-15} | {"Bid",-15} {"Size",-8} {"Time",-15}");
-            for (var i = 0; i < Math.Max(book.Asks.Length, book.Bids.Length); ++i)
-            {
-                if (i < book.Asks.Length)
-                    Console.Write("{0,-15:n6} {1,-8:n2} {2,-15:yyyyMMdd-HHmmss}", book.Asks[i].Price,
-                        book.Asks[i].Size,
-                        book.Asks[i].Time);
-                else
-                    Console.Write("{0,-15} {1,-8} {2,-15}", "", "", "");
-                Console.Write(" | ");
-                if (i < book.Bids.Length)
-                    Console.Write("{0,-15:n6} {1,-8:n2} {2,-15:yyyyMMdd-HHmmss}", book.Bids[i].Price,
-                        book.Bids[i].Size,
-                        book.Bids[i].Time);
-                Console.WriteLine();
-            }
-        }
-        public void OnNewBook(DxPriceLevelBook book)
-        {
-            Console.WriteLine($"\nNew Price Level Book for {book.Symbol}:");
-            DumpBook(book);
-        }
-
-        public void OnBookUpdate(DxPriceLevelBook book)
-        {
-            Console.WriteLine($"\nThe Update of The Price Level Book for {book.Symbol}:");
-            DumpBook(book);
-        }
-
-        public void OnBookIncrementalChange(DxPriceLevelBook removals, DxPriceLevelBook additions, DxPriceLevelBook updates)
-        {
-            Console.WriteLine($"\nThe Incremental Update of The Price Level Book for {removals.Symbol}:");
-            
-            if (removals.Asks.Length > 0 || removals.Bids.Length > 0)
-            {
-                Console.WriteLine("\nREMOVALS:");
-                DumpBook(removals);
-            }
-            
-            if (additions.Asks.Length > 0 || additions.Bids.Length > 0)
-            {
-                Console.WriteLine("\nADDITIONS:");
-                DumpBook(additions);
-            }
-            
-            if (updates.Asks.Length > 0 || updates.Bids.Length > 0)
-            {
-                Console.WriteLine("\nUPDATES:");
-                DumpBook(updates);
-            }
-        }
-    }
-
     internal class Program
     {
         private const int HostIndex = 0;
@@ -100,14 +44,16 @@ namespace dxf_price_level_book_sample
         private static void ShowHelp()
         {
             Console.WriteLine(
-                "Usage: dxf_price_level_book_sample <host:port> <symbol> <source> <levels number> [-T <token>] [-p]\n" +
+                "Usage: dxf_price_level_book_sample <host:port> <symbol> <source> <levels number> [-T <token>] [-p] [-b] [-q]\n" +
                 "where\n" +
                 "    host:port       - The address of dxfeed server (demo.dxfeed.com:7300)\n" +
                 "    symbol          - The price level book symbol (IBM, AAPL etc)\n" +
                 "    source          - One order source, e.g. one of the: NTV, BYX, BZX, DEA etc. or AGGREGATE_ASK|BID\n" +
                 "    <levels number> - The The number of PLB price levels (0 -- all)\n" +
                 "    -T <token>      - The authorization token\n" +
-                "    -p         - Enables the data transfer logging\n\n" +
+                "    -p              - Enables the data transfer logging\n" +
+                "    -b              - Enables the server's heartbeat logging to console\n" +
+                "    -q              - Quiet mode (do not print price levels)\n\n" +
                 "examples: \n" +
                 "dxf_price_level_book_sample demo.dxfeed.com:7300 MSFT NTV 5\n" +
                 "dxf_price_level_book_sample demo.dxfeed.com:7300 AAPL AGGREGATE_ASK 0\n" +
@@ -117,7 +63,7 @@ namespace dxf_price_level_book_sample
 
         private static void Main(string[] args)
         {
-            if (args.Length < 4 || args.Length > 6)
+            if (args.Length < 4 || (args.Length > 0 && args[0].Equals("-h")))
             {
                 ShowHelp();
 
@@ -129,16 +75,18 @@ namespace dxf_price_level_book_sample
             var source = args[SourceIndex];
             var levelsNumberString = args[LevelsNumberIndex];
             int levelsNumber;
-            
+
             if (!int.TryParse(levelsNumberString, out levelsNumber))
             {
                 Console.Error.WriteLine($"Can't parse the <levels number> = '{levelsNumberString}'");
-                
+
                 return;
             }
-            
+
             var token = new InputParam<string>(null);
             var logDataTransferFlag = false;
+            var logServerHeartbeatsFlag = false;
+            var quiteMode = false;
 
             for (var i = SymbolIndex + 1; i < args.Length; i++)
             {
@@ -146,13 +94,29 @@ namespace dxf_price_level_book_sample
                     TryParseTaggedStringParam("-T", args[i], args[i + 1], token))
                 {
                     i++;
+
                     continue;
                 }
 
                 if (logDataTransferFlag == false && args[i].Equals("-p"))
                 {
                     logDataTransferFlag = true;
-                    i++;
+
+                    continue;
+                }
+
+                if (logServerHeartbeatsFlag == false && args[i].Equals("-b"))
+                {
+                    logServerHeartbeatsFlag = true;
+
+                    continue;
+                }
+
+                if (quiteMode == false && args[i].Equals("-q"))
+                {
+                    quiteMode = true;
+
+                    continue;
                 }
             }
 
@@ -162,14 +126,26 @@ namespace dxf_price_level_book_sample
             {
                 NativeTools.InitializeLogging("dxf_price_level_book_sample.log", true, true, logDataTransferFlag);
                 using (var con = token.IsSet
-                    ? new NativeConnection(address, token.Value, DisconnectHandler)
-                    : new NativeConnection(address, DisconnectHandler))
+                           ? new NativeConnection(address, token.Value, DisconnectHandler)
+                           : new NativeConnection(address, DisconnectHandler))
                 {
+                    if (logServerHeartbeatsFlag)
+                    {
+                        con.SetOnServerHeartbeatHandler((connection, time, lagMark, rtt) =>
+                        {
+                            Console.Error.WriteLine(
+                                $"##### Server time (UTC) = {time}, Server lag = {lagMark} us, RTT = {rtt} us #####");
+                        });
+                    }
+
                     using (var plb = con.CreatePriceLevelBook(symbol, source, levelsNumber))
                     {
-                        var handler = new PriceLevelBookHandler();
-                        plb.SetHandlers(handler, handler, handler);
-                        
+                        var priceLevelBookPrinter = quiteMode
+                            ? (IPriceLevelBookPrinter) new DummyPriceLevelBookPrinter()
+                            : new PriceLevelBookPrinter();
+
+                        plb.SetHandlers(priceLevelBookPrinter, priceLevelBookPrinter, priceLevelBookPrinter);
+
                         Console.WriteLine("Press enter to stop");
                         Console.ReadLine();
                     }

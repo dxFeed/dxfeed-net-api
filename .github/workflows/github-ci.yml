@@ -60,7 +60,7 @@ jobs:
           echo "Documentation Artifact: ${DOC_ARTIFACT}"
 
       - name: Download documentation artifact
-        uses: actions/download-artifact@v1
+        uses: actions/download-artifact@v4.1.7
         with:
           name: ${{ env.DOC_ARTIFACT }}
           path: downloads/
@@ -110,7 +110,7 @@ jobs:
           echo "Documentation Artifact: ${DOC_ARTIFACT}"
 
       - name: Download documentation artifact
-        uses: actions/download-artifact@v1
+        uses: actions/download-artifact@v4.1.7
         with:
           name: ${{ env.DOC_ARTIFACT }}
           path: downloads/

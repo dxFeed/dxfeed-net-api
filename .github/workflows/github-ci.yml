@@ -35,7 +35,7 @@ jobs:
         with:
           artifact: ${{ env.ARTIFACT }}
           release: ${{ env.RELEASE_VERSION }}
-      - uses: actions/upload-artifact@v1
+      - uses: actions/upload-artifact@v4
         with:
           name: ${{ env.ARTIFACT }}.zip
           path: artifact/${{ env.ARTIFACT }}.zip
@@ -60,7 +60,7 @@ jobs:
           echo "Documentation Artifact: ${DOC_ARTIFACT}"
 
       - name: Download documentation artifact
-        uses: actions/download-artifact@v1
+        uses: actions/download-artifact@v4
         with:
           name: ${{ env.DOC_ARTIFACT }}
           path: downloads/
@@ -110,7 +110,7 @@ jobs:
           echo "Documentation Artifact: ${DOC_ARTIFACT}"
 
       - name: Download documentation artifact
-        uses: actions/download-artifact@v1
+        uses: actions/download-artifact@v4
         with:
           name: ${{ env.DOC_ARTIFACT }}
           path: downloads/

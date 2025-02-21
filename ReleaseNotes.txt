@@ -1,4 +1,5 @@
-* [DXFC-413] Incorrect date handling when system calendar is set to Buddhist calendar
+Version 8.8.3
+* [DXFC-413] Fixed date handling when system calendar is set to Buddhist calendar
 
 Version 8.8.2
 * [DXFC-400] Fixed a bug with passing a UNICODE path to a file as a parameter of the logging initialization and settings loading function.

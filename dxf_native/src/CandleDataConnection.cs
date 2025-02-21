@@ -11,6 +11,7 @@ If a copy of the MPL was not distributed with this file, You can obtain one at h
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Text;
@@ -126,11 +127,10 @@ namespace com.dxfeed.native
         {
             return "records=Candle&" +
                    $"symbols={string.Join(",", symbols).Replace("&", "[%26]")}&" +
-                   $"start={fromTime.ToUniversalTime():yyyyMMdd-HHmmss}Z&" +
-                   $"stop={toTime.ToUniversalTime():yyyyMMdd-HHmmss}Z&" +
+                   $"start={fromTime.ToUniversalTime().ToString("yyyyMMdd-HHmmss", CultureInfo.InvariantCulture)}Z&" +
+                   $"stop={toTime.ToUniversalTime().ToString("yyyyMMdd-HHmmss", CultureInfo.InvariantCulture)}Z&" +
                    "format=binary&" +
-                   "compression=zip&" +
-                   "skipServerTimeCheck";
+                   "compression=zip";
         }
     }
 }

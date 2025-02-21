@@ -1,3 +1,5 @@
+* [DXFC-413] Incorrect date handling when system calendar is set to Buddhist calendar
+
 Version 8.8.2
 * [DXFC-400] Fixed a bug with passing a UNICODE path to a file as a parameter of the logging initialization and settings loading function.
  - For the changes to work reliably, you need to set the default encoding to UTF-8, for example, as indicated by the link: 

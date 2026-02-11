@@ -75,6 +75,7 @@ set TARGET_TEST=RunUnitTests;
 set C_API_NO_TEST=
 set C_API_NO_BUIILD=
 set C_API_NO_TLS=
+set C_API_NO_TLS_FLAG=
 set AssemblySuffix=
 set C_API_NO_CI=
 
@@ -88,6 +89,7 @@ for %%A in (%*) do (
     )
     if [%%A] EQU [no-tls] (
         set C_API_NO_TLS=yes
+        set C_API_NO_TLS_FLAG=no-tls
         set AssemblySuffix=-no-tls
     )
     if [%%A] EQU [no-ci] (
@@ -123,7 +125,7 @@ if NOT EXIST %C_API_BUILD% (
 rem === BUILD C API ===
 set HOME_DIR=%cd%
 cd %C_API_PATH%
-call %C_API_SCRIPT_NAME% %VERSION% %C_API_NO_TEST%
+call %C_API_SCRIPT_NAME% %VERSION% %C_API_NO_TEST% %C_API_NO_TLS_FLAG%
 set C_API_ERRORLEVEL=%ERRORLEVEL%
 cd %HOME_DIR%
 if %C_API_ERRORLEVEL% GEQ 1 (
@@ -144,12 +146,6 @@ xcopy /Y /I %C_API_PATH%\%C_API_BIN_DIR_NAME%\x86\%C_API_DEBUG_DIR_NAME%%C_API_L
 if %ERRORLEVEL% GEQ 1 goto exit_error
 xcopy /Y /I %C_API_PATH%\%C_API_BIN_DIR_NAME%\x86\%C_API_DEBUG_DIR_NAME%%C_API_LIB_NAME%d%C_API_LIB_PDB_EXT% %~dp0\lib\
 if %ERRORLEVEL% GEQ 1 goto exit_error
-xcopy /Y /I %C_API_PATH%\%C_API_BIN_DIR_NAME%\x86\%C_API_DEBUG_DIR_NAME%libcrypto*.dll %~dp0\lib\
-if %ERRORLEVEL% GEQ 1 goto exit_error
-xcopy /Y /I %C_API_PATH%\%C_API_BIN_DIR_NAME%\x86\%C_API_DEBUG_DIR_NAME%libssl*.dll %~dp0\lib\
-if %ERRORLEVEL% GEQ 1 goto exit_error
-xcopy /Y /I %C_API_PATH%\%C_API_BIN_DIR_NAME%\x86\%C_API_DEBUG_DIR_NAME%libtls*.dll %~dp0\lib\
-if %ERRORLEVEL% GEQ 1 goto exit_error
 xcopy /Y /I %C_API_PATH%\%C_API_BIN_DIR_NAME%\x64\%C_API_RELEASE_DIR_NAME%%C_API_LIB_NAME%_64%C_API_LIB_EXT% %~dp0\lib\
 if %ERRORLEVEL% GEQ 1 goto exit_error
 xcopy /Y /I %C_API_PATH%\%C_API_BIN_DIR_NAME%\x64\%C_API_RELEASE_DIR_NAME%%C_API_LIB_NAME%_64%C_API_LIB_PDB_EXT% %~dp0\lib\
@@ -163,6 +159,13 @@ if %ERRORLEVEL% GEQ 1 goto exit_error
 if [%C_API_NO_TLS%] EQU [yes] (
     goto build
 )
+
+xcopy /Y /I %C_API_PATH%\%C_API_BIN_DIR_NAME%\x86\%C_API_DEBUG_DIR_NAME%libcrypto*.dll %~dp0\lib\
+if %ERRORLEVEL% GEQ 1 goto exit_error
+xcopy /Y /I %C_API_PATH%\%C_API_BIN_DIR_NAME%\x86\%C_API_DEBUG_DIR_NAME%libssl*.dll %~dp0\lib\
+if %ERRORLEVEL% GEQ 1 goto exit_error
+xcopy /Y /I %C_API_PATH%\%C_API_BIN_DIR_NAME%\x86\%C_API_DEBUG_DIR_NAME%libtls*.dll %~dp0\lib\
+if %ERRORLEVEL% GEQ 1 goto exit_error
 
 xcopy /Y /I %C_API_PATH%\%C_API_BIN_DIR_NAME%\x64\%C_API_DEBUG_DIR_NAME%libcrypto*.dll %~dp0\lib\
 if %ERRORLEVEL% GEQ 1 goto exit_error

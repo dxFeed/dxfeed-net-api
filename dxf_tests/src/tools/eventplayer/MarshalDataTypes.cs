@@ -226,6 +226,11 @@ namespace com.dxfeed.tests.tools.eventplayer
         internal char exchange_code;
 
         /// <summary>
+        /// Trade id of the last trade
+        /// </summary>
+        internal long trade_id;
+
+        /// <summary>
         /// Price of the last trade
         /// </summary>
         internal double price;
@@ -297,7 +302,7 @@ namespace com.dxfeed.tests.tools.eventplayer
         internal Scope scope;
 
 
-        internal DxTestTrade(long time, int sequence, int time_nanos, char exchange_code, double price, double size,
+        internal DxTestTrade(long time, int sequence, int time_nanos, char exchange_code, long trade_id, double price, double size,
             int tick, double change, int day_id, double day_volume, double day_turnover, int raw_flags,
             Direction direction, bool is_eth, Scope scope)
         {
@@ -305,6 +310,7 @@ namespace com.dxfeed.tests.tools.eventplayer
             this.sequence = sequence;
             this.time_nanos = time_nanos;
             this.exchange_code = exchange_code;
+            this.trade_id = trade_id;
             this.price = price;
             this.size = size;
             this.tick = tick;

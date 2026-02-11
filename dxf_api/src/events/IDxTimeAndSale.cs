@@ -28,6 +28,10 @@ namespace com.dxfeed.api.events
         /// </summary>
         char ExchangeCode { get; }
         /// <summary>
+        /// Returns trade id of this time and sale event.
+        /// </summary>
+        long TradeId { get; }
+        /// <summary>
         ///   Returns price of this time and sale event.
         /// </summary>
         double Price { get; }

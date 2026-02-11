@@ -10,12 +10,10 @@ If a copy of the MPL was not distributed with this file, You can obtain one at h
 #endregion
 
 using System;
-using System.Globalization;
 using com.dxfeed.api;
 using com.dxfeed.api.candle;
 using com.dxfeed.api.connection;
 using com.dxfeed.api.data;
-using com.dxfeed.api.events;
 using com.dxfeed.api.extras;
 using com.dxfeed.native;
 
@@ -226,21 +224,21 @@ namespace dxf_client
                     continue;
                 }
 
-                if (logDataTransferFlag == false && args[i].Equals("-p"))
+                if (!logDataTransferFlag && args[i].Equals("-p"))
                 {
                     logDataTransferFlag = true;
 
                     continue;
                 }
 
-                if (logServerHeartbeatsFlag == false && args[i].Equals("-b"))
+                if (!logServerHeartbeatsFlag && args[i].Equals("-b"))
                 {
                     logServerHeartbeatsFlag = true;
 
                     continue;
                 }
 
-                if (quiteMode == false && args[i].Equals("-q"))
+                if (!quiteMode && args[i].Equals("-q"))
                 {
                     quiteMode = true;
 
@@ -327,7 +325,7 @@ namespace dxf_client
                 }
                 finally
                 {
-                    s?.Dispose();
+                    s.Dispose();
                 }
             }
         }

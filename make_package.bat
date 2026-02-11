@@ -158,6 +158,12 @@ xcopy /Y /I %C_API_PATH%\%C_API_BIN_DIR_NAME%\x64\%C_API_DEBUG_DIR_NAME%%C_API_L
 if %ERRORLEVEL% GEQ 1 goto exit_error
 xcopy /Y /I %C_API_PATH%\%C_API_BIN_DIR_NAME%\x64\%C_API_DEBUG_DIR_NAME%%C_API_LIB_NAME%d_64%C_API_LIB_PDB_EXT% %~dp0\lib\
 if %ERRORLEVEL% GEQ 1 goto exit_error
+
+
+if [%C_API_NO_TLS%] EQU [yes] (
+    goto build
+)
+
 xcopy /Y /I %C_API_PATH%\%C_API_BIN_DIR_NAME%\x64\%C_API_DEBUG_DIR_NAME%libcrypto*.dll %~dp0\lib\
 if %ERRORLEVEL% GEQ 1 goto exit_error
 xcopy /Y /I %C_API_PATH%\%C_API_BIN_DIR_NAME%\x64\%C_API_DEBUG_DIR_NAME%libssl*.dll %~dp0\lib\
@@ -167,6 +173,7 @@ if %ERRORLEVEL% GEQ 1 goto exit_error
 xcopy /Y /I %C_API_PATH%\%C_API_BIN_DIR_NAME%\x64\%C_API_DEBUG_DIR_NAME%vcruntime140.dll %~dp0\lib\
 if %ERRORLEVEL% GEQ 1 goto exit_error
 
+:build
 rem === BUILD PROJECTS ===
 msbuild %~dp0\dxf_master\dxf_master.csproj /m /t:Clean;UpdateVersion;Build;%TARGET_TEST%CopySources;GenerateSolution;CreatePackage /p:Configuration=Release;Platform=AnyCPU;AssemblyVersion=%VERSION%
 if %ERRORLEVEL% GEQ 1 goto exit_error

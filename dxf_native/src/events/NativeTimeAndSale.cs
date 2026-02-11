@@ -34,6 +34,7 @@ namespace com.dxfeed.native.events
             Index = ts.index;
             Time = TimeConverter.ToUtcDateTime(ts.time);
             ExchangeCode = ts.exchange_code;
+            TradeId = ts.trade_id;
             Price = ts.price;
             Size = ts.size;
             BidPrice = ts.bid_price;
@@ -61,6 +62,7 @@ namespace com.dxfeed.native.events
             Index = ts.Index;
             Time = ts.Time;
             ExchangeCode = ts.ExchangeCode;
+            TradeId = ts.TradeId;
             Price = ts.Price;
             Size = ts.Size;
             BidPrice = ts.BidPrice;
@@ -89,6 +91,7 @@ namespace com.dxfeed.native.events
             Index = ts.Index;
             Time = ts.Time;
             ExchangeCode = ts.ExchangeCode;
+            TradeId = ts.TradeId;
             Price = ts.Price;
             Size = ts.Size;
             BidPrice = ts.BidPrice;
@@ -154,20 +157,20 @@ namespace com.dxfeed.native.events
                 "TimeAndSale: {{{0}, " +
                 "EventFlags: 0x{1:x2}, Index: {2:x16}, " +
                 "Time: {3:o}, " +
-                "ExchangeCode: {4}, ExchangeSaleConditions: '{5}', " +
-                "Price: {6}, Size: {7}, " +
-                "BidPrice: {8}, AskPrice: {9}, " +
-                "Buyer: '{10}', Seller: '{11}', " +
-                "AggressorSide: {12}, " +
-                "Type: {13}, " +
-                "IsValidTick: {14}, IsETHTrade: {15}, IsSpreadLeg: {16}, TTE: '{17}', " +
-                "RawFlags: {18:x8}, " +
-                "Scope: {19}" +
+                "ExchangeCode: {4}, TradeId: {5}, ExchangeSaleConditions: '{6}', " +
+                "Price: {7}, Size: {8}, " +
+                "BidPrice: {9}, AskPrice: {10}, " +
+                "Buyer: '{11}', Seller: '{12}', " +
+                "AggressorSide: {13}, " +
+                "Type: {14}, " +
+                "IsValidTick: {15}, IsETHTrade: {16}, IsSpreadLeg: {17}, TTE: '{18}', " +
+                "RawFlags: {19:x8}, " +
+                "Scope: {20}" +
                 "}}",
                 EventSymbol,
                 (int)EventFlags, Index,
                 Time,
-                ExchangeCode, ExchangeSaleConditions,
+                ExchangeCode, TradeId, ExchangeSaleConditions,
                 Price, Size,
                 BidPrice, AskPrice,
                 Buyer, Seller,
@@ -212,6 +215,11 @@ namespace com.dxfeed.native.events
         ///     Returns exchange code of this time and sale event.
         /// </summary>
         public char ExchangeCode { get; set; }
+
+        /// <summary>
+        ///     Returns trade id of this time and sale event.
+        /// </summary>
+        public long TradeId { get; set; }
 
         /// <summary>
         ///     Returns price of this time and sale event.

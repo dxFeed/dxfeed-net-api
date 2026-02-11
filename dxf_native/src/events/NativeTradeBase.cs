@@ -43,6 +43,7 @@ namespace com.dxfeed.native.events
             Sequence = trade.sequence;
             TimeNanoPart = trade.time_nanos;
             ExchangeCode = trade.exchange_code;
+            TradeId = trade.trade_id;
             Price = trade.price;
             Size = trade.size;
             Change = trade.change;
@@ -65,6 +66,7 @@ namespace com.dxfeed.native.events
             Sequence = trade.Sequence;
             TimeNanoPart = trade.TimeNanoPart;
             ExchangeCode = trade.ExchangeCode;
+            TradeId = trade.TradeId;
             Price = trade.Price;
             Size = trade.Size;
             Change = trade.Change;
@@ -89,12 +91,12 @@ namespace com.dxfeed.native.events
         {
             return string.Format(CultureInfo.InvariantCulture,
                 "Time: {0:o}, Sequence: {1}, TimeNanoPart: {2}, " +
-                "ExchangeCode: {3}, Price: {4}, Size: {5},  " +
-                "Change: {6}, DayId: {7}, DayVolume: {8}, DayTurnover: {9}, " +
-                "Tick Direction: {10}, IsETH: {11}, " +
-                "RawFlags: {12:x8}, Scope: {13}",
+                "ExchangeCode: {3}, TradeId: {4}, Price: {5}, Size: {6},  " +
+                "Change: {7}, DayId: {8}, DayVolume: {9}, DayTurnover: {10}, " +
+                "Tick Direction: {11}, IsETH: {12}, " +
+                "RawFlags: {13:x8}, Scope: {14}",
                 Time, Sequence, TimeNanoPart,
-                ExchangeCode, Price, Size, Change,
+                ExchangeCode, TradeId, Price, Size, Change,
                 DayId, DayVolume, DayTurnover,
                 TickDirection, IsExtendedTradingHours,
                 RawFlags, Scope
@@ -124,6 +126,11 @@ namespace com.dxfeed.native.events
         ///     Returns exchange code of the last trade.
         /// </summary>
         public char ExchangeCode { get; set; }
+
+        /// <summary>
+        ///     Returns trade id of the last trade.
+        /// </summary>
+        public long TradeId { get; set; }
 
         /// <summary>
         ///     Returns price of the last trade.

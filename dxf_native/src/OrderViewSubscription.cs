@@ -27,7 +27,7 @@ namespace com.dxfeed.native
     ///     </para>
     /// </summary>
     [Obsolete(
-        "OrderViewSubscription class is deprecated and will removed in 9.0.0 version. Please use NativeConnection\\NativeSubscription")]
+        "OrderViewSubscription class is deprecated and will removed sometimes. Please use NativeConnection\\NativeSubscription")]
     public class OrderViewSubscription : IDxSubscription, IDxOrderListener
     {
         private const string AddSymbolBeforeSourceErrorText = @"You must configure subscription

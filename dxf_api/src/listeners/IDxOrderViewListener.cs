@@ -17,7 +17,7 @@ namespace com.dxfeed.api
     /// <summary>
     /// Interface provides receiving Order View events.
     /// </summary>
-    [Obsolete("IDxOrderViewListener interface is deprecated and will removed in 9.0.0 version. Please use NativeConnection\\NativeSubscription")]
+    [Obsolete("IDxOrderViewListener interface is deprecated and will removed sometimes. Please use NativeConnection\\NativeSubscription")]
     public interface IDxOrderViewListener
     {
         /// <summary>

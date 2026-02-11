@@ -51,6 +51,11 @@ namespace com.dxfeed.api.events
         char ExchangeCode { get; }
 
         /// <summary>
+        /// Returns trade id of the last trade.
+        /// </summary>
+        long TradeId { get; }
+
+        /// <summary>
         /// Returns price of the last trade.
         /// </summary>
         double Price { get; }

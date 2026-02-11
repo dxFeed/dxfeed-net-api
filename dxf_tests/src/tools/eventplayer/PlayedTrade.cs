@@ -21,7 +21,7 @@ namespace com.dxfeed.tests.tools.eventplayer
     /// </summary>
     internal class PlayedTrade : IPlayedEvent<DxTestTrade>, IDxTrade
     {
-        internal PlayedTrade(string symbol, long time, int sequence, int time_nanos, char exchange_code, double price,
+        internal PlayedTrade(string symbol, long time, int sequence, int time_nanos, char exchange_code, long trade_id, double price,
             double size, int tick, double change, int dayId, double day_volume, double day_turnover, int raw_flags,
             Direction direction, bool is_eth, Scope scope)
         {
@@ -30,6 +30,7 @@ namespace com.dxfeed.tests.tools.eventplayer
             this.Sequence = sequence;
             this.TimeNanoPart = time_nanos;
             this.ExchangeCode = exchange_code;
+            this.TradeId = trade_id;
             this.Price = price;
             this.Size = size;
             this.Tick = tick;
@@ -43,7 +44,7 @@ namespace com.dxfeed.tests.tools.eventplayer
             this.Scope = scope;
 
             Params = new EventParams(0, 0, 0);
-            Data = new DxTestTrade(time, sequence, time_nanos, exchange_code, price, size, tick, change, dayId,
+            Data = new DxTestTrade(time, sequence, time_nanos, exchange_code, trade_id, price, size, tick, change, dayId,
                 day_volume, day_turnover, raw_flags, direction, is_eth, scope);
         }
 
@@ -58,6 +59,7 @@ namespace com.dxfeed.tests.tools.eventplayer
             this.Sequence = trade.Sequence;
             this.TimeNanoPart = trade.TimeNanoPart;
             this.ExchangeCode = trade.ExchangeCode;
+            this.TradeId = trade.TradeId;
             this.Price = trade.Price;
             this.Size = trade.Size;
             this.Tick = trade.Tick;
@@ -71,7 +73,7 @@ namespace com.dxfeed.tests.tools.eventplayer
             this.Scope = trade.Scope;
 
             Params = new EventParams(0, 0, 0);
-            Data = new DxTestTrade(Tools.DateToUnixTime(Time), Sequence, TimeNanoPart, ExchangeCode, Price, (int) Size,
+            Data = new DxTestTrade(Tools.DateToUnixTime(Time), Sequence, TimeNanoPart, ExchangeCode, TradeId, Price, (int) Size,
                 Tick, Change, DayId, DayVolume, DayTurnover, RawFlags, TickDirection, IsExtendedTradingHours, Scope);
         }
 
@@ -92,6 +94,8 @@ namespace com.dxfeed.tests.tools.eventplayer
         public int TimeNanoPart { get; private set; }
 
         public char ExchangeCode { get; private set; }
+
+        public long TradeId { get; private set; }
 
         public double Price { get; private set; }
 

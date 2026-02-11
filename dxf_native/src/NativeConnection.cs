@@ -764,7 +764,7 @@ namespace com.dxfeed.native
         /// <returns>subscription object</returns>
         /// <exception cref="DxException"></exception>
         [Obsolete(
-            "CreateOrderViewSubscription method is deprecated and will removed in 9.0.0 version. Please use NativeConnection\\NativeSubscription")]
+            "CreateOrderViewSubscription method is deprecated and will removed sometimes. Please use NativeConnection\\NativeSubscription")]
         public IDxSubscription CreateOrderViewSubscription(IDxOrderViewListener listener)
         {
             if (handle == IntPtr.Zero)

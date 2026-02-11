@@ -49,7 +49,12 @@ namespace com.dxfeed.native.api
         /// Exchange code of the last trade
         /// </summary>
         internal char exchange_code;
-        
+
+        /// <summary>
+        /// Contains trade (order execution) ID for events containing trade-related action if available, otherwise - 0.
+        /// </summary>
+        internal long trade_id;
+
         /// <summary>
         /// Price of the last trade
         /// </summary>
@@ -321,6 +326,12 @@ namespace com.dxfeed.native.api
         internal long index;
         internal long time;
         internal char exchange_code;
+
+        /// <summary>
+        /// Contains trade (order execution) ID for events containing trade-related action if available, otherwise - 0.
+        /// </summary>
+        internal long trade_id;
+
         internal double price;
         internal double size;
         internal double bid_price;
